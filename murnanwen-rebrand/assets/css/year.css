@@ -1,0 +1,458 @@
+/* ==========================================================================
+   THE MURNANS · the year pages
+   2022.html, 2023.html and on. Loaded after site.css and built from its
+   tokens: the ink keyline, colour printed a little off register, small tilts.
+   --------------------------------------------------------------------------
+   1. Head and cover     4. Timeline rows      7. The letter
+   2. The deck of cards  5. Photo slots        8. Closing
+   3. The bar            6. Honeymoon map      9. Responsive
+   ========================================================================== */
+
+/* a Christmas-card red for the accent, set in the dark wine at dawn */
+body[data-page="year"] { --page: var(--wine-3); --page-ink: var(--wine); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* 1 ── HEAD AND COVER ──────────────────────────────────────────────────── */
+
+.yhead { padding-bottom: clamp(2.75rem, 5vw, 4.5rem); }
+.yhead__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-areas: "text cover" "deck cover";
+  column-gap: clamp(2rem, 5.5vw, 6rem);
+  align-items: end;
+}
+.yhead__text { grid-area: text; min-width: 0; }
+.yhead__title { display: grid; gap: .2em; }
+.yhead__year { display: block; font-size: min(clamp(4.4rem, 11.5vw, 9.8rem), 19vh); line-height: .86; letter-spacing: -.02em; }
+.yhead__name { display: block; font-size: clamp(1.7rem, 3.3vw, 2.85rem); line-height: 1.08; color: var(--ink-2); }
+
+/* this year's card: pinned up at a slight lean, press it to see it big */
+.ycover {
+  grid-area: cover;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 640px);
+  margin: 0;
+  rotate: 1.6deg;
+  transition: rotate .7s var(--ease);
+}
+.ycover:hover { rotate: 0deg; }
+.ycover__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 7 / 5;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  background: var(--paper-3);
+  box-shadow: 12px 12px 0 var(--off, var(--gold));
+  transition: translate .45s var(--ease), box-shadow .45s var(--ease);
+}
+.ycover__frame[data-shot] { cursor: zoom-in; }
+.ycover__frame:hover { translate: 4px 4px; box-shadow: 8px 8px 0 var(--off, var(--gold)); }
+.ycover__frame img { width: 100%; height: 100%; object-fit: cover; }
+.ycover__cap {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  margin-top: 1.15rem;
+  font-size: .64rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3);
+}
+.ycover__yr { font-family: var(--display); font-size: 1.1rem; letter-spacing: .01em; text-transform: none; color: var(--brass-ink); }
+
+/* 2 ── THE DECK OF CARDS ───────────────────────────────────────────────── */
+
+.ydeck { grid-area: deck; align-self: start; margin-top: clamp(2rem, 3.5vw, 3rem); }
+.ydeck__label { margin: 0 0 1.1rem; font-size: .64rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--ink-3); }
+.ydeck__list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 1.4rem clamp(1rem, 1.8vw, 1.5rem);
+  align-items: start;
+}
+.ydeck__item { min-width: 0; }
+.ydeck__card { position: relative; display: grid; gap: .3rem; color: var(--ink); }
+.ydeck__pic {
+  display: block;
+  aspect-ratio: 7 / 5;
+  overflow: hidden;
+  margin-bottom: .55rem;
+  border: var(--keyline);
+  border-radius: var(--r-sm);
+  background: var(--paper-3);
+  box-shadow: 5px 5px 0 var(--off, var(--blue));
+  rotate: var(--tilt, 0deg);
+  transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease);
+}
+.ydeck__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+a.ydeck__card:hover .ydeck__pic,
+a.ydeck__card:focus-visible .ydeck__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 6px 10px 0 var(--off, var(--blue)); }
+a.ydeck__card:hover .ydeck__pic img { transform: scale(1.05); }
+.ydeck__year { font-family: var(--display); font-size: 1.2rem; line-height: 1; }
+.ydeck__name { font-size: .74rem; line-height: 1.35; color: var(--ink-3); text-wrap: balance; }
+a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
+
+/* the card for the page you're on lies flat, with a sticker on it */
+.ydeck__card.is-here .ydeck__pic { rotate: 0deg; }
+.ydeck__here {
+  position: absolute;
+  top: -.75rem; right: -.5rem;
+  z-index: 2;
+  padding: .32em .75em .26em;
+  border: 1.5px solid #14110D;
+  border-radius: 999px;
+  background: #F0CE84;
+  color: #14110D;
+  box-shadow: 2px 2px 0 #14110D;
+  font-size: .56rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  white-space: nowrap;
+  rotate: 7deg;
+}
+
+/* 3 ── THE BAR ─────────────────────────────────────────────────────────── */
+
+.ybar { gap: 1rem; }
+.ybar .yearbar__list { flex: none; }
+.ybar .yearbtn { padding-inline: .85em; }
+.yearbtn--empty { color: var(--ink-3); opacity: .45; cursor: default; }
+.yearbtn--empty:hover { color: var(--ink-3); box-shadow: none; }
+
+/* 4 ── TIMELINE ROWS ───────────────────────────────────────────────────── */
+
+.ytl { padding-block: clamp(2rem, 4vw, 3.5rem); }
+.yfacts + .ytl, .yrest + .ytl { padding-top: 0; }
+.yrest { padding-bottom: 0; }
+.yfacts { padding-bottom: clamp(1rem, 2vw, 1.5rem); }
+
+.chap__month,
+.chap__day {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 2.3vw, 2.05rem);
+  line-height: 1;
+  letter-spacing: -.005em;
+  color: var(--ink);
+}
+.chap__day { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .55rem; }
+.chap__part,
+.chap__count { font-family: var(--sans); font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); }
+.ytl .chap__date { font-family: var(--sans); font-size: .78rem; letter-spacing: .04em; color: var(--brass-ink); }
+.ytl .chap__text { margin: 0; }
+
+.trip { display: grid; gap: .55rem; }
+.trip + .trip { padding-top: 1.5rem; border-top: 1px solid var(--line-2); }
+.trip__head { display: grid; gap: .5rem; }
+.trip__dates { font-size: .66rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--brass-ink); }
+.trip__place { font-size: clamp(1.45rem, 2.2vw, 1.95rem); line-height: 1.12; }
+.trip__text { margin: 0; color: var(--ink-2); line-height: 1.66; }
+.trip__text + .trip__text { margin-top: .35rem; }
+/* whose words these are, under the year's facts */
+.ynote { max-width: 62ch; margin: clamp(1.75rem, 3vw, 2.5rem) 0 0; font-size: .95rem; color: var(--ink-3); }
+
+/* a month: the trips on the left, their photographs on the right */
+.mrow {
+  max-width: none;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(1.5rem, 3.5vw, 3.25rem);
+  align-items: start;
+}
+.mrow__trips { display: grid; gap: 1.5rem; max-width: 62ch; }
+/* a link to a month (from the memory card on the home page) lands below the bars */
+.chap--month { scroll-margin-top: calc(var(--nav-h) + 4.5rem); }
+.mrow > .strip { margin-top: .25rem; position: sticky; top: calc(var(--nav-h) + 5.5rem); }
+
+@media (min-width: 861px) {
+  .chap--month { grid-template-columns: 170px 1fr; }
+  .moon .chap { grid-template-columns: 150px 1fr; }
+}
+
+/* 5 ── PHOTO SLOTS ─────────────────────────────────────────────────────── */
+
+/* mosaics for three to six: one big print and the rest around it */
+.strip--yr { gap: .6rem; }
+.strip--yr[data-n="4"] {
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  aspect-ratio: 4 / 3;
+}
+.strip--yr[data-n="4"] .shot { aspect-ratio: auto; }
+.strip--yr[data-n="4"] .shot:first-child { grid-row: span 3; }
+.strip--yr[data-n="5"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  aspect-ratio: 16 / 9;
+}
+.strip--yr[data-n="5"] .shot { aspect-ratio: auto; }
+.strip--yr[data-n="5"] .shot:first-child { grid-column: span 2; grid-row: span 2; }
+.strip--yr[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.strip--yr[data-n="6"] .shot { aspect-ratio: 4 / 3; }
+
+/* A slot still waiting for its photograph: a wash of colour, a doodle,
+   and the caption as a hint for which picture goes there. */
+.shot--empty {
+  container-type: inline-size;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: .6rem;
+  padding: .7rem;
+  cursor: default;
+  text-align: center;
+  color: var(--ink-2);
+  background:
+    radial-gradient(120% 90% at 18% 12%, color-mix(in srgb, var(--wash) 34%, transparent), transparent 62%),
+    radial-gradient(110% 100% at 88% 92%, color-mix(in srgb, var(--wash) 26%, transparent), transparent 66%),
+    color-mix(in srgb, var(--wash) 14%, var(--paper));
+}
+.shot--empty::after { display: none; }
+.shot__doodle { width: clamp(30px, 24%, 56px); height: auto; opacity: .62; transition: rotate .6s var(--ease), scale .6s var(--ease); }
+.shot--empty:hover .shot__doodle { rotate: -8deg; scale: 1.08; }
+.shot__hint {
+  max-width: 24ch;
+  font-size: .62rem; font-weight: 500; line-height: 1.35;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+@container (max-width: 150px) {
+  .shot__doodle { width: 28px; }
+  .shot__hint { font-size: .54rem; letter-spacing: .06em; }
+}
+[data-theme="dusk"] .shot--empty {
+  background:
+    radial-gradient(120% 90% at 18% 12%, color-mix(in srgb, var(--wash) 20%, transparent), transparent 62%),
+    radial-gradient(110% 100% at 88% 92%, color-mix(in srgb, var(--wash) 14%, transparent), transparent 66%),
+    color-mix(in srgb, var(--wash) 10%, var(--paper));
+}
+
+/* 6 ── HONEYMOON MAP ───────────────────────────────────────────────────── */
+
+.moon {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(250px, 23vw, 330px);
+  gap: clamp(2rem, 3.5vw, 3.5rem);
+}
+.moon__days { min-width: 0; }
+.moon__map { position: relative; }
+.routemap {
+  position: sticky;
+  top: calc(var(--nav-h) + 4.75rem);
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+}
+/* sized so the map and the day under it both fit below the bar */
+.routemap svg { height: min(calc(100vh - var(--nav-h) - 14rem), 780px); width: auto; max-width: 100%; overflow: visible; }
+
+.routemap__sea { fill: color-mix(in srgb, var(--blue) 20%, var(--paper)); }
+.routemap__coast { fill: none; stroke: var(--ink); stroke-width: calc(1.5px / var(--mapk, .7)); stroke-linejoin: round; opacity: .75; }
+.routemap__border { fill: none; stroke: var(--ink-3); stroke-width: calc(1px / var(--mapk, .7)); opacity: .5; }
+.routemap__state,
+.routemap__ocean { font-family: var(--sans); font-size: calc(9px / var(--mapk, .7)); font-weight: 500; letter-spacing: .28em; fill: var(--ink-3); }
+.routemap__ocean { fill: var(--blue-deep); opacity: .85; }
+[data-theme="dusk"] .routemap__ocean { fill: var(--blue); }
+.routemap__base { fill: none; stroke: var(--ink-3); stroke-width: calc(1.3px / var(--mapk, .7)); opacity: .3; }
+.routemap__leg {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: calc(2.4px / var(--mapk, .7));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.2s var(--ease), stroke .5s;
+}
+.routemap__leg.is-done { stroke-dashoffset: 0; }
+.routemap__leg.is-now { stroke-dashoffset: 0; stroke: var(--coral); stroke-width: calc(3.4px / var(--mapk, .7)); }
+.routemap__dot { fill: var(--paper); stroke: var(--ink-3); stroke-width: calc(1.2px / var(--mapk, .7)); transition: fill .4s, stroke .4s; }
+.routemap__dot.is-seen { fill: var(--ink-2); stroke: var(--ink-2); }
+.routemap__dot.is-now { fill: var(--coral); stroke: var(--ink); stroke-width: calc(1.6px / var(--mapk, .7)); }
+.routemap__label {
+  font-family: var(--sans);
+  font-size: calc(10px / var(--mapk, .7));
+  font-weight: 600;
+  letter-spacing: .07em;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: calc(3.5px / var(--mapk, .7));
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+.routemap__label.is-on { opacity: 1; }
+.routemap__now { display: grid; justify-items: center; gap: .25rem; min-height: 3.4em; max-width: 28ch; margin: 0; text-align: center; }
+.routemap__day { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.routemap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; text-wrap: balance; }
+
+/* Ken's toast, between the honeymoon and the rest of the year */
+.yquote__fig { display: grid; gap: 1.6rem; }
+.yquote__text { font-size: clamp(1.55rem, 2.7vw, 2.3rem); }
+.yquote__who { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1rem; }
+.yquote__name { font-family: var(--display); font-size: 1.35rem; }
+.yquote__note { max-width: 60ch; margin-top: clamp(2rem, 4vw, 3rem); padding-top: 1.6rem; border-top: 1px solid var(--line); }
+
+/* 7 ── THE LETTER ──────────────────────────────────────────────────────── */
+
+.letter {
+  --off: var(--gold);
+  position: relative;
+  max-width: 800px;
+  margin-inline: auto;
+  padding: clamp(1.9rem, 4vw, 3.4rem) clamp(1.5rem, 4.5vw, 3.9rem) clamp(1.2rem, 2.6vw, 1.9rem);
+  background: color-mix(in srgb, var(--off) 11%, var(--paper));
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  box-shadow: 8px 8px 0 var(--off);
+  rotate: -.5deg;
+}
+/* a second, finer frame inside the first, like the vow cards */
+.letter::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1.5px solid color-mix(in srgb, var(--off) 70%, var(--paper));
+  border-radius: 8px;
+  pointer-events: none;
+}
+.letter__head { display: grid; gap: .55rem; margin-bottom: 1.6rem; padding-bottom: 1.3rem; border-bottom: 1px solid var(--line); }
+.letter__date { font-size: .66rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.letter__title { font-size: clamp(1.9rem, 3.3vw, 2.7rem); }
+.letter__body p { color: var(--ink-2); line-height: 1.74; }
+.letter__sign { display: flex; align-items: center; justify-content: flex-end; gap: .1rem; margin-top: .4rem; }
+.letter__sign img { width: clamp(96px, 11vw, 132px); height: auto; margin-block: -.9rem -1.1rem; rotate: -5deg; filter: invert(var(--art-invert)); }
+.letter__amp { font-family: var(--display); font-size: 1.5rem; color: var(--coral); }
+
+/* 8 ── CLOSING ─────────────────────────────────────────────────────────── */
+
+.yclose { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2.25rem, 5.5vw, 5.5rem); align-items: center; }
+/* the footer below is the same oxblood and brings its own top padding, so the
+   closing keeps less of its own underneath, or the gap before the footer doubles */
+#closing.band { padding-bottom: clamp(3rem, 6vw, 5.5rem); }
+.yclose__btns { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .5rem; }
+.yclose__name { margin: -.4rem 0 0; font-family: var(--display); font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: 1.15; color: var(--ink-2); }
+.yclose__card {
+  justify-self: center;
+  display: block;
+  width: min(100%, 540px);
+  aspect-ratio: 7 / 5;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  background: #2A0F18;
+  box-shadow: 12px 12px 0 var(--off, var(--gold));
+  rotate: -2deg;
+  transition: rotate .6s var(--ease), translate .45s var(--ease), box-shadow .45s var(--ease);
+}
+a.yclose__card:hover { rotate: 0deg; translate: 4px 4px; box-shadow: 8px 8px 0 var(--off, var(--gold)); }
+.yclose__card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+a.yclose__card:hover img { transform: scale(1.04); }
+
+/* the card that doesn't exist yet: plain stock, colours pinned for the dark band */
+.ycard-blank {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: .45rem;
+  width: 100%;
+  height: 100%;
+  color: #4B443A;
+  background:
+    radial-gradient(90% 80% at 25% 20%, #F0CE8466, transparent 65%),
+    radial-gradient(80% 90% at 80% 85%, #DCC0BE77, transparent 65%),
+    #F7F0E0;
+}
+.ycard-blank__year { font-family: var(--display); font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1; color: #14110D; }
+.ycard-blank__note { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; }
+
+/* the newest year ends on the earlier years' cards, each one a way back */
+.yclose__cards {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.75rem clamp(1rem, 2vw, 1.6rem);
+  align-self: end;              /* the cards finish on the same line as the text */
+}
+.yclose__item { min-width: 0; }
+.yclose__mini { display: grid; gap: .3rem; color: var(--ink); }
+.yclose__pic {
+  display: block;
+  aspect-ratio: 7 / 5;
+  overflow: hidden;
+  margin-bottom: .65rem;
+  border: var(--keyline);
+  border-radius: var(--r-sm);
+  background: #2A0F18;
+  box-shadow: 7px 7px 0 var(--off, var(--gold));
+  rotate: var(--tilt, 0deg);
+  transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease);
+}
+.yclose__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.yclose__mini:hover .yclose__pic,
+.yclose__mini:focus-visible .yclose__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 7px 12px 0 var(--off, var(--gold)); }
+.yclose__mini:hover .yclose__pic img { transform: scale(1.05); }
+.yclose__year { font-family: var(--display); font-size: 1.45rem; line-height: 1; }
+.yclose__title { font-size: .78rem; line-height: 1.35; color: var(--ink-3); text-wrap: balance; }
+
+/* 9 ── RESPONSIVE ──────────────────────────────────────────────────────── */
+
+@media (max-width: 1179px) {
+  .moon { grid-template-columns: 1fr; gap: 0; }
+  .moon__map { grid-row: 1; }
+  .routemap { position: static; padding-top: .5rem; }
+  .routemap svg { height: min(66vh, 560px); }
+}
+
+@media (max-width: 1080px) {
+  .mrow { grid-template-columns: 1fr; }
+  .mrow > .strip { position: static; }
+}
+
+@media (max-width: 900px) {
+  .yhead__grid { grid-template-columns: 1fr; grid-template-areas: "text" "cover" "deck"; row-gap: 2.75rem; }
+  .ycover { width: min(100%, 560px); rotate: 1deg; }
+  .ydeck { margin-top: 0; }
+  .yclose { grid-template-columns: 1fr; }
+  .yclose__card { width: min(100%, 460px); }
+}
+
+@media (max-width: 620px) {
+  /* every year's card in one short row with just the year under it, so the
+     head doesn't push the first month a screen further down */
+  .ydeck__list { grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); gap: 1rem .8rem; }
+  .ydeck__name { display: none; }
+  .ydeck__pic { margin-bottom: .35rem; box-shadow: 3px 3px 0 var(--off, var(--blue)); }
+  .ydeck__year { font-size: 1.05rem; }
+  .ydeck__here { top: -.6rem; right: -.4rem; padding: .28em .5em .22em; font-size: .46rem; letter-spacing: .08em; }
+  /* three earlier cards share one row, rather than leaving the last one alone on a second */
+  .yclose__cards[data-n="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem .9rem; }
+  .yclose__cards[data-n="3"] .yclose__pic { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
+  .yclose__cards[data-n="3"] .yclose__year { font-size: 1.15rem; }
+  .yclose__cards[data-n="3"] .yclose__title { font-size: .68rem; }
+  /* on a phone four or more photographs sit in one row you swipe through,
+     running off the right edge so the next one peeks in, instead of stacking
+     a screen tall; two or three stay a small mosaic that fits the screen */
+  .strip--yr:is([data-n="4"], [data-n="5"], [data-n="6"]) {
+    display: flex;
+    gap: .6rem;
+    aspect-ratio: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    margin-right: calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) .75rem 0;
+    scrollbar-width: none;
+  }
+  .strip--yr::-webkit-scrollbar { display: none; }
+  .strip--yr:is([data-n="4"], [data-n="5"], [data-n="6"]) .shot { flex: 0 0 74%; aspect-ratio: 4 / 5; grid-row: auto; grid-column: auto; scroll-snap-align: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ycover, .ycover__frame, .ydeck__pic, .yclose__card, .routemap__leg, .shot__doodle { transition: none; }
+}
