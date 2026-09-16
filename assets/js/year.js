@@ -558,10 +558,9 @@
     const moon = host.closest('.moon');
     const band = host.closest('.moon__map');
     const bar = $('#jump');
-    // The floating window, rather than the band under the bar: a big screen,
-    // or a phone on its side. Kept in step with the same query in
-    // assets/css/map.css, which the band is written as the complement of.
-    const wide = matchMedia('(min-width: 1180px), (min-width: 700px) and (max-height: 520px) and (orientation: landscape)');
+    // the floating window, rather than the band under the bar: the same
+    // measurement as the one in assets/css/map.css
+    const wide = matchMedia('(min-width: 1180px)');
     let shown = null, cur = null, raf = 0, stop = 0, onBand = false;
 
     // screen pixels per svg unit, with the dots kept one size on screen
@@ -711,7 +710,8 @@
     // day reaches it, and tucks away again once the last has gone under it.
     // The live day is the last whose top has passed a line a third of the
     // way down the screen below the band.
-    const edge = () => (bar ? bar.getBoundingClientRect().bottom : 0) + band.offsetHeight;
+    const barBottom = () => (bar ? bar.getBoundingClientRect().bottom : 0);
+    const edge = () => barBottom() + band.offsetHeight;
     function pick() {
       const e = edge(), line = e + (innerHeight - e) * 0.33;
       let i = -1;
@@ -719,8 +719,10 @@
       return moon.getBoundingClientRect().bottom < line ? days.length : i;
     }
     function fromBand() {
+      // the bar's own position says whether the days have reached it yet: see
+      // the same note in assets/js/trailmap.js
       const r = moon.getBoundingClientRect(), e = edge();
-      const on = r.top < e && r.bottom > e + 40;
+      const on = r.top < barBottom() && r.bottom > e + 40;
       if (on !== onBand) {
         onBand = on;
         band.classList.toggle('is-on', on);
@@ -779,9 +781,11 @@
     const folders = list => [...new Set((list || [])
       .filter(p => p.src && p.src.indexOf('continued_trips/') === 0)
       .map(p => p.src.split('/')[1]))];
-    const stopsOf = list => folders(list).flatMap(f => PL[f] || []);
-    const months = (Y.months || []).map(m => ({ month: m.month, stops: stopsOf(m.photos) }));
-    const moon = Y.honeymoon ? (Y.honeymoon.days || []).flatMap(d => stopsOf(d.photos)) : [];
+    // A month also puts on the map any trip folder named in its own "folders",
+    // for the places a big trip went that its five photographs can't cover.
+    const stopsOf = (list, extra) => [...folders(list), ...(extra || [])].flatMap(f => PL[f] || []);
+    const months = (Y.months || []).map(m => ({ month: m.month, stops: stopsOf(m.photos, m.folders) }));
+    const moon = Y.honeymoon ? (Y.honeymoon.days || []).flatMap(d => stopsOf(d.photos, d.folders)) : [];
     if (!months.some(m => m.stops.length) && !moon.length) return;
 
     const at = m => months.findIndex(x => x.month === m);

@@ -31,7 +31,7 @@ The old Webflow site is untouched in `../murnanwen.webflow/`.
 
 ## Adding a new chapter
 
-The Long Way Round is volume one: the trips before the wedding. Everything on its
+The Long Way Round is Volume One: the trips before the wedding. Everything on its
 timeline comes from one file, **`assets/js/data.js`**. Trips after the wedding go on the
 year pages instead, see **The year pages** below.
 
@@ -86,8 +86,9 @@ The `29` figure on the home page is hard-coded in `index.html`, search for
 `data-count="29"` and bump it when the count changes. Its label on the next line reads
 **Adventures before the wedding**, which stays true as long as later trips go on the
 year pages. The three figures beside it are hard-coded the same way: road trips, national
-parks (38: 32 on the year pages through 2025, plus 6 in 2026 not posted yet; only the
-63 designated national parks count) and states (34,
+parks (38: 32 through 2025, plus 6 in 2026 not posted yet; only the 63 designated
+national parks count). The 32 is 31 named across the year pages, 2022 to 2025, plus
+Mammoth Cave in Volume One, and it already counts all five Utah parks. States (34,
 plus DC: 30 on the year pages through 2025, plus Kentucky, and North Dakota, South Dakota
 and Wyoming in 2026, not posted yet).
 
@@ -102,7 +103,7 @@ nothing in that file needs editing.
 
 ## The year pages
 
-**After the Wedding** is volume two: one page per year, `2022.html` to `2025.html`, all
+**After the Wedding** is Volume Two: one page per year, `2022.html` to `2025.html`, all
 built by `assets/js/year.js` from two kinds of file:
 
 - **`assets/js/years/index.js`**: every year in order, with its name and its Christmas
@@ -126,7 +127,7 @@ screen, so the months keep their full width and nothing moves as it comes and go
 1180px it unrolls from under the bar in a band 30% of the screen tall, the same as the
 honeymoon map. It moves to the month being
 read, names that month's stops, and colours in each state as the year goes on. The **Whole
-year** button (**Every chapter**, on The Long Way Round) opens all of it in a window.
+year** button (**Whole volume**, on The Long Way Round) opens all of it in a window.
 
 One component draws all three: **`assets/js/trailmap.js`**, styled by
 **`assets/css/map.css`**, fed months by `assets/js/year.js` and chapters by
@@ -158,6 +159,17 @@ Put the photo in that year's folder, `assets/photos/2025/` (lowercase, no spaces
 
 A slot without `src` stays a placeholder. The caption goes with the photo into the
 lightbox. One to six slots all lay out properly, but three to five looks best.
+
+A big trip goes to more places than five photographs can show, and the map only knows
+the folders those five came from. Name the rest in the month's own `folders` and they
+get their dots and their states without taking a slot:
+
+```js
+   "folders": ["2025-04-canyonlands", "2025-04-capitol-reef"]
+```
+
+That sits beside `photos` in the month, not inside it. April 2025 uses it for the two
+Utah parks the month's five photographs don't cover.
 
 Trip photos already in `assets/continued_trips/` don't need copying anywhere. Give the
 path from `assets/` instead of a name, and add `pos` when the people sit off to one side
@@ -320,17 +332,53 @@ paragraph shows the first and a **Keep reading** button; and a round button to j
 back to the top rolls in once a long page has been scrolled a way. Nothing is cut:
 wider screens show everything as before.
 
-Three more things change shape on the way down. A pair of buttons stops sitting side by
-side at 760px and stacks, both set to one width, because a wrapped row is a stack whose
-two buttons happen not to match. Each of the five speeches on **Our Big Day** puts the
+**A phone on its side** is wide but very short, so it takes the two-column layouts
+without taking the desktop's furniture. A month puts its photographs beside its writing,
+a memory is a picture beside its words, the chapter dates go back beside the chapters,
+and the sections take their breathing room from the height of the screen rather than its
+width. Two measurements decide it, `(min-width: 700px)` and `(max-height: 520px)` in
+landscape, written the same way in `assets/css/site.css` and `assets/css/year.css`. An
+older phone narrower than 700px keeps the tall layout, where there is no room for two
+columns anyway.
+
+**The map stays the band under the bar on every phone and tablet**, sideways included:
+the floating window is a wide-screen thing and starts at 1180px, nowhere else. What
+landscape changes is only how much room the band takes, since 30% of a 390px screen is a
+map two centimetres tall: `--band-h` in `assets/css/map.css` is 30svh normally and 46svh
+on a phone held sideways. The band appears once the page has been scrolled to the second
+bar, and nothing else: the trigger is the bar's own position, so until the bar is stuck
+to the top nothing has reached the band's place and the map stays tucked away.
+
+Three more things change shape on the way down. **A pair of buttons** sits in a row while
+the row has space for the pair and stacks when it hasn't, both set to one width and
+centred. Whether it fits depends on what the buttons say, not on the width of the screen,
+so `initButtonRows()` in `assets/js/site.js` measures each row and hangs `.is-stacked` on
+it; the only CSS breakpoint left is a 520px floor for when the script hasn't run. Each of
+the five speeches on **Our Big Day** puts the
 speaker above their own words below 620px, with the bubble pointing up at the face:
 beside a portrait, a column that narrow leaves a speech reading four words to the line.
 And **the pile** on that page stays two photographs to a row down to the smallest phone,
 leans and all, because one long column of big photographs stops reading as a pile.
 
+**The nav** is a row of five labels while the row fits on one line, which takes a shade
+under 1000px once the brand and the toggle are counted; below 1020px the hamburger takes
+over instead, because a label on two lines sets the whole bar crooked. That is the nav's
+own breakpoint and nothing else uses it: the layouts further down keep their 860px. The
+menu it opens is sized by the height of the screen on a phone held sideways, where five
+links at the tall layout's size come to 495px on a 390px screen.
+
 **Dawn and dusk** switch in one go: the new theme opens out in a circle from the toggle
 (in browsers with View Transitions) with every colour changing in the same frame. Each
 page reads the saved theme in its `<head>`, so a page opened in dusk never flashes cream.
+
+**Scrolling**: a phone fires scroll events faster than the screen refreshes, and every
+pass that follows the scroll (the reveals, the chapter being read, the map, the progress
+bar) reads where things are on the page. A read that comes after a class has been written
+makes the browser lay the whole page out again there and then, so those passes together
+were forcing well over a hundred layouts per event, which is enough to get a long page
+killed on a phone. Each pass now runs at most once a frame, through the `perFrame`
+helper in `assets/js/site.js` and `assets/js/year.js`, and reads everything it needs
+before it writes anything. Keep any new scroll work to that shape.
 
 **Motion**: everything reveals on scroll and everything respects
 `prefers-reduced-motion`. With that switched on the site renders immediately, fully

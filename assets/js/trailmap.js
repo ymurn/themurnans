@@ -105,10 +105,9 @@ window.MW_TRAILMAP = function trailmap(o) {
   };
   const caps = [$('.yearmap__now', host), $('.routesheet__now', sheet)];
   const chapters = o.chapters || [];
-  // The floating window, rather than the band under the bar: a big screen,
-  // or a phone on its side. Kept in step with the same query in
-  // assets/css/map.css, which the band is written as the complement of.
-  const wide = matchMedia('(min-width: 1180px), (min-width: 700px) and (max-height: 520px) and (orientation: landscape)');
+  // the floating window, rather than the band under the bar: the same
+  // measurement as the one in assets/css/map.css
+  const wide = matchMedia('(min-width: 1180px)');
   const f = n => n.toFixed(1);
   let shown = null, cur = null, raf = 0, stop = 0, onBand = false, flew = 0;
 
@@ -251,12 +250,16 @@ window.MW_TRAILMAP = function trailmap(o) {
     show(r.bottom < innerHeight * 0.5 ? groups.length : -1);
   };
 
-  const edge = () => (bar ? bar.getBoundingClientRect().bottom : 0) + band.offsetHeight;
   // Everything this pass needs to know, measured before anything is written:
   // a class written in the middle would make the browser lay the whole page
   // out again for every chapter left to measure.
   function read() {
-    const e = edge();
+    // The band hangs off the bottom of the bar, so the bar's own position is
+    // what says whether anything has reached it yet. Until the page has been
+    // scrolled to the bar it is still somewhere down the page, nothing has
+    // passed under it, and the map stays tucked away.
+    const barBottom = bar ? bar.getBoundingClientRect().bottom : 0;
+    const e = barBottom + band.offsetHeight;   // the foot of the band, once out
     const line = e + (innerHeight - e) * 0.33;
     const box = wrap.getBoundingClientRect();
     let i = -1;
@@ -266,7 +269,7 @@ window.MW_TRAILMAP = function trailmap(o) {
         if (g > -1) i = g;
       }
     });
-    return { e, on: box.top < e && box.bottom > e + 40, i: box.bottom < line ? groups.length : i };
+    return { on: box.top < barBottom && box.bottom > e + 40, i: box.bottom < line ? groups.length : i };
   }
   function fromBand() {
     const now = read();

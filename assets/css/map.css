@@ -10,6 +10,14 @@
    Loaded by story.html and the year pages, after site.css.
    ========================================================================== */
 
+/* The band under the bar takes 30% of the screen. Held sideways a phone has
+   very little height to give, and 30% of 390px leaves a map two centimetres
+   tall, so the short way round the band takes a bigger share. */
+body { --band-h: 30svh; }
+@media (orientation: landscape) and (max-height: 520px) {
+  body { --band-h: 46svh; }
+}
+
 /* the floating window's size and its distance from the left edge */
 body {
   --ymap-x: clamp(.5rem, 1.2vw, 1.5rem);
@@ -126,11 +134,7 @@ body {
 .yearmap__k { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
 .yearmap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; }
 
-/* Wide enough for the floating window: a big screen, or a phone on its side,
-   where a band 30% of a 390px screen leaves a map two centimetres tall. The
-   band block below is written as the exact complement of this one, so every
-   screen gets one of the two and never both. */
-@media (min-width: 1180px), (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
+@media (min-width: 1180px) {
   .ymap__map {
     position: fixed;
     left: var(--ymap-x);
@@ -159,24 +163,6 @@ body {
   }
   .yearmap { position: static; display: grid; gap: .5rem; padding: 0; }
   .yearmap__view { display: block; position: relative; height: clamp(150px, 22vh, 215px); }
-  /* On a short screen the window has to give most of the height back, so the
-     name under the map takes one line and the button goes under it rather
-     than beside it: in a window this narrow they were fighting for the row. */
-  @media (max-height: 520px) {
-    body { --ymap-x: .5rem; --ymap-w: 172px; }
-    .ymap__map { padding: .5rem .5rem .45rem; }
-    .yearmap__view { height: clamp(110px, 34vh, 150px); }
-    .yearmap__foot { flex-direction: column; align-items: stretch; gap: .3rem; }
-    .yearmap__now { gap: 0; }
-    .yearmap__title {
-      font-size: .82rem;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .yearmap__whole { align-self: start; }
-  }
   .yearmap__view svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: hidden; }
   .yearmap__foot { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
   .yearmap__now { display: grid; justify-items: start; gap: .1rem; min-height: 0; max-width: 100%; margin: 0; text-align: left; }
@@ -206,7 +192,7 @@ body {
 
 /* ── THE BAND, UNDER 1180px ─────────────────────────────── */
 
-@media (max-width: 1179px) and (min-height: 521px), (max-width: 699px), (orientation: portrait) and (max-width: 1179px) {
+@media (max-width: 1179px) {
   .moon, .ymap { grid-template-columns: minmax(0, 1fr); gap: 0; }
   /* The map rides in a band right under the bar, 30% of the screen tall. It
      stays tucked away until the first day or month scrolls up to it, unrolls,
@@ -217,7 +203,7 @@ body {
     left: 0; right: 0;
     z-index: 55;
     height: 30vh;
-    height: 30svh;
+    height: var(--band-h);
     background: var(--paper);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 12px 18px -16px rgba(20, 17, 13, .45);

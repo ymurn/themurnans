@@ -239,7 +239,7 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
   gap: clamp(2rem, 3.5vw, 3.5rem);
 }
 .moon__days { min-width: 0; }
-@media (min-width: 1180px), (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
+@media (min-width: 1180px) {
   /* The months, and the heading above them, start clear of the floating
      window. On a display wide enough that the margin already holds it, they
      take no padding at all. */
@@ -361,7 +361,7 @@ a.yclose__card:hover img { transform: scale(1.04); }
 /* 9 ── RESPONSIVE ──────────────────────────────────────────────────────── */
 
 @media (max-width: 1179px) {
-  .moon .chap, .ymap .chap { scroll-margin-top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) + 30svh + 1rem); }
+  .moon .chap, .ymap .chap { scroll-margin-top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) + var(--band-h) + 1rem); }
 }
 
 @media (max-width: 1080px) {
@@ -414,7 +414,6 @@ a.yclose__card:hover img { transform: scale(1.04); }
 @media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
   .mrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
   .mrow > .strip { position: sticky; top: calc(var(--nav-h) + 3.5rem); }
-  .chap--month, .moon .chap { grid-template-columns: 140px minmax(0, 1fr); }
   .yhead__grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-areas: "text cover" "deck cover"; }
   .yclose { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
   /* the photo strips go back to a mosaic: a swipe row of one photograph at a

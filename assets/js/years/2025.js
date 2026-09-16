@@ -13,7 +13,7 @@ window.MW_YEAR = {
  "note": "Every month below is David's writing from our posts, cut down to the highlights.",
 
  "facts": [
-  { "k": "Utah national parks", "v": "5 of 5", "s": "Arches, Canyonlands, Capitol Reef, Bryce Canyon and Zion, all on one trip." },
+  { "k": "Utah's Mighty Five", "v": "5 of 5", "s": "Arches, Canyonlands, Capitol Reef, Bryce Canyon and Zion, all on one trip." },
   { "k": "Months with a trip", "v": "12 of 12", "s": "A trip in every month of the year." },
   { "k": "Big birthdays", "v": "2", "s": "David's 40th at the Grand Canyon, and Yinja's last in his twenties in Austin." },
   { "k": "Buc-ee's stops", "v": "3", "s": "Still the brisket sandwich." }
@@ -85,7 +85,7 @@ window.MW_YEAR = {
    "trips": [
     {
      "dates": "April 16 to 28",
-     "place": "Death Valley, the Grand Canyon & Utah",
+     "place": "Death Valley, the Grand Canyon & Utah's Mighty Five",
      "text": [
       "Death Valley is a hot place. In fact, Furnace Creek within Death Valley had the hottest temperature ever recorded in human history. So, why not visit Death Valley?",
       "When you think about the Grand Canyon, you expect to hear about hot temperatures and desert views, right? Well, in April, it turns out that the Grand Canyon can be quite snowy, as when we arrived at El Tovar hotel on the rim we entered a snowy wonderland. That’s right, David turned 40 at the Grand Canyon! What a treat!",
@@ -99,7 +99,8 @@ window.MW_YEAR = {
     { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-01.jpg", "cap": "The Grand Canyon" },
     { "src": "continued_trips/2025-04-death-valley/2025-04-death-valley-05.jpg", "cap": "Badwater Basin", "pos": "65% 50%" },
     { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-02.jpg", "cap": "Bryce Canyon" }
-   ]
+   ],
+   "folders": ["2025-04-canyonlands", "2025-04-capitol-reef"]
   },
   {
    "month": 5,

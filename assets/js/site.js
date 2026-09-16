@@ -911,7 +911,7 @@
         <div class="chap__body">
           <h2 class="chap__place" data-reveal="up">The honeymoon, and every year since.</h2>
           <p class="chap__text" data-reveal="up" style="--d:90ms">Volume One stops the week before the wedding, because that is where the old
-          site stopped. Volume two picks up two days after it, with the honeymoon from Sacramento to Seattle,
+          site stopped. Volume Two picks up two days after it, with the honeymoon from Sacramento to Seattle,
           then a page for every year since.</p>
           <div data-reveal="up" style="--d:150ms"><a class="btn btn--ghost" href="2022.html" data-magnet>Start with the honeymoon</a></div>
         </div>
@@ -990,10 +990,10 @@
       groupOf: el => (el && el.dataset.chap != null ? Number(el.dataset.chap) : -1),
       caption: (i, said, n) => items[i]
         ? { k: when(i), title: said || items[i].short }
-        : { k: '2020 to 2022', title: `${n} places` },
+        : { k: 'Volume One', title: `${n} places` },
       aria: 'Map of the chapters before the wedding',
-      whole: 'Every chapter',
-      sheet: { k: '2020 to 2022', title: 'Everywhere, before the wedding' },
+      whole: 'Whole volume',
+      sheet: { k: 'Volume One', title: 'Everywhere, before the wedding' },
       event: 'story:chapter'
     });
   }
@@ -1682,6 +1682,36 @@
     });
   }
 
+  /* ── A pair of buttons: one row, or one width ──────────────────────────
+     They sit side by side while the row has space for the pair and stack when
+     it hasn't. CSS can wrap them but it cannot then make them match, and how
+     much room they need depends on what they say, not on the width of the
+     screen, so it is measured. Every row is read before any class is written,
+     so the page is laid out once rather than once per row. */
+
+  function initButtonRows() {
+    const rows = $$('.btns, .since__btns, .yclose__btns')
+      .filter(r => r.querySelectorAll('.btn').length > 1);
+    if (!rows.length) return;
+
+    const fit = () => {
+      rows.forEach(r => r.classList.remove('is-stacked'));
+      const stack = rows.map(row => {
+        const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+        const kids = [...row.children];
+        const need = kids.reduce((w, el) => w + el.getBoundingClientRect().width, 0)
+          + gap * (kids.length - 1);
+        return need > row.getBoundingClientRect().width + 1;
+      });
+      rows.forEach((row, i) => row.classList.toggle('is-stacked', stack[i]));
+    };
+
+    fit();
+    addEventListener('resize', fit);
+    // a button is only as wide as its words, so it changes when the face lands
+    if (document.fonts) document.fonts.ready.then(fit);
+  }
+
   /* ── Back to the top, once a long page has been scrolled a way ─────── */
 
   function initToTop() {
@@ -1729,6 +1759,7 @@
     initStickers();
     initDrag();
     initRails();
+    initButtonRows();
     initToTop();
   }
 

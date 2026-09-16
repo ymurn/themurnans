@@ -418,28 +418,33 @@ section { position: relative; }
 [data-theme="dusk"] .btn { --btn-bg: var(--gold); --btn-fg: #14110D; box-shadow: 5px 5px 0 var(--ink); }
 [data-theme="dusk"] .btn--ghost { --btn-bg: transparent; --btn-fg: currentColor; }
 
-/* A row of calls to action. Side by side while they fit; on a phone they
-   stack, and a stacked pair is set to one width so neither reads as the
-   smaller of the two. The 6px of room on the right is for the offset print
-   under the button, which would otherwise hang into the margin. */
+/* A row of calls to action: side by side while the row has space for the
+   pair, stacked when it hasn't. Whether it fits depends on what the buttons
+   say, not on the width of the screen, so initButtonRows() in site.js
+   measures each row and hangs .is-stacked on it. A stack is set to one width
+   and centred, so neither button reads as the smaller of the two. */
 .btns { display: flex; flex-wrap: wrap; gap: 1rem; }
 .btns--center { justify-content: center; }
+
+.btns.is-stacked, .since__btns.is-stacked, .yclose__btns.is-stacked {
+  flex-direction: column;
+  align-items: center;
+}
+.btns.is-stacked > .btn,
+.since__btns.is-stacked > .btn,
+.yclose__btns.is-stacked > .btn { width: 100%; max-width: 34rem; justify-content: center; }
+
+/* Without the script, and on any screen too narrow to hold a pair whatever
+   they say, the same stack. */
+@media (max-width: 520px) {
+  .btns, .since__btns, .yclose__btns { flex-direction: column; align-items: center; }
+  .btns > .btn, .since__btns > .btn, .yclose__btns > .btn { width: 100%; max-width: 34rem; justify-content: center; }
+}
 /* They stack from the width where the longest pair on the site would have
    wrapped anyway: a wrapped row is a stack whose two buttons happen not to
    match. Capped so the stack never stretches into a pair of banners, and the
    6px of room on the right is for the offset print under each button, which
    would otherwise hang into the margin. */
-@media (max-width: 760px) {
-  .btns, .since__btns, .yclose__btns {
-    flex-direction: column;
-    align-items: stretch;
-    max-width: min(100%, calc(34rem + 6px));
-    padding-right: 6px;
-  }
-  .btns--center { margin-inline: auto; }
-  .btns .btn, .since__btns .btn, .yclose__btns .btn { width: 100%; justify-content: center; }
-}
-
 /* Brand marks (the little SVG drawings) */
 .mark { width: 44px; height: 44px; object-fit: contain; filter: invert(var(--art-invert)); opacity: .9; }
 .mark--lg { width: 74px; height: 74px; }
@@ -559,6 +564,8 @@ section { position: relative; }
   font-weight: 500;
   color: var(--ink-2);
   padding-block: .35rem;
+  /* one line, always: a label on two lines sets the whole bar crooked */
+  white-space: nowrap;
   transition: color .35s;
 }
 .nav__link::after {
@@ -1097,11 +1104,20 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   /* holds the empty and dealt states at the same height, so pulling a
      memory swaps content rather than moving the page */
   min-height: 300px;
-  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  /* the photo column, in one place: the mat behind the photo is drawn from
+     the same number, so the two can never drift apart */
+  --mem-pic: 260px;
+  --mem-pad: clamp(1.25rem, 2.2vw, 1.75rem);
+  /* how far the mat behind the photograph sits inside the card. Measured off
+     the padding, so the band of mat that shows round the photo is the same
+     8px at every size, which is what lets one corner radius per look stay
+     parallel to the card's on any screen. */
+  --mat-inset: calc(var(--mem-pad) - 8px);
+  grid-template-columns: minmax(0, var(--mem-pic)) minmax(0, 1fr);
   gap: clamp(1.5rem, 3vw, 2.5rem);
   align-items: center;
   width: 100%;
-  padding: clamp(1.25rem, 2.2vw, 1.75rem);
+  padding: var(--mem-pad);
   border-radius: var(--r-md);
 }
 /* Empty state. It mirrors the dealt card exactly, photo box and all, so
@@ -1263,7 +1279,13 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
    Each sticker dresses the memory card as its own place: paper, a wash, a
    few doodles, a shape and a postmark. Colours are pinned rather than themed,
    the same rule the stickers follow, so every look reads the same at dawn
-   and at dusk. Pressing the lit sticker again takes the card back.     */
+   and at dusk. Pressing the lit sticker again takes the card back.
+
+   A look sets two corner radii, and they are not the same number: the
+   photograph sits 8px inside the mat, so its radius is the card's less 8
+   and the two curves run parallel. Give it the card's own radius and the gap
+   between them pinches shut at the diagonal. Crater Lake cuts a circle and
+   Prickly Pear an arch, which are meant to be other shapes entirely.  */
 .memory .memory__card[data-look] {
   background: var(--lk-tex, linear-gradient(transparent, transparent)), var(--lk-bg);
   color: var(--lk-ink, #14110D);
@@ -1284,11 +1306,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   content: "";
   position: absolute;
   z-index: -1;
-  top: 12px;
-  left: 12px;
+  top: var(--mat-inset);
+  left: var(--mat-inset);
   bottom: calc(var(--scene-h) + 6px);
-  /* card padding + the 260px photo column + half the column gap */
-  width: calc(clamp(1.25rem, 2.2vw, 1.75rem) + 260px + clamp(.75rem, 1.5vw, 1.25rem) - 12px);
+  /* card padding + the photo column + half the column gap */
+  width: calc(var(--mem-pad) + var(--mem-pic) + clamp(.75rem, 1.5vw, 1.25rem) - var(--mat-inset));
   border-radius: inherit;
   border-top-right-radius: 14px;
   border-bottom-right-radius: 14px;
@@ -1297,19 +1319,27 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   pointer-events: none;
 }
 @media (max-width: 760px) {
-  /* stacked: the swatch spans the top and ends just under the photo, which
-     sits about 72cqi down, leaving clear paper before the date */
+  /* Stacked: the mat spans the top and stops just under the photograph. Its
+     height is the photo's, so a look that caps the photo has to say so, or
+     the mat runs on as a long empty band below it. */
   .memory .memory__card[data-look]::before {
-    right: 12px;
+    right: var(--mat-inset);
     bottom: auto;
     width: auto;
-    height: calc(72cqi - 2px);
+    height: var(--lk-mat-h, calc(72cqi - 2px));
     border-radius: inherit;
     border-bottom-left-radius: 14px;
     border-bottom-right-radius: 14px;
   }
   /* a taller band on a phone; the scene sizes by height, so it zooms in */
   .memory .memory__card { --scene-h: clamp(72px, 24cqi, 110px); }
+
+  /* Crater Lake cuts a round window 230px across and rings it, so the mat
+     that reads right for a photograph the width of the card is far too tall
+     for this one: it ran over the date below. The window is a fixed size on
+     any phone, so the mat is too, and the card takes a little more room at
+     the top to leave the pool centred in it. */
+  .memory__card[data-look="crater"] { padding-top: 28px; --lk-mat-h: 266px; }
 }
 .memory .memory__card[data-look] .memory__place { color: var(--lk-ink, #14110D); }
 .memory .memory__card[data-look] .memory__text  { color: var(--lk-ink-2, #3D372F); }
@@ -1380,7 +1410,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   --lk-bg: #E9EEF0;
   --lk-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='104' viewBox='0 0 104 104'%3E%3Cg transform='translate(26 28) rotate(-18) scale(1)' stroke='%232F5F72' stroke-opacity='0.36' fill='%232F5F72' fill-opacity='0.14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse rx='7' ry='10'/%3E%3Cpath d='M-6 -3 h12 M-7 3 h14 M-5 8 h10 M0 -10 v-5' fill='none'/%3E%3C/g%3E%3Cg transform='translate(78 80) rotate(4) scale(1)' stroke='%232F5F72' stroke-opacity='0.36' fill='%232F5F72' fill-opacity='0.14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M-12 9 L0 -10 L12 9 Z M0 -10 V9 M-3 9 L0 3 L3 9' fill='none'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 104px 104px;
   --lk-radius: 110px 18px 18px 18px;
-  --lk-pic-radius: 82px 10px 10px 10px;
+  /* the mat's 110px corner less the 10px of mat that shows round the photo,
+     so the two curves run parallel instead of the photo cutting a tighter one */
+  --lk-pic-radius: 102px 10px 10px 10px;
   --lk-accent: #2F5F72;
   --lk-stamp-bg: #BFDCE3;
 }
@@ -1406,7 +1438,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .memory__card[data-look="bear"] {
   --lk-bg: #F5EBDA;
   --lk-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='104' viewBox='0 0 104 104'%3E%3Cg transform='translate(26 28) rotate(-22) scale(1)' stroke='%237E3F22' stroke-opacity='0.38' fill='%237E3F22' fill-opacity='0.18' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cy='4' rx='6' ry='5'/%3E%3Cellipse cx='-7' cy='-4' rx='2.4' ry='3'/%3E%3Cellipse cx='-2.4' cy='-8' rx='2.4' ry='3'/%3E%3Cellipse cx='3' cy='-8' rx='2.4' ry='3'/%3E%3Cellipse cx='7.4' cy='-4' rx='2.3' ry='2.9'/%3E%3C/g%3E%3Cg transform='translate(78 80) rotate(6) scale(1)' stroke='%237E3F22' stroke-opacity='0.38' fill='%237E3F22' fill-opacity='0.18' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M-8 9 C-12 1 -9 -5 -5 -6 H5 C9 -5 12 1 8 9 Z M-7 -6 H7' fill='none'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 104px 104px;
-  --lk-radius: 30px; --lk-pic-radius: 18px;
+  --lk-radius: 30px; --lk-pic-radius: 22px;
   --lk-accent: #7E3F22;
   --lk-stamp-bg: #E2604F;
 }
@@ -1415,7 +1447,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   --lk-bg: #285E45;
   --lk-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='104' viewBox='0 0 104 104'%3E%3Cg transform='translate(26 28) rotate(0) scale(1)' stroke='%23FFFFFF' stroke-opacity='0.24' fill='%23FFFFFF' fill-opacity='0.17' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 -11 L11 0 L0 11 L-11 0 Z M-4 0 H4 M1 -3 L4 0 L1 3' fill='none'/%3E%3C/g%3E%3Cg transform='translate(78 80) rotate(0) scale(1)' stroke='%23FFFFFF' stroke-opacity='0.24' fill='%23FFFFFF' fill-opacity='0.17' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M-14 3 V-1 L-8 -2 L-4 -8 H6 L10 -2 L14 -1 V3 Z' fill='none'/%3E%3Ccircle cx='-8' cy='4' r='2.6'/%3E%3Ccircle cx='8' cy='4' r='2.6'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 104px 104px;
   --lk-ink: #FFFFFF; --lk-ink-2: #E4EFE8; --lk-accent: #F4D896;
-  --lk-radius: 16px; --lk-pic-radius: 6px;
+  --lk-radius: 16px; --lk-pic-radius: 8px;
   --lk-outline: 3px solid #FFFFFF; --lk-outline-offset: -10px;
   --lk-pic-border: 3px solid #FFFFFF;
   --lk-shadow: 7px 7px 0 #14110D;
@@ -1425,7 +1457,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .memory__card[data-look="smoky"] {
   --lk-bg: #E5EDEF;
   --lk-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='104' viewBox='0 0 104 104'%3E%3Cg transform='translate(26 30) rotate(-4) scale(1.1)' stroke='%23335A45' stroke-opacity='0.36' fill='%23F4C443' fill-opacity='0.5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 -12 L-6 -2 H-3 L-8 7 H8 L3 -2 H6 Z M0 7 V11' fill='none'/%3E%3C/g%3E%3Cg transform='translate(78 80) rotate(0) scale(1)' stroke='%23335A45' stroke-opacity='0.36' fill='%23F4C443' fill-opacity='0.5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle r='6' opacity='.45'/%3E%3Ccircle r='2.4'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 104px 104px;
-  --lk-radius: 36px; --lk-pic-radius: 24px;
+  --lk-radius: 36px; --lk-pic-radius: 28px;
   --lk-accent: #335A45;
   --lk-stamp-bg: #DCE9EC;
 }
@@ -1433,7 +1465,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .memory__card[data-look="dunes"] {
   --lk-bg: #FBE7C9;
   --lk-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='104' viewBox='0 0 104 104'%3E%3Cg transform='translate(26 30) rotate(-6) scale(1)' stroke='%23963219' stroke-opacity='0.36' fill='%23963219' fill-opacity='0.14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 11 V-10 M0 1 H-6 V-6 M0 4 H6 V-3' fill='none' stroke-width='3.2'/%3E%3C/g%3E%3Cg transform='translate(78 80) rotate(0) scale(0.95)' stroke='%23963219' stroke-opacity='0.36' fill='%23963219' fill-opacity='0.14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle r='5'/%3E%3Cpath d='M0 -12 v3 M0 9 v3 M-12 0 h3 M9 0 h3 M-8.5 -8.5 l2 2 M6.5 6.5 l2 2 M-8.5 8.5 l2 -2 M6.5 -6.5 l2 -2' fill='none'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 104px 104px;
-  --lk-radius: 46px 10px 46px 10px; --lk-pic-radius: 30px 6px 30px 6px;
+  --lk-radius: 46px 10px 46px 10px; --lk-pic-radius: 38px 2px 38px 2px;
   --lk-accent: #963219;
   --lk-stamp-bg: #E2604F;
 }
@@ -1450,7 +1482,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .memory__card[data-look="elk"] {
   --lk-bg: #ECDFC6;
   --lk-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='104' viewBox='0 0 104 104'%3E%3Cg transform='translate(26 28) rotate(-14) scale(1.05)' stroke='%23335A45' stroke-opacity='0.38' fill='%23335A45' fill-opacity='0.14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 11 C0 1 -2 -5 -6 -11 M-1 3 C-6 1 -9 -2 -10 -6 M0 -3 C4 -5 6 -8 6 -12' fill='none'/%3E%3C/g%3E%3Cg transform='translate(78 80) rotate(24) scale(1)' stroke='%23335A45' stroke-opacity='0.38' fill='%23335A45' fill-opacity='0.14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M-8 8 C-8 -4 0 -10 9 -10 C9 2 1 8 -8 8 Z M-8 8 L4 -4' fill='none'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 104px 104px;
-  --lk-radius: 10px; --lk-pic-radius: 3px;
+  --lk-radius: 10px; --lk-pic-radius: 2px;
   --lk-pic-border: 6px solid #FFFFFF; --lk-pic-shadow: 0 3px 0 rgb(20 17 13 / .16); --lk-pic-rot: 1.8deg;
   --lk-accent: #335A45;
   --lk-stamp-bg: #F0CE84;
@@ -3329,7 +3361,12 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   .footer__meta { flex-direction: column; align-items: flex-start; gap: .8rem; }
 }
 
-@media (max-width: 860px) {
+/* The links stop being a row where the row stops fitting on one line. Laid
+   out edge to edge, the brand, the five labels and the toggle need a shade
+   under 1000px; below that a label wraps to two lines, so the menu takes
+   over instead. The layouts further down have nothing to do with the nav and
+   keep their own 860px. */
+@media (max-width: 1020px) {
   /* Full-screen takeover. It sits at z-index -1 *within the nav's own layer*,
      so it covers the page but stays under the logo and the close button. */
   .nav__links {
@@ -3358,6 +3395,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
     text-transform: none;
     color: var(--ink);
     padding-block: .18em;
+    white-space: normal;
     opacity: 0;
     transform: translateY(16px);
     transition: opacity .55s var(--ease) var(--i, 0ms), transform .55s var(--ease) var(--i, 0ms);
@@ -3390,7 +3428,13 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 
   body.menu-open { overflow: hidden; }
   .nav__burger { display: grid; }
+}
+
+@media (max-width: 860px) {
   .feature { grid-template-columns: 1fr; }
+  /* one column has to redraw the areas too: left at two names wide, the grid
+     keeps a second column for the film and squeezes it to nothing */
+  .feature--film { grid-template-areas: "words" "film" "btns"; }
   .fig__card { display: none; }
   .chap { grid-template-columns: 1fr; padding-left: var(--rail); }
   .chap__sticky { position: static; display: flex; align-items: baseline; gap: 1rem; padding-left: 0; }
@@ -3432,9 +3476,18 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   .feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .feature--film { grid-template-areas: "words film" "btns film"; }
 
-  /* the date rail goes back beside the chapter it belongs to */
-  .chap { grid-template-columns: 140px minmax(0, 1fr); padding-left: 0; }
-  .chap__sticky {
+  /* Sections are set by the width of the screen, which is the long side
+     here: 90-odd pixels of air above and below each one is a quarter of a
+     short screen. They take their measure from the height instead. */
+  .band { padding-block: clamp(2.5rem, 9vh, 4.5rem); }
+  .band--tight { padding-block: clamp(2rem, 7vh, 3.5rem); }
+  .page-head { padding-top: clamp(5rem, 22vh, 7rem); padding-bottom: clamp(1.5rem, 6vh, 3rem); }
+
+  /* The date rail goes back beside the chapter it belongs to. Only on The
+     Long Way Round: a month on a year page needs its whole width to put the
+     photographs beside the writing, which is what year.css does here. */
+  body[data-page="story"] .chap { grid-template-columns: 140px minmax(0, 1fr); padding-left: 0; }
+  body[data-page="story"] .chap__sticky {
     position: sticky;
     top: calc(var(--nav-h) + 3.25rem);
     display: grid;
@@ -3442,22 +3495,37 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
     gap: .35rem;
     padding-left: var(--rail);
   }
-  .chap__dot { top: .55rem; left: -4.5px; }
-
-  /* a memory is a picture beside its words again, in a card that fits the
-     screen: stacked, one card was two and a half screens of scrolling */
-  .memory__card { grid-template-columns: minmax(0, 190px) minmax(0, 1fr); min-height: 0; }
-  .memory .memory__card { --scene-h: clamp(38px, 8cqi, 60px); }
-  .memory .memory__card[data-look]::before {
-    right: 0; bottom: 0; top: 0;
-    width: 42%;
-    height: auto;
-    border-radius: inherit;
-  }
+  body[data-page="story"] .chap__dot { top: .55rem; left: -4.5px; }
 
   /* three to a row, since the row is wide and the screen is short */
   .frames { columns: 3; }
   .speeches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+}
+
+/* The menu is a full-screen takeover, and sideways the screen is 390px tall.
+   At the size the tall layout sets it, five links and the line under them come
+   to 495px: the first is cut off at the top, the last runs under the credits,
+   and the whole thing scrolls. It is set by the height here instead. This one
+   takes every phone on its side, narrow ones included, since the menu is the
+   same five links whatever the width. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .nav__links {
+    justify-content: center;
+    gap: clamp(.3rem, 1.6vh, .8rem);
+    padding: 4.5rem var(--gutter) 3rem;
+  }
+  .nav__link { font-size: clamp(1.4rem, 8vh, 2.1rem); padding-block: .1em; }
+  .nav__tail { bottom: 1rem; gap: 1rem 1.5rem; font-size: .62rem; }
+}
+
+/* A memory is a picture beside its words again on a phone held sideways, in
+   a card that fits a short screen: stacked, one card was two and a half
+   screens of scrolling. Only above 760px, where the card is two columns
+   anyway, so the mat behind the photo keeps the shape that goes with it. */
+@media (min-width: 761px) and (max-height: 520px) and (orientation: landscape) {
+  .memory__card { --mem-pic: 190px; min-height: 0; }
+  .memory .memory__card { --scene-h: clamp(38px, 8cqi, 60px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
