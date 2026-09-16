@@ -1402,6 +1402,7 @@
     put('months', months);
     put('days', days);
     put('milestone-year', next.getFullYear());
+    put('milestone-day', next.toLocaleDateString('en-US', { weekday: 'long' }));
     put('plural-years', years === 1 ? 'year' : 'years');
     put('plural-months', months === 1 ? 'month' : 'months');
 
@@ -1449,6 +1450,85 @@
     els.forEach(el => onInView(el, run));
   }
 
+  /* ── Where we've been (home) ───────────────────────────────────────────
+     Every state and province we've been to, on the outlines in
+     assets/js/atlas.js. Once the map scrolls into view they print in, nearest
+     home first, each colour swinging in and settling into place.
+     To add a place, add its code here: a state's two letters, or CA- and a
+     province's two (CA-ON for Ontario).                                      */
+
+  const VISITED = [
+    'NY', 'NJ', 'CT', 'RI', 'MA', 'VT', 'NH', 'ME', 'PA', 'DE', 'MD', 'DC', 'VA', 'WV',
+    'NC', 'SC', 'GA', 'FL', 'TN', 'OH', 'IN', 'IL', 'TX', 'NM', 'CO', 'UT', 'AZ', 'NV',
+    'CA', 'OR', 'WA', 'ND', 'SD', 'WY', 'KY', 'CA-QC'
+  ];
+  const HOME = 'NY';
+  // the gold four-point star from the logo, centred on 0 0
+  const STAR = 'M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z';
+
+  function initAtlas() {
+    const host = $('#atlas');
+    const A = window.MW_ATLAS;
+    const map = host && $('.atlas__map', host);
+    if (!map || !A) return;
+
+    const been = new Set(VISITED);
+    const ours = A.regions.filter(r => been.has(r.id));
+    const [hx, hy] = A.home;
+    const dist = r => Math.hypot(r.c[0] - hx, r.c[1] - hy);
+    const far = Math.max(...ours.map(dist)) || 1;
+    const delay = r => Math.round(250 + 1500 * dist(r) / far);
+
+    // "33 states, DC and Québec", counted from the list so it stays true
+    const states = ours.filter(r => !r.id.includes('-') && r.id !== 'DC');
+    const extra = [...(been.has('DC') ? ['DC'] : []), ...ours.filter(r => r.id.startsWith('CA-')).map(r => r.name)];
+    const summary = `${states.length} states${extra.length ? `, ${extra.slice(0, -1).join(', ')}${extra.length > 1 ? ' and ' : ''}${extra[extra.length - 1]}` : ''}`;
+    $$('[data-atlas="summary"]', host).forEach(el => { el.textContent = summary; });
+
+    const dc = ours.find(r => r.id === 'DC');
+    map.innerHTML = `
+      <svg viewBox="0 0 ${A.w} ${A.h}" role="img" aria-label="Map of the United States and Canada. We've been to ${summary}: ${ours.map(r => r.name).join(', ')}.">
+        <g>${A.regions.map(r => `<path class="atlas__st${been.has(r.id) ? ' is-been' : ''}" data-id="${r.id}" d="${r.d}"/>`).join('')}</g>
+        <g aria-hidden="true">${ours.map(r => `<path class="atlas__fill" data-id="${r.id}" data-q="${r.q}" style="--t:${delay(r)}ms" d="${r.d}"/>`).join('')}</g>
+        <text class="atlas__label" x="${A.canada[0]}" y="${A.canada[1]}" text-anchor="middle" aria-hidden="true">CANADA</text>
+        ${dc ? `<circle class="atlas__dc" cx="${A.dc[0]}" cy="${A.dc[1]}" r="3.4" style="--t:${delay(dc)}ms" aria-hidden="true"/>` : ''}
+        <g transform="translate(${hx} ${hy})" aria-hidden="true"><path class="atlas__home" d="${STAR}"/></g>
+      </svg>
+      <p class="atlas__tip" hidden></p>`;
+
+    const svg = $('svg', map);
+    const tip = $('.atlas__tip', map);
+    let hot = null;
+
+    // name the state under the pointer, or the one tapped
+    const point = (id, x, y) => {
+      if (hot) $$(`[data-id="${hot}"]`, svg).forEach(p => p.classList.remove('is-hot'));
+      hot = id;
+      if (!id) { tip.hidden = true; return; }
+      $$(`[data-id="${id}"]`, svg).forEach(p => p.classList.add('is-hot'));
+      const r = A.regions.find(q => q.id === id);
+      tip.innerHTML = `<b>${r.name}</b><span>${id === HOME ? 'Home' : been.has(id) ? 'Been there' : 'Not yet'}</span>`;
+      const box = map.getBoundingClientRect();
+      tip.style.left = `${clamp(x - box.left, 70, box.width - 70)}px`;
+      tip.style.top = `${y - box.top}px`;
+      tip.hidden = false;
+    };
+    const under = e => { const p = e.target.closest('.atlas__st'); return p ? p.dataset.id : null; };
+    svg.addEventListener('pointermove', e => { if (e.pointerType !== 'touch') point(under(e), e.clientX, e.clientY); });
+    svg.addEventListener('pointerleave', e => { if (e.pointerType !== 'touch') point(null); });
+    svg.addEventListener('click', e => {
+      const id = under(e);
+      point(id && (id !== hot || e.pointerType === 'mouse') ? id : null, e.clientX, e.clientY);
+    });
+    document.addEventListener('click', e => { if (hot && !svg.contains(e.target)) point(null); });
+
+    // the caption under the map, so the print starts once the whole map is up
+    onInView($('.atlas__cap', host) || host, () => {
+      host.classList.add('is-in');
+      setTimeout(() => host.classList.add('is-done'), calm ? 0 : 2900);
+    });
+  }
+
   /* ── Since the wedding (home) ──────────────────────────────────────────
      One Christmas card for each year page, from assets/js/years/index.js,
      so a year added there turns up on the home page by itself.             */
@@ -1457,6 +1537,9 @@
     const host = $('#since');
     const years = window.MW_YEARS;
     if (!host || !years || !years.length) return;
+    // how many cards there are, so the CSS can lay out a row that divides evenly
+    host.dataset.n = years.length;
+    host.style.setProperty('--n', years.length);
     const OFF = { gold: '--gold', sage: '--sage-500', rose: '--rose', coral: '--coral', blue: '--blue', khaki: '--khaki' };
     const TILT = [-2.4, 1.8, -1.3, 2.2, -1.8, 1.2];
     const last = years[years.length - 1];
@@ -1575,6 +1658,7 @@
     initFolds();
     watchReveals();
     initAnniversary();
+    initAtlas();
     initCounters();
     initPour();
     initCursor();

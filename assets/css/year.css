@@ -70,7 +70,8 @@ body[data-page="year"] { --page: var(--wine-3); --page-ink: var(--wine); }
 .ydeck__list {
   list-style: none; margin: 0; padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  /* one column per year: auto-fit would drop to three and strand the fourth */
+  grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
   gap: 1.4rem clamp(1rem, 1.8vw, 1.5rem);
   align-items: start;
 }
@@ -290,6 +291,115 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
 .routemap__now { display: grid; justify-items: center; gap: .25rem; min-height: 3.4em; max-width: 28ch; margin: 0; text-align: center; }
 .routemap__day { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
 .routemap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; text-wrap: balance; }
+/* the band's extras, which a wide screen doesn't draw: sea and state lines past
+   the frame, the whole-route button, and a box for the map to fill */
+.routemap__view, .routemap__foot, .yearmap__view, .yearmap__foot { display: contents; }
+.routemap__far, .routemap__whole, .yearmap__whole { display: none; }
+
+/* ── THE YEAR'S MAP ──────────────────────────────────────────────────────
+   Every place the year's photographs were taken, with the states colouring in
+   as the year goes on. On a wide screen it is a small window floating at the
+   left edge, so the months keep their full width and nothing moves as it comes
+   and goes; below 1180px it is the band under the bar, like the honeymoon. */
+body[data-page="year"] { --ymap-x: clamp(.5rem, 1.2vw, 1.5rem); --ymap-w: clamp(190px, 15vw, 250px); }
+.ymap { display: block; }
+.ymap__land {
+  fill: color-mix(in srgb, var(--ink) 6%, var(--paper));
+  stroke: color-mix(in srgb, var(--ink) 16%, transparent);
+  stroke-width: .8px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.ymap__fill {
+  fill: var(--quilt-1);
+  stroke: var(--paper);
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity .7s var(--ease-soft);
+}
+.ymap__fill[data-q="1"] { fill: var(--quilt-2); }
+.ymap__fill[data-q="2"] { fill: var(--quilt-3); }
+.ymap__fill[data-q="3"] { fill: var(--quilt-4); }
+/* soft once we have been, full for the month being read */
+.ymap__fill.is-on { opacity: .42; }
+.ymap__fill.is-now { opacity: 1; }
+.ymap__stop { fill: var(--paper); stroke: var(--ink-3); stroke-width: 1.2px; vector-effect: non-scaling-stroke; transition: fill .4s, stroke .4s; }
+.ymap__stop.is-now { fill: var(--coral); stroke: var(--ink); stroke-width: 1.6px; }
+.ymap__label {
+  font-family: var(--sans);
+  font-size: calc(10px / var(--mapk, .7));
+  font-weight: 600;
+  letter-spacing: .06em;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: calc(3.5px / var(--mapk, .7));
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+.ymap__label.is-on { opacity: 1; }
+.ymap__home { fill: var(--gold); stroke: #14110D; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.yearmap__k { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.yearmap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; }
+
+@media (min-width: 1180px) {
+  .ymap__map {
+    position: fixed;
+    left: var(--ymap-x);
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 45;
+    width: var(--ymap-w);
+    padding: .7rem .7rem .6rem;
+    border: var(--keyline);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    /* Going: it slides off to the left, and the fade trails the movement, so
+       it reads as leaving rather than simply disappearing. */
+    transform: translateX(-34px);
+    transition: opacity .34s var(--ease-soft) .14s, transform .48s cubic-bezier(.4, 0, .2, 1), visibility 0s linear .48s;
+  }
+  .ymap__map.is-on {
+    opacity: 1;
+    visibility: visible;
+    /* coming: it settles in from the edge */
+    transform: none;
+    transition: opacity .5s var(--ease), transform .6s var(--ease), visibility 0s;
+  }
+  .yearmap { position: static; display: grid; gap: .5rem; padding: 0; }
+  .yearmap__view { display: block; position: relative; height: clamp(150px, 22vh, 215px); }
+  .yearmap__view svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: hidden; }
+  .yearmap__foot { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .yearmap__now { display: grid; justify-items: start; gap: .1rem; min-height: 0; max-width: 100%; margin: 0; text-align: left; }
+  .yearmap__title { font-size: .92rem; }
+  .yearmap__whole {
+    display: block;
+    flex: none;
+    padding: .34em .7em .28em;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .52rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    transition: background-color .3s var(--ease-soft), color .3s;
+  }
+  .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  /* The months, and the heading above them, start clear of the floating
+     window. On a display wide enough that the margin already holds it, they
+     take no padding at all. */
+  .ytl--months .shell,
+  .yrest .shell {
+    padding-left: max(var(--gutter), calc(var(--ymap-x) + var(--ymap-w) + 2rem - max(0px, (100vw - var(--maxw)) / 2)));
+  }
+}
 
 /* Ken's toast, between the honeymoon and the rest of the year */
 .yquote__fig { display: grid; gap: 1.6rem; }
@@ -403,10 +513,99 @@ a.yclose__card:hover img { transform: scale(1.04); }
 /* 9 ── RESPONSIVE ──────────────────────────────────────────────────────── */
 
 @media (max-width: 1179px) {
-  .moon { grid-template-columns: 1fr; gap: 0; }
-  .moon__map { grid-row: 1; }
-  .routemap { position: static; padding-top: .5rem; }
-  .routemap svg { height: min(66vh, 560px); }
+  .moon, .ymap { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  /* The map rides in a band right under the bar, 30% of the screen tall. It
+     stays tucked away until the first day or month scrolls up to it, unrolls,
+     follows what is being read, and tucks away again after the last. */
+  .moon__map, .ymap__map {
+    position: fixed;
+    top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) - 1px);
+    left: 0; right: 0;
+    z-index: 55;
+    height: 30vh;
+    height: 30svh;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 18px -16px rgba(20, 17, 13, .45);
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-14px);
+    visibility: hidden;
+    transition: clip-path .5s var(--ease), transform .5s var(--ease), visibility 0s linear .5s;
+  }
+  .moon__map.is-on, .ymap__map.is-on {
+    clip-path: inset(0 0 -24px 0);
+    transform: none;
+    visibility: visible;
+    transition: clip-path .6s var(--ease), transform .6s var(--ease), visibility 0s;
+  }
+  .routemap, .yearmap { position: relative; top: auto; display: flex; flex-direction: column; height: 100%; gap: 0; padding: 0; }
+  .routemap__view, .yearmap__view { display: block; position: relative; flex: 1 1 auto; min-height: 0; }
+  .routemap__view svg, .yearmap__view svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: hidden; }
+  .routemap__far { display: inline; }
+  /* the name and the whole-trip button share a strip under the map */
+  .routemap__foot, .yearmap__foot { display: flex; align-items: center; gap: .75rem; padding: .35rem var(--gutter) .4rem; border-top: 1px solid var(--line-2); }
+  .routemap__whole, .yearmap__whole {
+    display: block;
+    flex: none;
+    min-height: 30px;
+    padding: .3em .95em .22em;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    transition: background-color .3s var(--ease-soft), color .3s;
+  }
+  .routemap__whole:hover, .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  [data-theme="dusk"] .routemap__whole:hover,
+  [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  .routemap__now, .yearmap__now {
+    display: flex; align-items: baseline; gap: .65rem;
+    flex: 1 1 auto; min-width: 0; max-width: none; min-height: 0;
+    text-align: left;
+  }
+  .routemap__day, .yearmap__k { flex: none; }
+  .routemap__title, .yearmap__title { min-width: 0; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yearmap__now { display: flex; align-items: baseline; gap: .65rem; justify-items: start; }
+  /* a link to a day or a month lands below the band, not under it */
+  .moon .chap, .ymap .chap { scroll-margin-top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) + 30svh + 1rem); }
+}
+
+/* The whole route, in a window opened from the band */
+.routesheet {
+  width: min(calc(100vw - 2 * var(--gutter)), 430px);
+  max-height: calc(100svh - 2rem);
+  padding: 1rem 1.1rem 1.1rem;
+  border: var(--keyline);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 6px 6px 0 var(--gold);
+  overflow: auto;
+}
+.routesheet[open] { display: grid; gap: .8rem; justify-items: center; animation: routesheet-in .45s var(--ease); }
+.routesheet::backdrop { background: rgba(20, 17, 13, .55); }
+.routesheet__head { justify-self: stretch; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .2rem 1rem; }
+.routesheet__k { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.routesheet__title { grid-column: 1; margin: 0; font-family: var(--display); font-size: 1.4rem; font-weight: 400; line-height: 1.15; }
+.routesheet__close {
+  grid-column: 2; grid-row: 1 / span 2;
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+}
+.routesheet__close:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+[data-theme="dusk"] .routesheet__close:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+.routesheet__map svg { display: block; height: min(calc(100svh - 12rem), 640px); width: auto; max-width: 100%; overflow: visible; }
+.yearsheet .routesheet__map svg { overflow: hidden; }
+.routesheet .routemap__far { display: none; }
+.routesheet__now { display: grid; justify-items: center; gap: .25rem; margin: 0; text-align: center; }
+@keyframes routesheet-in {
+  from { opacity: 0; transform: translateY(16px) rotate(-1deg); }
+  to   { opacity: 1; transform: none; }
 }
 
 @media (max-width: 1080px) {
@@ -425,7 +624,7 @@ a.yclose__card:hover img { transform: scale(1.04); }
 @media (max-width: 620px) {
   /* every year's card in one short row with just the year under it, so the
      head doesn't push the first month a screen further down */
-  .ydeck__list { grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); gap: 1rem .8rem; }
+  .ydeck__list { gap: 1rem .8rem; }
   .ydeck__name { display: none; }
   .ydeck__pic { margin-bottom: .35rem; box-shadow: 3px 3px 0 var(--off, var(--blue)); }
   .ydeck__year { font-size: 1.05rem; }

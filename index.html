@@ -222,29 +222,64 @@
           Whatever comes next lands here, so make yourself at home.
         </p>
       </div>
+      <!-- The countdown as the page of a desk calendar: the day circled in pen,
+           the days left on a sticker. initAnniversary fills in the year, the
+           weekday and the count -->
       <div class="anniv__count" data-reveal="up" style="--d:200ms">
-        <span class="anniv__big" data-anniv="days" data-count="0">&hellip;</span>
-        <span class="anniv__k">Days until our fifth anniversary, August 6th <span data-anniv="milestone-year">2027</span></span>
+        <div class="cal">
+          <div class="cal__page">
+            <span class="cal__rings" aria-hidden="true"><i></i><i></i></span>
+            <div class="cal__head">
+              <span class="cal__month">August</span>
+              <span class="cal__year" data-anniv="milestone-year">2027</span>
+            </div>
+            <div class="cal__body">
+              <span class="cal__date">6<svg class="cal__ring" viewBox="0 0 120 96" aria-hidden="true"><path pathLength="1" d="M30 70C12 52 18 18 56 11c34-6 56 12 54 38-2 27-30 40-58 38-28-2-44-20-40-42 3-15 16-25 34-29"/></svg></span>
+              <span class="cal__dow" data-anniv="milestone-day">Friday</span>
+            </div>
+          </div>
+          <div class="cal__sticker">
+            <span class="anniv__big" data-anniv="days" data-count="0">&hellip;</span>
+            <span class="anniv__k">days to our fifth</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Figures, part of the same story as the count above -->
-    <div class="figures">
-      <div class="figure" data-reveal="up">
-        <span class="figure__n num" data-count="29">29</span>
-        <span class="figure__k">Adventures before the wedding</span>
-      </div>
-      <div class="figure" data-reveal="up" style="--d:80ms">
-        <span class="figure__n num" data-count="67">67</span>
-        <span class="figure__k">Road trips so far</span>
-      </div>
-      <div class="figure" data-reveal="up" style="--d:160ms">
-        <span class="figure__n num" data-count="38">38</span>
-        <span class="figure__k">National parks visited</span>
-      </div>
-      <div class="figure" data-reveal="up" style="--d:240ms">
-        <span class="figure__n num" data-count="30">30</span>
-        <span class="figure__k">States visited, plus DC</span>
+    <!-- Where we've been, and the figures beside it, part of the same story
+         as the count above. The map is drawn by initAtlas from the outlines in
+         assets/js/atlas.js; the places we've been are VISITED in site.js -->
+    <div class="atlas-row">
+      <figure class="atlas" id="atlas">
+        <div class="atlas__head">
+          <span class="tag">Where we've been</span>
+          <ul class="atlas__key" aria-hidden="true">
+            <li><i class="atlas__sw atlas__sw--been"></i>Been there</li>
+            <li><i class="atlas__sw"></i>Not yet</li>
+            <li><svg class="atlas__sw-star" viewBox="-11 -11 22 22"><path d="M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z"/></svg>Home</li>
+          </ul>
+        </div>
+        <div class="atlas__map"></div>
+        <figcaption class="atlas__cap"><span data-atlas="summary">34 states, DC and Québec</span> so far.</figcaption>
+      </figure>
+
+      <div class="figures">
+        <div class="figure" data-reveal="up">
+          <span class="figure__n num" data-count="29">29</span>
+          <span class="figure__k">Adventures before the wedding</span>
+        </div>
+        <div class="figure" data-reveal="up" style="--d:80ms">
+          <span class="figure__n num" data-count="67">67</span>
+          <span class="figure__k">Road trips so far</span>
+        </div>
+        <div class="figure" data-reveal="up" style="--d:160ms">
+          <span class="figure__n num" data-count="38">38</span>
+          <span class="figure__k">National parks visited</span>
+        </div>
+        <div class="figure" data-reveal="up" style="--d:240ms">
+          <span class="figure__n num" data-count="34">34</span>
+          <span class="figure__k">States visited, plus DC</span>
+        </div>
       </div>
     </div>
   </div>
@@ -501,7 +536,7 @@
       <img class="mark" src="assets/art/Cake.svg" alt="">
       <span class="chapter__idx">III</span>
       <h3 class="chapter__title">Our Big Day</h3>
-      <p class="chapter__note">Thirty-six minutes, fifty guests, and a barbecue joint in Gowanus that isn't there any more. The middle of the story.</p>
+      <p class="chapter__note">Thirty-six minutes, fifty guests, and a barbecue yard in Gowanus we will always remember. The middle of the story.</p>
       <span class="chapter__go">See the day
         <svg width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
       </span>
@@ -595,6 +630,7 @@
 
 <script src="assets/js/years/index.js"></script>
 <script src="assets/js/data.js"></script>
+<script src="assets/js/atlas.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

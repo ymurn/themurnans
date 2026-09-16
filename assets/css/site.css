@@ -45,6 +45,12 @@
   --brass-ink:    #7E611F;   /* the same gold, dark enough to read small */
   --brass-2:      #F0D89C;
 
+  /* the four colours the maps colour states in, no two neighbours alike */
+  --quilt-1:      #5E9BB4;
+  --quilt-2:      #F0CE84;
+  --quilt-3:      #7FA08A;
+  --quilt-4:      #D88A7E;
+
   --line:         color-mix(in srgb, var(--ink) 16%, transparent);
   --line-2:       color-mix(in srgb, var(--ink) 9%, transparent);
 
@@ -116,6 +122,12 @@
   --brass:        #D9B876;
   --brass-ink:    #E7C88A;
   --brass-2:      #F2DEB0;
+
+  /* deep shades in dusk, so cream type and lines stay readable on them */
+  --quilt-1:      #3D7B95;
+  --quilt-2:      #B8571E;
+  --quilt-3:      #4E7A62;
+  --quilt-4:      #9A4E86;
 
   --line:   color-mix(in srgb, var(--ink) 18%, transparent);
   --line-2: color-mix(in srgb, var(--ink) 10%, transparent);
@@ -1426,15 +1438,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .ticker__item { transition: color .3s, transform .4s var(--ease); }
 
 /* Anniversary , computed live, so it stays true without anyone editing it */
-.anniv { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: end; }
+.anniv { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
 .anniv__main { display: grid; gap: 1.1rem; align-content: start; }
-.anniv__count {
-  display: grid; gap: .7rem;
-  justify-items: end;
-  text-align: right;
-  padding-top: 1.3rem;
-  border-top: 1px solid var(--line);
-}
+.anniv__count { display: grid; justify-items: end; }
 .anniv__big {
   font-family: var(--display);
   font-weight: 400;
@@ -1448,6 +1454,58 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .anniv__big:hover { transform: scale(1.04) rotate(-1.5deg); }
 .anniv__k { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3); max-width: 22ch; }
 .anniv__ord { color: var(--brass-ink); }
+
+/* The countdown as the page of a desk calendar: the day circled in pen, the
+   days left on a round sticker stuck over the corner */
+.cal { position: relative; width: min(100%, 240px); margin: 1rem 3rem 3.25rem 0; }
+.cal__page {
+  position: relative;
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  box-shadow: 7px 7px 0 var(--rose);
+  rotate: -2.5deg;
+  text-align: center;
+}
+.cal__rings { position: absolute; top: -13px; left: 0; right: 0; display: flex; justify-content: space-between; padding-inline: 24%; pointer-events: none; }
+.cal__rings i { width: 9px; height: 25px; border-radius: 5px; background: var(--ink); }
+/* a fixed wine and cream, so the header reads the same in dawn and dusk */
+.cal__head {
+  display: flex; align-items: baseline; justify-content: center; gap: .6rem;
+  padding: 1.1rem 1rem .7rem;
+  border-bottom: var(--keyline);
+  border-radius: calc(var(--r-md) - 2px) calc(var(--r-md) - 2px) 0 0;
+  background: #7A2436;
+  color: #F9F2E4;
+}
+.cal__month { font-family: var(--display); font-size: 1.5rem; line-height: 1; }
+.cal__year { font-size: .66rem; font-weight: 500; letter-spacing: .22em; }
+.cal__body { display: grid; justify-items: center; gap: .2rem; padding: .8rem 1rem 1.4rem; }
+.cal__date { position: relative; font-family: var(--display); font-size: clamp(4.8rem, 8vw, 6.2rem); line-height: 1.05; color: var(--ink); }
+.cal__ring { position: absolute; left: 50%; top: 50%; width: 1.4em; height: 1.08em; max-width: none; translate: -50% -47%; overflow: visible; fill: none; stroke: var(--coral); stroke-width: 3.4; stroke-linecap: round; pointer-events: none; }
+.cal__ring path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s var(--ease) .6s; }
+.anniv__count.is-in .cal__ring path { stroke-dashoffset: 0; }
+.cal__dow { font-size: .66rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); }
+/* fixed gold and near-black, like the other stickers on the site */
+.cal__sticker {
+  position: absolute; right: -3rem; bottom: -3.25rem;
+  display: grid; place-content: center; justify-items: center; gap: .2rem;
+  width: 118px; height: 118px;
+  border: 2px solid #14110D;
+  border-radius: 50%;
+  background: #F0CE84;
+  color: #14110D;
+  text-align: center;
+  rotate: 9deg;
+  scale: 0;
+  transition: scale .65s cubic-bezier(.34, 1.56, .64, 1) .35s;
+}
+.anniv__count.is-in .cal__sticker { scale: 1; }
+.cal__sticker .anniv__big { font-size: 2.35rem; line-height: .95; letter-spacing: -.01em; color: #14110D; }
+.cal__sticker .anniv__k { max-width: 12ch; font-size: .54rem; font-weight: 600; line-height: 1.3; letter-spacing: .14em; color: #14110D; }
+@media (prefers-reduced-motion: reduce) {
+  .cal__ring path, .cal__sticker { transition-delay: 0ms !important; }
+}
 @media (max-width: 860px) {
   .anniv { grid-template-columns: 1fr; align-items: start; }
   .anniv__count { justify-items: start; text-align: left; }
@@ -1458,6 +1516,131 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .figure { padding-top: 1.3rem; border-top: 1px solid var(--line); }
 .figure__n { display: block; }
 .figure__k { display: block; margin-top: .6rem; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3); }
+
+/* Where we've been: the map beside the figures. Cut out on paper, the states
+   we've been to printed in four colours with paper seams between them,
+   swinging in nearest home first when the map scrolls into view. */
+.atlas-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: clamp(2rem, 4.5vw, 4rem);
+  align-items: center;
+  margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+}
+.atlas-row .figures { margin-top: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.atlas {
+  --atlas-ground: var(--paper);
+  --atlas-land: var(--paper-2);
+  --atlas-edge: color-mix(in srgb, var(--ink) 22%, transparent);
+  --atlas-1: var(--quilt-1);
+  --atlas-2: var(--quilt-2);
+  --atlas-3: var(--quilt-3);
+  --atlas-4: var(--quilt-4);
+  position: relative;
+  display: grid;
+  gap: .4rem;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 1.4rem) clamp(1rem, 2.2vw, 1.6rem);
+  border: var(--keyline);
+  border-radius: var(--r-lg);
+  background: var(--atlas-ground);
+  box-shadow: 6px 6px 0 var(--blue);
+}
+[data-theme="dusk"] .atlas { --atlas-land: var(--paper-2); }
+.atlas__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1.25rem; }
+.atlas__key { display: flex; flex-wrap: wrap; gap: .35rem 1rem; margin: 0; padding: 0; list-style: none; font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
+.atlas__key li { display: inline-flex; align-items: center; gap: .45rem; }
+.atlas__sw { position: relative; width: 13px; height: 10px; border: 1px solid var(--atlas-edge); border-radius: 2px; background: var(--atlas-land); }
+/* the four quilt colours, so the key matches the map in either theme */
+.atlas__sw--been { width: 14px; height: 12px; border-color: transparent; background: conic-gradient(var(--atlas-1) 0 25%, var(--atlas-2) 0 50%, var(--atlas-3) 0 75%, var(--atlas-4) 0); }
+.atlas__sw-star { width: 14px; height: 14px; fill: var(--gold); stroke: #14110D; stroke-width: 1.6; }
+
+.atlas__map { position: relative; }
+/* Canada runs off the top edge, cropped like a print */
+.atlas__map svg { display: block; width: 100%; height: auto; overflow: hidden; }
+.atlas__st {
+  fill: var(--atlas-land);
+  stroke: var(--atlas-edge);
+  stroke-width: .8px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill .3s var(--ease-soft);
+}
+.atlas__st:not(.is-been).is-hot { fill: var(--paper-3); }
+.atlas__fill {
+  pointer-events: none;
+  fill: var(--atlas-1);
+  stroke: var(--atlas-ground);
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: translate(-9px, -11px) scale(.7) rotate(-9deg);
+  transition: opacity .3s var(--ease-soft) var(--t, 0ms), transform .9s cubic-bezier(.34, 1.56, .64, 1) var(--t, 0ms);
+}
+.atlas__fill[data-q="1"] { fill: var(--atlas-2); }
+.atlas__fill[data-q="2"] { fill: var(--atlas-3); }
+.atlas__fill[data-q="3"] { fill: var(--atlas-4); }
+.atlas.is-in .atlas__fill { opacity: 1; transform: none; }
+/* once printed, pointing at a state lifts it a touch */
+.atlas.is-done .atlas__fill { transition-delay: 0ms; transition-duration: .25s, .45s; }
+.atlas.is-done .atlas__fill.is-hot { transform: scale(1.06); }
+.atlas__dc { pointer-events: none; fill: var(--coral); stroke: var(--atlas-ground); stroke-width: 1.3px; vector-effect: non-scaling-stroke; opacity: 0; transition: opacity .3s var(--ease-soft) var(--t, 0ms); }
+.atlas.is-in .atlas__dc { opacity: 1; }
+.atlas__home {
+  pointer-events: none;
+  fill: var(--gold);
+  stroke: #14110D;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transform: scale(0) rotate(-120deg);
+  transition: transform .8s cubic-bezier(.34, 1.56, .64, 1) 60ms;
+}
+.atlas.is-in .atlas__home { transform: scale(1.35) rotate(0deg); }
+.atlas__label { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .5em; fill: var(--ink-3); pointer-events: none; }
+
+.atlas__tip {
+  position: absolute;
+  z-index: 3;
+  left: 0; top: 0;
+  display: grid;
+  gap: .1rem;
+  margin: 0;
+  padding: .45rem .75rem .4rem;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  box-shadow: 3px 3px 0 var(--blue);
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 14px));
+}
+.atlas__tip[hidden] { display: none; }
+.atlas__tip b { font-family: var(--display); font-size: 1rem; font-weight: 400; line-height: 1.15; }
+.atlas__tip span { font-size: .56rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
+.atlas__cap { font-size: .8rem; line-height: 1.5; color: var(--ink-3); }
+
+@media (max-width: 1080px) {
+  .atlas-row { grid-template-columns: minmax(0, 1fr); }
+  .atlas-row .figures { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+/* four figures, then two by two: never three with one under it */
+@media (max-width: 780px) {
+  .atlas-row .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .atlas { box-shadow: 4px 4px 0 var(--blue); }
+  .atlas__label { display: none; }
+  .atlas.is-in .atlas__home { transform: scale(2.2) rotate(0deg); }
+  .atlas-row .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas__fill, .atlas__dc, .atlas__home { transition-delay: 0ms !important; }
+}
 
 /* Chapter cards */
 /* ── Four doors ───────────────────────────────────────────────────────
@@ -2062,6 +2245,10 @@ a.yearbtn { display: inline-block; }
 .day-ring { width: clamp(90px, 12vw, 150px); filter: invert(var(--art-invert)); opacity: .85; }
 
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: clamp(.9rem, 1.6vw, 1.4rem); }
+/* four of them: two by two once four no longer fit, then one, never three
+   with the fourth alone underneath */
+@media (max-width: 900px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .facts { grid-template-columns: minmax(0, 1fr); } }
 .fact { background: var(--paper); border: var(--keyline); border-radius: var(--r-md); padding: clamp(1.5rem, 2.6vw, 2.1rem); display: grid; gap: .6rem; align-content: start; }
 .band--deep .fact { background: transparent; border-color: var(--deep-ink); }
 .fact__k { font-size: .66rem; letter-spacing: .24em; text-transform: uppercase; color: var(--brass-ink); }
@@ -2845,8 +3032,21 @@ a.yearbtn { display: inline-block; }
 .since__cards {
   list-style: none; margin: 0; padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  /* one column per year (initSince sets --n), never a count that auto-fit
+     would break into a row of three and one left hanging */
+  grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
   gap: 2.25rem clamp(1.25rem, 2.6vw, 2.25rem);
+}
+/* When the full row no longer fits: even counts split in half, odd counts take
+   the bigger half first (five go three and two), so no card ends up alone. */
+@media (max-width: 1080px) {
+  .since__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .since__cards[data-n="5"], .since__cards[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .since__cards[data-n="7"], .since__cards[data-n="8"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .since__cards[data-n="5"], .since__cards[data-n="6"],
+  .since__cards[data-n="7"], .since__cards[data-n="8"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .since__cards:empty { display: none; }
 .since__item { min-width: 0; }
@@ -2923,6 +3123,32 @@ a.yearbtn { display: inline-block; }
   .rail-count b { font-weight: 600; color: var(--ink); }
 }
 
+/* Nine tables in two columns always leave the ninth hanging on its own, so
+   between the three-a-row layout and the phone they become a row you swipe. */
+@media (min-width: 621px) and (max-width: 1080px) {
+  .tables {
+    display: flex;
+    gap: 1.1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: .9rem var(--gutter) 1.4rem;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .tables::-webkit-scrollbar { display: none; }
+  .tables > * { flex: 0 0 46%; scroll-snap-align: start; }
+  .tables + .rail-count {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    margin: .1rem 0 0;
+    font-size: .64rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+}
+
 /* Folds. On a phone a trip with several paragraphs shows the first and a
    button for the rest (initFolds). Wider screens never see the button. */
 .fold__btn { display: none; }
@@ -2996,8 +3222,17 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 }
 
 @media (max-width: 1080px) {
-  .tables, .pours, .menu { grid-template-columns: repeat(2, 1fr); }
-  .footer__top { grid-template-columns: 1fr 1fr; }
+  .tables, .pours { grid-template-columns: repeat(2, 1fr); }
+  .menu { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The footer keeps its three columns while all three fit, then stacks. Two
+   columns would leave the third hanging on a row of its own. */
+@media (max-width: 880px) {
+  .footer__top { grid-template-columns: 1fr; gap: 2rem; }
+  /* the three credits go one to a line here: side by side they wrap two and
+     one, which leaves the last credit stranded */
+  .footer__meta { flex-direction: column; align-items: flex-start; gap: .8rem; }
 }
 
 @media (max-width: 860px) {
@@ -3077,6 +3312,9 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 }
 
 @media (max-width: 620px) {
+  /* the doors swipe in one row here: the centring for two a row above would
+     push the first door off the left edge, where no scroll can reach it */
+  .chapters { justify-content: flex-start; }
   .tables, .pours, .menu { grid-template-columns: 1fr; }
   .footer__top { grid-template-columns: 1fr; }
   .yearbtn__more { display: none; }
