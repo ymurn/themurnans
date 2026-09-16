@@ -5,7 +5,22 @@
 <title>Our Big Day · The Murnans</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Saturday, 6 August 2022. Thirty-six minutes, fifty guests, Pig Beach in Gowanus, Brooklyn.">
-<meta name="theme-color" content="#08191D">
+<!-- The link preview: without these a scraper picks whichever picture it meets
+     first, which was the line drawing of David. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Murnans">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://ymurn.github.io/themurnans/day.html">
+<meta property="og:title" content="Our Big Day · The Murnans">
+<meta property="og:description" content="Saturday, 6 August 2022. Thirty-six minutes, fifty guests, Pig Beach in Gowanus, Brooklyn.">
+<meta property="og:image" content="https://ymurn.github.io/themurnans/assets/art/social-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Bear and the Tiger: David and Yinja drawn face to face under a scatter of gold stars.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ymurn.github.io/themurnans/day.html">
+<meta name="theme-color" content="#F7F0E0">
 <link rel="icon" href="assets/art/favicon-logo.png">
 <link rel="apple-touch-icon" href="assets/art/bear-tiger-logo-round.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +28,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
-<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t;
+  var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === 'dusk' ? '#0B1F25' : '#F7F0E0'; } catch (e) {}</script>
 </head>
 <body data-page="day">
 
@@ -119,23 +135,14 @@
 <!-- Watch / see --------------------------------------------------------- -->
 <section class="band band--deep">
   <div class="shell">
-    <div class="feature">
-      <div class="stack gap-m">
+    <div class="feature feature--film">
+      <div class="stack gap-m feature__words">
         <span class="eyebrow eyebrow--brass" data-reveal="fade">02 / Keep it</span>
         <h2 class="t-xl" data-split>The whole thing, <span class="squiggle">on tape.</span></h2>
         <p class="lede" data-reveal="up" style="--d:120ms">
           We asked everyone to put their cameras down so we could see your faces.
           A professional caught the rest. Here it all is.
         </p>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap;--d:200ms" data-reveal="up">
-          <a class="btn" href="https://www.icloud.com/sharedalbum/#B125nhQSTGWRcN4" target="_blank" rel="noopener" data-magnet>
-            The photographs
-            <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
-          </a>
-          <a class="btn btn--ghost" href="https://youtu.be/7LGmd_S322A" target="_blank" rel="noopener" data-magnet>
-            Watch the ceremony
-          </a>
-        </div>
       </div>
 
       <div class="tube" data-video="1S_qJkxuk_0" data-title="Murnans' wedding speech moments" data-reveal="up" style="--d:200ms;--off:var(--gold)">
@@ -147,6 +154,16 @@
           <span class="tube__label">Play the film</span>
         </button>
         <noscript><a class="tube__cta" href="https://www.youtube.com/watch?v=1S_qJkxuk_0" target="_blank" rel="noopener">Watch on YouTube</a></noscript>
+      </div>
+
+      <div class="btns" style="--d:260ms" data-reveal="up">
+        <a class="btn" href="https://www.icloud.com/sharedalbum/#B125nhQSTGWRcN4" target="_blank" rel="noopener" data-magnet>
+          The photographs
+          <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+        </a>
+        <a class="btn btn--ghost" href="https://youtu.be/7LGmd_S322A" target="_blank" rel="noopener" data-magnet>
+          Watch the ceremony
+        </a>
       </div>
     </div>
   </div>

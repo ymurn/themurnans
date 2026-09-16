@@ -60,6 +60,21 @@
     }));
   }
 
+  /* ── Once a frame, never once an event ─────────────────────────────────
+     A phone fires scroll events faster than the screen refreshes, and every
+     pass below reads where elements are. A read that follows a write makes
+     the browser lay the whole page out again there and then, so on a page
+     this long the passes together were forcing well over a hundred layouts
+     per event, which is what a phone runs out of room for. Each pass now
+     runs at most once a frame, and reads everything it needs before it
+     writes anything. */
+
+  function perFrame(fn) {
+    let queued = false;
+    const run = () => { queued = false; fn(); };
+    return () => { if (queued) return; queued = true; requestAnimationFrame(run); };
+  }
+
   /* ── Navigation ────────────────────────────────────────────────────── */
 
   function initNav() {
@@ -70,7 +85,7 @@
     if (nav) {
       const onScroll = () => nav.classList.toggle('is-stuck', window.scrollY > 24);
       onScroll();
-      addEventListener('scroll', onScroll, { passive: true });
+      addEventListener('scroll', perFrame(onScroll), { passive: true });
     }
 
     if (burger && links) {
@@ -99,7 +114,7 @@
       bar.style.transform = `scaleX(${max > 0 ? clamp(scrollY / max, 0, 1) : 0})`;
     };
     tick();
-    addEventListener('scroll', tick, { passive: true });
+    addEventListener('scroll', perFrame(tick), { passive: true });
     addEventListener('resize', tick);
   }
 
@@ -152,13 +167,16 @@
   }
 
   function sweep() {
+    if (!watchers.length) return;
+    // every position first: a callback adds a class, and the read after that
+    // would lay the page out again before the next watcher could be measured
+    const line = innerHeight * 0.9;
+    const due = [];
     for (let i = watchers.length - 1; i >= 0; i--) {
-      if (inView(watchers[i].el)) {
-        const { el, fn } = watchers[i];
-        watchers.splice(i, 1);
-        fn(el);
-      }
+      const r = watchers[i].el.getBoundingClientRect();
+      if (r.top < line && r.bottom > 0) due.push(watchers.splice(i, 1)[0]);
     }
+    due.forEach(w => w.fn(w.el));
   }
 
   function onInView(el, fn) {
@@ -166,7 +184,7 @@
     watchers.push({ el, fn });
     if (sweeping) return;
     sweeping = true;
-    addEventListener('scroll', sweep, { passive: true });
+    addEventListener('scroll', perFrame(sweep), { passive: true });
     addEventListener('resize', sweep);
     // Belt and braces: a cheap poll catches anything a missed scroll event
     // would have stranded (in-page anchors, restored positions, zoom).
@@ -401,16 +419,16 @@
       "Skyline chili is a food group.",
       "Two flights up the fire tower is plenty, thank you.",
       "Go Reds.",
-      "Mammoth Cave. Not in Cincinnati. Still worth it.",
-      "Five-dollar beers in Princeton. What a steal.",
-      "I walked eight miles in LA. Nobody walks in LA.",
+      "I flew to Seattle for the miles and stayed for the burgers.",
+      "Mystic Timbers, three times in a row.",
+      "I turned forty at the Grand Canyon, in the snow.",
     ],
     tiger: [
-      "My first bonfire was in Salem.",
-      "Have you ever had an apple cider shake?",
-      "Los Tacos No.1 beats LA. Shots fired.",
       "First wine tasting, on the North Fork.",
-      "Fourteen miles around Baltimore. Do we get an award?",
+      "I went up the fire tower. David waited at the bottom.",
+      "All five Utah parks in one trip.",
+      "Eight miles down Bull Hill in the snow, no crampons.",
+      "Franklin Barbecue gave me a key lime pie for my birthday.",
       "The second American wedding I went to was my own.",
     ],
   };
@@ -865,7 +883,7 @@
     const items = window.MW.timeline;
 
     host.innerHTML = items.map((c, i) => `
-      <article class="chap" id="chap-${i + 1}" data-year="${c.year}">
+      <article class="chap" id="chap-${i + 1}" data-year="${c.year}" data-chap="${i}">
         <div class="chap__aside">
           <span class="chap__dot" aria-hidden="true"></span>
           <div class="chap__sticky">
@@ -903,17 +921,19 @@
     const spine = $('.timeline__spine');
     const chaps = $$('.chap', host);
     const yearBtns = $$('.yearbtn');
+    let lastLive = null;
 
     const tick = () => {
       const box = host.getBoundingClientRect();
-      const mid = innerHeight * 0.5;
-      const pct = clamp((mid - box.top) / box.height, 0, 1);
+      const top = innerHeight * 0.6, bottom = innerHeight * 0.25;
+      const rects = chaps.map(ch => ch.getBoundingClientRect());
+
+      const pct = clamp((innerHeight * 0.5 - box.top) / box.height, 0, 1);
       if (spine) spine.style.setProperty('--spine', (pct * 100).toFixed(2) + '%');
 
       let live = null;
-      chaps.forEach(ch => {
-        const r = ch.getBoundingClientRect();
-        const on = r.top < innerHeight * 0.6 && r.bottom > innerHeight * 0.25;
+      chaps.forEach((ch, i) => {
+        const on = rects[i].top < top && rects[i].bottom > bottom;
         ch.classList.toggle('is-in', on);
         if (on && !live) live = ch;
       });
@@ -921,10 +941,15 @@
         const y = live.dataset.year;
         yearBtns.forEach(b => b.classList.toggle('is-on', b.dataset.year === y));
       }
+      // the map beside the chapters follows whichever one is being read
+      if (live !== lastLive) {
+        lastLive = live;
+        document.dispatchEvent(new CustomEvent('story:chapter', { detail: live }));
+      }
     };
 
     tick();
-    addEventListener('scroll', tick, { passive: true });
+    addEventListener('scroll', perFrame(tick), { passive: true });
     addEventListener('resize', tick);
 
     yearBtns.forEach(btn => btn.addEventListener('click', () => {
@@ -936,6 +961,41 @@
     }));
 
     watchReveals(host);
+    initStoryMap(items, chaps);
+  }
+
+  /* ── The map beside the chapters ───────────────────────────────────────
+     The same component the year pages use, fed the chapters instead of the
+     months. A chapter's stops are looked up by its place in the text, in
+     assets/js/story-places.js. */
+
+  function initStoryMap(items, chaps) {
+    const host = $('#storymap');
+    const A = window.MW_ATLAS, PL = window.MW_STORY_PLACES;
+    if (!host || !A || !PL || !window.MW_TRAILMAP) return;
+
+    const groups = items.map(c => ({ stops: PL[c.place] || [] }));
+    if (!groups.some(g => g.stops.length)) return;
+    // "June 10, 2021" reads "June 2021" over the map
+    const when = i => (items[i].date || '').replace(/\s\d{1,2},/, '');
+
+    window.MW_TRAILMAP({
+      host,
+      wrap: host.closest('.ymap'),
+      band: host.closest('.ymap__map'),
+      bar: $('.yearbar'),
+      atlas: A,
+      groups,
+      chapters: chaps,
+      groupOf: el => (el && el.dataset.chap != null ? Number(el.dataset.chap) : -1),
+      caption: (i, said, n) => items[i]
+        ? { k: when(i), title: said || items[i].short }
+        : { k: '2020 to 2022', title: `${n} places` },
+      aria: 'Map of the chapters before the wedding',
+      whole: 'Every chapter',
+      sheet: { k: '2020 to 2022', title: 'Everywhere, before the wedding' },
+      event: 'story:chapter'
+    });
   }
 
   /* ── Tables (the nine favourites) ──────────────────────────────────── */
@@ -1617,7 +1677,7 @@
         count.innerHTML = `Swipe <svg width="15" height="9" viewBox="0 0 15 9" fill="none"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg> <b>${at + 1}</b> / ${items.length}`;
       };
       tick();
-      row.addEventListener('scroll', tick, { passive: true });
+      row.addEventListener('scroll', perFrame(tick), { passive: true });
       addEventListener('resize', tick);
     });
   }
@@ -1634,7 +1694,7 @@
     const tick = () => btn.classList.toggle('is-on',
       scrollY > innerHeight * 1.6 && document.documentElement.scrollHeight > innerHeight * 4);
     tick();
-    addEventListener('scroll', tick, { passive: true });
+    addEventListener('scroll', perFrame(tick), { passive: true });
     addEventListener('resize', tick);
     btn.addEventListener('click', () => scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }));
   }

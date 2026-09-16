@@ -5,15 +5,32 @@
 <title>The Long Way Round · The Murnans</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Twenty-nine chapters on the road, from a waterfall near Cazenovia to a fire tower in Beacon. David and Yinja Murnan, 2020–2022.">
-<meta name="theme-color" content="#08191D">
+<!-- The link preview: without these a scraper picks whichever picture it meets
+     first, which was the line drawing of David. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Murnans">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://ymurn.github.io/themurnans/story.html">
+<meta property="og:title" content="The Long Way Round · The Murnans">
+<meta property="og:description" content="Twenty-nine chapters on the road, from a waterfall near Cazenovia to a fire tower in Beacon. David and Yinja Murnan, 2020–2022.">
+<meta property="og:image" content="https://ymurn.github.io/themurnans/assets/art/social-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Bear and the Tiger: David and Yinja drawn face to face under a scatter of gold stars.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ymurn.github.io/themurnans/story.html">
+<meta name="theme-color" content="#F7F0E0">
 <link rel="icon" href="assets/art/favicon-logo.png">
 <link rel="apple-touch-icon" href="assets/art/bear-tiger-logo-round.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/map.css">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
-<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t;
+  var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === 'dusk' ? '#0B1F25' : '#F7F0E0'; } catch (e) {}</script>
 </head>
 <body data-page="story">
 
@@ -83,14 +100,17 @@
 </div>
 
 <!-- Timeline ------------------------------------------------------------ -->
-<section class="timeline">
+<section class="timeline ymap-clear">
   <span class="timeline__spine" aria-hidden="true"></span>
   <div class="shell">
-    <div id="timeline">
-      <noscript>
-        <p class="lede">The chapters are built from a small script. Enable JavaScript, or read the
-        original archive in the 2022 site folder.</p>
-      </noscript>
+    <div class="ymap">
+      <div id="timeline">
+        <noscript>
+          <p class="lede">The chapters are built from a small script. Enable JavaScript, or read the
+          original archive in the 2022 site folder.</p>
+        </noscript>
+      </div>
+      <aside class="ymap__map" aria-label="Map of these chapters"><div class="yearmap" id="storymap"></div></aside>
     </div>
   </div>
 </section>
@@ -105,7 +125,7 @@
         Thank you, guests. Thank you, bear friends, best friends, and family.
         There will be so many more places to see.
       </p>
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
+      <div class="btns btns--center">
         <a class="btn" href="table.html" data-magnet>
           Next: at our table
           <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
@@ -153,6 +173,9 @@
 </footer>
 
 <script src="assets/js/data.js"></script>
+<script src="assets/js/atlas.js"></script>
+<script src="assets/js/story-places.js"></script>
+<script src="assets/js/trailmap.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

@@ -1,0 +1,314 @@
+/* ==========================================================================
+   THE MURNANS · the maps
+   One component, three pages' worth of use: the honeymoon's route down the
+   Pacific coast, every place a year's photographs were taken, and the
+   chapters of The Long Way Round. On a wide screen it is a small window
+   floating at the left edge, so the text keeps its full width and nothing
+   moves as the map comes and goes; below 1180px it unrolls from under the
+   sticky bar in a band 30% of the screen tall.
+
+   Loaded by story.html and the year pages, after site.css.
+   ========================================================================== */
+
+/* the floating window's size and its distance from the left edge */
+body {
+  --ymap-x: clamp(.5rem, 1.2vw, 1.5rem);
+  --ymap-w: clamp(190px, 15vw, 250px);
+  --ymap-clear: max(var(--gutter), calc(var(--ymap-x) + var(--ymap-w) + 2rem - max(0px, (100vw - var(--maxw)) / 2)));
+}
+
+/* ── THE ROUTE MAP ───────────────────────────────────── */
+
+.moon__map { position: relative; }
+.routemap {
+  position: sticky;
+  top: calc(var(--nav-h) + 4.75rem);
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+}
+/* sized so the map and the day under it both fit below the bar */
+.routemap svg { height: min(calc(100vh - var(--nav-h) - 14rem), 780px); width: auto; max-width: 100%; overflow: visible; }
+
+.routemap__sea { fill: color-mix(in srgb, var(--blue) 20%, var(--paper)); }
+.routemap__coast { fill: none; stroke: var(--ink); stroke-width: calc(1.5px / var(--mapk, .7)); stroke-linejoin: round; opacity: .75; }
+.routemap__border { fill: none; stroke: var(--ink-3); stroke-width: calc(1px / var(--mapk, .7)); opacity: .5; }
+.routemap__state,
+.routemap__ocean { font-family: var(--sans); font-size: calc(9px / var(--mapk, .7)); font-weight: 500; letter-spacing: .28em; fill: var(--ink-3); }
+.routemap__ocean { fill: var(--blue-deep); opacity: .85; }
+[data-theme="dusk"] .routemap__ocean { fill: var(--blue); }
+.routemap__base { fill: none; stroke: var(--ink-3); stroke-width: calc(1.3px / var(--mapk, .7)); opacity: .3; }
+.routemap__leg {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: calc(2.4px / var(--mapk, .7));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.2s var(--ease), stroke .5s;
+}
+.routemap__leg.is-done { stroke-dashoffset: 0; }
+.routemap__leg.is-now { stroke-dashoffset: 0; stroke: var(--coral); stroke-width: calc(3.4px / var(--mapk, .7)); }
+.routemap__dot { fill: var(--paper); stroke: var(--ink-3); stroke-width: calc(1.2px / var(--mapk, .7)); transition: fill .4s, stroke .4s; }
+.routemap__dot.is-seen { fill: var(--ink-2); stroke: var(--ink-2); }
+.routemap__dot.is-now { fill: var(--coral); stroke: var(--ink); stroke-width: calc(1.6px / var(--mapk, .7)); }
+.routemap__label {
+  font-family: var(--sans);
+  font-size: calc(10px / var(--mapk, .7));
+  font-weight: 600;
+  letter-spacing: .07em;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: calc(3.5px / var(--mapk, .7));
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+.routemap__label.is-on { opacity: 1; }
+.routemap__now { display: grid; justify-items: center; gap: .25rem; min-height: 3.4em; max-width: 28ch; margin: 0; text-align: center; }
+.routemap__day { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.routemap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; text-wrap: balance; }
+/* the band's extras, which a wide screen doesn't draw: sea and state lines past
+   the frame, the whole-route button, and a box for the map to fill */
+.routemap__view, .routemap__foot, .yearmap__view, .yearmap__foot { display: contents; }
+.routemap__far, .routemap__whole, .yearmap__whole { display: none; }
+
+/* ── THE YEAR'S MAP ──────────────────────────────────────────────────────
+   Every place the year's photographs were taken, with the states colouring in
+   as the year goes on. On a wide screen it is a small window floating at the
+   left edge, so the months keep their full width and nothing moves as it comes
+   and goes; below 1180px it is the band under the bar, like the honeymoon. */
+.ymap { display: block; }
+.ymap__land {
+  fill: color-mix(in srgb, var(--ink) 6%, var(--paper));
+  stroke: color-mix(in srgb, var(--ink) 16%, transparent);
+  stroke-width: .8px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.ymap__fill {
+  fill: var(--quilt-1);
+  stroke: var(--paper);
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity .7s var(--ease-soft);
+}
+.ymap__fill[data-q="1"] { fill: var(--quilt-2); }
+.ymap__fill[data-q="2"] { fill: var(--quilt-3); }
+.ymap__fill[data-q="3"] { fill: var(--quilt-4); }
+/* soft once we have been, full for the month being read */
+.ymap__fill.is-on { opacity: .42; }
+.ymap__fill.is-now { opacity: 1; }
+.ymap__stop { fill: var(--paper); stroke: var(--ink-3); stroke-width: 1.2px; vector-effect: non-scaling-stroke; transition: fill .4s, stroke .4s; }
+.ymap__stop.is-now { fill: var(--coral); stroke: var(--ink); stroke-width: 1.6px; }
+.ymap__label {
+  font-family: var(--sans);
+  font-size: calc(10px / var(--mapk, .7));
+  font-weight: 600;
+  letter-spacing: .06em;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: calc(3.5px / var(--mapk, .7));
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+.ymap__label.is-on { opacity: 1; }
+.ymap__home { fill: var(--gold); stroke: #14110D; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.yearmap__k { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.yearmap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; }
+
+/* Wide enough for the floating window: a big screen, or a phone on its side,
+   where a band 30% of a 390px screen leaves a map two centimetres tall. The
+   band block below is written as the exact complement of this one, so every
+   screen gets one of the two and never both. */
+@media (min-width: 1180px), (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
+  .ymap__map {
+    position: fixed;
+    left: var(--ymap-x);
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 45;
+    width: var(--ymap-w);
+    padding: .7rem .7rem .6rem;
+    border: var(--keyline);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    /* Going: it slides off to the left, and the fade trails the movement, so
+       it reads as leaving rather than simply disappearing. */
+    transform: translateX(-34px);
+    transition: opacity .34s var(--ease-soft) .14s, transform .48s cubic-bezier(.4, 0, .2, 1), visibility 0s linear .48s;
+  }
+  .ymap__map.is-on {
+    opacity: 1;
+    visibility: visible;
+    /* coming: it settles in from the edge */
+    transform: none;
+    transition: opacity .5s var(--ease), transform .6s var(--ease), visibility 0s;
+  }
+  .yearmap { position: static; display: grid; gap: .5rem; padding: 0; }
+  .yearmap__view { display: block; position: relative; height: clamp(150px, 22vh, 215px); }
+  /* On a short screen the window has to give most of the height back, so the
+     name under the map takes one line and the button goes under it rather
+     than beside it: in a window this narrow they were fighting for the row. */
+  @media (max-height: 520px) {
+    body { --ymap-x: .5rem; --ymap-w: 172px; }
+    .ymap__map { padding: .5rem .5rem .45rem; }
+    .yearmap__view { height: clamp(110px, 34vh, 150px); }
+    .yearmap__foot { flex-direction: column; align-items: stretch; gap: .3rem; }
+    .yearmap__now { gap: 0; }
+    .yearmap__title {
+      font-size: .82rem;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .yearmap__whole { align-self: start; }
+  }
+  .yearmap__view svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: hidden; }
+  .yearmap__foot { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .yearmap__now { display: grid; justify-items: start; gap: .1rem; min-height: 0; max-width: 100%; margin: 0; text-align: left; }
+  .yearmap__title { font-size: .92rem; }
+  .yearmap__whole {
+    display: block;
+    flex: none;
+    padding: .34em .7em .28em;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .52rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    transition: background-color .3s var(--ease-soft), color .3s;
+  }
+  .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+
+  /* A page that carries the floating window keeps its text clear of it, and
+     any spine down the left of that text moves across with it. On a display
+     wide enough that the margin already holds the window, nothing shifts. */
+  .ymap-clear .shell { padding-left: var(--ymap-clear); }
+  .timeline.ymap-clear .timeline__spine {
+    left: max(var(--ymap-clear), calc(50vw - var(--maxw) / 2 + var(--ymap-clear)));
+  }
+}
+
+/* ── THE BAND, UNDER 1180px ─────────────────────────────── */
+
+@media (max-width: 1179px) and (min-height: 521px), (max-width: 699px), (orientation: portrait) and (max-width: 1179px) {
+  .moon, .ymap { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  /* The map rides in a band right under the bar, 30% of the screen tall. It
+     stays tucked away until the first day or month scrolls up to it, unrolls,
+     follows what is being read, and tucks away again after the last. */
+  .moon__map, .ymap__map {
+    position: fixed;
+    top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) - 1px);
+    left: 0; right: 0;
+    z-index: 55;
+    height: 30vh;
+    height: 30svh;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 18px -16px rgba(20, 17, 13, .45);
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-14px);
+    visibility: hidden;
+    transition: clip-path .5s var(--ease), transform .5s var(--ease), visibility 0s linear .5s;
+  }
+  .moon__map.is-on, .ymap__map.is-on {
+    clip-path: inset(0 0 -24px 0);
+    transform: none;
+    visibility: visible;
+    transition: clip-path .6s var(--ease), transform .6s var(--ease), visibility 0s;
+  }
+  .routemap, .yearmap { position: relative; top: auto; display: flex; flex-direction: column; height: 100%; gap: 0; padding: 0; }
+  .routemap__view, .yearmap__view { display: block; position: relative; flex: 1 1 auto; min-height: 0; }
+  .routemap__view svg, .yearmap__view svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: hidden; }
+  .routemap__far { display: inline; }
+  /* the name and the whole-trip button share a strip under the map */
+  .routemap__foot, .yearmap__foot { display: flex; align-items: center; gap: .75rem; padding: .35rem var(--gutter) .4rem; border-top: 1px solid var(--line-2); }
+  .routemap__whole, .yearmap__whole {
+    display: block;
+    flex: none;
+    min-height: 30px;
+    padding: .3em .95em .22em;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    transition: background-color .3s var(--ease-soft), color .3s;
+  }
+  .routemap__whole:hover, .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  [data-theme="dusk"] .routemap__whole:hover,
+  [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  .routemap__now, .yearmap__now {
+    display: flex; align-items: baseline; gap: .65rem;
+    flex: 1 1 auto; min-width: 0; max-width: none; min-height: 0;
+    text-align: left;
+  }
+  .routemap__day, .yearmap__k { flex: none; }
+  .routemap__title, .yearmap__title { min-width: 0; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yearmap__now { display: flex; align-items: baseline; gap: .65rem; justify-items: start; }
+  /* a link to a day or a month lands below the band, not under it */
+}
+
+/* The whole route, in a window opened from the band */
+.routesheet {
+  width: min(calc(100vw - 2 * var(--gutter)), 430px);
+  max-height: calc(100svh - 2rem);
+  padding: 1rem 1.1rem 1.1rem;
+  border: var(--keyline);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 6px 6px 0 var(--gold);
+  overflow: auto;
+}
+.routesheet[open] { display: grid; gap: .8rem; justify-items: center; animation: routesheet-in .45s var(--ease); }
+.routesheet::backdrop { background: rgba(20, 17, 13, .55); }
+.routesheet__head { justify-self: stretch; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .2rem 1rem; }
+.routesheet__k { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.routesheet__title { grid-column: 1; margin: 0; font-family: var(--display); font-size: 1.4rem; font-weight: 400; line-height: 1.15; }
+.routesheet__close {
+  grid-column: 2; grid-row: 1 / span 2;
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+}
+.routesheet__close:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+[data-theme="dusk"] .routesheet__close:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+.routesheet__map svg { display: block; height: min(calc(100svh - 12rem), 640px); width: auto; max-width: 100%; overflow: visible; }
+/* The route down the coast is a tall, narrow map, so it is sized by its
+   height above. A map of the whole country is not: give it the atlas's own
+   shape, or it sits in the middle of a tall sheet of empty paper. */
+.yearsheet .routesheet__map svg {
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1000 / 646;
+}
+.routesheet .routemap__far { display: none; }
+.routesheet__now { display: grid; justify-items: center; gap: .25rem; margin: 0; text-align: center; }
+@keyframes routesheet-in {
+  from { opacity: 0; transform: translateY(16px) rotate(-1deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .routemap__leg { transition: none; }
+}

@@ -30,6 +30,13 @@
   const WASH = ['--blue', '--gold', '--rose', '--sage-500', '--khaki', '--coral'];
   const TILT = [-2.6, 1.8, -1.4, 2.4, -1.8, 1.2];
 
+  // Once a frame, never once an event: see the same note in site.js.
+  const perFrame = fn => {
+    let queued = false;
+    const run = () => { queued = false; fn(); };
+    return () => { if (queued) return; queued = true; requestAnimationFrame(run); };
+  };
+
   const ARROW = '<svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>';
 
   // a little snapshot drawn in ink: two hills under one of the logo's stars
@@ -366,26 +373,28 @@
     let lastLive = null, lastMonth = null;
 
     const tick = () => {
-      const mid = innerHeight * 0.5;
-      sections.forEach(sec => {
+      // every position first, then the classes: a class written between two
+      // reads makes the browser lay the whole page out again
+      const mid = innerHeight * 0.5, top = innerHeight * 0.6, bottom = innerHeight * 0.25;
+      const secBoxes = sections.map(sec => sec.getBoundingClientRect());
+      const rects = chaps.map(ch => ch.getBoundingClientRect());
+      const headBox = head ? head.getBoundingClientRect() : null;
+
+      sections.forEach((sec, i) => {
         const spine = $('.timeline__spine', sec);
-        const box = sec.getBoundingClientRect();
+        const box = secBoxes[i];
         if (spine) spine.style.setProperty('--spine', (clamp((mid - box.top) / box.height, 0, 1) * 100).toFixed(2) + '%');
       });
 
       let live = null;
-      chaps.forEach(ch => {
-        const r = ch.getBoundingClientRect();
-        const on = r.top < innerHeight * 0.6 && r.bottom > innerHeight * 0.25;
+      chaps.forEach((ch, i) => {
+        const on = rects[i].top < top && rects[i].bottom > bottom;
         ch.classList.toggle('is-in', on);
         if (on && !live) live = ch;
       });
 
       let month = live ? Number(live.dataset.month) : null;
-      if (!live && head) {
-        const r = head.getBoundingClientRect();
-        if (r.top < mid && r.bottom > 0) month = Number(head.dataset.month);
-      }
+      if (!live && headBox && headBox.top < mid && headBox.bottom > 0) month = Number(head.dataset.month);
       if (month !== lastMonth) {
         lastMonth = month;
         buttons.forEach(b => b.classList.toggle('is-on', Number(b.dataset.month) === month));
@@ -401,7 +410,7 @@
     };
 
     tick();
-    addEventListener('scroll', tick, { passive: true });
+    addEventListener('scroll', perFrame(tick), { passive: true });
     addEventListener('resize', tick);
 
     buttons.forEach(b => b.addEventListener('click', () => {
@@ -549,7 +558,10 @@
     const moon = host.closest('.moon');
     const band = host.closest('.moon__map');
     const bar = $('#jump');
-    const wide = matchMedia('(min-width: 1180px)');
+    // The floating window, rather than the band under the bar: a big screen,
+    // or a phone on its side. Kept in step with the same query in
+    // assets/css/map.css, which the band is written as the complement of.
+    const wide = matchMedia('(min-width: 1180px), (min-width: 700px) and (max-height: 520px) and (orientation: landscape)');
     let shown = null, cur = null, raf = 0, stop = 0, onBand = false;
 
     // screen pixels per svg unit, with the dots kept one size on screen
@@ -737,7 +749,7 @@
     };
 
     document.addEventListener('year:chapter', e => fromScroll(e.detail));
-    addEventListener('scroll', () => { if (!wide.matches) fromBand(); }, { passive: true });
+    addEventListener('scroll', perFrame(() => { if (!wide.matches) fromBand(); }), { passive: true });
     addEventListener('resize', layout);
     $('.routemap__whole', host).addEventListener('click', () => {
       sheet.showModal();
@@ -754,19 +766,14 @@
   }
 
   /* ── The year's map ────────────────────────────────────────────────────
-     Every place this year's photographs were taken, from
-     assets/js/years/places.js, on the outlines in assets/js/atlas.js. It
-     rides beside the months on a wide screen and in a band under the bar on
-     a narrower one, moving to the month being read and colouring in each
-     state as the year goes on. The whole year opens in a window of its own. */
-
-  // the gold four-point star from the logo, centred on 0 0, for home
-  const STAR = 'M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z';
+     Every place this year's photographs were taken, drawn by the shared
+     component in assets/js/trailmap.js. The stops come from the trip folders
+     each month's photographs sit in, looked up in years/places.js. */
 
   function initYearMap() {
     const host = $('#yearmap');
     const A = window.MW_ATLAS, PL = window.MW_PLACES;
-    if (!host || !A || !PL) return;
+    if (!host || !A || !PL || !window.MW_TRAILMAP) return;
 
     // the trip folders a month's photographs come from, and their stops
     const folders = list => [...new Set((list || [])
@@ -775,247 +782,28 @@
     const stopsOf = list => folders(list).flatMap(f => PL[f] || []);
     const months = (Y.months || []).map(m => ({ month: m.month, stops: stopsOf(m.photos) }));
     const moon = Y.honeymoon ? (Y.honeymoon.days || []).flatMap(d => stopsOf(d.photos)) : [];
-    const all = [...moon, ...months.flatMap(m => m.stops)];
-    if (!all.length) return;
+    if (!months.some(m => m.stops.length) && !moon.length) return;
 
-    // one dot per place, however many months or trips landed there
-    const spots = [...new Map(all.map(s => [`${s.n}|${s.at}`, s])).values()];
-    const where = s => spots.findIndex(q => q.n === s.n && String(q.at) === String(s.at));
-    // the states coloured in by the end of each month, the honeymoon first
-    const upto = months.map((_, i) => new Set(
-      [...moon, ...months.slice(0, i + 1).flatMap(m => m.stops)].map(s => s.st).filter(Boolean)));
-    const every = new Set(all.map(s => s.st).filter(Boolean));
+    const at = m => months.findIndex(x => x.month === m);
 
-    const draw = () => `
-      <svg viewBox="0 0 ${A.w} ${A.h}" role="img" aria-label="Map of our ${esc(Y.year)} trips: ${esc(spots.map(s => s.n).join(', '))}">
-        <g>${A.regions.map(r => `<path class="ymap__land" d="${r.d}"/>`).join('')}</g>
-        <g>${A.regions.filter(r => every.has(r.id)).map(r => `<path class="ymap__fill" data-st="${r.id}" data-q="${r.q}" d="${r.d}"/>`).join('')}</g>
-        <g>${spots.map((s, i) => `<circle class="ymap__stop" data-i="${i}" cx="${s.at[0]}" cy="${s.at[1]}" r="3"/>`).join('')}</g>
-        <g>${spots.map((s, i) => `<text class="ymap__label" data-i="${i}" x="${s.at[0]}" y="${s.at[1]}" dy=".35em">${esc(s.n)}</text>`).join('')}</g>
-        <g transform="translate(${A.home[0]} ${A.home[1]})" aria-hidden="true"><path class="ymap__home" d="${STAR}"/></g>
-      </svg>`;
-
-    host.innerHTML = `
-      <div class="yearmap__view">${draw()}</div>
-      <div class="yearmap__foot">
-        <p class="yearmap__now" aria-live="polite"></p>
-        <button class="yearmap__whole" type="button" aria-haspopup="dialog">Whole year</button>
-      </div>`;
-
-    const sheet = document.createElement('dialog');
-    sheet.className = 'routesheet yearsheet';
-    sheet.setAttribute('aria-labelledby', 'yearsheet-title');
-    sheet.innerHTML = `
-      <div class="routesheet__head">
-        <span class="routesheet__k">${esc(Y.year)}</span>
-        <h2 class="routesheet__title" id="yearsheet-title">Everywhere we went</h2>
-        <button class="routesheet__close" type="button" aria-label="Close the map">
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <div class="routesheet__map">${draw()}</div>
-      <p class="yearmap__now routesheet__now"></p>`;
-    document.body.appendChild(sheet);
-
-    const kit = root => ({
-      svg: $('svg', root),
-      fills: $$('.ymap__fill', root),
-      stops: $$('.ymap__stop', root),
-      labels: $$('.ymap__label', root)
+    window.MW_TRAILMAP({
+      host,
+      wrap: host.closest('.ymap'),
+      band: host.closest('.ymap__map'),
+      bar: $('#jump'),
+      atlas: A,
+      groups: months,
+      seed: moon,
+      chapters: $$('.chap--month'),
+      groupOf: el => (el && el.classList.contains('chap--month') ? at(Number(el.dataset.month)) : -1),
+      caption: (i, said, n) => months[i]
+        ? { k: MONTHS[months[i].month - 1], title: said || 'No photographs yet' }
+        : { k: Y.year, title: `${n} places` },
+      aria: `Map of our ${Y.year} trips`,
+      whole: 'Whole year',
+      sheet: { k: Y.year, title: 'Everywhere we went' },
+      event: 'year:chapter'
     });
-    const main = kit($('.yearmap__view', host));
-    const whole = kit($('.routesheet__map', sheet));
-    const caps = [$('.yearmap__now', host), $('.routesheet__now', sheet)];
-    const chapters = $$('.chap--month');
-    const wrap = host.closest('.ymap');
-    const band = host.closest('.ymap__map');
-    const bar = $('#jump');
-    const wide = matchMedia('(min-width: 1180px)');
-    const f = n => n.toFixed(1);
-    let shown = null, cur = null, raf = 0, stop = 0, onBand = false;
-
-    function paint(m, k) {
-      m.svg.style.setProperty('--mapk', k.toFixed(4));
-      m.stops.forEach(c => c.setAttribute('r', f(Number(c.dataset.r || 3.4) / k)));
-    }
-
-    // the piece of map that holds these stops, with room round them, cut to
-    // the shape of the map on screen
-    function frame(m, list) {
-      const bw = m.svg.clientWidth || 1, bh = m.svg.clientHeight || 1;
-      const pts = list.length ? list.map(s => s.at) : spots.map(s => s.at);
-      const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-      const s = Math.min(bw / (Math.max(x1 - x0, 70) * 1.9), bh / (Math.max(y1 - y0, 55) * 1.7));
-      return [(x0 + x1) / 2 - bw / s / 2, (y0 + y1) / 2 - bh / s / 2, bw / s, bh / s];
-    }
-
-    function fly(v) {
-      cancelAnimationFrame(raf);
-      clearTimeout(stop);
-      const bw = main.svg.clientWidth || 1;
-      const land = () => { cur = v; main.svg.setAttribute('viewBox', v.map(f).join(' ')); paint(main, bw / v[2]); };
-      const from = cur;
-      if (!from || calm) return land();
-      const t0 = performance.now(), dur = 850, ratio = v[3] / v[2];
-      const fc = [from[0] + from[2] / 2, from[1] + from[3] / 2], tc = [v[0] + v[2] / 2, v[1] + v[3] / 2];
-      const step = now => {
-        const t = clamp((now - t0) / dur, 0, 1), e = 1 - Math.pow(1 - t, 3);
-        const vw = from[2] * Math.pow(v[2] / from[2], e), vh = vw * ratio;
-        const cx = fc[0] + (tc[0] - fc[0]) * e, cy = fc[1] + (tc[1] - fc[1]) * e;
-        cur = [cx - vw / 2, cy - vh / 2, vw, vh];
-        main.svg.setAttribute('viewBox', cur.map(f).join(' '));
-        paint(main, bw / vw);
-        if (t < 1) raf = requestAnimationFrame(step);
-      };
-      raf = requestAnimationFrame(step);
-      stop = setTimeout(() => { cancelAnimationFrame(raf); land(); }, dur + 250);
-    }
-
-    // Colour in the states and name the month's stops. A name sits to the
-    // right of its dot, or to the left if that side is taken, or is left off.
-    function mark(m, i, v, k) {
-      const live = months[i] ? months[i].stops : [];
-      const on = months[i] ? upto[i] : (i >= months.length ? every : new Set(moon.map(s => s.st).filter(Boolean)));
-      const now = new Set(live.map(s => s.st).filter(Boolean));
-      m.fills.forEach(p => {
-        p.classList.toggle('is-on', on.has(p.dataset.st));
-        p.classList.toggle('is-now', now.has(p.dataset.st));
-      });
-
-      const mine = new Set(live.map(where));
-      m.stops.forEach(c => {
-        const here = mine.has(Number(c.dataset.i));
-        c.classList.toggle('is-now', here);
-        c.dataset.r = here ? 5.2 : 3.4;
-      });
-
-      const u = 1 / k;
-      const [vx, vy, vw, vh] = v;
-      const order = live.length ? [...mine] : spots.map((_, n) => n);
-      const boxes = spots.filter((_, n) => order.includes(n)).map(s => [s.at[0] - 5 * u, s.at[1] - 5 * u, s.at[0] + 5 * u, s.at[1] + 5 * u]);
-      const hits = r => r[0] < vx || r[2] > vx + vw || r[1] < vy || r[3] > vy + vh ||
-        boxes.some(o => r[0] < o[2] && r[2] > o[0] && r[1] < o[3] && r[3] > o[1]);
-      const side = new Map();
-      order.forEach(n => {
-        const s = spots[n], w = s.n.length * 6.4 * u, h = 13 * u, gap = 9 * u;
-        const right = [s.at[0] + gap, s.at[1] - h / 2, s.at[0] + gap + w, s.at[1] + h / 2];
-        const left = [s.at[0] - gap - w, s.at[1] - h / 2, s.at[0] - gap, s.at[1] + h / 2];
-        const at = !hits(right) ? 'right' : !hits(left) ? 'left' : null;
-        if (!at) return;
-        boxes.push(at === 'right' ? right : left);
-        side.set(n, at);
-      });
-      m.labels.forEach(t => {
-        const n = Number(t.dataset.i), at = side.get(n);
-        if (at) {
-          t.setAttribute('x', f(spots[n].at[0] + (at === 'right' ? 9 : -9) * u));
-          t.setAttribute('text-anchor', at === 'right' ? 'start' : 'end');
-        }
-        t.classList.toggle('is-on', !!at);
-      });
-    }
-
-    function show(i) {
-      shown = i;
-      const live = months[i] ? months[i].stops : [];
-      const full = [0, 0, A.w, A.h];
-      if (wide.matches) {
-        const v = frame(main, live);
-        cur = null;
-        main.svg.setAttribute('viewBox', v.map(f).join(' '));
-        mark(main, i, v, (main.svg.clientWidth || 1) / v[2]);
-        paint(main, (main.svg.clientWidth || 1) / v[2]);
-      } else {
-        const v = frame(main, live);
-        mark(main, i, v, (main.svg.clientWidth || 1) / v[2]);
-        fly(v);
-      }
-      if (sheet.open) {
-        const v = frame(whole, []);
-        whole.svg.setAttribute('viewBox', v.map(f).join(' '));
-        const k = (whole.svg.clientWidth || 1) / v[2];
-        mark(whole, i, v, k);
-        paint(whole, k);
-      }
-      const names = live.map(s => s.n);
-      const said = names.length > 2 ? `${names.slice(0, 2).join(', ')} and ${names.length - 2} more` : names.join(' & ');
-      const html = months[i]
-        ? `<span class="yearmap__k">${MONTHS[months[i].month - 1]}</span><span class="yearmap__title">${esc(said || 'No photographs yet')}</span>`
-        : `<span class="yearmap__k">${esc(Y.year)}</span><span class="yearmap__title">${spots.length} places</span>`;
-      caps.forEach(c => { c.innerHTML = html; });
-    }
-
-    const index = m => months.findIndex(x => x.month === m);
-    // on a wide screen the floating window comes and goes with the months
-    const fromWide = () => {
-      const r = wrap.getBoundingClientRect();
-      const on = r.top < innerHeight * 0.72 && r.bottom > innerHeight * 0.3;
-      if (on === onBand) return;
-      onBand = on;
-      band.classList.toggle('is-on', on);
-      band.inert = !on;
-    };
-    const fromScroll = live => {
-      if (!wide.matches) return;
-      fromWide();
-      const m = live && live.classList.contains('chap--month') ? index(Number(live.dataset.month)) : -1;
-      if (m > -1) return show(m);
-      const r = wrap ? wrap.getBoundingClientRect() : null;
-      show(r && r.bottom < innerHeight * 0.5 ? months.length : -1);
-    };
-
-    const edge = () => (bar ? bar.getBoundingClientRect().bottom : 0) + band.offsetHeight;
-    function pick() {
-      const e = edge(), line = e + (innerHeight - e) * 0.33;
-      let i = -1;
-      chapters.forEach(ch => { if (ch.getBoundingClientRect().top < line) i = index(Number(ch.dataset.month)); });
-      return wrap.getBoundingClientRect().bottom < line ? months.length : i;
-    }
-    function fromBand() {
-      const r = wrap.getBoundingClientRect(), e = edge();
-      const on = r.top < e && r.bottom > e + 40;
-      if (on !== onBand) {
-        onBand = on;
-        band.classList.toggle('is-on', on);
-        band.inert = !on;
-        if (on) cur = null;
-      }
-      const i = pick();
-      if (i !== shown || cur === null) show(i);
-    }
-
-    const measure = () => { if (bar && wrap) wrap.style.setProperty('--ybar-h', `${bar.offsetHeight}px`); };
-    const layout = () => {
-      measure();
-      cur = null;
-      if (wide.matches) {
-        onBand = false;
-        band.classList.remove('is-on');
-        band.inert = true;
-        fromWide();
-        show(shown ?? -1);
-      } else {
-        band.inert = !onBand;
-        fromBand();
-      }
-    };
-
-    document.addEventListener('year:chapter', e => fromScroll(e.detail));
-    addEventListener('scroll', () => { wide.matches ? fromWide() : fromBand(); }, { passive: true });
-    addEventListener('resize', layout);
-    $('.yearmap__whole', host).addEventListener('click', () => {
-      sheet.showModal();
-      show(shown ?? months.length);
-    });
-    $('.routesheet__close', sheet).addEventListener('click', () => sheet.close());
-    sheet.addEventListener('click', e => {
-      const r = sheet.getBoundingClientRect();
-      if (e.target === sheet && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) sheet.close();
-    });
-    if (document.fonts) document.fonts.ready.then(measure);
-    layout();
-    if (wide.matches) fromScroll(null);
   }
 
   renderCover();

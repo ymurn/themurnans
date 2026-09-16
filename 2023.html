@@ -5,7 +5,22 @@
 <title>2023 · After the Wedding · The Murnans</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A trip in every month of 2023: fifteen states, one province and nine national parks, from Joshua Tree to Shenandoah. David and Yinja Murnan.">
-<meta name="theme-color" content="#08191D">
+<!-- The link preview: without these a scraper picks whichever picture it meets
+     first, which was the line drawing of David. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Murnans">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://ymurn.github.io/themurnans/2023.html">
+<meta property="og:title" content="2023 · After the Wedding · The Murnans">
+<meta property="og:description" content="A trip in every month of 2023: fifteen states, one province and nine national parks, from Joshua Tree to Shenandoah. David and Yinja Murnan.">
+<meta property="og:image" content="https://ymurn.github.io/themurnans/assets/art/social-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Bear and the Tiger: David and Yinja drawn face to face under a scatter of gold stars.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ymurn.github.io/themurnans/2023.html">
+<meta name="theme-color" content="#F7F0E0">
 <link rel="icon" href="assets/art/favicon-logo.png">
 <link rel="apple-touch-icon" href="assets/art/bear-tiger-logo-round.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,8 +28,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/year.css">
+<link rel="stylesheet" href="assets/css/map.css">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
-<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t;
+  var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === 'dusk' ? '#0B1F25' : '#F7F0E0'; } catch (e) {}</script>
 </head>
 <body data-page="year">
 
@@ -122,6 +139,7 @@
 <script src="assets/js/years/2023.js"></script>
 <script src="assets/js/atlas.js"></script>
 <script src="assets/js/years/places.js"></script>
+<script src="assets/js/trailmap.js"></script>
 <script src="assets/js/year.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
