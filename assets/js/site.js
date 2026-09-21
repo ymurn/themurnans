@@ -1713,7 +1713,10 @@
     const sheetMap = $('.memsheet__map', sheet);
 
     let shut = 0;                       // pending "put the map back" timer
-    const sheetOpen = () => !sheet.hidden;
+    /* Open is the class, not "hidden": hidden is only written at the end of
+       the shrink, and until then a second press on the pill would be read as
+       a press on something already open and do nothing at all. */
+    const sheetOpen = () => sheet.classList.contains('is-open');
     const card = $('.memsheet__card', sheet);
 
     /* The pill does not hand over to a panel, it becomes one: the card starts
@@ -1730,19 +1733,36 @@
       card.style.setProperty('--th', `${Math.round(h)}px`);
     };
 
+    /* The pill's own box, not the box it is drawn in. While the map is up the
+       pill is held at nine tenths out of sight, and a rect read then is a
+       tenth short: the card would land inside the pill rather than on it, and
+       sit there as a blank wine lozenge over the pill's own label. The scale
+       turns about the centre, so the centre is the one thing it leaves alone.  */
+    const pillBox = () => {
+      const r = bar.getBoundingClientRect();
+      const w = bar.offsetWidth, h = bar.offsetHeight;
+      return {
+        top: r.top + r.height / 2 - h / 2,
+        left: r.left + r.width / 2 - w / 2,
+        width: w, height: h
+      };
+    };
+    const from = r => {
+      card.style.setProperty('--fy', `${Math.round(r.top)}px`);
+      card.style.setProperty('--fx', `${Math.round(r.left)}px`);
+      card.style.setProperty('--fw', `${Math.round(r.width)}px`);
+      card.style.setProperty('--fh', `${Math.round(r.height)}px`);
+    };
+
     const openSheet = () => {
       if (sheetOpen()) return;
       clearTimeout(shut);
       print(true);
       measure();
       // where it grows from: the pill itself, or the middle if there is none
-      const r = bar && bar.classList.contains('is-up')
-        ? bar.getBoundingClientRect()
-        : { top: innerHeight / 2 - 22, left: innerWidth / 2 - 90, width: 180, height: 44 };
-      card.style.setProperty('--fy', `${Math.round(r.top)}px`);
-      card.style.setProperty('--fx', `${Math.round(r.left)}px`);
-      card.style.setProperty('--fw', `${Math.round(r.width)}px`);
-      card.style.setProperty('--fh', `${Math.round(r.height)}px`);
+      from(bar && bar.classList.contains('is-up')
+        ? pillBox()
+        : { top: innerHeight / 2 - 22, left: innerWidth / 2 - 90, width: 180, height: 44 });
 
       sheetMap.appendChild(svg);
       sheet.hidden = false;
@@ -1757,20 +1777,17 @@
     const closeSheet = () => {
       if (!sheetOpen()) return;
       // back into the pill it came out of, wherever that has got to
-      if (bar && bar.classList.contains('is-up')) {
-        const r = bar.getBoundingClientRect();
-        card.style.setProperty('--fy', `${Math.round(r.top)}px`);
-        card.style.setProperty('--fx', `${Math.round(r.left)}px`);
-        card.style.setProperty('--fw', `${Math.round(r.width)}px`);
-        card.style.setProperty('--fh', `${Math.round(r.height)}px`);
-      }
+      if (bar && bar.classList.contains('is-up')) from(pillBox());
       sheet.classList.remove('is-open');
       document.body.classList.remove('memsheet-open');
       document.documentElement.style.overflow = '';
       if (pickBtn) { pickBtn.setAttribute('aria-expanded', 'false'); pickBtn.focus(); }
+      // After the shrink and the fade at the end of it, never during: taken
+      // off the page early the card goes out with a pop, mid-fade and still
+      // a size too big for the pill it is standing on.
       const home = () => { sheet.hidden = true; map.appendChild(svg); };
       if (calm) home();
-      else shut = setTimeout(home, 420);
+      else shut = setTimeout(home, 460);
     };
 
     addEventListener('resize', perFrame(() => { if (sheetOpen()) measure(); }));

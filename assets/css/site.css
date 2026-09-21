@@ -4161,10 +4161,20 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   background: var(--deep);
   color: var(--deep-ink);
   box-shadow: 0 26px 70px #00000073;
+  /* Shutting, and only shutting: this is the state the card goes back to, so
+     the transition written here is the one it goes back with. The stamp below
+     has a spring in it, which is what throws the card open; run backwards the
+     same spring ducks the card inside the pill it is landing on, and a blank
+     wine lozenge sits over the pill's own label for a beat before it is taken
+     off the page. So it comes back the plain way, and the last beat of the
+     shrink is a fade: by then the card is the pill's box in the pill's
+     colour, and the label underneath simply arrives. */
+  opacity: 0;
   transition:
-    top .46s var(--stamp), left .46s var(--stamp),
-    width .46s var(--stamp), height .46s var(--stamp),
-    border-radius .3s var(--ease-soft);
+    top .4s var(--ease-soft), left .4s var(--ease-soft),
+    width .4s var(--ease-soft), height .4s var(--ease-soft),
+    border-radius .3s var(--ease-soft),
+    opacity .14s linear .28s;
 }
 .memsheet.is-open .memsheet__card {
   top: calc(var(--nav-h) + 10px);
@@ -4172,6 +4182,12 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   width: var(--tw, 320px);
   height: var(--th, 320px);
   border-radius: 30px;
+  opacity: 1;
+  transition:
+    top .46s var(--stamp), left .46s var(--stamp),
+    width .46s var(--stamp), height .46s var(--stamp),
+    border-radius .3s var(--ease-soft),
+    opacity .01s;
 }
 .memsheet__card > * { opacity: 0; transition: opacity .14s var(--ease-soft); }
 .memsheet.is-open .memsheet__card > * { opacity: 1; transition: opacity .26s var(--ease-soft) .2s; }
