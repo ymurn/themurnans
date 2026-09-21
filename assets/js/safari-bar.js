@@ -13,28 +13,43 @@
    returns to the front, and at those moments it can land on the paper
    instead.
 
-   So: hold one theme-color tag at the footer's oxblood, and at each of
+   So: hold one theme-color tag at the footer's colour, and at each of
    those moments write a colour one shade off, wait a frame, and write the
-   oxblood back. That is a change Safari cannot skip, and one shade is too
+   footer's back. That is a change Safari cannot skip, and one shade is too
    small to see.
 
    Only iPhones and iPads get the re-writing. Everywhere else the tag in the
    <head> is already enough, and nudging it would flicker Chrome's bar on
    Android for nothing.
+
+   The footer is no longer one colour: it is gold in dawn and dark green in
+   dusk. So the colour is read off --footer-bg rather than written out here,
+   and read again whenever the theme changes.
    ========================================================================== */
 
 (() => {
   'use strict';
 
-  const BAR   = '#3A1621';   // --deep, the oxblood of the footer
-  const NUDGE = '#3A1622';   // one step off BAR, only ever held for a frame
+  /* --footer-bg as the browser has worked it out, with a fallback for the
+     moment before the stylesheet lands. */
+  const read = () =>
+    (getComputedStyle(document.documentElement).getPropertyValue('--footer-bg') || '').trim() || '#F3DEAF';
+
+  let BAR = read();
+
+  /* One step off BAR, only ever held for a frame. Nudging the last digit of
+     a hex works whatever the value; anything else gets a suffix Safari
+     still parses as a different colour. */
+  const nudged = v => /^#[0-9a-f]{6}$/i.test(v)
+    ? v.slice(0, -1) + (v.slice(-1).toLowerCase() === 'f' ? 'e' : 'f')
+    : v;
 
   const ua  = navigator.userAgent;
   const ios = /iP(hone|od|ad)/.test(ua) ||
               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-  /* One tag, no media variants: the bar is oxblood in dawn and in dusk, the
-     same as the footer it sits under. */
+  /* One tag, no media variants: the theme decides the colour, not the
+     browser, so the bar always matches the footer it sits under. */
   function tags() {
     let list = [...document.querySelectorAll('meta[name="theme-color"]')];
     if (!list.length) {
@@ -56,7 +71,7 @@
   let back = 0;
   function repaint() {
     clearTimeout(back);
-    set(NUDGE);
+    set(nudged(BAR));
     back = setTimeout(() => set(BAR), 40);
   }
 
@@ -77,7 +92,8 @@
     soon(60);
   });
 
-  /* Dawn to dusk repaints the whole page, and Safari samples it again. */
-  new MutationObserver(() => soon(80))
+  /* Dawn to dusk repaints the whole page, and Safari samples it again. The
+     footer changes colour with it, so re-read before the nudge. */
+  new MutationObserver(() => { BAR = read(); set(BAR); soon(80); })
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();

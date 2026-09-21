@@ -55,11 +55,25 @@
   --line-2:       color-mix(in srgb, var(--ink) 9%, transparent);
 
   /* the ink keyline that everything in the artwork is drawn with */
-  /* the deep ground under the footer and the dark bands: oxblood, not green */
+  /* the deep ground under the dark bands: oxblood, not green */
   --deep:         #3A1621;
   --deep-ink:     #F9F2E4;
   --deep-ink-2:   #E0C9CB;
   --deep-ink-3:   #BBA0A5;
+
+  /* The footer's own ground, kept apart from --deep so the band of links
+     above it can stay oxblood while the footer goes gold. A soft butter
+     rather than the full gold: a whole page width of the strong one is a lot
+     of yellow. Safari samples this for the bar the search box sits in, in
+     assets/js/safari-bar.js. */
+  --footer-bg:     #F3DEAF;
+  --footer-ink:    #14110D;
+  --footer-ink-2:  #4A3D1F;
+  --footer-ink-3:  #5C4A26;
+  --footer-brass:  #6B4E13;
+  --footer-hover:  #7A2436;
+  --footer-line:   #14110D2b;
+  --footer-invert: 0;
 
   /* dusk's own ground, named here so the toggle's dot can show the colour it
      switches to without repeating the number */
@@ -138,6 +152,17 @@
 
   --shadow-sm: 0 1px 2px #0004, 0 6px 18px #0005;
   --shadow-lg: 0 2px 4px #0004, 0 18px 50px #0007;
+
+  /* the footer in dusk: the page's own dark teal, a shade off it rather than
+     a block sitting on top of it */
+  --footer-bg:     #0E2327;
+  --footer-ink:    #F4EBD6;
+  --footer-ink-2:  #C7D5CD;
+  --footer-ink-3:  #9DB0A8;
+  --footer-brass:  #F2DEB0;
+  --footer-hover:  #F2DEB0;
+  --footer-line:   #ffffff26;
+  --footer-invert: 1;
 
   --art-invert: 1;
   color-scheme: dark;
@@ -627,23 +652,28 @@ body.menu-open .nav__burger span::before { transform: translateY(6px) rotate(45d
 body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45deg); }
 
 .footer {
-  background: var(--deep);
-  color: var(--deep-ink);
+  background: var(--footer-bg);
+  color: var(--footer-ink);
   padding-block: clamp(3.5rem, 7vw, 6rem) 2.25rem;
-  --ink: var(--deep-ink);
-  --ink-2: var(--deep-ink-2);
-  --ink-3: var(--deep-ink-3);
-  --brass-ink: #EBC97E;
-  --line: #ffffff26;
-  --art-invert: 1;
+  --ink: var(--footer-ink);
+  --ink-2: var(--footer-ink-2);
+  --ink-3: var(--footer-ink-3);
+  --brass-ink: var(--footer-brass);
+  --line: var(--footer-line);
+  --line-2: var(--footer-line);
+  --art-invert: var(--footer-invert);
 }
-.footer a { color: var(--deep-ink); }
+.footer a { color: var(--footer-ink); }
 .footer__top { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2.5rem; align-items: start; }
-.footer__word { font-family: var(--display); font-size: clamp(3rem, 11vw, 9rem); line-height: .95; letter-spacing: -.015em; color: var(--deep-ink); opacity: .96; margin-block: clamp(2.5rem, 6vw, 4.5rem) 1.75rem; }
-.footer__meta { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; justify-content: space-between; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--deep-ink-3); }
+.footer__word { font-family: var(--display); font-size: clamp(3rem, 11vw, 9rem); line-height: .95; letter-spacing: -.015em; color: var(--footer-ink); opacity: .96; margin-block: clamp(2.5rem, 6vw, 4.5rem) 1.75rem; }
+.footer__meta { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; justify-content: space-between; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--footer-ink-3); }
 .footer__cols { display: grid; gap: .55rem; }
-.footer__cols a { color: var(--deep-ink-2); font-size: .82rem; transition: color .3s; }
-.footer__cols a:hover { color: var(--brass-2); }
+.footer__cols a { color: var(--footer-ink-2); font-size: .82rem; transition: color .3s; }
+.footer__cols a:hover { color: var(--footer-hover); }
+/* The ampersand was coral on oxblood. On gold the coral goes soft, so dawn
+   takes the wine instead; dusk's dark green keeps the coral. */
+.footer .amp { color: #7A2436; }
+[data-theme="dusk"] .footer .amp { color: var(--coral); }
 
 /* 7 ── HERO & THE POUR ─────────────────────────────────────────────────── */
 
@@ -3296,6 +3326,16 @@ a.yearbtn { display: inline-block; }
 .fold__more:focus { outline: none; }
 @media (max-width: 620px) {
   .fold.is-folded .fold__more { display: none; }
+  /* More than eight lines of the first paragraph is a whole screen of type
+     before the first photograph. It is cut to eight, and the button opens
+     the rest of it whether or not more paragraphs follow. */
+  .fold.is-folded .fold__lede {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+            line-clamp: 8;
+    overflow: hidden;
+  }
   .fold.is-folded .fold__btn {
     display: inline-flex;
     align-items: center;
@@ -3576,12 +3616,12 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 .footer__years { display: grid; grid-template-columns: repeat(2, max-content); gap: .4rem; margin-top: .3rem; }
 .footer__years a {
   padding: .2rem .6rem;
-  border: 1px solid #ffffff2e;
+  border: 1px solid var(--footer-line);
   border-radius: 999px;
   font-size: .76rem; letter-spacing: .06em;
   transition: background .3s, border-color .3s, color .3s;
 }
-.footer__years a:hover { background: var(--brass-2); border-color: var(--brass-2); color: var(--deep); }
+.footer__years a:hover { background: var(--footer-hover); border-color: var(--footer-hover); color: var(--footer-bg); }
 /* Four columns now that the timelines have their own, but only while the
    footer is still a row: it stacks at 880px, below the rule above. */
 @media (min-width: 881px) { .footer__top { grid-template-columns: 1.25fr 1fr 1fr 1fr; } }
@@ -3832,7 +3872,18 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   background: linear-gradient(transparent, #14110Dcc);
   color: #F9F2E4; font-size: .76rem; line-height: 1.4;
 }
-.mem__roll { display: flex; gap: .4rem; }
+/* The rest of the roll, under the lead photograph. It used to carry the same
+   class as the "Surprise me" button above the grid, which dressed it as a
+   gold pill the square thumbnails then hung out of. Its own name now, and a
+   rounded rectangle cut to what is inside it. */
+.mem__shots {
+  display: flex;
+  gap: .4rem;
+  padding: .4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--paper-2);
+}
 .mem__thumb {
   flex: 1 1 0;
   aspect-ratio: 1 / 1;
@@ -3940,6 +3991,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .tally__cal { justify-items: start; }
 .tally__cta { display: grid; gap: 1rem; justify-items: start; max-width: 46ch; }
 .tally__cta .lede { margin: 0; }
+/* The pair of buttons takes the column, not just the width of its words, so
+   initButtonRows has a width to measure the pair against. */
+.tally__cta .btns { justify-self: stretch; }
 
 @media (max-width: 860px) {
   .tally__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3980,7 +4034,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   padding: .95rem 1.05rem;
   border: var(--keyline);
   border-radius: 16px 16px 16px 5px;
-  background: #ffffff10;
+  /* the same wine as the band behind it, so the bubble and its tail are one
+     colour and the keyline is the only thing drawing the shape */
+  background: var(--deep);
   color: var(--deep-ink);
   font-family: var(--hand);
   font-size: 1.24rem; line-height: 1.34;
@@ -4046,6 +4102,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    columns, with the map given less of the width than a desktop gives it. */
 @media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
   .mem { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; }
+  /* Six cards two across is three rows, and three rows on a screen this
+     short is a long scroll past a map that has gone. It stays, the way it
+     does on a desktop, and the pill never has to stand in for it. */
+  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .6rem); }
   .mem__panel {
     z-index: auto; margin-top: 0; padding: 0; min-height: 0;
     border: 0; border-radius: 0; background: none; box-shadow: none;
@@ -4055,6 +4115,36 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__hint { justify-content: flex-start; margin-bottom: 0; }
   .tally__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tally__end { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+}
+
+/* ── A TABLET STOOD UP ───────────────────────────────────────────────────
+   Wide enough to be a desktop by the width alone, and tall enough that the
+   two columns leave the map sitting in the top corner of a long empty one
+   while six cards stack down the other. So the map takes the top of the
+   section at a size it can be read at, and the cards become one row to
+   swipe: the whole section is a screen, and the map is still on it.
+   Landscape is handled above and does not reach this. */
+@media (min-width: 700px) and (orientation: portrait) {
+  .mem { grid-template-columns: minmax(0, 1fr); }
+  .mem__mapcol { position: static; }
+  .mem__map { width: 100%; max-width: 620px; margin-inline: auto; }
+
+  .mem__grid {
+    display: flex;
+    gap: 1.1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: .9rem var(--gutter) 1.4rem;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .mem__grid::-webkit-scrollbar { display: none; }
+  /* Two and a bit: the third card showing at the edge is what says the row
+     goes on. The odd-one-out rule belongs to the grid and has nothing to do
+     here, where there is only ever the one row. */
+  .mem__grid > * { flex: 0 0 42%; scroll-snap-align: start; }
 }
 
 /* ── The map as a pill (phones) ───────────────────────────────────────────
@@ -4091,7 +4181,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__bar.is-up { opacity: 1; scale: 1; translate: -50% 0; pointer-events: auto; }
 /* while the map is up, the pill it grew out of is not there to see */
 .memsheet-open .mem__bar { opacity: 0; scale: .9; pointer-events: none; transition-duration: .16s; }
-@media (min-width: 1000px) { .mem__bar { display: none; } }
+/* The desktop keeps the map beside the photographs, so the pill is never
+   needed there. A tablet stood up is 1024 wide and still scrolls the map off
+   the top, so it keeps it. */
+@media (min-width: 1000px) and (orientation: landscape) { .mem__bar { display: none; } }
 
 .mem__pick {
   display: flex; align-items: center; gap: .55rem;

@@ -162,9 +162,10 @@ The `29` figure on the home page is hard-coded in `index.html`, search for
 `data-count="29"` and bump it when the count changes. Its label on the next line reads
 **Adventures before the wedding**, which stays true as long as later trips go on the
 year pages. The three figures beside it are hard-coded the same way: road trips, national
-parks (38: 32 through 2025, plus 6 in 2026 not posted yet; only the 63 designated
-national parks count). The 32 is 31 named across the year pages, 2022 to 2025, plus
-Mammoth Cave in Volume One, and it already counts all five Utah parks. States (35,
+parks (40: 32 through 2025, plus 8 in 2026 not posted yet, the last two being Badlands
+and Wind Cave on September 19th; only the 63 designated national parks count). The 32 is
+31 named across the year pages, 2022 to 2025, plus Mammoth Cave in Volume One, and it
+already counts all five Utah parks. States (35,
 plus DC: 30 on the year pages through 2025, plus Kentucky, and North Dakota, South Dakota,
 Wyoming and Nebraska in 2026, not posted yet).
 

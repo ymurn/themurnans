@@ -11,7 +11,9 @@
    "route" is the loop in the order they drove it, each stop a point on the
    map in assets/js/atlas.js and the state it sits in, projected from the
    GPS in the photographs the same way assets/js/years/places.js is. A
-   stop's "leg" is the first and last point of the drive to it. */
+   stop's "leg" is the first and last point of the drive to it. A photograph
+   marked "us": true has the two of them in it together, which is what the
+   four at the top of the page are picked from first (assets/js/trip.js). */
 window.MW_TRIP = {
  "key": "yinjas-30th",
  "kicker": "June 4 to 15, 2026",
@@ -73,9 +75,9 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-01.jpg", "cap": "Grizzly Falls, the first stop" },
-    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-02.jpg", "cap": "Mist Falls, the top of the hike" },
+    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-02.jpg", "cap": "Mist Falls, the top of the hike", "us": true },
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-03.jpg", "cap": "The canyon from the trail" },
-    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-04.jpg", "cap": "On the way back down" },
+    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-04.jpg", "cap": "On the way back down", "us": true },
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-06.jpg", "cap": "Roaring River Falls" },
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-07.jpg", "cap": "The first sequoias of the trip, at Grant Grove" }
    ]
@@ -112,7 +114,7 @@ window.MW_TRIP = {
     { "src": "continued_trips/2026-06-sequoia/2026-06-sequoia-07.jpg", "cap": "Between two trunks" },
     { "src": "continued_trips/2026-06-sequoia/2026-06-sequoia-08.jpg", "cap": "In a gap in the rock on the Tokopah trail" },
     { "src": "continued_trips/2026-06-sequoia/2026-06-sequoia-09.jpg", "cap": "Under a boulder" },
-    { "src": "continued_trips/2026-06-sequoia/2026-06-sequoia-10.jpg", "cap": "At the cascades below the falls" },
+    { "src": "continued_trips/2026-06-sequoia/2026-06-sequoia-10.jpg", "cap": "At the cascades below the falls", "us": true },
     { "src": "continued_trips/2026-06-sequoia/2026-06-sequoia-11.jpg", "cap": "Tokopah Falls" }
    ]
   },
@@ -132,7 +134,7 @@ window.MW_TRIP = {
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-02.jpg", "cap": "In the rocks on the Mist Trail" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-03.jpg", "cap": "Up the steps in the mist" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-04.jpg", "cap": "The double rainbow at Vernal Falls" },
-    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-05.jpg", "cap": "Both of them, and the rainbow" }
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-05.jpg", "cap": "Both of them, and the rainbow", "us": true }
    ]
   },
   {
@@ -147,8 +149,8 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-06.jpg", "cap": "A waterfall across the valley, from the top" },
-    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-07.jpg", "cap": "On top of Sentinel Dome" },
-    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-08.jpg", "cap": "Half Dome behind them" },
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-07.jpg", "cap": "On top of Sentinel Dome", "us": true },
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-08.jpg", "cap": "Half Dome behind them", "us": true },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-09.jpg", "cap": "Sitting out over the valley" }
    ]
   },
@@ -167,7 +169,7 @@ window.MW_TRIP = {
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-11.jpg", "cap": "On the dome" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-12.jpg", "cap": "Sitting at the edge" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-13.jpg", "cap": "Over the creek on a log" },
-    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-14.jpg", "cap": "Tenaya Lake, on the way to Tuolumne" },
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-14.jpg", "cap": "Tenaya Lake, on the way to Tuolumne", "us": true },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-16.jpg", "cap": "A bear at Dog Lake" }
    ]
   },
@@ -202,7 +204,7 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-01.jpg", "cap": "Into the redwoods" },
-    { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-02.jpg", "cap": "On the path through Muir Woods" },
+    { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-02.jpg", "cap": "On the path through Muir Woods", "us": true },
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-03.jpg", "cap": "At the foot of one" },
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-04.jpg", "cap": "Under a fallen redwood" },
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-05.jpg", "cap": "Small among the trunks" },
@@ -224,7 +226,7 @@ window.MW_TRIP = {
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-08.jpg", "cap": "The Pacific behind" },
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-09.jpg", "cap": "Looking down on the beach" },
     { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-10.jpg", "cap": "Lunch at Russian River Vineyards" },
-    { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-11.jpg", "cap": "Wine at Gary Farrell" }
+    { "src": "continued_trips/2026-06-sonoma/2026-06-sonoma-11.jpg", "cap": "Wine at Gary Farrell", "us": true }
    ]
   },
   {
@@ -239,7 +241,7 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-01.jpg", "cap": "Donner Lake from the pass" },
-    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-02.jpg", "cap": "At the lake that evening" }
+    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-02.jpg", "cap": "At the lake that evening", "us": true }
    ]
   },
   {
@@ -288,8 +290,7 @@ window.MW_TRIP = {
     "For our last day in California, we left Tahoe and went west. After a few hours of driving, we arrived at Mumm Vineyards for our first Napa wine tasting of bubbly wines. The wines were refreshing and bright, and the view of the valley was so picturesque! After the tasting, we stopped at Oakville Grocery for lunch sandwiches  and it was quite a hopping place."
    ],
    "photos": [
-    { "src": "continued_trips/2026-06-napa/2026-06-napa-01.jpg", "cap": "At Mumm, with the valley behind" },
-    { "src": "continued_trips/2026-06-napa/2026-06-napa-02.jpg", "cap": "The bubbly" },
+    { "src": "continued_trips/2026-06-napa/2026-06-napa-02.jpg", "cap": "The bubbly", "us": true },
     { "src": "continued_trips/2026-06-napa/2026-06-napa-03.jpg", "cap": "Lunch at Oakville Grocery" },
     { "src": "continued_trips/2026-06-napa/2026-06-napa-04.jpg", "cap": "Oakville Grocery, a hopping place" }
    ]
@@ -307,19 +308,14 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-napa/2026-06-napa-05.jpg", "cap": "The wine caves at Pride" },
-    { "src": "continued_trips/2026-06-napa/2026-06-napa-06.jpg", "cap": "The gate at Pride Mountain Vineyards" },
+    { "src": "continued_trips/2026-06-napa/2026-06-napa-06.jpg", "cap": "The gate at Pride Mountain Vineyards", "us": true },
     { "src": "continued_trips/2026-06-napa/2026-06-napa-07.jpg", "cap": "The Sierra from the plane, on the way home" }
    ]
   }
  ],
 
- "closing": {
-  "k": "The other highlights",
-  "title": "One more to come.",
-  "text": "Yinja becomes a citizen in the same year. That one gets a page like this one once it has happened.",
-  "btns": [
-   { "href": "highlights.html", "label": "David's 40th" },
-   { "href": "highlights-citizenship.html", "label": "Yinja's citizenship", "ghost": true }
-  ]
- }
+ /* The way on: the whole set of highlights, in the order they happened,
+    with this one marked. The list and the section are shared by all three
+    pages, in assets/js/highlights.js, so they cannot drift apart. */
+ "closing": { "nav": "highlights" }
 };

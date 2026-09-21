@@ -1616,7 +1616,19 @@
   // of them; a phone has the map above and would be scrolling all day.
   const MEM_DEAL = 6;
   const MEM_DEAL_WIDE = 10;
-  const wide = () => innerWidth >= 1000;
+  /* Three shapes, and the queries are the ones in site.css that make them,
+     so the two never disagree.
+
+     UPRIGHT  a tablet stood up: the map across the top, the cards one row to
+              swipe, so six is a row rather than a long one.
+     SIDEWAYS a phone on its side: two columns, the map sticky beside them.
+     wide     the desktop: two columns and room for ten cards down the right.
+
+     Where the map keeps its place the pill has nothing to stand in for. */
+  const UPRIGHT  = '(min-width: 700px) and (orientation: portrait)';
+  const SIDEWAYS = '(min-width: 700px) and (max-height: 520px) and (orientation: landscape)';
+  const wide = () => innerWidth >= 1000 && !matchMedia(UPRIGHT).matches;
+  const beside = () => wide() || matchMedia(SIDEWAYS).matches;
 
   function shuffled(list) {
     const a = list.slice();
@@ -1795,7 +1807,7 @@
     addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
     sheet.addEventListener('click', e => {
       if (e.target.closest('[data-close]')) closeSheet();
-      else if (e.target.closest('[data-all]')) { show(null); closeSheet(); nudge(true); }
+      else if (e.target.closest('[data-all]')) { pin(); show(null); closeSheet(); release(nudge(true)); }
     });
 
     // a flick down on the sheet's own chrome closes it, the way a sheet should
@@ -1841,9 +1853,23 @@
       return shuffled(list).slice(0, wide() ? MEM_DEAL_WIDE : MEM_DEAL);
     };
 
+    /* ── One memory, the state someone picked ──────────────────────────
+       A trip that crossed a line is filed under both states. Under Indiana
+       it should say Holiday World and show the day at Holiday World, not the
+       Cincinnati half of the same week. memories.js carries the name for each
+       state on "t" and the state each photograph was taken in on "s", and a
+       memory that has nothing to say about it falls back to what it has. */
+
+    const titleOf = (m, id) => (id && m.t && m.t[id]) || m.short;
+    const inState = (m, id) => (id ? m.pics.filter(p => p.s === id) : []);
+    const forState = (m, id) => {
+      const mine = inState(m, id);
+      return mine.length ? [...mine, ...m.pics.filter(p => p.s !== id)] : m.pics;
+    };
+
     const dealt = m => {
-      const shot = m.pics[Math.floor(Math.random() * m.pics.length)];
-      return { m, shot };
+      const pool = inState(m, on).length ? inState(m, on) : m.pics;
+      return { m, shot: pool[Math.floor(Math.random() * pool.length)] };
     };
 
     const grid = (id, picks) => {
@@ -1874,15 +1900,16 @@
       const cards = picks.map((i, k) => {
         const { m, shot } = dealt(M.items[i]);
         const more = m.pics.length - 1;
+        const name = titleOf(m, id);
         return `
           <button class="mem__card" type="button" data-open="${i}"
                   style="--tilt:${MEM_TILT[k % MEM_TILT.length]}deg;--off:var(${MEM_OFF[k % MEM_OFF.length]})">
             <span class="mem__shot">
-              <img src="${esc(shot.u)}" alt="${esc(m.short)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
+              <img src="${esc(shot.u)}" alt="${esc(name)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
               ${more > 0 ? `<span class="mem__n">+${more}</span>` : ''}
             </span>
             <span class="mem__label">
-              <span class="mem__where">${esc(m.short)}</span>
+              <span class="mem__where">${esc(name)}</span>
               <span class="mem__when">${esc(m.year)}</span>
             </span>
           </button>`;
@@ -1893,7 +1920,7 @@
 
     const opened = i => {
       const m = M.items[i];
-      const pics = m.pics.slice(0, 5);
+      const pics = forState(m, on).slice(0, 5);
       const back = on ? nameOf(on) : 'the pile';
       return `
         <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]})">
@@ -1902,7 +1929,7 @@
             <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
             ${pics[0].c ? `<span class="mem__cap">${esc(pics[0].c)}</span>` : ''}
           </span>
-          ${pics.length > 1 ? `<div class="mem__roll">${pics.map((p, k) => `
+          ${pics.length > 1 ? `<div class="mem__shots">${pics.map((p, k) => `
             <button class="mem__thumb${k ? '' : ' is-on'}" type="button" data-shot="${k}" aria-label="Photograph ${k + 1} of ${pics.length}">
               <img src="${esc(p.u)}" alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
             </button>`).join('')}</div>` : ''}
@@ -1953,7 +1980,7 @@
       // Someone who jumped past the map never saw it print, and a map that has
       // not printed is a blank map when the pop-up puts it up. Land it.
       if (m.bottom < GONE) print(true);
-      if (bar) bar.classList.toggle('is-up', !wide() && !sheetOpen() && m.bottom < GONE && h.bottom > 220);
+      if (bar) bar.classList.toggle('is-up', !beside() && !sheetOpen() && m.bottom < GONE && h.bottom > 220);
     });
     addEventListener('scroll', watch, { passive: true });
     addEventListener('resize', watch);
@@ -1986,40 +2013,80 @@
     // otherwise drop someone into the middle of photographs they have not
     // seen. The map lands exactly where it sticks.
     const nudge = toCards => {
-      if (calm) return;
       // Coming back from the pop-up the map is not what anyone wants to look
       // at, the photographs are, so that lands on them, clear of the pill.
-      const sheetPick = toCards && !wide();
+      const sheetPick = toCards && !beside();
       const el = sheetPick ? panel : host;
-      const off = sheetPick ? (bar ? bar.offsetHeight : 0) + 78 : (wide() ? 80 : 72);
+      const off = sheetPick ? (bar ? bar.offsetHeight : 0) + 78 : (beside() ? 80 : 72);
       const y = el.getBoundingClientRect().top + scrollY - off;
-      if (Math.abs(y - scrollY) > 24) scrollTo({ top: y, behavior: 'smooth' });
+      if (Math.abs(y - scrollY) <= 24) return false;
+      // Someone who asked for less motion still wants to be in the right
+      // place; they just do not want to watch the trip there.
+      scrollTo({ top: y, behavior: calm ? 'auto' : 'smooth' });
+      return !calm;                       // an instant move has already landed
     };
+
+    /* ── Holding the floor while the panel changes ─────────────────────────
+       Ten cards is five rows deep, and opening one puts a single card in
+       their place: the section loses about a thousand pixels in the same
+       frame the glide is asked for. The browser has to clamp the scroll to
+       the shorter document before it can move, and that clamp is the flinch
+       people see, a jump backwards and then a glide.
+
+       So the panel is pinned at the height it already had, the swap happens
+       under a floor that has not moved, and the pin comes off once the glide
+       has landed, by which time the part that shrinks is below the fold and
+       nothing on screen moves at all. scrollend says when to let go; the
+       timer is for the browsers that do not have it and for the times the
+       glide had nowhere to go. */
+    let unpin = 0;
+    const pin = () => {
+      const h = panel.getBoundingClientRect().height;
+      if (h) panel.style.minHeight = `${h}px`;
+    };
+    const drop = () => {
+      clearTimeout(unpin);
+      removeEventListener('scrollend', drop);
+      panel.style.minHeight = '';
+    };
+    /* When there was a glide, the floor comes away once it lands: by then
+       the part that shrinks is below the fold. When there was none, nothing
+       is going to move on screen either way, so it comes away in the same
+       frame as the swap rather than popping half a second later. */
+    const release = glided => {
+      clearTimeout(unpin);
+      if (!glided) return drop();
+      addEventListener('scrollend', drop, { once: true });
+      unpin = setTimeout(drop, 900);
+    };
+    const repaint = fn => { pin(); fn(); paint(); release(nudge()); };
 
     svg.addEventListener('click', e => {
       const hit = e.target.closest('[data-id]');
       const fromSheet = sheetOpen();
+      pin();
       show(hit ? hit.dataset.id : null);
       // a choice made in the pop-up is the end of the pop-up's job
       if (fromSheet) closeSheet();
-      nudge(fromSheet);
+      release(nudge(fromSheet));
     });
     svg.addEventListener('keydown', e => {
       const hit = e.target.closest && e.target.closest('[data-id]');
       if (!hit || (e.key !== 'Enter' && e.key !== ' ')) return;
       e.preventDefault();
       const fromSheet = sheetOpen();
+      pin();
       show(hit.dataset.id);
       if (fromSheet) closeSheet();
-      nudge(fromSheet);
+      release(nudge(fromSheet));
     });
 
     panel.addEventListener('click', e => {
       const card = e.target.closest('[data-open]');
-      if (card) { open = +card.dataset.open; paint(); nudge(); return; }
+      if (card) { repaint(() => { open = +card.dataset.open; }); return; }
       if (e.target.closest('[data-roll]')) { rollTo(); return; }
-      if (e.target.closest('[data-back]')) { open = null; paint(); nudge(); return; }
-      if (e.target.closest('[data-all]')) { show(null); nudge(); return; }
+      if (e.target.closest('[data-back]')) { repaint(() => { open = null; }); return; }
+      if (e.target.closest('[data-all]')) { pin(); show(null); release(nudge()); return; }
 
       const thumb = e.target.closest('[data-shot]');
       if (thumb && open !== null) {
@@ -2158,34 +2225,63 @@
   }
 
   /* ── Long trips fold on phones ─────────────────────────────────────────
-     On a narrow screen a trip or honeymoon day with several paragraphs shows
-     the first, and a button opens the rest. Wider screens show everything,
-     the button is hidden there (see "Folds" in site.css).                  */
+     On a narrow screen a trip or honeymoon day shows the first eight lines
+     of the first paragraph, and a button opens the rest of it and any
+     paragraphs after it. Eight lines on a phone is most of a screen, and
+     the photographs are underneath. Wider screens show everything and never
+     see the button (see "Folds" in site.css).                              */
 
   function initFolds() {
     const groups = [
       ...$$('.trip').map(el => [el, $$('.trip__text', el)]),
       ...$$('.chap--day .chap__body').map(el => [el, $$(':scope > .chap__text', el)]),
     ];
+    const folds = [];
+
     groups.forEach(([box, paras]) => {
-      const rest = paras.slice(1);
-      // a short second paragraph isn't worth a button
-      if (!rest.length || rest.reduce((n, p) => n + p.textContent.length, 0) < 240) return;
-      box.classList.add('fold', 'is-folded');
+      if (!paras.length) return;
+      const after = paras.slice(1);
+      // a short second paragraph isn't worth putting away
+      const rest = after.reduce((n, p) => n + p.textContent.length, 0) >= 240 ? after : [];
+      box.classList.add('fold');
+      paras[0].classList.add('fold__lede');
       rest.forEach(p => p.classList.add('fold__more'));
+
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'fold__btn';
-      btn.innerHTML = `Keep reading <span class="fold__n">+${rest.length}</span>`;
+      btn.innerHTML = `Keep reading${rest.length ? ` <span class="fold__n">+${rest.length}</span>` : ''}`;
       paras[paras.length - 1].after(btn);
+
+      const f = { box, lede: paras[0], rest, btn, open: false };
       btn.addEventListener('click', () => {
+        f.open = true;
         box.classList.remove('is-folded');
         rest.forEach(p => p.classList.add('is-in'));
-        rest[0].tabIndex = -1;
-        rest[0].focus({ preventScroll: true });
-        btn.remove();
+        const to = rest[0] || f.lede;
+        to.tabIndex = -1;
+        to.focus({ preventScroll: true });
       });
+      folds.push(f);
     });
+    if (!folds.length) return;
+
+    /* Whether anything is hidden depends on the width: eight lines is short
+       of a paragraph on a phone and most of the way through it on a tablet.
+       So it is measured, and measured again when the screen changes. Every
+       fold is folded, then every one read, then the ones with nothing to
+       hide unfolded, so the page lays out once rather than once a trip. */
+    const fit = () => {
+      folds.forEach(f => { if (!f.open) f.box.classList.add('is-folded'); });
+      const cut = folds.map(f => !f.open
+        && (f.rest.length > 0 || f.lede.scrollHeight - f.lede.clientHeight > 4));
+      folds.forEach((f, i) => f.box.classList.toggle('is-folded', cut[i]));
+    };
+
+    fit();
+    addEventListener('resize', fit);
+    // eight lines is eight lines of the face that actually lands
+    if (document.fonts) document.fonts.ready.then(fit);
   }
 
   /* ── Swipe rows (phones) ───────────────────────────────────────────────

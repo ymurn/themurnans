@@ -131,6 +131,11 @@ body {
 }
 .ymap__label.is-on { opacity: 1; }
 .ymap__home { fill: var(--gold); stroke: #14110D; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+/* A <p>, so it arrives with the paragraph's margin under it. Left on, that
+   margin is counted when the foot centres it, and the month and the place
+   sit half a line high of the middle of the pill the band folds into, which
+   is what .routemap__now has always zeroed for the honeymoon's map. */
+.yearmap__now { margin: 0; }
 .yearmap__k { font-size: .62rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
 .yearmap__title { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; }
 
@@ -407,6 +412,16 @@ body {
 @keyframes routesheet-in {
   from { opacity: 0; transform: translateY(16px) rotate(-1deg); }
   to   { opacity: 1; transform: none; }
+}
+
+/* ── A PHONE ON ITS SIDE ─────────────────────────────────────────────────
+   The window is sized by the height it has, and sideways there is barely any:
+   what opens is a map squeezed into a couple of hundred pixels, which is not
+   the whole map and is not worth the tap. The corner button goes, and the
+   band, which is sized by the width and reads perfectly well, is the map. The
+   whole one is there again the moment the phone is stood back up. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .mapfold__open { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

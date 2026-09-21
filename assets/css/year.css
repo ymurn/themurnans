@@ -270,6 +270,13 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
   box-shadow: 8px 8px 0 var(--off);
   rotate: -.5deg;
 }
+/* Dusk only. The gold mixed into the ground gives a warm sheet of paper on
+   cream, but on the dark it comes out a grey-olive: the letter reads as a
+   dirty page and the type sits down into it. So it takes a clean dark
+   instead, one step up off the band it sits on, and the gold stays where it
+   does the work, on the frame, the offset print and the postmark. */
+[data-theme="dusk"] .yletter .letter { background: var(--paper-3); }
+
 /* a second, finer frame inside the first, like the vow cards */
 .letter::before {
   content: "";

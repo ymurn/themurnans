@@ -60,7 +60,7 @@ const KNOWN = {
   'cuyahoga valley': 'OH', 'philadelphia': 'PA', 'philly': 'PA', 'pittsburgh': 'PA',
   'lancaster': 'PA', 'harrisburg': 'PA', 'fallingwater': 'PA', 'hersheypark': 'PA',
   'longwood gardens': 'PA', 'baltimore': 'MD', 'silver spring': 'MD',
-  'washington': 'DC', 'alexandria': 'VA', 'richmond': 'VA', 'shenandoah': 'VA',
+  'alexandria': 'VA', 'richmond': 'VA', 'shenandoah': 'VA',
   'charlottesville': 'VA', 'natural bridge': 'VA', 'winchester': 'VA', 'virginia': 'VA',
   'harpers ferry': 'WV', 'new river gorge': 'WV',
   'asheville': 'NC', 'raleigh': 'NC', 'charlotte': 'NC', 'the smokies': 'TN',
@@ -69,7 +69,7 @@ const KNOWN = {
   'congaree': 'SC', 'charleston': 'SC',
   'tampa': 'FL', 'st. augustine': 'FL', 'clearwater beach': 'FL', 'the everglades': 'FL',
   'big cypress': 'FL', 'biscayne': 'FL',
-  'newport': 'RI', 'providence': 'RI', 'mystic': 'CT',
+  'providence': 'RI', 'mystic': 'CT',
   'portland, maine': 'ME', 'acadia': 'ME', 'mount mansfield': 'VT', 'vermont': 'VT',
   'saint-gaudens': 'NH', 'rehoboth beach': 'DE', 'princeton': 'NJ',
   'chicago': 'IL', 'holiday world': 'IN', 'san diego': 'CA', 'joshua tree': 'CA',
@@ -85,17 +85,37 @@ const KNOWN = {
 };
 
 /* Pull every state a place name gives up: a trailing code ("Beacon, NY"), a
-   state written out ("Cincinnati, Ohio"), or a town on the list above.     */
+   state written out ("Cincinnati, Ohio"), or a town on the list above.
+
+   The town list is read longest name first, and a name is only taken from a
+   stretch of the line no longer name has already claimed. Otherwise
+   Providence Canyon, which is in Georgia, is also Providence, Rhode Island,
+   and Charlottesville is also Charlotte.                                    */
+const KEYS = Object.keys(KNOWN).sort((a, b) => b.length - a.length);
+const esc_re = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 function statesFromPlace(place) {
-  const s = String(place).toLowerCase();
+  // "Washington, DC" is the district, not the state, so it is taken out of
+  // the line before the state names are read off it.
+  const DC_RE = /washington,?\s*d\.?\s*c\.?(?![a-z])/g;
+  const s = String(place).toLowerCase().replace(DC_RE, ' · ');
   const out = new Set();
   (place.match(/\b([A-Z]{2})\b/g) || []).forEach(c => { if (CODES.has(c)) out.add(c); });
+  if (DC_RE.test(String(place).toLowerCase())) out.add('DC');
   if (/\bqc\b/i.test(place)) out.add('CA-QC');
   for (const [name, code] of Object.entries(NAMES)) {
     if (new RegExp(`(^|[^a-z])${name}([^a-z]|$)`).test(s)) out.add(code);
   }
-  for (const [name, code] of Object.entries(KNOWN)) {
-    if (s.includes(name)) out.add(code);
+  const took = [];
+  const free = (a, b) => !took.some(([x, y]) => a < y && b > x);
+  for (const name of KEYS) {
+    const re = new RegExp(`(^|[^a-z])(${esc_re(name)})([^a-z]|$)`, 'g');
+    let m;
+    while ((m = re.exec(s))) {
+      const a = m.index + m[1].length;
+      if (free(a, a + name.length)) { took.push([a, a + name.length]); out.add(KNOWN[name]); }
+      re.lastIndex = a + 1;
+    }
   }
   return [...out];
 }
@@ -106,13 +126,103 @@ const slugOf = src => {
   const m = String(src).match(/continued_trips\/([^/]+)\//);
   return m ? m[1] : null;
 };
+const stopsOf = pics => {
+  const out = [];
+  const seen = new Set();
+  pics.forEach(p => (PLACES[slugOf(p.src) || ''] || []).forEach(s => {
+    const key = `${s.n}|${s.st}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ n: s.n, st: s.st === 'QC' ? 'CA-QC' : s.st, p: s.p || 0 });
+  }));
+  return out;
+};
 function statesFromPics(pics) {
   const out = new Set();
-  pics.forEach(p => {
-    const stops = PLACES[slugOf(p.src) || ''] || [];
-    stops.forEach(s => { if (s.st) out.add(s.st === 'QC' ? 'CA-QC' : s.st); });
-  });
+  stopsOf(pics).forEach(s => { if (s.st) out.add(s.st); });
   return [...out];
+}
+
+/* ── One memory, one state at a time ──────────────────────────────────────
+   A trip that crossed a line is filed under both states, and a card filed
+   under Indiana that says Cincinnati and shows the Cincinnati photographs is
+   the memory answering a question nobody asked. So each memory also carries
+   the name of what it visited in each of its states, and each photograph
+   carries the state it was taken in, and the panel picks by the state.     */
+
+/* The place line broken into the places it names, each with the states its
+   own words give up. Split on the joins first ("&", "and", "to"), then on
+   the commas inside those, dropping the bare state that trails so many of
+   them: "Cincinnati, OH & Clearwater Beach, FL" is Cincinnati in Ohio and
+   Clearwater Beach in Florida. */
+const JOIN = /\s*(?:&|,\s+and\s+|\s+and\s+|\s+to\s+|\/)\s*/;
+const bareState = t => {
+  const s = t.toLowerCase().replace(/[.?!]+$/, '').trim();
+  return CODES.has(s.toUpperCase()) || NAMES[s] !== undefined || s === 'qc';
+};
+function namedPlaces(place) {
+  const out = [];
+  String(place).split(JOIN).forEach(part => {
+    part.split(',').map(t => t.trim().replace(/[?!]+$/, '')).forEach(name => {
+      // "with Yao", "the long way home": a note on the trip, not a place
+      if (!name || /^(with|the long way|day \d)/i.test(name)) return;
+      // A state standing on its own is the last thing to call a card, but on
+      // a line like "Portland, Acadia & Vermont" it is all there is.
+      out.push({ name, st: statesFromPlace(name), bare: bareState(name) });
+    });
+  });
+  return out;
+}
+
+/* What to call a memory when a given state is the one someone picked.
+
+   Only when the title it already has belongs somewhere else: "Cincinnati"
+   over a card filed under Indiana is the thing worth fixing, and every other
+   title on the site was written by hand and is better than anything worked
+   out here. The replacement is what the place line calls the places in that
+   state, or failing that what the GPS called them, two at most.            */
+function titlesByState(place, short, all, stops) {
+  const said = namedPlaces(place);
+  const owns = statesFromPlace(short);
+  const out = {};
+  all.forEach(c => {
+    const mine = said.filter(n => n.st.includes(c));
+    const names = [...new Set(mine.filter(n => !n.bare).map(n => n.name))];
+    // The title fits when it names this state. It is also left alone when it
+    // names no state at all and is not simply one of the places on the line:
+    // "Portland, Day 1" and "Olympic National Park, Day 2" are headings, not
+    // the first place in a list, and nothing here writes better ones. A
+    // memory with one state cannot have the title of another.
+    const fits = owns.length ? owns.includes(c)
+      : all.length === 1 || !(mine.length && said.some(n => n.name === short));
+    if (fits) return;
+    const gps = stops.filter(s => s.st === c).sort((a, b) => b.p - a.p).map(s => s.n);
+    const bare = mine.filter(n => n.bare).map(n => n.name);
+    const pickFrom = names.length ? names : gps.length ? gps : bare;
+    const title = pickFrom.slice(0, 2).join(' & ');
+    if (title && title !== short) out[c] = title;
+  });
+  return out;
+}
+
+/* Which state a photograph was taken in: the folder's only stop, the stop its
+   caption names, or the state its caption names outright. One that matches
+   nothing is left unmarked and shows under any of the memory's states.     */
+const hay = s => String(s).toLowerCase();
+function stateOfPic(pic, all) {
+  const stops = (PLACES[slugOf(pic.src) || ''] || [])
+    .map(s => ({ n: s.n, st: s.st === 'QC' ? 'CA-QC' : s.st }))
+    .filter(s => s.st && all.includes(s.st));
+  if (stops.length === 1) return stops[0].st;
+  // The caption only. The folder is named after the whole trip, so
+  // 2024-06-cincinnati-holiday-world would put every photograph in Ohio.
+  if (pic.cap) {
+    const hit = stops.find(s => hay(pic.cap).includes(hay(s.n)));
+    if (hit) return hit.st;
+    const c = statesFromPlace(pic.cap).filter(x => all.includes(x));
+    if (c.length === 1) return c[0];
+  }
+  return !stops.length && all.length === 1 ? all[0] : '';
 }
 
 /* ── Photographs ──────────────────────────────────────────────────────────
@@ -162,7 +272,14 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
 const items = [];
-const push = m => { if (m.st.length && m.pics.length) items.push(m); };
+/* The per-state name and the per-photograph state are worked out here rather
+   than at each push, so every memory gets them the same way. */
+const push = m => {
+  if (!m.st.length || !m.pics.length) return;
+  m.t = titlesByState(m.place, m.short, m.st, stopsOf(m.pics));
+  m.pics.forEach(p => { p.st = stateOfPic(p, m.st); });
+  items.push(m);
+};
 
 /* Volume one: the chapters before the wedding. Their photographs sit loose in
    assets/photos/, so the state can only come from the chapter's own place.  */
@@ -235,15 +352,22 @@ Object.values(by).forEach(list => list.sort((a, b) => (key(a) < key(b) ? 1 : -1)
 const url = src => (src.includes('/') ? `assets/${src}` : `assets/photos/${src}`);
 const j = v => JSON.stringify(v);
 const body = items.map(m => {
-  const pics = m.pics.map(p => `{"u":${j(url(p.src))}${p.cap ? `,"c":${j(p.cap)}` : ''}${p.pos ? `,"p":${j(p.pos)}` : ''}}`);
-  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},\n   "text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
+  // "s" is the state a photograph was taken in, "t" what to call the memory
+  // when a given state is the one someone picked. Both are left out when
+  // there is nothing to say.
+  const pics = m.pics.map(p => `{"u":${j(url(p.src))}${p.cap ? `,"c":${j(p.cap)}` : ''}${p.pos ? `,"p":${j(p.pos)}` : ''}${p.st ? `,"s":${j(p.st)}` : ''}}`);
+  const t = Object.keys(m.t).length ? `"t":${j(m.t)},` : '';
+  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   "text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
 }).join(',\n');
 
 const out = `/* Every trip on the site, filed under the state it happened in, so the map on
    the home page can hand back photographs the moment someone clicks a state.
    Generated by tools/build-memories.mjs from data.js, years/20XX.js and
    years/places.js: run that again after adding a trip, do not edit this.
-   "by" is a state code to the memories under it, newest first. */
+   "by" is a state code to the memories under it, newest first. On a memory,
+   "t" is what to call it when a given state is picked, and a photograph's
+   "s" is the state it was taken in, so a trip that crossed a line shows the
+   right half of itself under either one. */
 window.MW_MEMORIES = {
  "items": [
 ${body}

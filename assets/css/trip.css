@@ -135,7 +135,6 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 .tclose { display: grid; gap: 1rem; max-width: 66ch; }
 #closing.band { padding-bottom: clamp(3rem, 6vw, 5.5rem); }
 
-
 /* 6 ── THE HIGHLIGHTS HUB ──────────────────────────────────────────────
    highlights.html: one card a highlight, three across or one under the
    other, never two and one. A highlight that has not happened yet keeps its
@@ -203,11 +202,93 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 }
 .hcard:hover .hcard__tag { border-color: var(--ink-3); color: var(--ink-2); }
 
+/* ── The way between the highlights ──────────────────────────────────────
+   The section every highlight page ends on, above the footer: the whole set
+   of them in the order they happened, with the one being read marked rather
+   than left out, so it reads as a place in a set and not as two leftovers.
+   Built by assets/js/highlights.js from the one list of highlights there.
+
+   It sits on the oxblood band, which has already turned the ink cream, so
+   the cards only need the ground behind a photograph that has not arrived
+   and a slightly finer keyline than the cream one the band would give. */
+
+.hnav { display: grid; gap: clamp(1.5rem, 3vw, 2.25rem); }
+.hnav__head { display: grid; gap: .55rem; }
+#closing.band .hnav__head .t-lg { margin: 0; }
+/* Navigation, not a third gallery: the photograph is here to say which page
+   this is, so it takes a letterbox rather than the album shape the hub gave
+   it, and the whole section stays about a third of a screen. */
+.hnav .hcard__pic { aspect-ratio: 3 / 2; margin-bottom: .7rem; box-shadow: 6px 6px 0 var(--off, var(--blue)); }
+.hnav .hcard { gap: .35rem; }
+.hnav .hcard__title { font-size: clamp(1.3rem, 1.8vw, 1.6rem); }
+.hnav .hcard__note { font-size: .86rem; line-height: 1.5; }
+.hnav .hcard__tag, .hnav .hcard__go { justify-self: start; }
+/* Three across the whole way down to the phone. The hub stacked its cards
+   below 900px because they were the page; these are the way off it, and
+   stacking three of them on a tablet is the tall section this replaced. */
+@media (min-width: 621px) {
+  .hnav .hcards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(.9rem, 2vw, 2.5rem); }
+}
+
+.band--deep .hcard__pic { background: #ffffff14; border-width: 1.5px; }
+.band--deep .hcard__note { color: var(--deep-ink-3); }
+.band--deep .hcard:hover .hcard__title { color: var(--brass-2); }
+
+/* Where you already are: it keeps its card, sits straight, and says so
+   instead of offering an arrow to itself. */
+.hcard--here { cursor: default; }
+.hcard--here .hcard__pic { opacity: .5; box-shadow: none; }
+.hcard--here .hcard__title { color: var(--ink-3); }
+.hcard--here .hcard__note { opacity: .7; }
+
 @media (max-width: 900px) {
   /* one card a line: three across no longer fit, and two and one would
      leave the last card alone */
   .hcards { grid-template-columns: minmax(0, 1fr); gap: clamp(2rem, 6vw, 2.75rem); }
   .hcard__pic { aspect-ratio: 16 / 9; }
+}
+
+/* ── The same three on a phone ───────────────────────────────────────────
+   Three cards stacked is three screens of navigation at the end of a page
+   somebody has just finished reading. So the card folds down into a line:
+   a thumbnail, the month, the name, and the way in. The note goes, because
+   the name and the month already say which one it is. */
+/* Scoped the same way the rules above are: a media query carries no weight
+   of its own, so .hcard on its own here would lose to .hnav .hcard. */
+@media (max-width: 620px) {
+  .hnav .hcards { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+  .hnav .hcard {
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    grid-template-areas: "pic when go" "pic name go";
+    align-items: center;
+    gap: .05rem .9rem;
+    padding: .5rem .6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .hnav .hcard__pic {
+    grid-area: pic;
+    aspect-ratio: 1;
+    margin: 0;
+    rotate: 0deg;
+    box-shadow: none;
+  }
+  .hnav .hcard:hover .hcard__pic,
+  .hnav .hcard:focus-visible .hcard__pic { translate: none; box-shadow: none; }
+  .hnav .hcard__k { grid-area: when; }
+  .hnav .hcard__title { grid-area: name; font-size: 1.12rem; }
+  .hnav .hcard__note { display: none; }
+  .hnav .hcard__go, .hnav .hcard__tag { grid-area: go; justify-self: end; margin: 0; }
+  /* the words go, the arrow stays: at this size the whole line is the label */
+  .hnav .hcard__go {
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    border: 1.5px solid var(--line);
+    border-radius: 50%;
+    font-size: 0;
+  }
+  .hnav .hcard__go svg { display: block; }
+  .hnav .hcard__tag { font-size: .54rem; padding: .3em .7em .24em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -281,6 +362,10 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   border-radius: var(--r-md);
   box-shadow: 10px 10px 0 var(--khaki);
 }
+/* Dusk only, for the reason given against the same rule in year.css: the
+   khaki in the ground turns the page a grey-olive on the dark. */
+[data-theme="dusk"] .letter-block .letter { background: var(--paper-2); }
+
 .letter::before {
   content: "";
   position: absolute;
@@ -321,6 +406,10 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   line-height: .95;
 }
 .letter__stamp span { font-size: .5rem; font-weight: 600; letter-spacing: .2em; }
+
+/* "New citizen" is a phrase, not a date: it takes two lines and a smaller
+   size so both words sit inside the circle. */
+.letter__stamp--word b { font-size: clamp(.95rem, 1.5vw, 1.25rem); line-height: 1.04; }
 
 /* the date and place he headed it with. The rule stops short of the
    postmark rather than running under it. */

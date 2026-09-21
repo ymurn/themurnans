@@ -38,7 +38,12 @@
   /* ── The head: a few photographs from the trip ─────────────────────────
      Four prints, pinned up at their own angles. They are dealt fresh on
      every visit: one from each quarter of the trip, so the four of them
-     cover the whole of it rather than one afternoon of it. */
+     cover the whole of it rather than one afternoon of it.
+
+     Inside a quarter, the two of them together goes first. This is a page
+     about a trip they took, and a canyon can be looked at anywhere. A photo
+     marked "us": true in the trip's file is one of the pair; a quarter with
+     none of them deals from everything it has, as before. */
 
   function deal(n = 4) {
     const pool = stops.flatMap(s => (s.photos || []).filter(p => p.src && p.pick !== false));
@@ -47,7 +52,10 @@
     const size = pool.length / n;
     for (let i = 0; i < n; i++) {
       const a = Math.floor(i * size), b = Math.max(a + 1, Math.floor((i + 1) * size));
-      out.push(pool[a + Math.floor(Math.random() * (b - a))]);
+      const slice = pool.slice(a, b);
+      const us = slice.filter(p => p.us);
+      const from = us.length ? us : slice;
+      out.push(from[Math.floor(Math.random() * from.length)]);
     }
     return out;
   }
@@ -112,9 +120,10 @@
   }
 
   /* ── The stops ─────────────────────────────────────────────────────────
-     A photo slot is { src, cap, pos }: "src" is a path from assets/, "cap"
-     is what it says in the lightbox, and "pos" moves the crop when the
-     people sit off to one side, like "65% 50%". */
+     A photo slot is { src, cap, pos, us }: "src" is a path from assets/,
+     "cap" is what it says in the lightbox, "pos" moves the crop when the
+     people sit off to one side, like "65% 50%", and "us" says the two of
+     them are in it together, which deal() above picks from first. */
 
   function stripHTML(photos, label, eager) {
     const list = (photos || []).slice(0, 6);
@@ -184,9 +193,15 @@
     const c = T.closing;
     if (!host || !c) return;
     // "years": the band the year pages end on, four cards and the two things
-    // we would rather someone did next. Anything else ends on its own buttons.
+    // we would rather someone did next.
     if (c.years && window.MW_CLOSING) {
       return window.MW_CLOSING(host, { k: c.k, title: c.title, text: c.text });
+    }
+    // "nav": the highlights end on the whole set of themselves, drawn from
+    // the one list in assets/js/highlights.js so all three pages say the
+    // same thing. Anything else ends on its own buttons.
+    if (c.nav === 'highlights' && window.MW_HLNAV) {
+      return window.MW_HLNAV(host, { k: c.k, title: c.title });
     }
     host.innerHTML = `
       <div class="shell">
@@ -195,7 +210,7 @@
             <span class="eyebrow eyebrow--brass" data-reveal="fade">${esc(c.k)}</span>
             <h2 class="t-xl" data-split>${esc(c.title)}</h2>
             ${c.text ? `<p class="lede" data-reveal="up" style="--d:120ms">${esc(c.text)}</p>` : ''}
-            <div class="btns" data-reveal="up" style="--d:160ms">${(c.btns || []).map((b, i) =>
+            <div class="btns" data-reveal="up" style="--d:160ms">${(c.btns || []).map(b =>
               `<a class="btn${b.ghost ? ' btn--ghost' : ''}" href="${esc(b.href)}" data-magnet>${esc(b.label)}${b.ghost ? '' : ARROW}</a>`).join('')}</div>
           </div>
         </div>

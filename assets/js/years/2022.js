@@ -22,7 +22,7 @@ window.MW_YEAR = {
    { "k": "Days on the road", "v": "15", "s": "Sacramento on August 8, Seattle on August 22." },
    { "k": "States", "v": "3", "s": "California, Oregon and Washington, with the ocean in all three." },
    { "k": "National parks", "v": "6", "s": "Lassen Volcanic, Redwood, Crater Lake, Mount Rainier, North Cascades and Olympic." },
-   { "k": "Firsts", "v": "1 In-N-Out", "s": "Our first stop after landing in Sacramento." }
+   { "k": "Firsts", "v": "In-N-Out", "s": "Our first stop after landing in Sacramento." }
   ],
 
   /* The route, in the order we drove it: [name, latitude, longitude].

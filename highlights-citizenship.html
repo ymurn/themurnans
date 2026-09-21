@@ -20,7 +20,7 @@
 <meta property="og:image:alt" content="The Bear and the Tiger: David and Yinja drawn face to face under a scatter of gold stars.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://ymurn.github.io/themurnans/highlights-citizenship.html">
-<meta name="theme-color" content="#3A1621">
+<meta name="theme-color" content="#F3DEAF">
 <link rel="icon" href="assets/art/favicon-logo.png">
 <link rel="apple-touch-icon" href="assets/art/bear-tiger-logo-round.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,7 +124,7 @@
     <div class="letter-block">
       <span class="eyebrow eyebrow--brass letter__label" data-reveal="fade">A letter from David Murnan</span>
       <article class="letter" data-reveal="up">
-      <div class="letter__stamp" data-reveal="stamp" aria-hidden="true"><b>Feb 4</b><span>2026</span></div>
+      <div class="letter__stamp letter__stamp--word" data-reveal="stamp" aria-hidden="true"><b>New<br>citizen</b><span>2026</span></div>
       <p class="letter__meta">February 4th, 2026, Brooklyn, NY</p>
       <p class="letter__to">All:</p>
       <p class="letter__p letter__p--open">It&rsquo;s with an extremely happy heart that I welcome the newest Murnan to the family &ndash; Yinja Wen Murnan! As of 10:30 am this morning, Yinja officially became both a U.S. citizen and a Murnan. I truly hope all of you feel as proud and excited for him as we do.</p>
@@ -139,21 +139,10 @@
   </div>
 </section>
 
-<section class="band band--deep">
-  <div class="shell">
-    <div class="tclose">
-      <div class="stack gap-m">
-        <span class="eyebrow eyebrow--brass" data-reveal="fade">Keep reading</span>
-        <h2 class="t-xl" data-split>The other highlights</h2>
-        <p class="lede" data-reveal="up" style="--d:120ms">David&rsquo;s 40th is up already: thirteen days round the desert southwest. Yinja&rsquo;s 30th is eleven days round California.</p>
-        <div class="btns" data-reveal="up" style="--d:160ms">
-          <a class="btn" href="highlights.html" data-magnet>Read David&rsquo;s 40th <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg></a>
-          <a class="btn btn--ghost" href="highlights-yinjas-30th.html" data-magnet>Yinja&rsquo;s 30th</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- The way on. The same section the two trip pages end on, from the one
+     list in assets/js/highlights.js: every highlight in the order it
+     happened, with this one marked. -->
+<section class="band band--deep" id="closing" data-hlnav></section>
 </main>
 
 <footer class="footer">
@@ -169,7 +158,6 @@
         <a href="day.html">Hitched</a>
         <a href="honeymoon.html">Honeymoon</a>
         <a href="highlights.html">Highlights</a>
-        <a href="table.html">At Our Table</a>
       </nav>
       <div class="footer__cols">
         <span class="tag">Timelines</span>
@@ -197,6 +185,7 @@
   </div>
 </footer>
 
+<script src="assets/js/highlights.js"></script>
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/site.js"></script>
 </body>

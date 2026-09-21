@@ -324,13 +324,8 @@ window.MW_TRIP = {
   }
  ],
 
- "closing": {
-  "k": "The other highlights",
-  "title": "One more to come.",
-  "text": "Yinja's 30th is up too: eleven days round California in June 2026. He becomes a citizen in the same year, and that one gets a page like this once it has happened.",
-  "btns": [
-   { "href": "highlights-yinjas-30th.html", "label": "Yinja's 30th" },
-   { "href": "highlights-citizenship.html", "label": "Yinja's citizenship", "ghost": true }
-  ]
- }
+ /* The way on: the whole set of highlights, in the order they happened,
+    with this one marked. The list and the section are shared by all three
+    pages, in assets/js/highlights.js, so they cannot drift apart. */
+ "closing": { "nav": "highlights" }
 };
