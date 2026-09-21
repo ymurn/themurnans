@@ -174,7 +174,7 @@ the map say **Just been** and *Coming soon* for them rather than the line it giv
 we only ever drove through. Add a code there the day you get home from somewhere new, and
 take it out once that trip is in `assets/js/years/` and `memories.js` has been rebuilt.
 
-**The map beside the figures** colours in every state and province we've been to. The list
+**The map beside the figures** colors in every state and province we've been to. The list
 is `VISITED` at the top of the map section in `assets/js/site.js`: add a state's two letters
 (`'KY'`), or `CA-` and a province's (`'CA-ON'` for Ontario). The count in the caption under
 the map updates itself; the states figure beside it doesn't, so bump that too. The outlines
@@ -216,12 +216,12 @@ wide screen it is a small window that floats at the left edge while the months a
 screen, so the months keep their full width and nothing moves as it comes and goes; under
 1180px it unrolls from under the bar in a band 30% of the screen tall, the same as the
 honeymoon map. It moves to the month being
-read, names that month's stops, and colours in each state as the year goes on. The **Whole
+read, names that month's stops, and colors in each state as the year goes on. The **Whole
 year** button (**Whole volume**, on The Long Way Round) opens all of it in a window.
 
 Below 1180px every map band carries the same two controls, added by
 **`assets/js/mapfold.js`**: a button in the map's top corner that opens the whole thing in
-a window, and **Minimise**, which folds the band into a small pill in the middle of the
+a window, and **Minimize**, which folds the band into a small pill in the middle of the
 screen. The pill goes on naming the month, day or stop being read, and opens the map again
 when it is pressed.
 
@@ -282,7 +282,7 @@ photos in it.
 
 1. Crop the Christmas card to 7 × 5 and save it twice in `assets/art/cards/`:
    `card-2026.jpg` at 1400 × 1000 and `card-2026-sm.jpg` at 560 × 400. On a Mac,
-   from this folder (the first line crops to 7 × 5 around the centre, so change its two
+   from this folder (the first line crops to 7 × 5 around the center, so change its two
    numbers to suit the card; the other two resize and compress):
 
 ```bash
@@ -341,7 +341,7 @@ them. As each stop scrolls past, the drive into it lights up in coral and the st
 around it get their names. On a wide screen the map sits in the column beside the
 writing. Below 1180px it unrolls from under the bar as a band, zoomed in on the stop
 being read, and there it carries two controls of its own: **a corner button that opens
-the whole trip in a window**, and **Minimise**, which folds the band up into a small pill
+the whole trip in a window**, and **Minimize**, which folds the band up into a small pill
 in the middle of the screen. The pill goes on naming the stop being read, and opens the
 map again when it is pressed.
 
@@ -495,11 +495,11 @@ Three devices carry the illustration style into the interface:
 
 1. **Ink keylines**: a chunky 2px black border on cards, buttons and photographs, the
    same weight as the drawn line.
-2. **Off-register colour**: a flat colour block sitting a few pixels out from behind
+2. **Off-register color**: a flat color block sitting a few pixels out from behind
    each card, the way a screen-printed fill never quite lines up with its outline.
 3. **Chunky curves and small tilts**: nothing is perfectly square or perfectly straight.
 
-All of it is defined once at the top of `assets/css/site.css`: colours, `--keyline`, and
+All of it is defined once at the top of `assets/css/site.css`: colors, `--keyline`, and
 the `--r-lg` / `--r-md` / `--r-sm` corner radii. Change a token, change the whole site.
 
 Two themes: `dawn` (warm cream, the default) and `dusk` (deep teal). The toggle sits in
@@ -519,7 +519,7 @@ Gloock has a single weight, which is what keeps it refined, the drama comes from
 contrast and scale, never from bolding it.
 
 **The illustrations** keep their black ink in both themes, that's the artist's line, not
-a UI colour. In dusk a faint ghost of the colour fill sits behind them so the black still
+a UI color. In dusk a faint ghost of the color fill sits behind them so the black still
 reads on the dark ground.
 
 **Things to play with**
@@ -527,7 +527,7 @@ reads on the dark ground.
   skip it, or add `?intro` to the address (`index.html?intro`) to see it again. The
   loading line under the names is a random draw from `CURTAIN_LINES`, at the top of
   the curtain section in `assets/js/site.js`.
-- *The pour*: the hero slider clips the colour layer over the line art. It fills itself
+- *The pour*: the hero slider clips the color layer over the line art. It fills itself
   once when the page opens, then it's yours to drag. It throws confetti when it lands.
 - *Poke the characters*: click either of you and you say something. Six lines each,
   in `LINES` at the top of the interaction section in `assets/js/site.js`.
@@ -562,10 +562,10 @@ rose mat. Without those tags a scraper picks whichever picture it meets first, w
 the line drawing of David. The absolute URLs in them point at
 `https://ymurn.github.io/themurnans/`, so change them if the site moves.
 
-**Colour and contrast**: every text and background pair on all four pages was measured
-against WCAG AA in both themes and passes. Components sitting on a fixed brand colour
+**Color and contrast**: every text and background pair on all four pages was measured
+against WCAG AA in both themes and passes. Components sitting on a fixed brand color
 (the blue ticker, the gold sticker, the wine button, the chapter hover) carry fixed text
-colours rather than theme tokens, which is what keeps them readable when the theme flips.
+colors rather than theme tokens, which is what keeps them readable when the theme flips.
 
 **On a phone** (620px and narrower) the long pages are shortened in three ways: the nine
 tables, the four doors and the year cards on `home-archive.html`, and any photo strip of
@@ -593,7 +593,7 @@ to the top nothing has reached the band's place and the map stays tucked away.
 
 Three more things change shape on the way down. **A pair of buttons** sits in a row while
 the row has space for the pair and stacks when it hasn't, both set to one width and
-centred. Whether it fits depends on what the buttons say, not on the width of the screen,
+centered. Whether it fits depends on what the buttons say, not on the width of the screen,
 so `initButtonRows()` in `assets/js/site.js` measures each row and hangs `.is-stacked` on
 it; the only CSS breakpoint left is a 520px floor for when the script hasn't run. Each of
 the five speeches on **Our Big Day** puts the
@@ -611,7 +611,7 @@ menu it opens is sized by the height of the screen on a phone held sideways, whe
 links at the tall layout's size come to 495px on a 390px screen.
 
 **Dawn and dusk** switch in one go: the new theme opens out in a circle from the toggle
-(in browsers with View Transitions) with every colour changing in the same frame. Each
+(in browsers with View Transitions) with every color changing in the same frame. Each
 page reads the saved theme in its `<head>`, so a page opened in dusk never flashes cream.
 
 **Scrolling**: a phone fires scroll events faster than the screen refreshes, and every

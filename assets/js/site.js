@@ -1,5 +1,5 @@
 /* ==========================================================================
-   THE MURNANS · behaviour
+   THE MURNANS · behavior
    Everything degrades gracefully: no JS, no problem, the content still reads.
    ========================================================================== */
 
@@ -30,7 +30,7 @@
   applyTheme(store.get(THEME_KEY) || 'dawn');
 
   // The new theme opens out from the toggle in a circle. Underneath, every
-  // colour changes at once with transitions held off, so no card or line lags
+  // color changes at once with transitions held off, so no card or line lags
   // behind the rest. Without View Transitions, or with reduced motion, it is
   // the same clean swap with no circle.
   function initTheme() {
@@ -346,7 +346,7 @@
         done = true;
         set(100);
         range.value = 100;
-        // Both of them are in colour, which deserves something.
+        // Both of them are in color, which deserves something.
         $$('.fig').forEach((f, i) => setTimeout(() => celebrateFrom(f, 16), i * 160));
       };
       const step = now => {
@@ -359,7 +359,7 @@
         requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
-      // rAF is paused in background tabs; don't strand the art half-coloured.
+      // rAF is paused in background tabs; don't strand the art half-colored.
       setTimeout(finish, dur + 600);
     };
 
@@ -1517,7 +1517,7 @@
   /* ── Where we've been (home) ───────────────────────────────────────────
      Every state and province we've been to, on the outlines in
      assets/js/atlas.js. Once the map scrolls into view they print in, nearest
-     home first, each colour swinging in and settling into place.
+     home first, each color swinging in and settling into place.
      To add a place, add its code here: a state's two letters, or CA- and a
      province's two (CA-ON for Ontario).                                      */
 
@@ -1535,7 +1535,7 @@
      ever drove through, because one of them is a promise and the other is not. */
   const FRESH = { ND: 2026, SD: 2026, WY: 2026, NE: 2026 };
   const HOME = 'NY';
-  // the gold four-point star from the logo, centred on 0 0
+  // the gold four-point star from the logo, centered on 0 0
   const STAR = 'M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z';
 
   function initAtlas() {
@@ -1749,7 +1749,7 @@
        pill is held at nine tenths out of sight, and a rect read then is a
        tenth short: the card would land inside the pill rather than on it, and
        sit there as a blank wine lozenge over the pill's own label. The scale
-       turns about the centre, so the centre is the one thing it leaves alone.  */
+       turns about the center, so the center is the one thing it leaves alone.  */
     const pillBox = () => {
       const r = bar.getBoundingClientRect();
       const w = bar.offsetWidth, h = bar.offsetHeight;

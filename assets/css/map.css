@@ -86,7 +86,7 @@ body {
 .routemap__far, .routemap__whole, .yearmap__whole { display: none; }
 
 /* ── THE YEAR'S MAP ──────────────────────────────────────────────────────
-   Every place the year's photographs were taken, with the states colouring in
+   Every place the year's photographs were taken, with the states coloring in
    as the year goes on. On a wide screen it is a small window floating at the
    left edge, so the months keep their full width and nothing moves as it comes
    and goes; below 1180px it is the band under the bar, like the honeymoon. */
@@ -132,7 +132,7 @@ body {
 .ymap__label.is-on { opacity: 1; }
 .ymap__home { fill: var(--gold); stroke: #14110D; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 /* A <p>, so it arrives with the paragraph's margin under it. Left on, that
-   margin is counted when the foot centres it, and the month and the place
+   margin is counted when the foot centers it, and the month and the place
    sit half a line high of the middle of the pill the band folds into, which
    is what .routemap__now has always zeroed for the honeymoon's map. */
 .yearmap__now { margin: 0; }
@@ -281,7 +281,7 @@ body {
   .routemap__whole, .yearmap__whole { display: none; }
 
   /* A paper disc sitting on the map, so it needs a little shadow to lift off
-     the colour underneath it. The mark inside is square and centred, which
+     the color underneath it. The mark inside is square and centered, which
      is what keeps a round button from reading as two circles. */
   .mapfold__open {
     position: absolute;

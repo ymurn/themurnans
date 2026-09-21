@@ -542,7 +542,7 @@
       return [(x0 + x1) / 2 - bw / s / 2, (y0 + y1) / 2 - bh / s / 2, bw / s, bh / s];
     }
 
-    // Glide the band to view v: the centre slides and the zoom eases evenly.
+    // Glide the band to view v: the center slides and the zoom eases evenly.
     // A timer lands it too, in case frames stop coming.
     function fly(v) {
       cancelAnimationFrame(raf);

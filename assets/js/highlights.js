@@ -78,7 +78,7 @@ window.MW_HLNAV = function highlightsNav(host, opts) {
         <span class="hcard__note">${esc(h.note)}</span>
         ${on
           ? '<span class="hcard__tag">You are here</span>'
-          : `<span class="hcard__go">Read it ${ARROW}</span>`}`;
+          : `<span class="hcard__go"><span class="hcard__word">Read it</span>${ARROW}</span>`}`;
     return `
       <li class="hcard__slot" data-reveal="up" style="--d:${120 + i * 90}ms">
         ${on

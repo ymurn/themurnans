@@ -6,7 +6,7 @@
    carries two controls, and they are the same two everywhere:
 
      · a button in the map's top corner that opens the whole thing in a window
-     · Minimise, which folds the band up into a small pill in the middle of
+     · Minimize, which folds the band up into a small pill in the middle of
        the screen that goes on naming what is being read, and opens the map
        again when it is pressed
 
@@ -54,7 +54,7 @@ window.MW_MAPFOLD = function mapfold(o) {
   fold.className = 'mapfold__btn';
   fold.setAttribute('aria-expanded', 'true');
   fold.setAttribute('aria-controls', view.id);
-  fold.innerHTML = `<span class="mapfold__word">Minimise</span>${CHEV}`;
+  fold.innerHTML = `<span class="mapfold__word">Minimize</span>${CHEV}`;
   foot.appendChild(fold);
 
   const out = { min: false };
@@ -64,7 +64,7 @@ window.MW_MAPFOLD = function mapfold(o) {
     out.min = !out.min;
     wrap.classList.toggle('is-min', out.min);
     fold.setAttribute('aria-expanded', String(!out.min));
-    fold.querySelector('.mapfold__word').textContent = out.min ? 'Open the map' : 'Minimise';
+    fold.querySelector('.mapfold__word').textContent = out.min ? 'Open the map' : 'Minimize';
     told(out.min);
     if (out.min) { wrap.classList.remove('is-opening'); return; }
 

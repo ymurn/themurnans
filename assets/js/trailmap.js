@@ -160,7 +160,7 @@ window.MW_TRAILMAP = function trailmap(o) {
     stop = setTimeout(() => { cancelAnimationFrame(raf); land(); }, dur + 250);
   }
 
-  // Colour in the states and name the stops being read. A name sits to the
+  // Color in the states and name the stops being read. A name sits to the
   // right of its dot, or to the left if that side is taken, or is left off.
   function mark(m, i, v, k) {
     const live = groups[i] ? groups[i].stops : [];

@@ -2,7 +2,7 @@
    THE MURNANS · the trip pages
    honeymoon.html and the highlights, all built to one template by
    assets/js/trip.js. Loaded after site.css, year.css and map.css, and built
-   from the same tokens: the ink keyline, colour printed a little off
+   from the same tokens: the ink keyline, color printed a little off
    register, small tilts.
    --------------------------------------------------------------------------
    1. The page        3. The stops        5. The way on   7. Responsive
@@ -11,7 +11,7 @@
 
 /* 1 ── THE PAGE ────────────────────────────────────────────────────────── */
 
-/* The accent colour of each trip page is already set in site.css: rose for
+/* The accent color of each trip page is already set in site.css: rose for
    the honeymoon, khaki for the highlights.
 
    overflow-x: hidden on <body> turns it into a scroll container, and a
@@ -119,7 +119,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 .routemap--trip .routemap__state.is-on,
 .tripsheet .routemap__state.is-on { opacity: 1; }
 
-/* The whole trip, in the window the band opens. The window centres what is
+/* The whole trip, in the window the band opens. The window centers what is
    inside it, which leaves the map at the size the atlas happens to be drawn
    at, so the box it sits in is stretched across the window first. */
 .tripsheet .routesheet__map { justify-self: stretch; width: 100%; }
@@ -168,7 +168,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 .hcard:focus-visible .hcard__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 8px 14px 0 var(--off, var(--blue)); }
 .hcard:hover .hcard__pic img { transform: scale(1.05); }
 
-/* a highlight still to come: a wash of colour and the snapshot doodle */
+/* a highlight still to come: a wash of color and the snapshot doodle */
 .hcard__pic--empty {
   display: grid; place-items: center; align-content: center;
   color: var(--ink-2);
@@ -279,13 +279,29 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   .hnav .hcard__title { grid-area: name; font-size: 1.12rem; }
   .hnav .hcard__note { display: none; }
   .hnav .hcard__go, .hnav .hcard__tag { grid-area: go; justify-self: end; margin: 0; }
-  /* the words go, the arrow stays: at this size the whole line is the label */
+  /* The words go and the arrow stays: at this size the whole line is the
+     label. The words are taken out of the flow rather than shrunk, because a
+     collapsed text node is still a row of the grid and a gap away from the
+     arrow, which leaves the arrow sitting low in its circle. Screen readers
+     still read them. */
   .hnav .hcard__go {
     width: 34px; height: 34px;
     display: grid; place-items: center;
+    gap: 0;
     border: 1.5px solid var(--line);
     border-radius: 50%;
-    font-size: 0;
+    transition: translate .45s var(--ease), border-color .3s var(--ease-soft);
+  }
+  /* Beside the words on a wide screen the arrow slides out of the line and
+     that reads as going somewhere. Inside a circle it just leaves the middle.
+     So here the circle goes with it and the arrow stays where it was put. */
+  .hnav .hcard:hover .hcard__go,
+  .hnav .hcard:focus-visible .hcard__go { translate: 5px 0; border-color: var(--brass-2); }
+  .hnav .hcard:hover .hcard__go svg,
+  .hnav .hcard:focus-visible .hcard__go svg { transform: none; }
+  .hnav .hcard__word {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
   .hnav .hcard__go svg { display: block; }
   .hnav .hcard__tag { font-size: .54rem; padding: .3em .7em .24em; }
@@ -352,7 +368,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 .letter-block { max-width: 74ch; margin-inline: auto; font-size: 1.02rem; }
 .letter__label { display: block; margin: 0 0 clamp(.9rem, 2vw, 1.35rem); }
 
-/* The letter: paper with the ink keyline, colour printed off register, and
+/* The letter: paper with the ink keyline, color printed off register, and
    a finer frame inside it the way the vows are set. */
 .letter {
   position: relative;
@@ -363,7 +379,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   box-shadow: 10px 10px 0 var(--khaki);
 }
 /* Dusk only, for the reason given against the same rule in year.css: the
-   khaki in the ground turns the page a grey-olive on the dark. */
+   khaki in the ground turns the page a gray-olive on the dark. */
 [data-theme="dusk"] .letter-block .letter { background: var(--paper-2); }
 
 .letter::before {
@@ -375,7 +391,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   pointer-events: none;
 }
 
-/* The postmark, over the top edge on the right. Its colours are pinned the
+/* The postmark, over the top edge on the right. Its colors are pinned the
    way the "I do" sticker's are: dark ink on gold, the same in both themes,
    so it never lands as cream on yellow. */
 .letter__stamp {

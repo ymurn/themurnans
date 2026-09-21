@@ -45,7 +45,7 @@
   --brass-ink:    #7E611F;   /* the same gold, dark enough to read small */
   --brass-2:      #F0D89C;
 
-  /* the four colours the maps colour states in, no two neighbours alike */
+  /* the four colors the maps color states in, no two neighbours alike */
   --quilt-1:      #5E9BB4;
   --quilt-2:      #F0CE84;
   --quilt-3:      #7FA08A;
@@ -75,7 +75,7 @@
   --footer-line:   #14110D2b;
   --footer-invert: 0;
 
-  /* dusk's own ground, named here so the toggle's dot can show the colour it
+  /* dusk's own ground, named here so the toggle's dot can show the color it
      switches to without repeating the number */
   --dusk-paper:   #0B1F25;
 
@@ -182,10 +182,10 @@ body[data-page="highlights"] { --page: var(--khaki); --page-ink: var(--brass-ink
 
 *, *::before, *::after { box-sizing: border-box; }
 
-/* No colour of its own: the body's paper propagates up to the canvas, so the
+/* No color of its own: the body's paper propagates up to the canvas, so the
    page behind the designs is cream in dawn and dark teal in dusk, and the
    0.6s theme transition comes with it. The phone browser bar is held at the
-   footer's oxblood by assets/js/safari-bar.js, not by a colour back here. */
+   footer's oxblood by assets/js/safari-bar.js, not by a color back here. */
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
@@ -436,7 +436,7 @@ section { position: relative; }
 .btn:hover .btn__arrow { transform: translateX(4px); }
 
 /* Secondary: same geometry as .btn so a pair sits on one baseline, but the
-   keyline and the offset shadow are dialled back so it reads as the quieter
+   keyline and the offset shadow are dialed back so it reads as the quieter
    of the two. Hover fills it in like any other button. */
 .btn--ghost {
   --btn-bg: transparent;
@@ -453,7 +453,7 @@ section { position: relative; }
    pair, stacked when it hasn't. Whether it fits depends on what the buttons
    say, not on the width of the screen, so initButtonRows() in site.js
    measures each row and hangs .is-stacked on it. A stack is set to one width
-   and centred, so neither button reads as the smaller of the two. */
+   and centered, so neither button reads as the smaller of the two. */
 .btns { display: flex; flex-wrap: wrap; gap: 1rem; }
 .btns--center { justify-content: center; }
 
@@ -699,10 +699,10 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 
 .fig { position: relative; justify-self: center; cursor: pointer; transition: transform .7s var(--ease); }
 .fig:hover { transform: translateY(-10px); }
-/* Colour sits BEHIND the line art, so the ink stays crisp on top of it. */
+/* Color sits BEHIND the line art, so the ink stays crisp on top of it. */
 /* Sized by height so the pair always fits the viewport, whatever its shape. */
 .fig__layer { position: relative; isolation: isolate; height: min(clamp(190px, 40vh, 470px), 44vw); }
-/* The ink stays black in both themes , it is the artist's line, not a UI colour. */
+/* The ink stays black in both themes , it is the artist's line, not a UI color. */
 .fig__out {
   position: relative;
   z-index: 2;
@@ -715,7 +715,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   transition: clip-path .12s linear;
 }
 .fig__fill { height: 100%; width: auto; }
-/* In dusk, a ghost of the colour sits under the line so black ink still reads
+/* In dusk, a ghost of the color sits under the line so black ink still reads
    on the dark ground , and it looks like a drawing waiting to be filled in. */
 .fig__ghost {
   position: absolute; left: 0; top: 0;
@@ -736,7 +736,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   filter: blur(26px);
   pointer-events: none;
 }
-/* the meniscus , a faint line where the colour stops */
+/* the meniscus , a faint line where the color stops */
 .fig__line {
   position: absolute; left: -4%; right: -4%;
   z-index: 3;
@@ -858,9 +858,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 @keyframes ticker { to { transform: translateX(-50%); } }
 
 /* ── DRAWN LIKE THE ILLUSTRATIONS ──────────────────────────────────────────
-   The artwork is heavy black ink over flat colour that sits a hair off
+   The artwork is heavy black ink over flat color that sits a hair off
    register. Three devices carry that into the interface: a chunky ink
-   keyline, a colour block nudged out from behind it, and generous curves. */
+   keyline, a color block nudged out from behind it, and generous curves. */
 
 .inked {
   position: relative;
@@ -886,7 +886,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .table-card, .glass, .memory__card, .chapter, .fact, .portrait__mat, .shot, .memory__pic {
   border-radius: var(--r-md);
 }
-/* The colour sits behind as a hard offset shadow. A pseudo-element would be
+/* The color sits behind as a hard offset shadow. A pseudo-element would be
    clipped by these cards' own overflow and stacking contexts. */
 .table-card, .glass, .memory__card {
   position: relative;
@@ -900,7 +900,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 .glass:hover, .glass.is-full { transform: translate(4px, 4px); }
 
-/* Chapter doors clip their hover fill, so they take the off-register colour
+/* Chapter doors clip their hover fill, so they take the off-register color
    as a hard shadow instead of a block behind. */
 .chapter { box-shadow: 8px 8px 0 var(--off, var(--blue)); transition: color .5s var(--ease-soft), transform .45s var(--ease), box-shadow .45s var(--ease); }
 .chapter:hover { transform: translate(4px, 4px); box-shadow: 4px 4px 0 var(--off, var(--blue)); }
@@ -1169,7 +1169,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   position: relative;
   display: grid;
   place-items: center;
-  /* a warm ground so the three coloured cards read against it */
+  /* a warm ground so the three colored cards read against it */
   background: var(--paper-3);
   overflow: hidden;
 }
@@ -1315,7 +1315,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 
 /* ── Card looks ───────────────────────────────────────────────────────
    Each sticker dresses the memory card as its own place: paper, a wash, a
-   few doodles, a shape and a postmark. Colours are pinned rather than themed,
+   few doodles, a shape and a postmark. Colors are pinned rather than themed,
    the same rule the stickers follow, so every look reads the same at dawn
    and at dusk. Pressing the lit sticker again takes the card back.
 
@@ -1376,7 +1376,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
      that reads right for a photograph the width of the card is far too tall
      for this one: it ran over the date below. The window is a fixed size on
      any phone, so the mat is too, and the card takes a little more room at
-     the top to leave the pool centred in it. */
+     the top to leave the pool centered in it. */
   .memory__card[data-look="crater"] { padding-top: 28px; --lk-mat-h: 266px; }
 }
 .memory .memory__card[data-look] .memory__place { color: var(--lk-ink, #14110D); }
@@ -1439,7 +1439,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .memory__card.is-restyled, .memory .memory__card[data-look]::after { animation: none !important; }
 }
 
-/* Each look is flat paper in that place's colour, a swatch of its own
+/* Each look is flat paper in that place's color, a swatch of its own
    wallpaper as a mat behind the photo (two motifs to a repeat, pinecones
    and tents, sailboats and fish), and a moving scene along the foot of the
    card, which lives in site.js (SCENES). */
@@ -1625,7 +1625,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .figure__k { display: block; margin-top: .6rem; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3); }
 
 /* Where we've been: the map beside the figures. Cut out on paper, the states
-   we've been to printed in four colours with paper seams between them,
+   we've been to printed in four colors with paper seams between them,
    swinging in nearest home first when the map scrolls into view. */
 .atlas-row {
   display: grid;
@@ -1658,7 +1658,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .atlas__key { display: flex; flex-wrap: wrap; gap: .35rem 1rem; margin: 0; padding: 0; list-style: none; font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
 .atlas__key li { display: inline-flex; align-items: center; gap: .45rem; }
 .atlas__sw { position: relative; width: 13px; height: 10px; border: 1px solid var(--atlas-edge); border-radius: 2px; background: var(--atlas-land); }
-/* the four quilt colours, so the key matches the map in either theme */
+/* the four quilt colors, so the key matches the map in either theme */
 .atlas__sw--been { width: 14px; height: 12px; border-color: transparent; background: conic-gradient(var(--atlas-1) 0 25%, var(--atlas-2) 0 50%, var(--atlas-3) 0 75%, var(--atlas-4) 0); }
 .atlas__sw-star { width: 14px; height: 14px; fill: var(--gold); stroke: #14110D; stroke-width: 1.6; }
 
@@ -1813,7 +1813,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   transform: translateX(-50%);
   /* letter-spacing trails the last numeral: give it back on the right */
   padding: .34em calc(.95em - .24em) .3em .95em;
-  /* a screwed-on plate: fixed colours so it survives the hover fill */
+  /* a screwed-on plate: fixed colors so it survives the hover fill */
   background: #F0D89C;
   color: #14110D;
   border: 2px solid #14110D;
@@ -1893,7 +1893,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   50%      { transform: rotate(20deg) scale(1.16); opacity: 1; }
 }
 
-/* An embedded film, framed like everything else: ink keyline, colour behind */
+/* An embedded film, framed like everything else: ink keyline, color behind */
 .tube {
   position: relative;
   width: 100%;
@@ -2016,7 +2016,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .snap__where { font-family: var(--display); font-size: clamp(.9rem, 1.2vw, 1.05rem); line-height: 1.15; color: var(--ink); }
 .snap__when { font-size: .58rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); }
 
-/* Where each one lands, with its own tilt and colour, and the lean it takes
+/* Where each one lands, with its own tilt and color, and the lean it takes
    while it sits in the stack. A zig-zag down the column: every caption stays
    clear, and the only overlap is the right-hand print resting on a top corner
    of the one below it. Dealt in reading order. */
@@ -2121,7 +2121,7 @@ a.yearbtn { display: inline-block; }
 .chap__aside { position: relative; }
 /* The spine runs down the aside's left edge, so content has to clear it. */
 .chap__sticky { position: sticky; top: calc(var(--nav-h) + 4.75rem); display: grid; gap: .55rem; padding-left: var(--rail); }
-/* The aside's left edge sits exactly on the spine, so centre the dot on it. */
+/* The aside's left edge sits exactly on the spine, so center the dot on it. */
 .chap__dot { position: absolute; left: -4.5px; top: .55rem; width: 9px; height: 9px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 1px var(--ink-3); transition: background-color .5s, box-shadow .5s, transform .5s var(--ease); }
 .chap.is-in .chap__dot { background: var(--wine); box-shadow: inset 0 0 0 1px var(--wine), 0 0 0 5px color-mix(in srgb, var(--wine) 14%, transparent); transform: scale(1.1); }
 .chap__date { font-family: var(--display); font-size: 1.05rem; letter-spacing: .01em; color: var(--brass-ink); }
@@ -2214,7 +2214,7 @@ a.yearbtn { display: inline-block; }
 .glass__art .ln { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .glass__garnish { opacity: .45; transition: opacity .6s var(--ease); }
 .glass:hover .glass__garnish, .glass.is-full .glass__garnish { opacity: 1; }
-/* once the glass is full the fruit takes its colour: the citrus wheel goes
+/* once the glass is full the fruit takes its color: the citrus wheel goes
    lemon and gives a quarter turn, the blackberries fill one after another */
 .glass__art .glass__fruit { fill: transparent; transition: fill .45s var(--ease-soft) .35s; }
 .glass:hover .glass__fruit, .glass.is-full .glass__fruit { fill: var(--fruit); }
@@ -2238,7 +2238,7 @@ a.yearbtn { display: inline-block; }
 .glass:hover .glass__glint, .glass.is-full .glass__glint { opacity: .95; }
 /* dusk draws in light ink, which disappears on a lemon wheel or frosted ice,
    so once a glass is full its whole drawing takes a deep shade of the drink
-   (--line-dusk on each card: burnt orange for the tiger, plum for the bear),
+   (--line-dusk on each card: burned orange for the tiger, plum for the bear),
    kept light enough to hold 3:1 on the dark card. The ice goes deep teal and
    the blackberries a darker purple, so each still reads against its fill. */
 [data-theme="dusk"] .glass__art .ln:not(.glass__berry) { transition: stroke .45s var(--ease-soft) .35s, fill .5s var(--ease-soft) .3s; }
@@ -2280,7 +2280,7 @@ a.yearbtn { display: inline-block; }
 .glass:hover .glass__ing, .glass.is-full .glass__ing { opacity: 1; transform: none; }
 
 .tables { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.4vw, 2rem); }
-/* Corners, ink and the offset colour all come from the shared card rule
+/* Corners, ink and the offset color all come from the shared card rule
    further up; this only handles layout. */
 .table-card {
   position: relative;
@@ -2423,7 +2423,7 @@ a.yearbtn { display: inline-block; }
 .credit__pic--art { display: flex; justify-content: center; align-items: flex-start; padding-top: 12%; }
 .credit__fig { position: relative; width: 52%; margin-inline: -3%; transform-origin: 50% 20%; transition: transform .8s var(--ease); }
 .credit__pic--art .credit__fig img { display: block; width: 100%; height: auto; object-fit: contain; transition: none; }
-.credit__pic--art .credit__fig img + img { position: absolute; inset: 0; }   /* line art over its colour */
+.credit__pic--art .credit__fig img + img { position: absolute; inset: 0; }   /* line art over its color */
 .credit:hover .credit__pic--art img { transform: none; }
 .credit:hover .credit__fig:first-child { transform: rotate(-4deg); }
 .credit:hover .credit__fig:last-child  { transform: rotate(4deg); }
@@ -2596,7 +2596,7 @@ a.yearbtn { display: inline-block; }
 .vows__slot:last-child .vow__pic  { grid-column: 2; grid-row: 1; }
 .vows__slot:last-child .vow__body { grid-column: 1; grid-row: 1; }
 
-/* the sticker between the two cards: colours pinned, like the curtain's ampersand */
+/* the sticker between the two cards: colors pinned, like the curtain's ampersand */
 .vows__stamp {
   position: absolute;
   z-index: 3;
@@ -2863,7 +2863,7 @@ a.yearbtn { display: inline-block; }
   position: relative;
 }
 
-/* every frame gets its own colour and lean, cycling through the palette */
+/* every frame gets its own color and lean, cycling through the palette */
 .frame:nth-child(6n+1) { --off: var(--blue);     --tilt: -1.8deg; }
 .frame:nth-child(6n+2) { --off: var(--gold);     --tilt:  1.4deg; }
 .frame:nth-child(6n+3) { --off: var(--rose);     --tilt: -1.1deg; }
@@ -2874,7 +2874,7 @@ a.yearbtn { display: inline-block; }
 @media (max-width: 900px) { .frames { columns: 2; } }
 /* Two to a row right down to the smallest phone: one long column of big
    photographs stops reading as a pile. The leans stay, and the offset print
-   comes in so a tilted frame and its colour clear the column beside it. */
+   comes in so a tilted frame and its color clear the column beside it. */
 @media (max-width: 520px) {
   .frames { columns: 2; column-gap: .7rem; }
   .frame { margin-bottom: .9rem; box-shadow: 4px 4px 0 var(--off, var(--blue)); }
@@ -3026,13 +3026,13 @@ a.yearbtn { display: inline-block; }
 @media (hover: none), (pointer: coarse) { .cursor { display: none; } }
 
 /* Intro curtain
-   The logo goes up like a pinned print. It lands at a tilt, its colour block
+   The logo goes up like a pinned print. It lands at a tilt, its color block
    slides out a hair off register, the stars pop, and the two names write
    themselves in towards the ampersand. Then the cloth lifts on a scalloped
    hem with the blue lining a beat behind it, and the hero rises as it is
    uncovered.
    The entrance is pure CSS and plays from the first paint; site.js only
-   decides when to lift. Colours are fixed rather than theme tokens, so the
+   decides when to lift. Colors are fixed rather than theme tokens, so the
    curtain is the same oxblood at dawn and at dusk. Spring easings go in the
    timing-function longhand, never the shorthand: a browser that can't read
    linear() then falls back to ease instead of dropping the animation. */
@@ -3078,7 +3078,7 @@ a.yearbtn { display: inline-block; }
   padding: 2rem;
 }
 
-/* the print: logo, off-register colour block, stars */
+/* the print: logo, off-register color block, stars */
 .curtain__print {
   --off: clamp(7px, 1vw, 11px);
   position: relative;
@@ -3159,7 +3159,7 @@ a.yearbtn { display: inline-block; }
 .curtain__line {
   display: flex; align-items: baseline;
   margin: clamp(.4rem, 1.4vh, .9rem) 0 0;
-  padding-left: calc(.25em + 17px);                 /* the dots hang, so the words centre */
+  padding-left: calc(.25em + 17px);                 /* the dots hang, so the words center */
   font-size: .64rem; font-weight: 500;
   letter-spacing: .3em; text-transform: uppercase;
   color: #BBA0A5;
@@ -3241,7 +3241,7 @@ a.yearbtn { display: inline-block; }
 .since__year { font-family: var(--display); font-size: clamp(1.7rem, 2.4vw, 2.15rem); line-height: 1; transition: color .35s; }
 .since__card:hover .since__year { color: var(--brass-ink); }
 .since__name { font-size: .84rem; line-height: 1.4; color: var(--ink-2); text-wrap: balance; }
-/* colours pinned: the sticker is the same gold on the dark band in both themes */
+/* colors pinned: the sticker is the same gold on the dark band in both themes */
 .since__new {
   position: absolute;
   top: -.7rem; right: -.45rem;
@@ -3265,7 +3265,7 @@ a.yearbtn { display: inline-block; }
 
 /* Swipe rows. Below 620px these grids become one row you swipe through, the
    next card peeking in from the right, instead of stacking several screens
-   tall. The padding leaves room for the offset colour and the tilts. Photo
+   tall. The padding leaves room for the offset color and the tilts. Photo
    strips of four or more do the same on the year pages (year.css). */
 .rail-count { display: none; }
 @media (max-width: 620px) {
@@ -3386,7 +3386,7 @@ a.yearbtn { display: inline-block; }
 body.menu-open .totop { opacity: 0; visibility: hidden; }
 
 /* Theme swap: the new theme opens out from the toggle (initTheme). While it
-   does, transitions are off so every colour lands in the same frame; the
+   does, transitions are off so every color lands in the same frame; the
    toggle's knob still slides. */
 ::view-transition-old(root),
 ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
@@ -3397,7 +3397,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 /* 13 ── RESPONSIVE ─────────────────────────────────────────────────────── */
 
 @media (max-width: 1180px) {
-  /* Two doors a row. A door is portrait, so cap the width and centre the
+  /* Two doors a row. A door is portrait, so cap the width and center the
      pair: the arch keeps its shape instead of stretching into a banner. */
   .chapters { grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: center; }
 }
@@ -3652,7 +3652,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__map { aspect-ratio: 1000 / 645.6; }
 .mem__map svg { display: block; width: 100%; height: 100%; overflow: hidden; }
 
-/* Not been there: the quiet ground the coloured states sit on. No ink line
+/* Not been there: the quiet ground the colored states sit on. No ink line
    on any of them, there are fifty and it turns the map into a net. */
 .memmap__st {
   fill: var(--paper-2);
@@ -3660,10 +3660,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   stroke-width: .8px;
   vector-effect: non-scaling-stroke;
 }
-/* Been there: the four quilt colours, separated by the paper rather than
+/* Been there: the four quilt colors, separated by the paper rather than
    by ink, and cut out of the same sheet as the ground. */
-/* The colour sits on top of the plain ground, so if the print never runs the
-   map is a grey map rather than no map at all. */
+/* The color sits on top of the plain ground, so if the print never runs the
+   map is a gray map rather than no map at all. */
 .memmap__been {
   fill: var(--quilt-1);
   stroke: var(--paper);
@@ -3684,7 +3684,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__been[data-q="3"] { fill: var(--quilt-4); }
 .memmap__been:hover { filter: brightness(1.08) saturate(1.1); }
 
-/* One state chosen: it keeps its colour and takes the ink line, the rest
+/* One state chosen: it keeps its color and takes the ink line, the rest
    step back. One outline on the map, never thirty-six. */
 .memmap.is-picked.is-printed .memmap__been { opacity: .38; }
 .memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; }
@@ -3796,10 +3796,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   rotate: var(--tilt, 0deg);
   transition: rotate .4s var(--ease), translate .4s var(--ease);
 }
-.mem__card::before {                        /* the colour, printed off register */
+.mem__card::before {                        /* the color, printed off register */
   content: "";
   position: absolute;
-  /* Right and down only. Inset on the left as well and the colour starts
+  /* Right and down only. Inset on the left as well and the color starts
      inboard of the photograph above it, which leaves the caption sitting off
      the edge of its own background. */
   inset: 0 -6px -6px 0;
@@ -4035,7 +4035,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   border: var(--keyline);
   border-radius: 16px 16px 16px 5px;
   /* the same wine as the band behind it, so the bubble and its tail are one
-     colour and the keyline is the only thing drawing the shape */
+     color and the keyline is the only thing drawing the shape */
   background: var(--deep);
   color: var(--deep-ink);
   font-family: var(--hand);
@@ -4204,7 +4204,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 }
 .mem__now span { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--deep-ink-3); }
 /* A rotated bordered square puts its visual weight below its own box, which
-   is what had the chevron sitting low in the circle. An svg centres exactly. */
+   is what had the chevron sitting low in the circle. An svg centers exactly. */
 .mem__chev {
   flex: none;
   display: grid; place-items: center;
@@ -4261,7 +4261,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      wine lozenge sits over the pill's own label for a beat before it is taken
      off the page. So it comes back the plain way, and the last beat of the
      shrink is a fade: by then the card is the pill's box in the pill's
-     colour, and the label underneath simply arrives. */
+     color, and the label underneath simply arrives. */
   opacity: 0;
   transition:
     top .4s var(--ease-soft), left .4s var(--ease-soft),

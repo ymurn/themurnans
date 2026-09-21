@@ -3,7 +3,7 @@
    "card" is the file name in assets/art/cards/ without ".jpg"; every card
    needs two sizes, card-2026.jpg (1400 x 1000) and card-2026-sm.jpg (560 x 400).
    Leave "card" empty ("") until the card exists and a blank one stands in.
-   "off" is the colour printed a little off register behind the card. */
+   "off" is the color printed a little off register behind the card. */
 window.MW_YEARS = [
  {
   "year": "2022",

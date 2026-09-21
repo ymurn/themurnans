@@ -1,7 +1,7 @@
 /* ==========================================================================
    THE MURNANS · the year pages
    2022.html, 2023.html and on. Loaded after site.css and built from its
-   tokens: the ink keyline, colour printed a little off register, small tilts.
+   tokens: the ink keyline, color printed a little off register, small tilts.
    --------------------------------------------------------------------------
    1. Head and cover     4. Timeline rows      7. The letter
    2. The deck of cards  5. Photo slots        8. Closing
@@ -192,7 +192,7 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
 .strip--yr[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .strip--yr[data-n="6"] .shot { aspect-ratio: 4 / 3; }
 
-/* A slot still waiting for its photograph: a wash of colour, a doodle,
+/* A slot still waiting for its photograph: a wash of color, a doodle,
    and the caption as a hint for which picture goes there. */
 .shot--empty {
   container-type: inline-size;
@@ -271,7 +271,7 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
   rotate: -.5deg;
 }
 /* Dusk only. The gold mixed into the ground gives a warm sheet of paper on
-   cream, but on the dark it comes out a grey-olive: the letter reads as a
+   cream, but on the dark it comes out a gray-olive: the letter reads as a
    dirty page and the type sits down into it. So it takes a clean dark
    instead, one step up off the band it sits on, and the gold stays where it
    does the work, on the frame, the offset print and the postmark. */
@@ -319,7 +319,7 @@ a.yclose__card:hover { rotate: 0deg; translate: 4px 4px; box-shadow: 8px 8px 0 v
 .yclose__card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
 a.yclose__card:hover img { transform: scale(1.04); }
 
-/* the card that doesn't exist yet: plain stock, colours pinned for the dark band */
+/* the card that doesn't exist yet: plain stock, colors pinned for the dark band */
 .ycard-blank {
   display: grid;
   place-items: center;

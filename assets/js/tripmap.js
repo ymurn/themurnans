@@ -16,7 +16,7 @@
      band      the .moon__map that slides in and out
      bar       the sticky bar the band hangs under, or null
      atlas     window.MW_ATLAS
-     route     [{ n, at: [x, y], st }] in the order it was travelled
+     route     [{ n, at: [x, y], st }] in the order it was traveled
      stops     the chapters in reading order, each with leg: [first, last]
      view      [x, y, w, h], the piece of the atlas a wide screen shows
      chapters  the elements on the page, in reading order
@@ -209,13 +209,13 @@ window.MW_TRIPMAP = function tripmap(o) {
       y0 = Math.min(y0, P[s][1]); y1 = Math.max(y1, P[s][1]);
     }
     // never closer than a third of the way across the whole trip: a single
-    // drive filling the band would be two dots on a plain field of colour
+    // drive filling the band would be two dots on a plain field of color
     const mw = Math.max(x1 - x0, span[0] * 0.34, 18), mh = Math.max(y1 - y0, span[1] * 0.22, 12);
     const s = Math.min(bw / (mw * 1.6), bh / (mh * 1.5));
     return [(x0 + x1) / 2 - bw / s / 2, (y0 + y1) / 2 - bh / s / 2, bw / s, bh / s];
   }
 
-  // Glide the band to view v: the centre slides and the zoom eases evenly.
+  // Glide the band to view v: the center slides and the zoom eases evenly.
   // A timer lands it too, in case frames stop coming.
   function fly(v) {
     cancelAnimationFrame(raf);
