@@ -192,8 +192,7 @@ window.MW_YEAR = {
     "where": "Portland, OR",
     "leg": [14, 14],
     "text": [
-     "Day 2 of Portland started with a Light Rail ride to the Oregon Zoo where we got to see cute otters (and other animals, including bears). After the zoo we had awesome Duck House Chinese food (no duck at Duck House). We then walked along the River before deciding to go across the Willamette River to a good brewery, then we walked back from there to a Cocktail Bar in the Pearl District. When we got there, it was not exactly our scene, so we aborted going there and went to an even better cocktail place! It was so good, and afterwards we had sushi again for dinner!",
-     "Lastly, believe it or not, but today marks six months of legally wedded bliss. Shit happened in May and our lawyer suggested we get married ASAP. We sure did, and six months later we are still madly in love and in fact the Bear and Tiger!"
+     "Day 2 of Portland started with a Light Rail ride to the Oregon Zoo where we got to see cute otters (and other animals, including bears). After the zoo we had awesome Duck House Chinese food (no duck at Duck House). We then walked along the River before deciding to go across the Willamette River to a good brewery, then we walked back from there to a Cocktail Bar in the Pearl District. When we got there, it was not exactly our scene, so we aborted going there and went to an even better cocktail place! It was so good, and afterwards we had sushi again for dinner!"
     ],
     "photos": [
      { "src": "continued_trips/2022-08-portland/2022-08-portland-08.jpg", "cap": "At the Oregon Zoo" },

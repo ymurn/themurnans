@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dawn">
+<head>
+<meta charset="utf-8">
+<title>The Murnans · The Bear &amp; the Tiger</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="David and Yinja Murnan, the Bear and the Tiger. A living archive of where we have been since 2020, kept in Astoria, New York.">
+<!-- The link preview: without these a scraper picks whichever picture it meets
+     first, which was the line drawing of David. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Murnans">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://ymurn.github.io/themurnans/">
+<meta property="og:title" content="The Murnans · The Bear &amp; the Tiger">
+<meta property="og:description" content="David and Yinja Murnan, the Bear and the Tiger. A living archive of where we have been since 2020, kept in Astoria, New York.">
+<meta property="og:image" content="https://ymurn.github.io/themurnans/assets/art/social-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Bear and the Tiger: David and Yinja drawn face to face under a scatter of gold stars.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ymurn.github.io/themurnans/">
+<meta name="theme-color" content="#3A1621">
+<link rel="icon" href="assets/art/favicon-logo.png">
+<link rel="apple-touch-icon" href="assets/art/bear-tiger-logo-round.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
+<script>try { if (sessionStorage.getItem('murnan-seen') === '1' && !/[?&]intro\b/.test(location.search)) document.documentElement.classList.add('curtain-seen'); } catch (e) {}</script>
+<noscript><style>.curtain { display: none; }</style></noscript>
+<!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
+<script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+</head>
+<body data-page="home">
+
+<!-- Intro curtain ------------------------------------------------------- -->
+<div class="curtain" aria-hidden="true">
+  <div class="curtain__lining"></div>
+  <div class="curtain__cloth">
+    <div class="curtain__inner">
+      <div class="curtain__print">
+        <span class="curtain__block"></span>
+        <img class="curtain__logo" src="assets/art/logo-square.png" alt="" width="520" height="520" fetchpriority="high">
+        <svg class="curtain__star curtain__star--pin" viewBox="0 0 24 24"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
+        <svg class="curtain__star curtain__star--a" viewBox="0 0 24 24"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
+        <svg class="curtain__star curtain__star--b" viewBox="0 0 24 24"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
+      </div>
+      <div class="curtain__names">
+        <span class="curtain__name curtain__name--david"><img src="assets/art/David-Script.png" alt="" width="600" height="360"></span>
+        <span class="curtain__amp">&amp;</span>
+        <span class="curtain__name curtain__name--yinja"><img src="assets/art/Yinja-Script.png" alt="" width="600" height="360"></span>
+      </div>
+      <p class="curtain__line"><span class="curtain__say">Taking the long way round</span><span class="curtain__dots"><span></span><span></span><span></span></span></p>
+    </div>
+  </div>
+</div>
+
+<div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+<!-- Nav ----------------------------------------------------------------- -->
+<header class="nav">
+  <a class="brand" href="index.html" aria-current="page">
+    <img class="brand__glyph" src="assets/art/logo-round.png" alt="" width="34" height="34" decoding="async">
+    <span class="brand__name">The Murnans</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a class="nav__link" href="index.html" aria-current="page">Home</a>
+    <a class="nav__link" href="story.html">The Long Way Round</a>
+    <a class="nav__link" href="table.html">At Our Table</a>
+    <a class="nav__link" href="day.html">Our Big Day</a>
+    <a class="nav__link" href="2025.html">After the Wedding</a>
+    <span class="nav__tail">
+      <span>Astoria &middot; NY</span>
+      <a href="https://www.instagram.com/themurnans/" target="_blank" rel="noopener">@themurnans</a>
+    </span>
+  </nav>
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <button class="theme-toggle" aria-pressed="false" aria-label="Switch between dawn and dusk">
+      <span class="theme-toggle__ico theme-toggle__ico--sun" aria-hidden="true">☀</span>
+      <span class="theme-toggle__ico theme-toggle__ico--moon" aria-hidden="true">☾</span>
+      <span class="theme-toggle__knob" aria-hidden="true"></span>
+    </button>
+    <button class="nav__burger" aria-expanded="false" aria-label="Menu"><span></span></button>
+  </div>
+</header>
+
+<main>
+
+<!-- Hero ---------------------------------------------------------------- -->
+<section class="hero">
+  <div class="hero__wash" aria-hidden="true"></div>
+  <div class="shell hero__inner">
+
+    <p class="eyebrow" data-reveal="fade">Astoria, New York &nbsp;·&nbsp; Est. 2020</p>
+
+    <h1 class="t-mega hero__title" data-split>The Bear <span class="amp">&amp;</span> the Tiger</h1>
+
+    <div class="hero__sub">
+      <p class="lede" data-reveal="up" style="--d:120ms">
+        David and Yinja Murnan. An engineer and a designer, one very long list of breweries,
+        and a habit of driving four hours for a waterfall.
+      </p>
+    </div>
+
+    <!-- The stage: outline art that colours itself in -->
+    <div class="stage">
+      <div class="fig fig--bear" data-who="bear" role="button" tabindex="0" aria-label="Poke David, he has opinions">
+        <div class="fig__layer">
+          <img class="fig__ghost" src="assets/art/David-fill.png" alt="" aria-hidden="true" width="520" height="1001">
+          <img class="fig__out" src="assets/art/David-Outline.png" alt="Line illustration of David" width="520" height="1001">
+          <div class="fig__fillwrap" aria-hidden="true">
+            <img class="fig__fill" src="assets/art/David-fill.png" alt="" width="520" height="1001">
+          </div>
+          <span class="fig__line" aria-hidden="true"></span>
+        </div>
+        <img class="fig__name" src="assets/art/David-Script.png" alt="" aria-hidden="true">
+        <p class="fig__say" aria-live="polite"></p>
+        <span class="fig__poke">Poke me</span>
+        <div class="fig__card">
+          <span class="tag">The Bear</span>
+          <p>Cincy-made. Brooklyn denizen by way of Silver Spring. Gay beer drinker, gamer, urbanist and subway rider, with a fear of heights he keeps testing on fire towers.</p>
+        </div>
+      </div>
+
+      <div class="stage__center">
+        <span class="stage__amp" aria-hidden="true">&amp;</span>
+      </div>
+
+      <div class="fig fig--tiger" data-who="tiger" role="button" tabindex="0" aria-label="Poke Yinja, he has opinions too">
+        <div class="fig__layer">
+          <img class="fig__ghost" src="assets/art/Yinjia-fill.png" alt="" aria-hidden="true" width="520" height="1001">
+          <img class="fig__out" src="assets/art/Yinjia-Outline.png" alt="Line illustration of Yinja" width="520" height="1001">
+          <div class="fig__fillwrap" aria-hidden="true">
+            <img class="fig__fill" src="assets/art/Yinjia-fill.png" alt="" width="520" height="1001">
+          </div>
+          <span class="fig__line" aria-hidden="true"></span>
+        </div>
+        <img class="fig__name" src="assets/art/Yinja-Script.png" alt="" aria-hidden="true">
+        <p class="fig__say" aria-live="polite"></p>
+        <span class="fig__poke">Poke me</span>
+        <div class="fig__card">
+          <span class="tag">The Tiger</span>
+          <p>First wine tasting on the North Fork. First bonfire in Salem. First ballgame at Citi Field. Since then: all five Utah parks in one trip, and the top of the fire tower David won't climb. A fast study.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pour">
+      <div class="pour__track">
+        <span class="pour__rail" aria-hidden="true"></span>
+        <input class="pour__range" type="range" min="0" max="100" value="0" step="1"
+               aria-label="Pour colour into the illustrations">
+      </div>
+      <p class="pour__label"><span class="pour__word">Pour</span> <span class="pour__val">0%</span></p>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- Ticker -------------------------------------------------------------- -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__row">
+    <span class="ticker__item">Breweries</span>
+    <span class="ticker__item">Waterfalls</span>
+    <span class="ticker__item">Skyline Chili</span>
+    <span class="ticker__item">Smash burgers</span>
+    <span class="ticker__item">Cornbread</span>
+    <span class="ticker__item">The North Fork</span>
+    <span class="ticker__item">Halal carts</span>
+    <span class="ticker__item">Apple cider shakes</span>
+    <span class="ticker__item">Beacon, again</span>
+    <span class="ticker__item">Ugly Christmas sweaters</span>
+    <span class="ticker__item">Detroit-style pizza</span>
+    <span class="ticker__item">Go Reds</span>
+  </div>
+</div>
+
+<!-- Statement ----------------------------------------------------------- -->
+<section class="band who">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-head__idx">01 / Who</span>
+      <div class="sec-head__body">
+        <h2 class="t-xl" data-split>We met in the summer when everything stopped, but we <span class="squiggle">did not stop.</span></h2>
+      </div>
+    </div>
+
+    <div class="grid grid--2 who__grid">
+      <div class="stack gap-l">
+        <div class="stack gap-m" data-reveal="up">
+          <div class="quote">
+            <span class="quote__mark" aria-hidden="true">“</span>
+            <p class="serif-note">We laugh together, we cry together, we live our best lives together.</p>
+          </div>
+          <hr class="rule rule--brass" data-reveal="rule" style="--d:300ms">
+          <p class="tag">David Murnan</p>
+        </div>
+
+        <div class="stack gap-s" data-reveal="up" style="--d:140ms">
+          <p class="lede">
+            June 2020, FiDi, NYC. What started as a friendship during the pandemic became
+            67 road trips, an apartment in Brooklyn and now Astoria, and a beautiful
+            wedding at a barbecue joint in Gowanus.
+          </p>
+          <p class="lede">
+            The wedding was the middle of the story, and it has been getting better ever
+            since. This is where we keep the rest: the falls and fire towers, the breweries
+            and ballgames, the restaurants we tell everyone to try, and whatever we get up to next.
+          </p>
+        </div>
+      </div>
+
+      <!-- Three photographs of the two of us, dealt by initSnaps: fresh on every load,
+           and again whenever someone clicks an empty spot in this section -->
+      <div class="snaps" id="snaps"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Anniversary --------------------------------------------------------- -->
+<section class="band band--tight band--paper2">
+  <div class="shell">
+    <div class="anniv">
+      <div class="anniv__main">
+        <span class="eyebrow eyebrow--brass" data-reveal="fade">Married August 6th, 2022</span>
+        <h2 class="t-lg" data-reveal="up">
+          <span data-anniv="years">&hellip;</span> <span data-anniv="plural-years">years</span>,
+          <span data-anniv="months">&hellip;</span> <span data-anniv="plural-months">months</span>,
+          <span class="anniv__ord">and counting.</span>
+        </h2>
+        <p class="lede" data-reveal="up" style="--d:120ms">
+          Still in love, still on the road most weekends, still finding new breweries, still
+          keeping the table full of friends and family. Bear and Tiger, through and through.
+          Whatever comes next lands here, so make yourself at home.
+        </p>
+      </div>
+      <!-- The countdown as the page of a desk calendar: the day circled in pen,
+           the days left on a sticker. initAnniversary fills in the year, the
+           weekday and the count -->
+      <div class="anniv__count" data-reveal="up" style="--d:200ms">
+        <div class="cal">
+          <div class="cal__page">
+            <span class="cal__rings" aria-hidden="true"><i></i><i></i></span>
+            <div class="cal__head">
+              <span class="cal__month">August</span>
+              <span class="cal__year" data-anniv="milestone-year">2027</span>
+            </div>
+            <div class="cal__body">
+              <span class="cal__date">6<svg class="cal__ring" viewBox="0 0 120 96" aria-hidden="true"><path pathLength="1" d="M30 70C12 52 18 18 56 11c34-6 56 12 54 38-2 27-30 40-58 38-28-2-44-20-40-42 3-15 16-25 34-29"/></svg></span>
+              <span class="cal__dow" data-anniv="milestone-day">Friday</span>
+            </div>
+          </div>
+          <div class="cal__sticker">
+            <span class="anniv__big" data-anniv="days" data-count="0">&hellip;</span>
+            <span class="anniv__k">days to our fifth</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Where we've been, and the figures beside it, part of the same story
+         as the count above. The map is drawn by initAtlas from the outlines in
+         assets/js/atlas.js; the places we've been are VISITED in site.js -->
+    <div class="atlas-row">
+      <figure class="atlas" id="atlas">
+        <div class="atlas__head">
+          <span class="tag">Where we've been</span>
+          <ul class="atlas__key" aria-hidden="true">
+            <li><i class="atlas__sw atlas__sw--been"></i>Been there</li>
+            <li><i class="atlas__sw"></i>Not yet</li>
+            <li><svg class="atlas__sw-star" viewBox="-11 -11 22 22"><path d="M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z"/></svg>Home</li>
+          </ul>
+        </div>
+        <div class="atlas__map"></div>
+        <figcaption class="atlas__cap"><span data-atlas="summary">34 states, DC and Québec</span> so far.</figcaption>
+      </figure>
+
+      <div class="figures">
+        <div class="figure" data-reveal="up">
+          <span class="figure__n num" data-count="29">29</span>
+          <span class="figure__k">Adventures before the wedding</span>
+        </div>
+        <div class="figure" data-reveal="up" style="--d:80ms">
+          <span class="figure__n num" data-count="67">67</span>
+          <span class="figure__k">Road trips so far</span>
+        </div>
+        <div class="figure" data-reveal="up" style="--d:160ms">
+          <span class="figure__n num" data-count="38">38</span>
+          <span class="figure__k">National parks visited</span>
+        </div>
+        <div class="figure" data-reveal="up" style="--d:240ms">
+          <span class="figure__n num" data-count="34">34</span>
+          <span class="figure__k">States visited, plus DC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Since the wedding: one Christmas card for each year page, built by
+     initSince from assets/js/years/index.js, so a new year shows up here too -->
+<section class="band band--deep since">
+  <div class="shell">
+    <div class="sec-head sec-head--split">
+      <span class="sec-head__idx">02 / Since 2022</span>
+      <div class="sec-head__body">
+        <h2 class="t-lg" data-split>The road <span class="squiggle">after the wedding.</span></h2>
+        <p class="lede" data-reveal="up" style="--d:120ms">Two days after the party we flew to Sacramento for the honeymoon, and we haven't really stopped. Every year since has its own page, and each one opens on our Christmas card from that year.</p>
+      </div>
+    </div>
+
+    <ol class="since__cards" id="since" aria-label="Every year since the wedding"></ol>
+
+    <div class="since__btns" data-reveal="up">
+      <a class="btn" href="2022.html" data-magnet>
+        Start with the honeymoon
+        <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+      </a>
+      <a class="btn btn--ghost" id="since-latest" href="2025.html" data-magnet>Jump to 2025</a>
+    </div>
+  </div>
+</section>
+
+<!-- The memory machine -------------------------------------------------- -->
+<section class="band">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-head__idx">03 / Souvenirs</span>
+      <div class="sec-head__body">
+        <h2 class="t-lg" data-split>Pull a <span class="squiggle">memory</span> out of the hat.</h2>
+        <p class="lede">Every trip on the site is in here, from the chapters before the wedding to the year pages since. Press the button for a random memory in a random card style, or tap a sticker to pick the style yourself.</p>
+      </div>
+    </div>
+
+    <div class="memory" data-reveal="up">
+      <div class="memory__top">
+        <div class="memory__controls">
+          <span class="sticker" data-drag>67 adventures and counting</span>
+        <button class="memory__lever" id="memory-btn" data-drag>
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="1.6" y="1.6" width="16.8" height="16.8" rx="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="6.6" cy="6.6" r="1.5" fill="currentColor"/>
+            <circle cx="13.4" cy="13.4" r="1.5" fill="currentColor"/>
+            <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+          </svg>
+          <span>Pull a memory</span>
+        </button>
+        </div>
+
+        <div class="stickers" role="group" aria-label="Dress up the memory card">
+
+        <button type="button" class="dsticker dsticker--dome" data-drag data-look="dome" aria-pressed="false" aria-label="Dress the card as Half Dome, Yosemite" title="Half Dome, Yosemite">
+          <svg viewBox="0 0 64 56">
+            <defs><clipPath id="mw-dome"><rect x="3" y="3" width="58" height="50" rx="11"/></clipPath></defs>
+            <g clip-path="url(#mw-dome)">
+              <rect x="3" y="3" width="58" height="50" fill="#BFDCE3"/>
+              <circle cx="48" cy="13" r="4.6" fill="#F0D89C" stroke="#14110D" stroke-width="1.5"/>
+              <path d="M13 48 V23 C13 16.5 16.5 13 21.8 12.2 C33 10.5 42 22 46.5 32 L52 48 Z" fill="#EDF3F5"/>
+              <path d="M13 48 V23 C13 16.5 16.5 13 21.8 12.2 L22.4 48 Z" fill="#8FA9B6"/>
+              <path d="M13 48 V23 C13 16.5 16.5 13 21.8 12.2 C33 10.5 42 22 46.5 32 L52 48 Z"
+                    fill="none" stroke="#14110D" stroke-width="2.2" stroke-linejoin="round"/>
+              <path d="M22.2 12.4 V48" stroke="#14110D" stroke-width="1.6"/>
+              <path d="M3 46 q6 -5 12 0 q6 -5 12 0 q6 -5 12 0 q6 -5 12 0 q6 -5 12 0 V57 H3 Z"
+                    fill="#3F6B52" stroke="#14110D" stroke-width="1.5" stroke-linejoin="round"/>
+            </g>
+            <rect x="3" y="3" width="58" height="50" rx="11" fill="none" stroke="#14110D" stroke-width="2.5"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--crater" data-drag data-look="crater" aria-pressed="false" aria-label="Dress the card as Crater Lake" title="Crater Lake">
+          <svg viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="27" fill="#A9BFB0" stroke="#14110D" stroke-width="2.5"/>
+            <circle cx="30" cy="30" r="20.5" fill="#2A6E91" stroke="#14110D" stroke-width="2"/>
+            <path d="M17.5 38.5 L21.5 29.5 L23.5 32 L25.5 28.5 L29.5 38.5 Z"
+                  fill="#3F6B52" stroke="#14110D" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M35 32 h8" stroke="#BFE0EC" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M38.5 38 h5" stroke="#BFE0EC" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M33 24 h5" stroke="#BFE0EC" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--canyon" data-drag data-look="canyon" aria-pressed="false" aria-label="Dress the card as Grand Canyon" title="Grand Canyon">
+          <svg viewBox="0 0 64 56">
+            <defs><clipPath id="mw-canyon"><rect x="3" y="3" width="58" height="50" rx="11"/></clipPath></defs>
+            <g clip-path="url(#mw-canyon)">
+              <rect x="3" y="3" width="58" height="50" fill="#F0D89C"/>
+              <path d="M0 26 H12 V20 H26 V27 H38 V19 H52 V25 H64 V56 H0 Z" fill="#E2604F"/>
+              <path d="M0 36 H16 V31 H30 V38 H44 V32 H64 V56 H0 Z" fill="#A03A50"/>
+              <path d="M0 47 C14 43 28 50 44 46 C54 43.5 60 45 64 44 V56 H0 Z" fill="#5E9BB4"/>
+            </g>
+            <rect x="3" y="3" width="58" height="50" rx="11" fill="none" stroke="#14110D" stroke-width="2.5"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--bear" data-drag data-look="bear" aria-pressed="false" aria-label="Dress the card as A bear, Great Smokies" title="A bear, Great Smokies">
+          <svg viewBox="0 0 60 58">
+            <circle cx="15" cy="16" r="7.5" fill="#B49C6C" stroke="#14110D" stroke-width="2.2"/>
+            <circle cx="45" cy="16" r="7.5" fill="#B49C6C" stroke="#14110D" stroke-width="2.2"/>
+            <circle cx="30" cy="32" r="20" fill="#B49C6C" stroke="#14110D" stroke-width="2.5"/>
+            <ellipse cx="30" cy="39.5" rx="10" ry="7.5" fill="#F0D89C" stroke="#14110D" stroke-width="2"/>
+            <circle cx="23" cy="27" r="2.2" fill="#14110D"/>
+            <circle cx="37" cy="27" r="2.2" fill="#14110D"/>
+            <ellipse cx="30" cy="36" rx="3.1" ry="2.3" fill="#14110D"/>
+            <path d="M26.5 41.5 Q30 44.5 33.5 41.5" fill="none" stroke="#14110D" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--light" data-drag data-look="light" aria-pressed="false" aria-label="Dress the card as Green light, go" title="Green light, go">
+          <svg viewBox="0 0 44 66">
+            <path d="M22 55 V64" stroke="#14110D" stroke-width="3" stroke-linecap="round"/>
+            <rect x="5.5" y="2.5" width="33" height="53" rx="11" fill="#F7F0E0" stroke="#14110D" stroke-width="2.5"/>
+            <circle cx="22" cy="16" r="6.4" fill="#D8503C" stroke="#14110D" stroke-width="1.7"/>
+            <circle cx="22" cy="29" r="6.4" fill="#EFC35E" stroke="#14110D" stroke-width="1.7"/>
+            <circle cx="22" cy="42" r="6.4" fill="#5E9E6E" stroke="#14110D" stroke-width="1.7"/>
+            <path d="M12 42 h-4 M32 42 h4" stroke="#14110D" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--smoky" data-drag data-look="smoky" aria-pressed="false" aria-label="Dress the card as Great Smoky Mountains" title="Great Smoky Mountains">
+          <svg viewBox="0 0 64 56">
+            <defs><clipPath id="mw-smoky"><rect x="3" y="3" width="58" height="50" rx="11"/></clipPath></defs>
+            <g clip-path="url(#mw-smoky)">
+              <rect x="3" y="3" width="58" height="50" fill="#DCE9EC"/>
+              <path d="M0 24 C10 16 18 22 26 18 C36 13 44 22 52 20 C58 18.5 62 21 64 20 V56 H0 Z" fill="#A8BFC8"/>
+              <path d="M0 33 C9 27 17 33 26 30 C36 26 43 33 52 31 C58 29.5 61 31 64 30 V56 H0 Z" fill="#6E8E9C"/>
+              <path d="M0 42 C10 37 18 43 28 40 C38 37 46 43 54 41 C59 40 62 41 64 40.5 V56 H0 Z" fill="#3F6B52"/>
+            </g>
+            <rect x="3" y="3" width="58" height="50" rx="11" fill="none" stroke="#14110D" stroke-width="2.5"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--dunes" data-drag data-look="dunes" aria-pressed="false" aria-label="Dress the card as Death Valley" title="Death Valley">
+          <svg viewBox="0 0 64 56">
+            <defs><clipPath id="mw-dunes"><rect x="3" y="3" width="58" height="50" rx="11"/></clipPath></defs>
+            <g clip-path="url(#mw-dunes)">
+              <rect x="3" y="3" width="58" height="50" fill="#F7D79A"/>
+              <circle cx="32" cy="24" r="10" fill="#E2604F"/>
+              <path d="M0 34 C12 28 22 38 34 34 C46 30 56 37 64 33 V56 H0 Z" fill="#E0AE68"/>
+              <path d="M0 43 C14 38 24 47 38 43 C50 39.5 58 45 64 42 V56 H0 Z" fill="#BE8145"/>
+            </g>
+            <rect x="3" y="3" width="58" height="50" rx="11" fill="none" stroke="#14110D" stroke-width="2.5"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--stacks" data-drag data-look="stacks" aria-pressed="false" aria-label="Dress the card as Sea stacks, Olympic" title="Sea stacks, Olympic">
+          <svg viewBox="0 0 64 56">
+            <defs><clipPath id="mw-stacks"><rect x="3" y="3" width="58" height="50" rx="11"/></clipPath></defs>
+            <g clip-path="url(#mw-stacks)">
+              <rect x="3" y="3" width="58" height="50" fill="#D3E3E7"/>
+              <path d="M13 44 V21 C13 17 15.2 14 18 14 C20.8 14 23 17 23 21 V44 Z" fill="#5A7A6E"/>
+              <path d="M29 44 V26 C29 22.5 31.2 20 34 20 C36.8 20 39 22.5 39 26 V44 Z" fill="#415C52"/>
+              <path d="M45 44 V29.5 C45 26.5 46.6 24.5 48.6 24.5 C50.6 24.5 52.2 26.5 52.2 29.5 V44 Z" fill="#5A7A6E"/>
+              <path d="M0 40 C12 37 20 43.5 32 40.5 C44 37.5 54 43.5 64 40 V56 H0 Z" fill="#5E9BB4"/>
+              <path d="M6 33 h13 M41 30 h15" stroke="#F1F8F9" stroke-width="2.6" stroke-linecap="round" opacity=".9"/>
+            </g>
+            <rect x="3" y="3" width="58" height="50" rx="11" fill="none" stroke="#14110D" stroke-width="2.5"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--elk" data-drag data-look="elk" aria-pressed="false" aria-label="Dress the card as An elk, keeping its distance" title="An elk, keeping its distance">
+          <svg viewBox="0 0 64 62">
+            <g fill="none" stroke="#14110D" stroke-width="2.6" stroke-linecap="round">
+              <path d="M23 21 C19 15 17.5 10 18.5 5"/><path d="M23 21 C17 17 12.5 15.5 8.5 16.5"/><path d="M23 21 C19 19.5 15 20.5 12 23.5"/>
+              <path d="M41 21 C45 15 46.5 10 45.5 5"/><path d="M41 21 C47 17 51.5 15.5 55.5 16.5"/><path d="M41 21 C45 19.5 49 20.5 52 23.5"/>
+            </g>
+            <ellipse cx="15" cy="31" rx="6.2" ry="4" transform="rotate(-25 15 31)" fill="#C4A278" stroke="#14110D" stroke-width="2"/>
+            <ellipse cx="49" cy="31" rx="6.2" ry="4" transform="rotate(25 49 31)" fill="#C4A278" stroke="#14110D" stroke-width="2"/>
+            <path d="M32 20 C39 20 43 25 43 32 C43 40 39 45.5 36.5 51.5 C35 54.8 29 54.8 27.5 51.5 C25 45.5 21 40 21 32 C21 25 25 20 32 20 Z"
+                  fill="#A98358" stroke="#14110D" stroke-width="2.4" stroke-linejoin="round"/>
+            <circle cx="26.5" cy="30.5" r="2" fill="#14110D"/>
+            <circle cx="37.5" cy="30.5" r="2" fill="#14110D"/>
+            <ellipse cx="32" cy="48.5" rx="4.2" ry="3.1" fill="#7A5B40" stroke="#14110D" stroke-width="1.8"/>
+          </svg>
+        </button>
+
+        <button type="button" class="dsticker dsticker--cactus" data-drag data-look="cactus" aria-pressed="false" aria-label="Dress the card as Prickly pear, Big Bend" title="Prickly pear, Big Bend">
+          <svg viewBox="0 0 56 62">
+            <path d="M14 56 h28" stroke="#BE8145" stroke-width="4" stroke-linecap="round"/>
+            <ellipse cx="14" cy="25" rx="7" ry="10" transform="rotate(-30 14 25)" fill="#9FB8A6" stroke="#14110D" stroke-width="2.2"/>
+            <ellipse cx="41" cy="35" rx="6.5" ry="9" transform="rotate(28 41 35)" fill="#9FB8A6" stroke="#14110D" stroke-width="2.2"/>
+            <ellipse cx="27" cy="38" rx="11" ry="16" fill="#7FA08A" stroke="#14110D" stroke-width="2.4"/>
+            <circle cx="10.5" cy="13.5" r="4.2" fill="#E2604F" stroke="#14110D" stroke-width="1.9"/>
+            <circle cx="27" cy="21.5" r="3.6" fill="#F0CE84" stroke="#14110D" stroke-width="1.8"/>
+            <path d="M22.5 33 h1.5 M30 30 h1.5 M24.5 43 h1.5 M31 45 h1.5" stroke="#14110D" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        </div>
+      </div>
+
+      <article class="memory__card is-empty" id="memory-card" aria-live="polite">
+        <div class="memory__pic memory__pic--deck">
+          <span class="deck" aria-hidden="true">
+            <span class="deck__card deck__card--a"></span>
+            <span class="deck__card deck__card--c"></span>
+            <span class="deck__card deck__card--b"></span>
+          </span>
+          <svg class="deck__spark deck__spark--1" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
+          <svg class="deck__spark deck__spark--2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
+          <svg class="deck__spark deck__spark--3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
+        </div>
+        <div class="memory__body">
+          <span class="memory__date">Nothing pulled yet</span>
+          <h3 class="memory__place">Reach in.</h3>
+          <p class="memory__text">Every trip is in the hat, from our first photo together at a waterfall near Cazenovia to a snowy Grand Canyon on David's 40th. Press the button, or any sticker, and take pot luck.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Chapters ------------------------------------------------------------ -->
+<section class="band band--paper2">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-head__idx">04 / Where to</span>
+      <div class="sec-head__body">
+        <h2 class="t-lg" data-split><span class="squiggle">Four rooms</span> in the house.</h2>
+        <p class="lede">Pick a door. They all lead back to food, eventually.</p>
+      </div>
+    </div>
+
+    <div class="chapters">
+    <a class="chapter" href="story.html">
+      <span class="chapter__knob" aria-hidden="true"></span>
+      <img class="mark" src="assets/art/Story.svg" alt="">
+      <span class="chapter__idx">I</span>
+      <h3 class="chapter__title">The Long Way Round</h3>
+      <p class="chapter__note">Volume One: twenty-nine chapters before the wedding, from a waterfall near Cazenovia to a fire tower in Beacon we only half climbed.</p>
+      <span class="chapter__go">Read the story
+        <svg width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+      </span>
+    </a>
+
+    <a class="chapter" href="table.html">
+      <span class="chapter__knob" aria-hidden="true"></span>
+      <img class="mark" src="assets/art/Food-Menu.svg" alt="">
+      <span class="chapter__idx">II</span>
+      <h3 class="chapter__title">At Our Table</h3>
+      <p class="chapter__note">The places we send everyone, the drinks we named ourselves, and the feast we shared with our friends and family.</p>
+      <span class="chapter__go">Sit down
+        <svg width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+      </span>
+    </a>
+
+    <a class="chapter" href="day.html">
+      <span class="chapter__knob" aria-hidden="true"></span>
+      <img class="mark" src="assets/art/Cake.svg" alt="">
+      <span class="chapter__idx">III</span>
+      <h3 class="chapter__title">Our Big Day</h3>
+      <p class="chapter__note">Thirty-six minutes, fifty guests, and a barbecue yard in Gowanus we will always remember. The middle of the story.</p>
+      <span class="chapter__go">See the day
+        <svg width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+      </span>
+    </a>
+
+    <a class="chapter" href="2025.html">
+      <span class="chapter__knob" aria-hidden="true"></span>
+      <img class="mark" src="assets/art/Ring-outline.png" alt="">
+      <span class="chapter__idx">IV</span>
+      <h3 class="chapter__title">After the Wedding</h3>
+      <p class="chapter__note">Volume Two: every trip since the wedding, from the Oregon coast to the canyons of Utah. As David put it, “truly traveling the road less traveled.”</p>
+      <span class="chapter__go">Join our adventures
+        <svg width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+      </span>
+    </a>
+    </div>
+  </div>
+</section>
+
+<!-- Closing feature ----------------------------------------------------- -->
+<section class="band band--deep">
+  <div class="shell">
+    <div class="feature">
+      <div class="stack gap-m">
+        <span class="eyebrow eyebrow--brass" data-reveal="fade">Next up · the fifth</span>
+        <h2 class="t-xl" data-split><span class="squiggle">Five years,</span> come August 2027.</h2>
+        <p class="lede" data-reveal="up" style="--d:120ms">
+          Which gives us <span data-anniv="days">a while</span> days to add more places, more breweries
+          to be disappointed by, and more waterfalls that are absolutely worth the detour. Come along.
+        </p>
+        <div class="btns" style="--d:200ms" data-reveal="up">
+          <a class="btn" href="https://www.instagram.com/themurnans/" target="_blank" rel="noopener" data-magnet>
+            @themurnans
+            <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+          </a>
+          <a class="btn btn--ghost" href="story.html" data-magnet>Start at chapter one</a>
+        </div>
+      </div>
+      <figure class="portrait" data-reveal="up" style="--d:200ms">
+        <div class="portrait__mat">
+          <img src="assets/photos/together-2024.jpg" alt="David and Yinja, photographed in July 2024" width="933" height="1400" loading="lazy" decoding="async">
+          <figcaption class="portrait__cap">
+            <span class="portrait__who">The Bear &amp; the Tiger</span>
+            <span class="portrait__when">July 2024</span>
+          </figcaption>
+        </div>
+        <svg class="portrait__star" width="46" height="46" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="1"/>
+        </svg>
+      </figure>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -------------------------------------------------------------- -->
+<footer class="footer">
+  <div class="shell">
+    <div class="footer__top">
+      <div class="stack gap-s">
+        <span class="eyebrow eyebrow--brass">The Murnans</span>
+        <p class="lede" style="max-width:32ch">Astoria, New York. Married August 6th, 2022.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <span class="tag">Pages</span>
+        <a href="index.html">Home</a>
+        <a href="story.html">The Long Way Round</a>
+        <a href="table.html">At Our Table</a>
+        <a href="day.html">Our Big Day</a>
+        <a href="2025.html">After the Wedding</a>
+      </nav>
+      <div class="footer__cols">
+        <span class="tag">Elsewhere</span>
+        <a href="https://www.instagram.com/themurnans/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://goo.gl/maps/j3G5ptPHMbs7jN2e7" target="_blank" rel="noopener">The Murnans Food List</a>
+        <a href="https://www.google.com/maps/d/edit?mid=1HSucKv1eCio5WcVS_8OMuM6Ie0URNyc&amp;usp=sharing" target="_blank" rel="noopener">The Murnans Sightseeing</a>
+      </div>
+    </div>
+
+    <p class="footer__word">The Bear <span class="amp">&amp;</span> the Tiger</p>
+
+    <hr class="rule">
+    <div class="footer__meta" style="margin-top:1.5rem">
+      <span>Astoria · NY</span>
+      <span>Illustrations by <a class="link" href="https://www.instagram.com/bymarquisfortune" target="_blank" rel="noopener">@bymarquisfortune</a></span>
+      <span>Photography by <a class="link" href="https://www.instagram.com/jingyao_huang/" target="_blank" rel="noopener">@jingyao_huang</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/years/index.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/atlas.js"></script>
+<script src="assets/js/safari-bar.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

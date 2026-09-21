@@ -22,9 +22,9 @@
   function applyTheme(t) {
     document.documentElement.dataset.theme = t;
     $$('.theme-toggle').forEach(b => b.setAttribute('aria-pressed', String(t === 'dusk')));
-    // the phone's browser bar takes the page colour
-    const meta = $('meta[name="theme-color"]');
-    if (meta) meta.content = t === 'dusk' ? '#0B1F25' : '#F7F0E0';
+    // The phone's browser bar keeps the oxblood of the footer it sits
+    // against, in both themes. safari-bar.js watches data-theme and puts it
+    // back after the swap.
   }
 
   applyTheme(store.get(THEME_KEY) || 'dawn');
@@ -1291,7 +1291,7 @@
           <span class="snap__when">${esc(when(s))}</span>
         </figcaption>
       </figure>`).join('') + `
-      <span class="snaps__hint" aria-hidden="true">Click any empty spot to shuffle</span>`;
+      <span class="snaps__hint" aria-hidden="true">Click to shuffle, drag to move</span>`;
     const prints = $$('.snap', host);
 
     // Whichever one gets picked up lands on top of the pile, and stays there.
@@ -1364,8 +1364,12 @@
       });
     };
 
+    // A click anywhere in the section deals again: the paper around the prints,
+    // or a print itself. A print that was dragged rather than clicked never
+    // gets here, because initDrag swallows that one click.
     host.closest('section').addEventListener('click', e => {
-      if (!e.target.matches(SNAPS_BLANK) || String(getSelection())) return;
+      const onPrint = e.target.closest('.snap');
+      if ((!onPrint && !e.target.matches(SNAPS_BLANK)) || String(getSelection())) return;
       if (!busy) celebrate(e.clientX, e.clientY, 10);
       shuffle();
     });
@@ -1520,8 +1524,16 @@
   const VISITED = [
     'NY', 'NJ', 'CT', 'RI', 'MA', 'VT', 'NH', 'ME', 'PA', 'DE', 'MD', 'DC', 'VA', 'WV',
     'NC', 'SC', 'GA', 'FL', 'TN', 'OH', 'IN', 'IL', 'TX', 'NM', 'CO', 'UT', 'AZ', 'NV',
-    'CA', 'OR', 'WA', 'ND', 'SD', 'WY', 'KY', 'CA-QC'
+    'CA', 'OR', 'WA', 'ND', 'SD', 'WY', 'KY', 'NE', 'CA-QC'
   ];
+
+  /* Been there, not written up yet. The year pages stop at 2025, so a state
+     from a trip since then is carried here by hand until a page for its year
+     catches up: add its code the day you get home, and take it out again once
+     its trip is in assets/js/years/ and memories.js has been rebuilt. The map
+     says "just been" for these rather than the line it gives a state we only
+     ever drove through, because one of them is a promise and the other is not. */
+  const FRESH = { ND: 2026, SD: 2026, WY: 2026, NE: 2026 };
   const HOME = 'NY';
   // the gold four-point star from the logo, centred on 0 0
   const STAR = 'M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z';
@@ -1587,6 +1599,507 @@
       host.classList.add('is-in');
       setTimeout(() => host.classList.add('is-done'), calm ? 0 : 2900);
     });
+  }
+
+  /* ── The memory map (home) ─────────────────────────────────────────────
+     The way into the site. The same outlines as assets/js/atlas.js, but this
+     one is asked a question: choose a state and it deals a few photographs
+     filed under it in assets/js/memories.js. Choosing an empty bit of the map
+     goes back to a draw from everywhere.
+
+     Only one shape ever carries an ink line, the chosen one. Thirty-six
+     outlined states turn the map into a net.                              */
+
+  const MEM_TILT = [-2.2, 1.6, -1.2, 2, -1.7, 1.1];
+  const MEM_OFF = ['--gold', '--blue', '--sage-500', '--rose', '--coral', '--khaki'];
+  // A wide screen has the map beside the photographs and the room for five rows
+  // of them; a phone has the map above and would be scrolling all day.
+  const MEM_DEAL = 6;
+  const MEM_DEAL_WIDE = 10;
+  const wide = () => innerWidth >= 1000;
+
+  function shuffled(list) {
+    const a = list.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function initMemoryMap() {
+    const host = $('#mem');
+    const A = window.MW_ATLAS;
+    const M = window.MW_MEMORIES;
+    const map = host && $('.mem__map', host);
+    const panel = host && $('#mem-panel');
+    if (!host || !map || !panel || !A || !M) return;
+
+    const been = new Set(VISITED);
+    const ours = A.regions.filter(r => been.has(r.id));
+    const nameOf = id => (id === 'DC' ? 'Washington, DC'
+      : (A.regions.find(r => r.id === id) || {}).name || id);
+
+    // "34 states, DC and Québec", counted from the list so it stays true
+    const states = ours.filter(r => !r.id.includes('-') && r.id !== 'DC');
+    const extra = [...(been.has('DC') ? ['DC'] : []), ...ours.filter(r => r.id.startsWith('CA-')).map(r => r.name)];
+    const summary = `${states.length} states${extra.length ? `, ${extra.slice(0, -1).join(', ')}${extra.length > 1 ? ' and ' : ''}${extra[extra.length - 1]}` : ''}`;
+    $$('[data-atlas="summary"]').forEach(el => { el.textContent = summary; });
+
+    const count = id => (M.by[id] || []).length;
+    const label = id => {
+      const n = count(id);
+      if (n) return `${nameOf(id)}, ${n} ${n === 1 ? 'memory' : 'memories'}`;
+      return `${nameOf(id)}, ${FRESH[id] ? 'just been, photographs coming soon' : 'no photographs on the site yet'}`;
+    };
+    const pick = r => `data-id="${r.id}" tabindex="0" role="button" aria-label="${esc(label(r.id))}"`;
+
+    // how long each state waits before it stamps down: the nearest first
+    const [hx, hy] = A.home;
+    const gap = r => Math.hypot(r.c[0] - hx, r.c[1] - hy);
+    const far = Math.max(...ours.map(gap)) || 1;
+    const wait = r => Math.round(90 + 1150 * gap(r) / far);
+
+    map.innerHTML = `
+      <svg class="memmap" viewBox="0 0 ${A.w} ${A.h}" aria-label="Map of the United States and Canada. We have been to ${esc(summary)}. Choose a state for photographs from it.">
+        <g aria-hidden="true">${A.regions.map(r => `<path class="memmap__st" d="${r.d}"/>`).join('')}</g>
+        <g role="group">${ours.filter(r => r.id !== 'DC')
+          .map(r => `<path class="memmap__been" data-q="${r.q}" style="--t:${wait(r)}ms" ${pick(r)} d="${r.d}"/>`).join('')}</g>
+        ${been.has('DC') ? `<circle class="memmap__dc" cx="${A.dc[0]}" cy="${A.dc[1]}" r="4.2" style="--t:${wait(ours.find(r => r.id === 'DC'))}ms" ${pick({ id: 'DC' })}/>` : ''}
+        <path class="memmap__ring" d=""/>
+        <text class="memmap__label" x="${A.canada[0]}" y="${A.canada[1]}" text-anchor="middle" aria-hidden="true">CANADA</text>
+        <g transform="translate(${A.home[0]} ${A.home[1]})" aria-hidden="true"><path class="memmap__home" d="${STAR}"/></g>
+      </svg>`;
+
+    const svg = $('svg', map);
+    const ring = $('.memmap__ring', svg);
+    let on = null;      // the state showing, or null for the draw from everywhere
+    let open = null;    // the memory opened inside the panel
+
+    /* ── The map as a pop-up (phones) ──────────────────────────────────────
+       A phone has no room for the map and the photographs at once, and a map
+       that has scrolled away is a map you cannot use. So the map scrolls away
+       like anything else, a slim bar takes its place as it goes, and the bar
+       puts the map back up over the page when it is wanted. The map itself is
+       moved between the two rather than drawn twice: one set of states, one
+       set of listeners, one print.
+
+       The sheet hangs off <body> rather than off this section: a fixed child
+       of a frosted or clipped ancestor is a trap, and there is nothing to be
+       gained by nesting it.                                                */
+
+    const bar = $('#mem-bar');
+    const pickBtn = bar && $('.mem__pick', bar);
+    const sheet = document.createElement('div');
+    sheet.className = 'memsheet';
+    sheet.hidden = true;
+    sheet.innerHTML = `
+      <div class="memsheet__scrim" data-close></div>
+      <div class="memsheet__card" role="dialog" aria-modal="true" aria-label="Choose a state">
+        <span class="memsheet__grab" aria-hidden="true"></span>
+        <div class="memsheet__head">
+          <h3 class="memsheet__title">Where to?</h3>
+          <button class="memsheet__x" type="button" data-close aria-label="Close the map">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="memsheet__map"></div>
+        <div class="memsheet__foot">
+          <button class="memsheet__all" type="button" data-all>Anywhere</button>
+          <span class="memsheet__note">${esc(summary)} so far</span>
+        </div>
+      </div>`;
+    document.body.appendChild(sheet);
+    const sheetMap = $('.memsheet__map', sheet);
+
+    let shut = 0;                       // pending "put the map back" timer
+    const sheetOpen = () => !sheet.hidden;
+    const card = $('.memsheet__card', sheet);
+
+    /* The pill does not hand over to a panel, it becomes one: the card starts
+       life at the pill's exact place and size, fully round, and grows from
+       there. So the geometry it grows out of is measured at the moment it
+       opens, and the geometry it grows into is worked out from the map's own
+       proportions, because a card that hugs the map beats a card with a pool
+       of empty space under it. */
+    const measure = () => {
+      const w = Math.min(innerWidth - 24, 520);
+      const mapH = (w - 30) * (A.h / A.w);
+      const h = Math.min(56 + mapH + 62, innerHeight * 0.82);
+      card.style.setProperty('--tw', `${Math.round(w)}px`);
+      card.style.setProperty('--th', `${Math.round(h)}px`);
+    };
+
+    const openSheet = () => {
+      if (sheetOpen()) return;
+      clearTimeout(shut);
+      print(true);
+      measure();
+      // where it grows from: the pill itself, or the middle if there is none
+      const r = bar && bar.classList.contains('is-up')
+        ? bar.getBoundingClientRect()
+        : { top: innerHeight / 2 - 22, left: innerWidth / 2 - 90, width: 180, height: 44 };
+      card.style.setProperty('--fy', `${Math.round(r.top)}px`);
+      card.style.setProperty('--fx', `${Math.round(r.left)}px`);
+      card.style.setProperty('--fw', `${Math.round(r.width)}px`);
+      card.style.setProperty('--fh', `${Math.round(r.height)}px`);
+
+      sheetMap.appendChild(svg);
+      sheet.hidden = false;
+      void sheet.offsetWidth;
+      sheet.classList.add('is-open');
+      document.body.classList.add('memsheet-open');
+      document.documentElement.style.overflow = 'hidden';
+      if (pickBtn) pickBtn.setAttribute('aria-expanded', 'true');
+      $('.memsheet__x', sheet).focus();
+    };
+
+    const closeSheet = () => {
+      if (!sheetOpen()) return;
+      // back into the pill it came out of, wherever that has got to
+      if (bar && bar.classList.contains('is-up')) {
+        const r = bar.getBoundingClientRect();
+        card.style.setProperty('--fy', `${Math.round(r.top)}px`);
+        card.style.setProperty('--fx', `${Math.round(r.left)}px`);
+        card.style.setProperty('--fw', `${Math.round(r.width)}px`);
+        card.style.setProperty('--fh', `${Math.round(r.height)}px`);
+      }
+      sheet.classList.remove('is-open');
+      document.body.classList.remove('memsheet-open');
+      document.documentElement.style.overflow = '';
+      if (pickBtn) { pickBtn.setAttribute('aria-expanded', 'false'); pickBtn.focus(); }
+      const home = () => { sheet.hidden = true; map.appendChild(svg); };
+      if (calm) home();
+      else shut = setTimeout(home, 420);
+    };
+
+    addEventListener('resize', perFrame(() => { if (sheetOpen()) measure(); }));
+
+    addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+    sheet.addEventListener('click', e => {
+      if (e.target.closest('[data-close]')) closeSheet();
+      else if (e.target.closest('[data-all]')) { show(null); closeSheet(); nudge(true); }
+    });
+
+    // a flick down on the sheet's own chrome closes it, the way a sheet should
+    let grabY = null;
+    card.addEventListener('pointerdown', e => {
+      grabY = e.target.closest('.memsheet__grab, .memsheet__head') ? e.clientY : null;
+    });
+    card.addEventListener('pointerup', e => {
+      if (grabY !== null && e.clientY - grabY > 70) closeSheet();
+      grabY = null;
+    });
+
+    /* Roll for somewhere: a state we have actually written up, never the one
+       already showing, so it always changes something. Both dice on the page
+       do this, because one glyph doing two jobs is the sort of thing nobody
+       works out. Re-dealing the state you are already on is still there, it is
+       just called tapping it again on the map. */
+    const rollTo = from => {
+      const filed = Object.keys(M.by).filter(id => id !== on);
+      if (!filed.length) return;
+      show(filed[Math.floor(Math.random() * filed.length)]);
+      nudge(!!from);
+      // the panel is repainted by now, so the button to spin is the fresh one
+      const btn = from || $('[data-roll]', panel);
+      if (!btn) return;
+      btn.classList.remove('is-rolling');
+      void btn.offsetWidth;
+      btn.classList.add('is-rolling');
+      if (!calm) celebrateFrom(btn, 12);
+    };
+
+    if (bar) {
+      bar.hidden = false;
+      pickBtn.addEventListener('click', openSheet);
+      const dice = $('.mem__dice', bar);
+      dice.addEventListener('click', () => rollTo(dice));
+    }
+
+    /* ── The panel ─────────────────────────────────────────────────────── */
+
+    const cardsFor = id => {
+      const list = id ? (M.by[id] || []) : M.items.map((_, i) => i);
+      return shuffled(list).slice(0, wide() ? MEM_DEAL_WIDE : MEM_DEAL);
+    };
+
+    const dealt = m => {
+      const shot = m.pics[Math.floor(Math.random() * m.pics.length)];
+      return { m, shot };
+    };
+
+    const grid = (id, picks) => {
+      const n = id ? count(id) : M.items.length;
+      // A state's count is worth saying: six cards out of fourteen is a reason
+      // to go back for more. "96 memories on the site" is a statistic, and
+      // the cards under it already say what it means.
+      const tally = n ? `${n} ${n === 1 ? 'memory' : 'memories'}`
+        : FRESH[id] ? 'Just been' : 'Been there';
+      const head = `
+        <div class="mem__headrow">
+          <h3 class="mem__title">${id ? esc(nameOf(id)) : 'Anywhere'}${id ? `<span class="mem__count">${tally}</span>` : ''}</h3>
+          <button class="mem__roll" type="button" data-roll><span class="mem__die" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg></span>Surprise me</button>
+        </div>`;
+
+      if (!picks.length) {
+        const said = FRESH[id]
+          ? `We have only just been to ${esc(nameOf(id))}, in ${FRESH[id]}. The photographs and the writing land here as soon as they are ready.`
+          : `We have been, but nothing from ${esc(nameOf(id))} has made it onto the site yet. It was probably a drive through on the way somewhere else.`;
+        return `${head}
+          <div class="mem__none${FRESH[id] ? ' is-soon' : ''}">
+            ${FRESH[id] ? '<span class="mem__soon">Coming soon</span>' : ''}
+            <p>${said}</p>
+            <button class="mem__back" type="button" data-all>&larr; Somewhere else</button>
+          </div>`;
+      }
+
+      const cards = picks.map((i, k) => {
+        const { m, shot } = dealt(M.items[i]);
+        const more = m.pics.length - 1;
+        return `
+          <button class="mem__card" type="button" data-open="${i}"
+                  style="--tilt:${MEM_TILT[k % MEM_TILT.length]}deg;--off:var(${MEM_OFF[k % MEM_OFF.length]})">
+            <span class="mem__shot">
+              <img src="${esc(shot.u)}" alt="${esc(m.short)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
+              ${more > 0 ? `<span class="mem__n">+${more}</span>` : ''}
+            </span>
+            <span class="mem__label">
+              <span class="mem__where">${esc(m.short)}</span>
+              <span class="mem__when">${esc(m.year)}</span>
+            </span>
+          </button>`;
+      }).join('');
+
+      return `${head}<div class="mem__grid">${cards}</div>`;
+    };
+
+    const opened = i => {
+      const m = M.items[i];
+      const pics = m.pics.slice(0, 5);
+      const back = on ? nameOf(on) : 'the pile';
+      return `
+        <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]})">
+          <button class="mem__back" type="button" data-back>&larr; Back to ${esc(back)}</button>
+          <span class="mem__lead">
+            <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
+            ${pics[0].c ? `<span class="mem__cap">${esc(pics[0].c)}</span>` : ''}
+          </span>
+          ${pics.length > 1 ? `<div class="mem__roll">${pics.map((p, k) => `
+            <button class="mem__thumb${k ? '' : ' is-on'}" type="button" data-shot="${k}" aria-label="Photograph ${k + 1} of ${pics.length}">
+              <img src="${esc(p.u)}" alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
+            </button>`).join('')}</div>` : ''}
+          <div class="mem__head">
+            <h3 class="mem__place">${esc(m.place)}</h3>
+            <span class="mem__date">${esc(m.date)}</span>
+          </div>
+          <p class="mem__text">${esc(m.text)}</p>
+          <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>
+        </div>`;
+    };
+
+    const paint = () => {
+      panel.innerHTML = open === null ? grid(on, cardsFor(on)) : opened(open);
+    };
+
+    /* ── Choosing ──────────────────────────────────────────────────────── */
+
+    const show = id => {
+      on = id;
+      open = null;
+      host.classList.toggle('is-picked', !!id);
+      svg.classList.toggle('is-picked', !!id);
+      $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
+      const r = id && A.regions.find(q => q.id === id);
+      ring.setAttribute('d', r && id !== 'DC' ? r.d : '');
+      if (bar) {
+        const n = id ? count(id) : M.items.length;
+        $('[data-mem="where"]', bar).textContent = id ? nameOf(id) : 'Anywhere';
+        $('[data-mem="count"]', bar).textContent = id
+          ? (n ? `${n} ${n === 1 ? 'memory' : 'memories'}` : FRESH[id] ? 'Just been' : 'Been there')
+          : `${n} memories`;
+      }
+      paint();
+    };
+
+    /* The pill turns up when the map has left the top of the screen and there
+       is still something under it worth changing, and goes again when either
+       stops being true. Both measurements are taken before the class is
+       written, so a scroll never costs a second layout. */
+    // The pill takes over the moment the map has climbed past where the pill
+    // itself sits, so the two never share the screen and there is never a
+    // moment with neither of them on it.
+    const GONE = 118;
+    const watch = perFrame(() => {
+      const m = map.getBoundingClientRect();
+      const h = host.getBoundingClientRect();
+      // Someone who jumped past the map never saw it print, and a map that has
+      // not printed is a blank map when the pop-up puts it up. Land it.
+      if (m.bottom < GONE) print(true);
+      if (bar) bar.classList.toggle('is-up', !wide() && !sheetOpen() && m.bottom < GONE && h.bottom > 220);
+    });
+    addEventListener('scroll', watch, { passive: true });
+    addEventListener('resize', watch);
+
+    /* ── The print ─────────────────────────────────────────────────────────
+       The first time the map comes into view the states print themselves in,
+       nearest Astoria first, each one stamping down a shade too hard and
+       settling, the way a screen print lands. Once only: it is an entrance,
+       not a thing to sit through again on the way back up. Afterwards
+       "is-set" takes the delays off, so choosing a state is instant.       */
+    let printed = false;
+    const print = now => {
+      if (printed) return;
+      printed = true;
+      // straight past it, or asked for it from the pop-up: just be there
+      if (calm || now) { svg.classList.add('is-printed', 'is-set'); return; }
+      svg.classList.add('is-printed');
+      setTimeout(() => {
+        const star = $('.memmap__home', svg);
+        if (star && star.isConnected) celebrateFrom(star, 16);
+      }, 1450);
+      setTimeout(() => svg.classList.add('is-set'), 2500);
+    };
+    onInView(map, print);
+    watch();
+
+    // Every choice deals a fresh set, so every choice goes back to the top of
+    // it: on a phone that brings the map and the sheet up together, and on a
+    // wide screen it undoes whatever scrolling the last set took, which would
+    // otherwise drop someone into the middle of photographs they have not
+    // seen. The map lands exactly where it sticks.
+    const nudge = toCards => {
+      if (calm) return;
+      // Coming back from the pop-up the map is not what anyone wants to look
+      // at, the photographs are, so that lands on them, clear of the pill.
+      const sheetPick = toCards && !wide();
+      const el = sheetPick ? panel : host;
+      const off = sheetPick ? (bar ? bar.offsetHeight : 0) + 78 : (wide() ? 80 : 72);
+      const y = el.getBoundingClientRect().top + scrollY - off;
+      if (Math.abs(y - scrollY) > 24) scrollTo({ top: y, behavior: 'smooth' });
+    };
+
+    svg.addEventListener('click', e => {
+      const hit = e.target.closest('[data-id]');
+      const fromSheet = sheetOpen();
+      show(hit ? hit.dataset.id : null);
+      // a choice made in the pop-up is the end of the pop-up's job
+      if (fromSheet) closeSheet();
+      nudge(fromSheet);
+    });
+    svg.addEventListener('keydown', e => {
+      const hit = e.target.closest && e.target.closest('[data-id]');
+      if (!hit || (e.key !== 'Enter' && e.key !== ' ')) return;
+      e.preventDefault();
+      const fromSheet = sheetOpen();
+      show(hit.dataset.id);
+      if (fromSheet) closeSheet();
+      nudge(fromSheet);
+    });
+
+    panel.addEventListener('click', e => {
+      const card = e.target.closest('[data-open]');
+      if (card) { open = +card.dataset.open; paint(); nudge(); return; }
+      if (e.target.closest('[data-roll]')) { rollTo(); return; }
+      if (e.target.closest('[data-back]')) { open = null; paint(); nudge(); return; }
+      if (e.target.closest('[data-all]')) { show(null); nudge(); return; }
+
+      const thumb = e.target.closest('[data-shot]');
+      if (thumb && open !== null) {
+        const p = M.items[open].pics[+thumb.dataset.shot];
+        const lead = $('.mem__lead img', panel);
+        const cap = $('.mem__cap', panel);
+        lead.style.animation = 'none';
+        void lead.offsetWidth;
+        lead.style.animation = '';
+        lead.src = p.u;
+        lead.style.objectPosition = p.p || '';
+        if (cap) cap.textContent = p.c || '';
+        $$('.mem__thumb', panel).forEach(t => t.classList.toggle('is-on', t === thumb));
+      }
+    });
+
+    /* Clicking away from the whole thing puts it back to a draw from
+       everywhere, the same as clicking the sea inside the map. The nav is left
+       out of it: changing the theme is not a way of saying you are finished
+       with Ohio. No scrolling either, since the click was somewhere else.
+
+       On the way down, not on the way up: opening a card repaints the panel
+       and throws the clicked button out of the document, and a button with no
+       ancestors left is a button that answers "no" to being inside this
+       section, which read every card as a click somewhere else. */
+    document.addEventListener('click', e => {
+      if (on === null || sheetOpen()) return;
+      if (e.target.closest('#mem, .memsheet, .nav')) return;
+      show(null);
+    }, true);
+
+    show(null);
+  }
+
+  /* ── Said about us (home) ──────────────────────────────────────────────
+     The rail is a real scroller, so a thumb pushes it about and the keyboard
+     reaches it; this only nudges it along and gets out of the way the moment
+     anyone touches it. The cards are cloned once so the loop never shows an
+     edge. It runs only while the rail is on screen.                        */
+
+  function initSay() {
+    const rail = $('#say');
+    const track = rail && $('.say__track', rail);
+    if (!rail || !track) return;
+
+    rail.setAttribute('tabindex', '0');
+    rail.setAttribute('role', 'group');
+    rail.setAttribute('aria-label', 'What friends and family said at the wedding');
+    if (calm) return;                       // a plain swipe rail, and nothing moves
+
+    const cards = $$('.said', track);
+    cards.forEach(c => {
+      const copy = c.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      $$('img', copy).forEach(i => { i.alt = ''; });
+      track.appendChild(copy);
+    });
+
+    const SPEED = 24;                        // pixels a second, a slow read
+    let x = 0, half = 0, held = 0, last = 0, running = false, frame = 0;
+
+    const measure = () => { half = track.scrollWidth / 2; };
+    measure();
+    addEventListener('resize', perFrame(measure));
+
+    const step = now => {
+      frame = requestAnimationFrame(step);
+      const dt = last ? Math.min(64, now - last) : 0;
+      last = now;
+      if (held > 0) { held -= dt; x = rail.scrollLeft; return; }
+      if (!half) return;
+      x += SPEED * dt / 1000;
+      if (x >= half) x -= half;
+      rail.scrollLeft = x;
+    };
+
+    const start = () => { if (running) return; running = true; last = 0; frame = requestAnimationFrame(step); };
+    const stop = () => { running = false; cancelAnimationFrame(frame); };
+
+    // hands off for a moment after anyone touches it, however they touch it
+    const hold = (ms = 2600) => { held = ms; };
+    ['pointerdown', 'wheel', 'touchstart'].forEach(ev =>
+      rail.addEventListener(ev, () => hold(), { passive: true }));
+    rail.addEventListener('pointerenter', () => hold(1e9));
+    rail.addEventListener('pointerleave', () => hold(400));
+    rail.addEventListener('focusin', () => hold(1e9));
+    rail.addEventListener('focusout', () => hold(400));
+
+    // keep the loop seamless when a thumb has thrown it past the join
+    rail.addEventListener('scroll', perFrame(() => {
+      if (held <= 0 || !half) return;
+      if (rail.scrollLeft >= half) rail.scrollLeft -= half;
+      else if (rail.scrollLeft < 0) rail.scrollLeft += half;
+    }), { passive: true });
+
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0 }).observe(rail);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   }
 
   /* ── Since the wedding (home) ──────────────────────────────────────────
@@ -1749,6 +2262,8 @@
     watchReveals();
     initAnniversary();
     initAtlas();
+    initMemoryMap();
+    initSay();
     initCounters();
     initPour();
     initCursor();

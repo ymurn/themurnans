@@ -19,13 +19,88 @@ The old Webflow site is untouched in `../murnanwen.webflow/`.
 
 ## The pages
 
-| File | What it is |
-|---|---|
-| `index.html` | Home, the hero, the live anniversary count, the years since the wedding, the four doors |
-| `story.html`  | **The Long Way Round**: the chapter timeline, built from `assets/js/data.js`, with a map beside it |
-| `table.html`  | **At Our Table**: the two drinks, the nine restaurants, the wedding feast |
-| `day.html`    | **Our Big Day**: the wedding, as one chapter of the story |
-| `2022.html` to `2025.html` | **After the Wedding**: one page per year since the wedding, built from `assets/js/years/` |
+The nav carries four: **Home**, **Hitched**, **Honeymoon** and **Highlights**. The
+timelines are not in it, they are a column in the footer, because they are where you go
+once the home page has made you curious, not the first thing you are asked to read.
+
+| File | In the nav | What it is |
+|---|---|---|
+| `index.html` | Home | The hero and its slider, then the map: pick a state, get a few photographs out of it, open one and it links into the year it happened |
+| `day.html`    | Hitched | **Our Big Day**: the wedding, as one chapter of the story |
+| `honeymoon.html` | Honeymoon | **The Honeymoon**: the fifteen days from Sacramento to Seattle, with the drive on the map beside them. A trip page |
+| `highlights.html` | Highlights | **David's 40th**: the April 2025 desert loop. The first of the highlights, and the one the nav opens. A trip page |
+| `highlights-yinjas-30th.html`<br>`highlights-citizenship.html` | From the Highlights bar | The other two highlights, still to come. Each says so and links across to the others |
+| `story.html`  | Footer, Timelines | **The Long Way Round**: the chapter timeline, built from `assets/js/data.js`, with a map beside it |
+| `2022.html` to `2025.html` | Footer, Timelines | One page per year since the wedding, built from `assets/js/years/` |
+| `table.html`  | Footer, Pages | **At Our Table**: the two drinks, the nine restaurants, the wedding feast |
+| `home-archive.html` | Not linked | The home page as it was: six bands, the four doors, the memory machine, the years since the wedding. Kept whole as the place to pull a device from when building a new page. **Do not edit it.** |
+
+### The home page
+
+It used to be six bands long and most people left before the bottom, so it is now three
+short ones under the hero:
+
+1. **The hero**, the two illustrations and the pour slider, exactly as it was, with the
+   blue ticker under it.
+2. **Memories**, which is the map. Tap a state and photographs from it are dealt beside
+   it, ten on a wide screen and six on a phone (`MEM_DEAL` and `MEM_DEAL_WIDE` in
+   `assets/js/site.js`). Tap a photograph and it opens with the rest of that trip's roll,
+   David's line about it, and a way into the year it happened. Tapping empty sea goes back
+   to a draw from everywhere. A state we have been to but never written up says so plainly.
+
+   **Surprise me** sits on the panel's own heading row, opposite the name of whatever is
+   showing, because the action belongs with the results rather than floating above the
+   map. It rolls to a state we have actually written up, never the one already showing, so
+   it always changes something. The die on the phone pill does exactly the same thing: one
+   glyph, one meaning. Re-dealing the state you are already on is still there, it is just
+   called tapping it again on the map.
+
+   A state's count (**Ohio · 14 memories**) is worth saying, since six cards out of
+   fourteen is a reason to go back for more. The total across the site is not, so
+   **Anywhere** carries no number: the cards under it already say what it means.
+
+   Clicking away from the section puts it back to a draw from everywhere, the same as
+   clicking the sea inside the map. That check runs on the way *down* the document rather
+   than on the way up, because opening a card repaints the panel and throws the clicked
+   button out of the document, and a button with no ancestors left cannot answer whether
+   it was inside the section. The nav is exempt: changing the theme is not a way of saying
+   you are finished with Ohio.
+
+   Every choice deals a fresh set, so every choice also scrolls back to the top of it.
+   Without that, choosing a second state from halfway down the first state's photographs
+   drops you into the middle of a set you have not seen. An odd number of cards gives the
+   last one the whole row rather than leaving it on its own.
+
+   **On a wide screen** the map sits in a sticky column so it follows the photographs down
+   instead of leaving a hole under itself.
+
+   **On a phone** there is no room for both, so the map scrolls away like anything else
+   and hands over, as it goes, to a small dark pill that stays put: the state's own
+   outline in gold, its name, its count, and a die that reshuffles the set. Tapping the
+   pill does not raise a panel from somewhere else, the pill grows into the map, and
+   shrinks back into it when a state is picked. That is what keeps the two reading as one
+   object. The pop-up hangs off `<body>` rather than off the section, because a fixed
+   child of a frosted or clipped ancestor is a trap, and the map itself is *moved* between
+   the page and the pop-up rather than drawn twice: one set of states, one set of
+   listeners, one print. The handover point is `GONE` in `initMemoryMap`, set to the
+   bottom edge of the pill so the two never share the screen and there is never a moment
+   with neither of them on it.
+
+   **The print.** The first time the map comes into view its states stamp themselves in,
+   nearest Astoria first, each one landing a shade too hard and settling; the gold star on
+   Astoria lands last and throws a few sparks. Once per visit, not once per scroll. The
+   classes that drive it (`is-printed`, `is-set`, `is-picked`) sit on the `<svg>` rather
+   than on the section, because the map travels out of the section into the pop-up and
+   would lose them. Anyone who scrolls straight past the map, or opens the pop-up before
+   the map has been seen, gets it landed instantly rather than blank. Under
+   `prefers-reduced-motion` it is simply there.
+3. **The tally**, the four counts as cards, the countdown calendar, and the one link off
+   the site.
+4. **Said about us**, five lines from the wedding speeches on a rail that scrolls itself
+   until anyone touches it.
+
+Where the photographs come from is **`assets/js/memories.js`**, which is generated, see
+**The memory index** below.
 
 ---
 
@@ -33,7 +108,8 @@ The old Webflow site is untouched in `../murnanwen.webflow/`.
 
 The Long Way Round is Volume One: the trips before the wedding. Everything on its
 timeline comes from one file, **`assets/js/data.js`**. Trips after the wedding go on the
-year pages instead, see **The year pages** below.
+year pages instead, see **The year pages** below. Either way, finish by running
+`node tools/build-memories.mjs` so the new trip joins the map on the home page.
 
 1. **Drop the photos** into `assets/photos/`. Lowercase names, no spaces
    (`2022-vermont-01.jpg`). Around 800–1200px on the long edge is plenty.
@@ -88,9 +164,14 @@ The `29` figure on the home page is hard-coded in `index.html`, search for
 year pages. The three figures beside it are hard-coded the same way: road trips, national
 parks (38: 32 through 2025, plus 6 in 2026 not posted yet; only the 63 designated
 national parks count). The 32 is 31 named across the year pages, 2022 to 2025, plus
-Mammoth Cave in Volume One, and it already counts all five Utah parks. States (34,
-plus DC: 30 on the year pages through 2025, plus Kentucky, and North Dakota, South Dakota
-and Wyoming in 2026, not posted yet).
+Mammoth Cave in Volume One, and it already counts all five Utah parks. States (35,
+plus DC: 30 on the year pages through 2025, plus Kentucky, and North Dakota, South Dakota,
+Wyoming and Nebraska in 2026, not posted yet).
+
+Those four 2026 states are listed again as `FRESH` in `initMemoryMap`, which is what has
+the map say **Just been** and *Coming soon* for them rather than the line it gives a state
+we only ever drove through. Add a code there the day you get home from somewhere new, and
+take it out once that trip is in `assets/js/years/` and `memories.js` has been rebuilt.
 
 **The map beside the figures** colours in every state and province we've been to. The list
 is `VISITED` at the top of the map section in `assets/js/site.js`: add a state's two letters
@@ -114,11 +195,19 @@ built by `assets/js/year.js` from two kinds of file:
   the highlights. Cut more if a month runs long, but keep every sentence as he wrote it.
 
 2022 runs the honeymoon day by day, David's posts word for word, with a map that inks in
-each day's drive as you scroll. On wide screens it sits beside the days. On phones and
+each day's drive as you scroll. The same fifteen days are also the whole of
+`honeymoon.html`, copied across by `tools/build-honeymoon.mjs`: edit them here and run
+that (see **The trip pages**). On wide screens it sits beside the days. On phones and
 tablets (under 1180px) it unrolls from under the bar once the first day scrolls up to it: a
 band 30% of the screen tall, zoomed in on the day you're reading, that tucks away again
 after the last day. Its **Whole route** button opens the full trip in a window. October to December follow
 month by month, the same as 2023 onward. A month with no trip shows greyed out in the bar.
+
+**The end of every year page** is the same band, built by **`assets/js/closing.js`**: the
+four Christmas cards, one a year, each opening that year's timeline, and the two things we
+would rather someone did next, **View highlights** and **Follow @themurnans**. The trip
+pages end on it too (a trip file asks for it with `"closing": { "years": true }`), so
+adding a year to `years/index.js` puts its card on the foot of every one of them.
 
 **The maps.** Every year page draws a map of where that year's photographs were taken, and
 The Long Way Round draws the same map beside its chapters. On a
@@ -128,6 +217,12 @@ screen, so the months keep their full width and nothing moves as it comes and go
 honeymoon map. It moves to the month being
 read, names that month's stops, and colours in each state as the year goes on. The **Whole
 year** button (**Whole volume**, on The Long Way Round) opens all of it in a window.
+
+Below 1180px every map band carries the same two controls, added by
+**`assets/js/mapfold.js`**: a button in the map's top corner that opens the whole thing in
+a window, and **Minimise**, which folds the band into a small pill in the middle of the
+screen. The pill goes on naming the month, day or stop being read, and opens the map again
+when it is pressed.
 
 One component draws all three: **`assets/js/trailmap.js`**, styled by
 **`assets/css/map.css`**, fed months by `assets/js/year.js` and chapters by
@@ -212,6 +307,148 @@ page, the fourth door on the home page, The Long Way Round and Our Big Day. So o
 
 ---
 
+## The trip pages
+
+One trip, told stop by stop, with a map running beside it: the honeymoon, and
+each of the highlights. They are all the same page, drawn by **`assets/js/trip.js`**
+from one file in **`assets/js/trips/`**, and styled by **`assets/css/trip.css`**
+on top of `site.css`, `year.css` and `map.css`.
+
+| Page | Its file |
+|---|---|
+| `honeymoon.html` | `assets/js/trips/honeymoon.js` (generated, see below) |
+| `highlights.html` | `assets/js/trips/davids-40th.js` |
+
+There is no page above the highlights: **`highlights.html` is David's 40th**, and the
+other highlights are reached from the bar at the top of it and from the buttons at the
+foot. Every page in the site links to `highlights.html`, so that one link opens the
+highlight that is written.
+
+**What a page is made of**, top to bottom:
+
+- the head: the dates, the title, a line about the trip, and **four photographs from it**,
+  dealt fresh on every visit, one from each quarter of the trip, so the four cover the
+  whole of it rather than one afternoon. Press one to see it big.
+- the facts, four of them, and the line saying whose words the page carries
+- the sticky bar: the other highlights first, then this page's own stops
+- the stops, each with its writing and its photographs, and the map beside them
+- the way on at the end
+
+**The map.** Every trip map is the same component, **`assets/js/tripmap.js`**: the states
+from `assets/js/atlas.js`, inked in as the trip reaches them, with the route drawn over
+them. As each stop scrolls past, the drive into it lights up in coral and the stops
+around it get their names. On a wide screen the map sits in the column beside the
+writing. Below 1180px it unrolls from under the bar as a band, zoomed in on the stop
+being read, and there it carries two controls of its own: **a corner button that opens
+the whole trip in a window**, and **Minimise**, which folds the band up into a small pill
+in the middle of the screen. The pill goes on naming the stop being read, and opens the
+map again when it is pressed.
+
+**The file behind a trip:**
+
+```js
+window.MW_TRIP = {
+  "kicker": "April 16 to 28, 2025",     // the line above the title
+  "title": "David's 40th",
+  "barLabel": "Stop",                   // what the bar calls the chips
+  "galleryNote": "Four from the two weeks",
+  "note": "Whose words these are",      // sits under the facts
+  "facts": [{ "k": "...", "v": "13", "s": "..." }],
+  "siblings": { "label": "Highlights", "items": [{ "label": "...", "href": "...", "here": true }] },
+  "map": {
+    "view": [96, 252, 205, 150],        // the piece of the atlas a wide screen shows
+    "width": "clamp(300px, 30vw, 430px)", // how wide its column is, for a wide map
+    "aria": "...", "whole": "Whole loop",
+    "sheet": { "k": "...", "title": "..." }
+  },
+  "route": [{ "n": "Las Vegas", "at": [156.3, 343.6], "st": "NV" }],
+  "stops": [{
+    "k": "Stop 1", "chip": "Las Vegas", "sub": "", "title": "Las Vegas",
+    "where": "Nevada", "leg": [0, 0],
+    "quote": { "text": "a line someone said", "who": "who said it" },
+    "lead": "ours, before David's words",
+    "text": ["David's, word for word"],
+    "line": "ours, where David wrote nothing",
+    "photos": [{ "src": "continued_trips/...", "cap": "...", "pos": "65% 50%" }]
+  }],
+  "closing": { "k": "...", "title": "...", "text": "...", "btns": [{ "href": "...", "label": "...", "ghost": true }] }
+};
+```
+
+`text` is David's writing and nothing else, cut down the way the year pages cut it: whole
+sentences dropped, none reworded, his typos left in. `lead` and `line` are ours, and they
+are printed lighter than his paragraphs so the two voices never read as one. `quote` is a
+line he quoted inside a post, pulled out beside a brass rule. Photo captions are ours too,
+which is what the `note` under the facts says on the page.
+
+**A sentence with an em-dash in it gets dropped rather than edited**, which is the rule for
+his writing everywhere on the site. Where that leaves the next sentence without its
+subject, a `lead` of ours puts it back: David's Arches hiking post names both hikes in
+em-dashed sentences, so the lead names them instead.
+
+**The points on the route** are the same frame the atlas is drawn in, so they can be
+copied straight out of `assets/js/years/places.js`, which was read from the GPS in the
+photographs. A stop's `leg` is the first and last point of the drive to it, and that
+stretch is what lights up while the stop is being read. `view` is the piece of the atlas
+the map holds, `[x, y, width, height]`: keep the whole route inside it with room for the
+names, and remember a state is only named while its middle, or the piece of it on
+screen, has room for the name.
+
+**The honeymoon is generated.** Its fifteen days already live inside the 2022 page, so
+they are copied across rather than kept in two places:
+
+```bash
+node tools/build-honeymoon.mjs
+```
+
+Edit the honeymoon in `assets/js/years/2022.js`, run that, and
+`assets/js/trips/honeymoon.js` is rebuilt: David's words, the photographs, and the route
+turned from latitudes and longitudes into points on the atlas. Everything written for
+the trip page alone (its lede, facts, map frame and ending) sits in the tool.
+
+**Adding a highlight** once it has happened:
+
+1. Write `assets/js/trips/<name>.js` in the shape above.
+2. Copy `highlights.html` to `highlights-<name>.html`, change the title, the description,
+   the head and the `trips/<name>.js` script at the bottom.
+3. Add it to `"siblings"` in every highlight's file, and mark `"here": true` in its own.
+4. Replace that highlight's placeholder page if it had one.
+
+---
+
+## The memory index
+
+The map on the home page reads one file, **`assets/js/memories.js`**: every trip on the
+site filed under the state it happened in, with its photographs, its date and where it
+links to. Nothing in it is written by hand. Rebuild it after adding a chapter, a trip or
+a year:
+
+```bash
+node tools/build-memories.mjs
+```
+
+It reads the same three sources the rest of the site reads, `assets/js/data.js`, each
+`assets/js/years/20XX.js`, and `assets/js/years/places.js`, and prints what it found:
+
+```
+96 memories, 32 states
+NY:24  OH:14  WA:14  VA:8  CA:7  PA:5  DC:5  MD:5 ...
+```
+
+Which state a trip belongs to comes from the GPS in the photographs, by way of
+`places.js`, and only falls back to reading the trip's own title when a trip has no
+photographs in `assets/continued_trips/`. Chapters before the wedding have their
+photographs loose in `assets/photos/` with no GPS, so those are read from the title
+alone, against the list of place names at the top of the script. A new town that is not
+on that list and does not name its state (`Beacon, NY` names it, `Fallingwater` does
+not) needs a line adding there.
+
+A state we have been to with nothing written up yet shows on the map and says so when
+tapped. That is four of the thirty-six: Nevada, North Dakota, South Dakota and Wyoming,
+all drives through on the way somewhere else.
+
+---
+
 ## Adding a restaurant
 
 Same file, the `tables` list at the bottom:
@@ -293,18 +530,22 @@ reads on the dark ground.
   once when the page opens, then it's yours to drag. It throws confetti when it lands.
 - *Poke the characters*: click either of you and you say something. Six lines each,
   in `LINES` at the top of the interaction section in `assets/js/site.js`.
-- *The photographs beside Who*: three pictures of the two of you, dealt fresh on every
-  load, with none repeated from the last visit. Click any empty spot in that section and
-  they gather into a stack and get dealt again. With a mouse you can pick them up and move
-  them about, and the last one picked up stays on top.
-- *Pull a memory*: deals a random trip: a chapter from The Long Way Round, or a trip from
-  any year page (loaded quietly once the home page has settled, from the same
-  `assets/js/years/` files). A year page trip joins once its month has a photograph, so
-  2022's autumn trips arrive when their photos do. The card shows the trip's first paragraph.
+- *The map*: the home page's way in. Tap a state for a few photographs from it, tap one of
+  those to open the trip, tap the sea to go back to a draw from everywhere. Only the state
+  you have chosen takes an ink line; thirty-six outlines at once turn the map into a net.
+  It prints itself in the first time you reach it, nearest Astoria first.
+- *Surprise me*: rolls the map to a state we have written up, at random. The die on the
+  phone pill does the same.
+- *The pill*: on a phone, scroll past the map and it hands over to a small dark pill
+  carrying a map pin. Tap it and it grows back into the map.
 - *The countdown*: a desk calendar page for the anniversary, with the days left on a gold
   sticker. Click the sticker for confetti.
-- *Where we've been*: the map on the home page prints its states in, nearest Astoria first.
-  Point at or tap any state for its name.
+- *The speech rail*: the five lines at the foot of the home page scroll themselves and
+  stop the moment a pointer, a thumb or the keyboard reaches them, then start again a
+  couple of seconds after it leaves.
+- *On `home-archive.html`*: the devices the old home page had, all still working. Three
+  photographs of the two of you that deal again when you click an empty spot in that
+  section, and the memory machine, which pulls a random trip in a random card style.
 - *Dawn / dusk*: the toggle in the nav.
 
 **The wedding film** on `day.html` is a poster facade: the page loads only the still
@@ -325,9 +566,9 @@ against WCAG AA in both themes and passes. Components sitting on a fixed brand c
 (the blue ticker, the gold sticker, the wine button, the chapter hover) carry fixed text
 colours rather than theme tokens, which is what keeps them readable when the theme flips.
 
-**On a phone** (620px and narrower) the long pages are shortened in three ways: the
-year cards on the home page, the four doors, the nine tables and any photo strip of four or more
-become rows you swipe through; a trip or honeymoon day with more than one long
+**On a phone** (620px and narrower) the long pages are shortened in three ways: the nine
+tables, the four doors and the year cards on `home-archive.html`, and any photo strip of
+four or more become rows you swipe through; a trip or honeymoon day with more than one long
 paragraph shows the first and a **Keep reading** button; and a round button to jump
 back to the top rolls in once a long page has been scrolled a way. Nothing is cut:
 wider screens show everything as before.
@@ -360,9 +601,10 @@ beside a portrait, a column that narrow leaves a speech reading four words to th
 And **the pile** on that page stays two photographs to a row down to the smallest phone,
 leans and all, because one long column of big photographs stops reading as a pile.
 
-**The nav** is a row of five labels while the row fits on one line, which takes a shade
-under 1000px once the brand and the toggle are counted; below 1020px the hamburger takes
-over instead, because a label on two lines sets the whole bar crooked. That is the nav's
+**The nav** is a row of four labels while the row fits on one line; below 1020px the
+hamburger takes over instead, because a label on two lines sets the whole bar crooked.
+The four are short on purpose, so the row holds together further down than the five long
+ones it replaced did. That is the nav's
 own breakpoint and nothing else uses it: the layouts further down keep their 860px. The
 menu it opens is sized by the height of the screen on a phone held sideways, where five
 links at the tall layout's size come to 495px on a 390px screen.

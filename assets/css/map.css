@@ -190,6 +190,11 @@ body {
   }
 }
 
+/* The two controls are the band's alone: on a wide screen the map sits in a
+   column or a window of its own, with the written-out button underneath. */
+.mapfold__open, .mapfold__btn { display: none; }
+
+
 /* ── THE BAND, UNDER 1180px ─────────────────────────────── */
 
 @media (max-width: 1179px) {
@@ -197,16 +202,14 @@ body {
   /* The map rides in a band right under the bar, 30% of the screen tall. It
      stays tucked away until the first day or month scrolls up to it, unrolls,
      follows what is being read, and tucks away again after the last. */
+  /* The band holds no paper of its own: the map inside it does, so the map
+     can shrink to a pill without the band shrinking with it. */
   .moon__map, .ymap__map {
     position: fixed;
     top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) - 1px);
     left: 0; right: 0;
     z-index: 55;
-    height: 30vh;
-    height: var(--band-h);
-    background: var(--paper);
-    border-bottom: 1px solid var(--line);
-    box-shadow: 0 12px 18px -16px rgba(20, 17, 13, .45);
+    height: auto;
     clip-path: inset(0 0 100% 0);
     transform: translateY(-14px);
     visibility: hidden;
@@ -218,7 +221,25 @@ body {
     visibility: visible;
     transition: clip-path .6s var(--ease), transform .6s var(--ease), visibility 0s;
   }
-  .routemap, .yearmap { position: relative; top: auto; display: flex; flex-direction: column; height: 100%; gap: 0; padding: 0; }
+  .routemap, .yearmap {
+    position: relative; top: auto;
+    display: flex; flex-direction: column;
+    height: 30vh;
+    height: var(--band-h);
+    gap: 0; padding: 0;
+    overflow: hidden;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 18px -16px rgba(20, 17, 13, .45);
+    transition: height .52s var(--ease), width .52s var(--ease), margin .52s var(--ease),
+                border-radius .52s var(--ease), background-color .4s var(--ease-soft), box-shadow .5s;
+  }
+  /* Opening, the map is held out of sight until its box is back and it has
+     been drawn again at that size, then it fades in already showing the
+     right place. Folding away, it goes at once. */
+  .routemap__view, .yearmap__view { transition: opacity .3s var(--ease-soft); }
+  .moon.is-opening .routemap__view, .ymap.is-opening .yearmap__view { opacity: 0; transition: none; }
+  .moon.is-min .routemap__view, .ymap.is-min .yearmap__view { transition: opacity .18s var(--ease-soft); }
   .routemap__view, .yearmap__view { display: block; position: relative; flex: 1 1 auto; min-height: 0; }
   .routemap__view svg, .yearmap__view svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: hidden; }
   .routemap__far { display: inline; }
@@ -247,8 +268,101 @@ body {
   .routemap__day, .yearmap__k { flex: none; }
   .routemap__title, .yearmap__title { min-width: 0; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .yearmap__now { display: flex; align-items: baseline; gap: .65rem; justify-items: start; }
-  /* a link to a day or a month lands below the band, not under it */
+
+  /* ── The band's own two controls ──────────────────────────────────────
+     Built by assets/js/mapfold.js: the whole map from the corner, and the
+     fold. The written-out button underneath says "Whole route" on a wide
+     screen and has no room here, so the band shows the corner one instead. */
+  .routemap__whole, .yearmap__whole { display: none; }
+
+  /* A paper disc sitting on the map, so it needs a little shadow to lift off
+     the colour underneath it. The mark inside is square and centred, which
+     is what keeps a round button from reading as two circles. */
+  .mapfold__open {
+    position: absolute;
+    top: .55rem; right: .6rem;
+    z-index: 2;
+    display: grid; place-items: center;
+    width: 32px; height: 32px;
+    /* a hairline, not the full keyline: at this size an ink ring crowds the
+       mark inside it, but the disc still needs an edge in dusk, where the
+       paper it is cut from is dark too */
+    border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 2px 7px -2px rgba(20, 17, 13, .3);
+    transition: background-color .3s var(--ease-soft), color .3s, scale .18s var(--ease), opacity .3s;
+  }
+  .mapfold__open:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  .mapfold__open:active { scale: .93; }
+  .mapfold__open > svg { transition: scale .3s var(--ease); }
+  .mapfold__open:hover > svg { scale: 1.06; }
+  [data-theme="dusk"] .mapfold__open { box-shadow: 0 2px 8px -2px rgba(0, 0, 0, .55); }
+  [data-theme="dusk"] .mapfold__open:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+
+  .mapfold__btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    flex: none;
+    min-height: 30px;
+    padding: .3em .95em .22em;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    transition: background-color .3s var(--ease-soft), color .3s;
+  }
+  .mapfold__btn:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  .mapfold__btn:active { scale: .97; }
+  [data-theme="dusk"] .mapfold__btn:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  /* the chevron sits a touch below the cap height of the word beside it */
+  .mapfold__chev { margin-top: -1px; transition: rotate .45s var(--ease); }
+
+  /* ── Folded away: the pill ────────────────────────────────────────────
+     The map closes up into a small bar in the middle of the screen that
+     goes on naming what is being read and opens again when it is pressed.
+     The pill is the button, so the whole of it is the tap target. */
+  .moon.is-min .moon__map, .ymap.is-min .ymap__map { pointer-events: none; }
+  .moon.is-min .routemap, .ymap.is-min .yearmap {
+    pointer-events: auto;
+    height: 42px;
+    width: min(76%, 320px);
+    margin: .55rem auto 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--deep);
+    color: var(--deep-ink);
+    box-shadow: 0 10px 22px -12px rgba(20, 17, 13, .6);
+  }
+  .moon.is-min .routemap__view, .ymap.is-min .yearmap__view { flex: 0 0 0; opacity: 0; pointer-events: none; }
+  .moon.is-min .routemap__foot, .ymap.is-min .yearmap__foot { height: 100%; padding: 0 1.1rem; border-top: 0; }
+  .moon.is-min .routemap__now, .ymap.is-min .yearmap__now { padding-right: 1.5rem; pointer-events: none; }
+  .moon.is-min .routemap__day, .ymap.is-min .yearmap__k { color: #EBC97E; }
+  .moon.is-min .routemap__title, .ymap.is-min .yearmap__title { color: var(--deep-ink); font-size: .92rem; }
+  .moon.is-min .mapfold__btn, .ymap.is-min .mapfold__btn {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    justify-content: flex-end;
+    min-height: 0;
+    padding: 0 1.1rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: #EBC97E;
+  }
+  .moon.is-min .mapfold__btn:hover, .ymap.is-min .mapfold__btn:hover { background: #ffffff14; color: #EBC97E; }
+  .moon.is-min .mapfold__word, .ymap.is-min .mapfold__word {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .moon.is-min .mapfold__chev, .ymap.is-min .mapfold__chev { rotate: 180deg; }
+  /* a day or a month reached from the bar lands under the pill, not under a
+     band that is no longer there */
+  .moon.is-min .chap, .ymap.is-min .chap { scroll-margin-top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) + 4.5rem); }
 }
+
 
 /* The whole route, in a window opened from the band */
 .routesheet {
@@ -296,5 +410,29 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .routemap__leg { transition: none; }
+  .routemap__leg, .mapfold__chev { transition: none; }
+  .routemap, .yearmap { transition: none; }
 }
+
+
+/* ── THE ICONS IN THE BAND'S BUTTONS ──────────────────────────────────────
+   Two rules above size the map itself: ".routemap svg" and, inside the band,
+   ".routemap__view svg { position: absolute; inset: 0; width: 100% }". The
+   corner button lives inside that view, so both of them caught its icon and
+   stretched it to the full width of the button, leaving the mark no paper
+   around it at all. These come last in the file and name the button as well
+   as the svg, so nothing outranks them, and they put back everything the
+   map's own rules had set.
+
+   17 in 32: a square mark reaches further at its corners than at its flats,
+   so it wants more room than it looks like it does. That leaves a ring of
+   paper about 8px wide around the widest part of the map. */
+button.mapfold__open > svg,
+button.mapfold__btn > svg {
+  position: static;
+  inset: auto;
+  max-width: none;
+  overflow: visible;
+}
+button.mapfold__open > svg { width: 17px; height: 17px; }
+button.mapfold__btn > svg { width: 13px; height: 8px; flex: none; }

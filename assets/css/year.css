@@ -337,7 +337,12 @@ a.yclose__card:hover img { transform: scale(1.04); }
   gap: 1.75rem clamp(1rem, 2vw, 1.6rem);
   align-self: end;              /* the cards finish on the same line as the text */
 }
+/* four cards, two by two, at every width: three across would leave the
+   fourth alone on a line of its own */
+.yclose__cards[data-n="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .yclose__item { min-width: 0; }
+/* the card for the page you are on lies flat, and its year is picked out */
+.yclose__item.is-here .yclose__year { color: var(--brass); }
 .yclose__mini { display: grid; gap: .3rem; color: var(--ink); }
 .yclose__pic {
   display: block;

@@ -44,8 +44,6 @@
 
   const at   = YEARS.findIndex(y => y.year === Y.year);
   const me   = YEARS[at] || { year: Y.year, title: '', card: '' };
-  const prev = at > 0 ? YEARS[at - 1] : null;
-  const next = at > -1 ? YEARS[at + 1] : null;
 
   const page  = y => `${y.year}.html`;
   const off   = y => `var(${OFF[y.off] || '--blue'})`;
@@ -307,59 +305,20 @@
     ].join('');
   }
 
-  /* ── The end of the page: on to the next card ────────────────────────── */
+  /* ── The end of the page ───────────────────────────────────────────────
+     The same band every long page on the site ends on: the four cards, one
+     a year, and the two things we would rather someone did next. It is
+     assets/js/closing.js, shared with the trip pages. */
 
   function renderClosing() {
     const host = $('#closing');
-    if (!host) return;
-    const back = prev
-      ? `<a class="btn btn--ghost" href="${page(prev)}" data-magnet>Back to ${esc(prev.year)}</a>`
-      : '<a class="btn btn--ghost" href="day.html" data-magnet>Back to the wedding</a>';
-
-    if (next) {
-      host.style.setProperty('--off', off(next));
-      host.innerHTML = `
-        <div class="shell">
-          <div class="yclose">
-            <div class="stack gap-m yclose__text">
-              <span class="eyebrow eyebrow--brass" data-reveal="fade">Next year</span>
-              <h2 class="t-xl" data-split>On to <span class="squiggle">${esc(next.year)}.</span></h2>
-              <p class="yclose__name" data-reveal="up" style="--d:100ms">${esc(next.title)}</p>
-              <div class="yclose__btns" data-reveal="up" style="--d:160ms">
-                <a class="btn" href="${page(next)}" data-magnet>Next: ${esc(next.year)} ${ARROW}</a>
-                ${back}
-              </div>
-            </div>
-            <a class="yclose__card" href="${page(next)}" aria-label="${esc(next.year)}: ${esc(next.title)}" data-reveal="up" style="--d:120ms">
-              ${cardPic(next, '(max-width: 900px) 80vw, 36vw', false, '')}
-            </a>
-          </div>
-        </div>`;
-      return;
-    }
-
-    // The newest year, which is where After the Wedding opens. Nothing comes
-    // after it yet, so the way on is back, through the earlier years' cards.
-    const earlier = YEARS.slice(0, Math.max(at, 0)).reverse();
-    host.innerHTML = `
-      <div class="shell">
-        <div class="yclose">
-          <div class="stack gap-m yclose__text">
-            <span class="eyebrow eyebrow--brass" data-reveal="fade">Earlier years</span>
-            <h2 class="t-xl" data-split>Back through ${squig('the years.')}</h2>
-            <p class="lede" data-reveal="up" style="--d:120ms">${esc(String(Number(Y.year) + 1))} is still happening, and its page goes up once the year is done. Until then, go back through the years before, all the way to the honeymoon.</p>
-          </div>
-          <ol class="yclose__cards" data-n="${earlier.length}">${earlier.map((y, i) => `
-            <li class="yclose__item" style="--off:${off(y)};--tilt:${TILT[(i + 1) % TILT.length]}deg;--d:${120 + i * 80}ms" data-reveal="up">
-              <a class="yclose__mini" href="${page(y)}" aria-label="${esc(y.year)}: ${esc(y.title)}">
-                <span class="yclose__pic">${cardPic(y, '(max-width: 620px) 42vw, (max-width: 900px) 28vw, 15vw', false, '')}</span>
-                <span class="yclose__year">${esc(y.year)}</span>
-                <span class="yclose__title">${esc(y.title)}</span>
-              </a>
-            </li>`).join('')}
-          </ol>
-        </div>
-      </div>`;
+    if (!host || !window.MW_CLOSING) return;
+    window.MW_CLOSING(host, {
+      here: Y.year,
+      k: 'After the Wedding',
+      title: 'Every year since.',
+      text: "One page a year since the wedding, each of them David's posts as he wrote them. Or start with the days that got a page of their own."
+    });
   }
 
   /* ── Scroll: the spine, the live chapter, the month in the bar ───────── */
@@ -561,7 +520,7 @@
     // the floating window, rather than the band under the bar: the same
     // measurement as the one in assets/css/map.css
     const wide = matchMedia('(min-width: 1180px)');
-    let shown = null, cur = null, raf = 0, stop = 0, onBand = false;
+    let shown = null, cur = null, raf = 0, stop = 0, onBand = false, folded = false;
 
     // screen pixels per svg unit, with the dots kept one size on screen
     function paint(m, k) {
@@ -675,7 +634,9 @@
       shown = i;
       const day = days[i];
       const full = [0, 0, W, H];
-      if (wide.matches) {
+      if (folded && !wide.matches) {
+        // folded into the pill: nothing to draw but the name of the day
+      } else if (wide.matches) {
         const k = main.svg.getBoundingClientRect().height / H || 0.6;
         cur = null;
         main.svg.setAttribute('viewBox', full.map(f).join(' '));
@@ -757,6 +718,19 @@
       sheet.showModal();
       show(shown ?? -1);
     });
+    // the band's own two controls, the same ones every map on the site carries
+    if (window.MW_MAPFOLD) {
+      window.MW_MAPFOLD({
+        host, wrap: moon,
+        view: $('.routemap__view', host),
+        foot: $('.routemap__foot', host),
+        whole: $('.routemap__whole', host),
+        onFold: min => {
+          folded = min;
+          if (!min) { cur = null; show(shown ?? -1); }   // back at the day being read
+        }
+      });
+    }
     $('.routesheet__close', sheet).addEventListener('click', () => sheet.close());
     sheet.addEventListener('click', e => {                  // a tap on the dimmed page closes it
       const r = sheet.getBoundingClientRect();

@@ -1,0 +1,372 @@
+/* ==========================================================================
+   THE MURNANS · the trip pages
+   honeymoon.html and the highlights, all built to one template by
+   assets/js/trip.js. Loaded after site.css, year.css and map.css, and built
+   from the same tokens: the ink keyline, colour printed a little off
+   register, small tilts.
+   --------------------------------------------------------------------------
+   1. The page        3. The stops        5. The way on   7. Responsive
+   2. The head        4. The map column   6. The hub
+   ========================================================================== */
+
+/* 1 ── THE PAGE ────────────────────────────────────────────────────────── */
+
+/* The accent colour of each trip page is already set in site.css: rose for
+   the honeymoon, khaki for the highlights.
+
+   overflow-x: hidden on <body> turns it into a scroll container, and a
+   sticky child of a scroll container that never scrolls never sticks.
+   "clip" clips the same way without making one, which is what holds the day
+   rail and the map in place. Scoped to these pages, with hidden left in
+   site.css as the fallback for anything that does not know clip. */
+body[data-page="honeymoon"],
+body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
+
+/* 2 ── THE HEAD ────────────────────────────────────────────────────────── */
+
+.thead { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+.thead__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
+  column-gap: clamp(2rem, 5.5vw, 5.5rem);
+  align-items: center;
+}
+.thead__text { min-width: 0; }
+.thead__back { display: inline-flex; align-items: center; gap: .5rem; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
+.thead__back:hover { color: var(--page-ink); }
+
+/* Four prints from the trip, pinned up at their own angles and dealt fresh
+   on every visit. They develop from the top as they come in, one after the
+   other, the way the photo strips down the page do. */
+/* The four of them together are about as tall as the title beside them:
+   any bigger and the first day of the trip starts a screen and a half down. */
+.tgal { display: grid; gap: 1rem; margin: 0; min-width: 0; width: min(100%, 400px); justify-self: end; }
+.tgal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(.8rem, 1.6vw, 1.35rem);
+  align-items: start;
+  /* room on the right and underneath for the off-register shadows */
+  padding: 0 10px 10px 0;
+}
+[data-reveal="wipe"].tgal__grid > *:nth-child(4) { transition-delay: calc(var(--d) + 390ms); }
+
+.tgal__pic {
+  aspect-ratio: 4 / 5;
+  rotate: var(--tilt, 0deg);
+  box-shadow: 8px 8px 0 var(--off, var(--gold));
+  transition: rotate .55s var(--ease), translate .45s var(--ease), box-shadow .45s var(--ease);
+}
+.tgal__pic:hover,
+.tgal__pic:focus-visible { rotate: 0deg; translate: 4px 4px; box-shadow: 4px 4px 0 var(--off, var(--gold)); }
+/* the two inside corners step down and up, so the four read as a pinned-up
+   handful rather than a grid of four */
+.tgal__pic:nth-child(2) { margin-top: clamp(1rem, 2.4vw, 2.1rem); }
+.tgal__pic:nth-child(3) { margin-bottom: clamp(1rem, 2.4vw, 2.1rem); }
+
+.tgal__cap {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1rem;
+  font-size: .62rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3);
+}
+.tgal__zoom { color: var(--brass-ink); }
+
+/* 3 ── THE STOPS ───────────────────────────────────────────────────────── */
+
+.ttl { padding-top: 0; }
+.tfacts { padding-bottom: clamp(1.25rem, 2.5vw, 2rem); }
+/* our own line about a stop, next to David's paragraphs but lighter, so his
+   words and ours never read as one voice */
+.stop__line { max-width: 60ch; margin: 0; font-size: .95rem; line-height: 1.62; color: var(--ink-3); }
+.chap--stop .chap__place { font-size: clamp(1.6rem, 2.8vw, 2.4rem); }
+/* A line someone said to us, the way David wrote it into the post: the
+   front desk lady on the Narrows. */
+.stop__quote { display: grid; gap: .5rem; margin: 0; padding-left: 1.1rem; border-left: 2px solid var(--brass); }
+.stop__quote-text { margin: 0; font-family: var(--display); font-size: clamp(1.15rem, 1.8vw, 1.45rem); line-height: 1.3; }
+.stop__quote-who { font-size: .62rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--brass-ink); }
+
+/* a link straight to a stop lands below the bar rather than under it */
+.chap--stop { scroll-margin-top: calc(var(--nav-h) + 4.5rem); }
+
+/* 4 ── THE MAP COLUMN ──────────────────────────────────────────────────── */
+
+@media (min-width: 1180px) {
+  .moon { grid-template-columns: minmax(0, 1fr) var(--map-w, clamp(250px, 23vw, 330px)); }
+  /* The piece of the atlas a trip shows is a different shape every time, so
+     the map is sized by both of them at once: as wide as the column, and no
+     taller than what is left of the screen under the two bars. --map-ar is
+     that piece's width over its height, set by assets/js/trip.js. */
+  .routemap--trip svg {
+    width: min(100%, calc((100svh - var(--nav-h) - 13rem) * var(--map-ar, 1)));
+    height: auto;
+    max-width: none;
+    overflow: hidden;
+  }
+}
+
+/* The state names come and go with the piece of map on screen, the same way
+   the stop names do, and take the same paper halo so a name that lands on
+   the route still reads. */
+.routemap--trip .routemap__state,
+.tripsheet .routemap__state {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: calc(3px / var(--mapk, .7));
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+.routemap--trip .routemap__state.is-on,
+.tripsheet .routemap__state.is-on { opacity: 1; }
+
+/* The whole trip, in the window the band opens. The window centres what is
+   inside it, which leaves the map at the size the atlas happens to be drawn
+   at, so the box it sits in is stretched across the window first. */
+.tripsheet .routesheet__map { justify-self: stretch; width: 100%; }
+.tripsheet .routesheet__map svg {
+  width: min(100%, calc((100svh - 13rem) * var(--map-ar, 1)));
+  height: auto;
+  max-width: none;
+  overflow: hidden;
+}
+
+/* 5 ── THE WAY ON ──────────────────────────────────────────────────────── */
+
+.tclose { display: grid; gap: 1rem; max-width: 66ch; }
+#closing.band { padding-bottom: clamp(3rem, 6vw, 5.5rem); }
+
+
+/* 6 ── THE HIGHLIGHTS HUB ──────────────────────────────────────────────
+   highlights.html: one card a highlight, three across or one under the
+   other, never two and one. A highlight that has not happened yet keeps its
+   card and shows the same doodle an empty photo slot does on a year page. */
+
+.hcards {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  /* one column per card, set in the markup: auto-fit drops to two at some
+     widths and strands the third */
+  grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+}
+.hcard__slot { min-width: 0; }
+.hcard { display: grid; gap: .5rem; color: var(--ink); }
+.hcard__pic {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  margin-bottom: .85rem;
+  border: var(--keyline);
+  border-radius: var(--r-sm);
+  background: var(--paper-3);
+  box-shadow: 8px 8px 0 var(--off, var(--blue));
+  rotate: var(--tilt, 0deg);
+  transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease);
+}
+.hcard__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
+.hcard:hover .hcard__pic,
+.hcard:focus-visible .hcard__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 8px 14px 0 var(--off, var(--blue)); }
+.hcard:hover .hcard__pic img { transform: scale(1.05); }
+
+/* a highlight still to come: a wash of colour and the snapshot doodle */
+.hcard__pic--empty {
+  display: grid; place-items: center; align-content: center;
+  color: var(--ink-2);
+  background:
+    radial-gradient(120% 90% at 18% 12%, color-mix(in srgb, var(--wash) 34%, transparent), transparent 62%),
+    radial-gradient(110% 100% at 88% 92%, color-mix(in srgb, var(--wash) 26%, transparent), transparent 66%),
+    color-mix(in srgb, var(--wash) 14%, var(--paper));
+}
+[data-theme="dusk"] .hcard__pic--empty {
+  background:
+    radial-gradient(120% 90% at 18% 12%, color-mix(in srgb, var(--wash) 20%, transparent), transparent 62%),
+    radial-gradient(110% 100% at 88% 92%, color-mix(in srgb, var(--wash) 14%, transparent), transparent 66%),
+    color-mix(in srgb, var(--wash) 10%, var(--paper));
+}
+.hcard__doodle { width: clamp(38px, 22%, 62px); height: auto; opacity: .6; transition: rotate .6s var(--ease), scale .6s var(--ease); }
+.hcard:hover .hcard__doodle { rotate: -8deg; scale: 1.08; }
+
+.hcard__k { font-size: .64rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
+.hcard__title { font-family: var(--display); font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1.12; transition: color .4s; }
+.hcard:hover .hcard__title { color: var(--page-ink); }
+.hcard__note { font-size: .92rem; line-height: 1.62; color: var(--ink-3); }
+.hcard__go { display: inline-flex; align-items: center; gap: .6rem; margin-top: .45rem; font-size: .68rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; }
+.hcard__go svg { transition: transform .5s var(--ease); }
+.hcard:hover .hcard__go svg { transform: translateX(6px); }
+.hcard__tag {
+  padding: .3em .85em .24em;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-3);
+  font-size: .6rem; letter-spacing: .16em;
+}
+.hcard:hover .hcard__tag { border-color: var(--ink-3); color: var(--ink-2); }
+
+@media (max-width: 900px) {
+  /* one card a line: three across no longer fit, and two and one would
+     leave the last card alone */
+  .hcards { grid-template-columns: minmax(0, 1fr); gap: clamp(2rem, 6vw, 2.75rem); }
+  .hcard__pic { aspect-ratio: 16 / 9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hcard__pic, .hcard__doodle { transition: none; }
+}
+
+/* 7 ── RESPONSIVE ──────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .thead__grid { grid-template-columns: minmax(0, 1fr); row-gap: clamp(2rem, 5vw, 2.75rem); }
+  .tgal { width: min(100%, 520px); justify-self: stretch; }
+}
+
+@media (max-width: 620px) {
+  .tgal__grid { gap: .6rem; padding: 0 6px 6px 0; }
+  .tgal__pic { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
+  .tgal__pic:nth-child(2) { margin-top: .9rem; }
+  .tgal__pic:nth-child(3) { margin-bottom: .9rem; }
+  .tgal__cap { font-size: .56rem; letter-spacing: .14em; }
+}
+
+/* A phone on its side, the same measurement site.css, year.css and map.css
+   use: there is room for the prints beside the title, and on a screen this
+   short a stacked head is a whole screen before the first stop. */
+@media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
+  .thead__grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  /* smaller again sideways: there is no height to spare, and the four of
+     them are the tallest thing in the head */
+  .tgal { width: min(100%, 270px); justify-self: end; }
+  .tgal__grid { gap: .6rem; }
+  .tgal__pic:nth-child(2) { margin-top: .8rem; }
+  .tgal__pic:nth-child(3) { margin-bottom: .8rem; }
+  .page-head.thead { padding-top: clamp(6rem, 22vh, 8rem); padding-bottom: clamp(1.5rem, 6vh, 3rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tgal__pic { transition: none; }
+}
+
+
+/* 8 ── THE CITIZENSHIP PAGE ────────────────────────────────────────────
+   highlights-citizenship.html is one morning, not a trip: no stops, no
+   route, one photograph, and David's letter to the family as the whole of
+   the page. It borrows the trip head and the facts row and adds two things
+   of its own: a single large print in the gallery slot, and the letter set
+   as printed stationery with a postmark over its top edge. */
+
+/* One print instead of four. The grid is two columns for a handful of
+   photographs; with one it has to be told to stop halving the slot. */
+.thead--one .thead__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr); }
+.tgal--one { width: min(100%, 520px); }
+.tgal--one .tgal__grid { grid-template-columns: minmax(0, 1fr); padding: 0 12px 12px 0; }
+.tgal--one .tgal__pic { aspect-ratio: 4 / 3; box-shadow: 10px 10px 0 var(--off, var(--gold)); }
+.tgal--one .tgal__pic:hover,
+.tgal--one .tgal__pic:focus-visible { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
+
+/* The measure lives on the block, not on the card: "ch" is relative to the
+   element's own type size, so a label and a card that both asked for 74ch
+   would come out different widths. The block is set at the letter's body
+   size and the two sit flush. */
+.letter-block { max-width: 74ch; margin-inline: auto; font-size: 1.02rem; }
+.letter__label { display: block; margin: 0 0 clamp(.9rem, 2vw, 1.35rem); }
+
+/* The letter: paper with the ink keyline, colour printed off register, and
+   a finer frame inside it the way the vows are set. */
+.letter {
+  position: relative;
+  padding: clamp(2.2rem, 4.5vw, 3.4rem) clamp(1.5rem, 4vw, 3.2rem) clamp(1.5rem, 3vw, 2.4rem);
+  background: color-mix(in srgb, var(--khaki) 12%, var(--paper));
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  box-shadow: 10px 10px 0 var(--khaki);
+}
+.letter::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1.5px solid color-mix(in srgb, var(--khaki) 70%, var(--paper));
+  border-radius: 9px;
+  pointer-events: none;
+}
+
+/* The postmark, over the top edge on the right. Its colours are pinned the
+   way the "I do" sticker's are: dark ink on gold, the same in both themes,
+   so it never lands as cream on yellow. */
+.letter__stamp {
+  position: absolute;
+  z-index: 2;
+  top: calc(-1 * clamp(.9rem, 2vw, 1.5rem));
+  right: clamp(1rem, 3vw, 2.4rem);
+  width: clamp(74px, 7.5vw, 102px);
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .15rem;
+  border: 2px solid #14110D;
+  border-radius: 50%;
+  background: #F0CE84;
+  color: #14110D;
+  box-shadow: 3px 3px 0 #14110D;
+  rotate: -9deg;
+  text-align: center;
+  transition: rotate .6s cubic-bezier(.34, 1.56, .64, 1), scale .6s cubic-bezier(.34, 1.56, .64, 1);
+}
+.letter:hover .letter__stamp { rotate: 4deg; scale: 1.05; }
+.letter__stamp b {
+  font-family: var(--hand);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+  line-height: .95;
+}
+.letter__stamp span { font-size: .5rem; font-weight: 600; letter-spacing: .2em; }
+
+/* the date and place he headed it with. The rule stops short of the
+   postmark rather than running under it. */
+.letter__meta {
+  margin: 0 0 clamp(1.3rem, 2.4vw, 1.9rem);
+  padding: 0 clamp(5rem, 9vw, 7rem) .75rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--brass-ink);
+}
+.letter__to {
+  margin: 0 0 1rem;
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2.3vw, 1.85rem);
+  line-height: 1.1;
+}
+.letter__p {
+  margin: 0 0 clamp(1rem, 1.8vw, 1.35rem);
+  font-size: 1.02rem;
+  line-height: 1.72;
+  color: var(--ink);
+}
+.letter__p--open { font-size: clamp(1.08rem, 1.5vw, 1.22rem); line-height: 1.6; }
+.letter__off { margin: clamp(1.5rem, 3vw, 2.1rem) 0 0; font-size: 1rem; color: var(--ink-2); }
+.letter__sign {
+  display: block;
+  width: clamp(128px, 13vw, 172px);
+  height: auto;
+  margin: -.7rem 0 -1rem .1rem;
+  rotate: -4deg;
+  filter: invert(var(--art-invert));
+}
+
+@media (max-width: 900px) {
+  .thead--one .thead__grid { grid-template-columns: minmax(0, 1fr); }
+  .tgal--one { width: min(100%, 560px); }
+}
+@media (max-width: 620px) {
+  .tgal--one .tgal__grid { padding: 0 7px 7px 0; }
+  .tgal--one .tgal__pic { box-shadow: 6px 6px 0 var(--off, var(--gold)); }
+  .letter { box-shadow: 6px 6px 0 var(--khaki); }
+  .letter__stamp { right: .8rem; box-shadow: 2px 2px 0 #14110D; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .letter__stamp { transition: none; }
+}

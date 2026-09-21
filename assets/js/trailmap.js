@@ -109,7 +109,7 @@ window.MW_TRAILMAP = function trailmap(o) {
   // measurement as the one in assets/css/map.css
   const wide = matchMedia('(min-width: 1180px)');
   const f = n => n.toFixed(1);
-  let shown = null, cur = null, raf = 0, stop = 0, onBand = false, flew = 0;
+  let shown = null, cur = null, raf = 0, stop = 0, onBand = false, flew = 0, folded = false;
 
   function paint(m, k) {
     m.svg.style.setProperty('--mapk', k.toFixed(4));
@@ -207,7 +207,9 @@ window.MW_TRAILMAP = function trailmap(o) {
   function show(i) {
     shown = i;
     const live = groups[i] ? groups[i].stops : [];
-    if (wide.matches) {
+    if (folded && !wide.matches) {
+      // folded into the pill: nothing to draw but the name of what is being read
+    } else if (wide.matches) {
       const v = frame(main, live);
       cur = null;
       main.svg.setAttribute('viewBox', v.map(f).join(' '));
@@ -312,6 +314,19 @@ window.MW_TRAILMAP = function trailmap(o) {
     sheet.showModal();
     show(shown ?? groups.length);
   });
+  // the band's own two controls, the same ones every map on the site carries
+  if (window.MW_MAPFOLD) {
+    window.MW_MAPFOLD({
+      host, wrap,
+      view: $('.yearmap__view', host),
+      foot: $('.yearmap__foot', host),
+      whole: $('.yearmap__whole', host),
+      onFold: min => {
+        folded = min;
+        if (!min) { cur = null; show(shown ?? -1); }
+      }
+    });
+  }
   $('.routesheet__close', sheet).addEventListener('click', () => sheet.close());
   sheet.addEventListener('click', e => {
     const r = sheet.getBoundingClientRect();

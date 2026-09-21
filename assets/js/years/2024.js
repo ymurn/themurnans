@@ -75,7 +75,8 @@ window.MW_YEAR = {
      "place": "Portland, Acadia & Vermont",
      "text": [
       "Our return to Maine!",
-      "Acadia is pretty. It’s essentially the only place along the East Coast in this country that has mountains, and at the top of Cadillac Mountain, you can see all the way to Canada. So, we went to the top both in the morning and night to get a nice view of everything we could see!"
+      "Acadia is pretty. It’s essentially the only place along the East Coast in this country that has mountains, and at the top of Cadillac Mountain, you can see all the way to Canada. So, we went to the top both in the morning and night to get a nice view of everything we could see!",
+      "Lastly, believe it or not, but on May 10, 2024, it marks two years of legal wedding bliss. Shit happened in May 2022 and our lawyer suggested we get married ASAP. We sure did, and two years later we are still madly in love and in fact the Bear and Tiger!"
      ]
     },
     {

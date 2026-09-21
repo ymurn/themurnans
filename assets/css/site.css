@@ -61,6 +61,10 @@
   --deep-ink-2:   #E0C9CB;
   --deep-ink-3:   #BBA0A5;
 
+  /* dusk's own ground, named here so the toggle's dot can show the colour it
+     switches to without repeating the number */
+  --dusk-paper:   #0B1F25;
+
   --keyline:      2px solid var(--ink);
   --r-lg:         20px;
   --r-md:         14px;
@@ -97,7 +101,7 @@
 
 [data-theme="dusk"] {
   /* Dusk , the cellar */
-  --paper:        #0B1F25;
+  --paper:        var(--dusk-paper);
   --paper-2:      #102B32;
   --paper-3:      #16383F;
   --ink:          #F4EBD6;
@@ -144,6 +148,8 @@ body[data-page="home"]  { --page: var(--blue);     --page-ink: var(--blue-deep);
 body[data-page="story"] { --page: var(--sage-500); --page-ink: var(--sage-600); }
 body[data-page="table"] { --page: var(--gold);     --page-ink: var(--brass-ink); }
 body[data-page="day"]   { --page: var(--coral);    --page-ink: #A8391F; }
+body[data-page="honeymoon"]  { --page: var(--rose);  --page-ink: var(--wine-2); }
+body[data-page="highlights"] { --page: var(--khaki); --page-ink: var(--brass-ink); }
 /* on the dark ground the light accent already reads, so type uses it directly */
 [data-theme="dusk"] body[data-page] { --page-ink: var(--page); }
 
@@ -151,11 +157,11 @@ body[data-page="day"]   { --page: var(--coral);    --page-ink: #A8391F; }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-/* The canvas takes the footer's oxblood, not the paper. On a phone the page
-   bounces past its end, and what shows under the footer is this colour, not
-   the body's: cream in dawn and dark teal in dusk both read as a stripe of
-   the wrong colour under a burgundy footer. */
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; background: var(--deep); }
+/* No colour of its own: the body's paper propagates up to the canvas, so the
+   page behind the designs is cream in dawn and dark teal in dusk, and the
+   0.6s theme transition comes with it. The phone browser bar is held at the
+   footer's oxblood by assets/js/safari-bar.js, not by a colour back here. */
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -596,7 +602,9 @@ section { position: relative; }
   top: 3px; left: 3px;
   width: 24px; height: 24px;
   border-radius: 50%;
-  background: var(--deep);
+  /* the dot shows the ground it switches to, which is dusk's deep teal, not
+     the oxblood of the footer */
+  background: var(--dusk-paper);
   transition: transform .6s var(--ease), background-color .5s;
 }
 [data-theme="dusk"] .theme-toggle__knob { transform: translateX(28px); background: var(--brass-2); }
@@ -2945,19 +2953,26 @@ a.yearbtn { display: inline-block; }
 
 /* 12 ── LIGHTBOX, CURSOR, MOTION ───────────────────────────────────────── */
 
+/* Two rows, not one: the photograph gets whatever height is left over once
+   the caption has taken its own, so a tall photograph is scaled down rather
+   than run under the words. The padding keeps the close button clear of the
+   top row, and the photograph's width leaves room for the two arrows. */
 .lightbox {
   position: fixed; inset: 0; z-index: 200;
-  display: grid; place-items: center;
-  padding: clamp(1rem, 4vw, 3rem);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  place-items: center;
+  gap: clamp(.8rem, 2vw, 1.25rem);
+  padding: calc(clamp(1rem, 3vw, 2rem) + 44px + .75rem) clamp(1rem, 4vw, 3rem) clamp(1.75rem, 4vw, 2.75rem);
   background: color-mix(in srgb, var(--deep) 94%, transparent);
   backdrop-filter: blur(8px);
   opacity: 0; visibility: hidden;
   transition: opacity .5s var(--ease-soft), visibility .5s;
 }
 .lightbox.is-open { opacity: 1; visibility: visible; }
-.lightbox__img { max-width: min(1100px, 92vw); max-height: 82vh; object-fit: contain; border-radius: 2px; box-shadow: 0 30px 90px #0009; transform: scale(.97); transition: transform .6s var(--ease); }
+.lightbox__img { max-width: min(1100px, calc(100vw - clamp(2rem, 14vw, 10rem))); max-height: 100%; object-fit: contain; border-radius: 2px; box-shadow: 0 30px 90px #0009; transform: scale(.97); transition: transform .6s var(--ease); }
 .lightbox.is-open .lightbox__img { transform: none; }
-.lightbox__cap { position: absolute; bottom: clamp(1rem, 4vw, 2.5rem); left: 50%; transform: translateX(-50%); color: #C9D6D8; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; text-align: center; }
+.lightbox__cap { margin: 0; max-width: min(760px, 88vw); line-height: 1.5; color: #C9D6D8; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; text-align: center; }
 .lightbox__x { position: absolute; top: clamp(1rem, 3vw, 2rem); right: clamp(1rem, 3vw, 2rem); width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: #EDE8DA; box-shadow: inset 0 0 0 1px #ffffff30; transition: background-color .35s, transform .5s var(--ease); }
 .lightbox__x:hover { background: #ffffff14; transform: rotate(90deg); }
 .lightbox__nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; display: grid; place-items: center; color: #EDE8DA; border-radius: 50%; box-shadow: inset 0 0 0 1px #ffffff26; transition: background-color .35s; }
@@ -3545,3 +3560,672 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   .nav, .footer, .cursor, .curtain, .progress, .yearbar { display: none !important; }
   body { background: #fff; color: #000; }
 }
+
+/* 13 ── HOME: THE MAP, THE TALLY AND THE SPEECHES ──────────────────────────
+   The home page is three short sections under the hero. Everything here is
+   its own, so nothing in this block is shared with home-archive.html.      */
+
+/* the pair of buttons at the right of the bar, which used to be written
+   inline on the home page */
+.nav__tools { display: flex; align-items: center; gap: .75rem; }
+
+/* the years in the footer, a row of pills rather than five more lines */
+/* Two by two rather than a wrapping row: four across only just fits the
+   column, and the width it wants depends on the gutter, so a row would
+   leave the last year on its own somewhere. */
+.footer__years { display: grid; grid-template-columns: repeat(2, max-content); gap: .4rem; margin-top: .3rem; }
+.footer__years a {
+  padding: .2rem .6rem;
+  border: 1px solid #ffffff2e;
+  border-radius: 999px;
+  font-size: .76rem; letter-spacing: .06em;
+  transition: background .3s, border-color .3s, color .3s;
+}
+.footer__years a:hover { background: var(--brass-2); border-color: var(--brass-2); color: var(--deep); }
+/* Four columns now that the timelines have their own, but only while the
+   footer is still a row: it stacks at 880px, below the rule above. */
+@media (min-width: 881px) { .footer__top { grid-template-columns: 1.25fr 1fr 1fr 1fr; } }
+
+/* ── 01 Memories ─────────────────────────────────────────────────────────
+   Map on the left, the photographs it deals on the right. Below 1000px the
+   panel drops under the map and rides a little way up onto it, so a phone
+   sees the pictures land rather than a second screen of nothing.          */
+
+.mem { position: relative; display: grid; gap: clamp(1.25rem, 3vw, 2.25rem); }
+/* overflow-x: hidden on <body> turns it into a scroll container, and a sticky
+   child of a scroll container that never scrolls never sticks. "clip" clips
+   the same way without making one, which is what lets the map hold its place.
+   Scoped to this page so nothing else changes shape; hidden stays as the
+   fallback for anything that does not know clip. */
+body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
+
+.mem__mapcol { position: relative; z-index: 1; }
+@media (min-width: 1000px) {
+  .mem { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); align-items: start; }
+  /* The column of photographs is the taller of the two, so the map follows it
+     down rather than leaving a hole under itself. */
+  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + 1.5rem); }
+}
+/* The box holds its proportions whether or not the map is in it: on a phone
+   the svg moves into the pop-up and back, and a collapsing box would jump
+   the page under the reader. */
+.mem__map { aspect-ratio: 1000 / 645.6; }
+.mem__map svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+
+/* Not been there: the quiet ground the coloured states sit on. No ink line
+   on any of them, there are fifty and it turns the map into a net. */
+.memmap__st {
+  fill: var(--paper-2);
+  stroke: color-mix(in srgb, var(--ink) 14%, transparent);
+  stroke-width: .8px;
+  vector-effect: non-scaling-stroke;
+}
+/* Been there: the four quilt colours, separated by the paper rather than
+   by ink, and cut out of the same sheet as the ground. */
+/* The colour sits on top of the plain ground, so if the print never runs the
+   map is a grey map rather than no map at all. */
+.memmap__been {
+  fill: var(--quilt-1);
+  stroke: var(--paper);
+  stroke-width: 1.4px;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  transform: scale(.5) rotate(-12deg);
+  transition:
+    opacity .34s var(--ease-soft) var(--t, 0ms),
+    transform .74s var(--stamp) var(--t, 0ms),
+    filter .35s var(--ease-soft);
+}
+.memmap__been[data-q="1"] { fill: var(--quilt-2); }
+.memmap__been[data-q="2"] { fill: var(--quilt-3); }
+.memmap__been[data-q="3"] { fill: var(--quilt-4); }
+.memmap__been:hover { filter: brightness(1.08) saturate(1.1); }
+
+/* One state chosen: it keeps its colour and takes the ink line, the rest
+   step back. One outline on the map, never thirty-six. */
+.memmap.is-picked.is-printed .memmap__been { opacity: .38; }
+.memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; }
+.memmap__ring {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s var(--ease-soft);
+}
+.memmap.is-picked .memmap__ring { opacity: 1; }
+.memmap__dc {
+  fill: var(--coral); stroke: var(--paper); stroke-width: 1.2px;
+  vector-effect: non-scaling-stroke; cursor: pointer;
+  transform-box: fill-box; transform-origin: 50% 50%;
+  opacity: 0; transform: scale(.4);
+  transition: opacity .3s var(--ease-soft) var(--t, 0ms), transform .6s var(--stamp) var(--t, 0ms);
+}
+.memmap.is-picked.is-printed .memmap__dc { opacity: .38; }
+.memmap.is-picked.is-printed .memmap__dc.is-on { opacity: 1; }
+.memmap__home {
+  fill: var(--gold); stroke: var(--ink); stroke-width: 1.1px;
+  vector-effect: non-scaling-stroke; pointer-events: none;
+  transform-box: fill-box; transform-origin: 50% 50%;
+  opacity: 0; transform: scale(.2) rotate(-140deg);
+  transition: opacity .4s var(--ease-soft) 1.35s, transform 1s var(--stamp) 1.35s;
+}
+
+/* The print itself: once, on the way in. */
+.memmap.is-printed .memmap__been { opacity: 1; transform: none; }
+.memmap.is-printed .memmap__dc   { opacity: 1; transform: none; }
+.memmap.is-printed .memmap__home { opacity: 1; transform: scale(1.3) rotate(0deg); }
+/* and once it has landed, no state waits its turn to light up */
+.memmap.is-set .memmap__been,
+.memmap.is-set .memmap__dc {
+  transition-delay: 0ms;
+  transition-duration: .3s, .35s, .3s;
+}
+.memmap__label { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .5em; fill: var(--ink-3); pointer-events: none; }
+
+/* A sentence, not a label: letterspaced capitals took half again the width
+   for no more meaning, and this only ever has to sit quietly under the map. */
+.mem__hint { margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
+/* The one action in the panel: it rolls the map to a state we have written up */
+.mem__roll {
+  flex: none;
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .32rem .85rem .32rem .6rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--gold);
+  color: #14110D;
+  font: inherit; font-size: .74rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.mem__roll:hover { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+.mem__roll:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.mem__die { display: grid; place-items: center; }
+.mem__die svg { display: block; }
+.is-rolling .mem__die { animation: memRoll .55s cubic-bezier(.34, 1.42, .5, 1); }
+@keyframes memRoll {
+  0%   { rotate: 0deg; scale: 1; }
+  55%  { rotate: 200deg; scale: 1.22; }
+  100% { rotate: 360deg; scale: 1; }
+}
+
+/* The panel. A fixed floor so choosing a state never jumps the page. */
+.mem__panel {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  min-height: 300px;
+}
+/* The row never wraps; the title wraps inside it. Let the row wrap instead and
+   whether the button keeps its place depends on how long the state is called,
+   so "Ohio" and "Washington, DC" would lay the section out differently. */
+.mem__headrow {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: nowrap; gap: 1rem;
+}
+.mem__title {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .75rem;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--display); font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1.1;
+}
+.mem__count { font-family: var(--sans); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
+
+.mem__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.7rem, 1.6vw, 1rem); }
+/* an odd one out takes the whole row rather than sitting on its own */
+.mem__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+.mem__card {
+  position: relative;
+  display: grid;
+  gap: .5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: inherit; color: inherit;
+  cursor: pointer;
+  rotate: var(--tilt, 0deg);
+  transition: rotate .4s var(--ease), translate .4s var(--ease);
+}
+.mem__card::before {                        /* the colour, printed off register */
+  content: "";
+  position: absolute;
+  /* Right and down only. Inset on the left as well and the colour starts
+     inboard of the photograph above it, which leaves the caption sitting off
+     the edge of its own background. */
+  inset: 0 -6px -6px 0;
+  border-radius: var(--r-sm);
+  background: var(--off, var(--gold));
+  transition: inset .4s var(--ease);
+}
+.mem__card:hover, .mem__card:focus-visible { rotate: 0deg; translate: 0 -4px; outline: none; }
+.mem__card:hover::before, .mem__card:focus-visible::before { inset: 0 -10px -10px 0; }
+.mem__card:focus-visible .mem__shot { box-shadow: 0 0 0 3px var(--gold); }
+.mem__shot {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: var(--r-sm);
+  background: var(--paper-3);
+}
+.mem__shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mem__n {                                   /* how many more are behind it */
+  position: absolute; right: .4rem; bottom: .4rem;
+  padding: .1rem .45rem;
+  border: 1.5px solid #14110D;
+  border-radius: 999px;
+  background: #F7F0E0; color: #14110D;
+  font-size: .66rem; font-weight: 500; letter-spacing: .06em;
+}
+.mem__label { position: relative; display: grid; gap: .12rem; padding: .35rem .8rem .6rem .7rem; }
+.mem__where { font-weight: 500; font-size: .86rem; line-height: 1.3; color: #14110D; }
+.mem__when { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: #4B443A; }
+
+/* A card opened: the same picture, bigger, with the rest of the roll under
+   it and the line David wrote at the time. */
+.mem__open {
+  position: relative;
+  display: grid;
+  gap: .85rem;
+  padding: clamp(.85rem, 2vw, 1.1rem);
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--off, var(--gold));
+}
+.mem__open.is-new { animation: memPop .42s var(--ease) both; }
+@keyframes memPop {
+  from { opacity: 0; transform: scale(.94) translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.mem__back {
+  justify-self: start;
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: 0; border: 0; background: none;
+  font: inherit; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-3); cursor: pointer;
+}
+.mem__back:hover { color: var(--ink); }
+.mem__lead {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: var(--r-sm);
+  background: var(--paper-3);
+}
+.mem__lead img { width: 100%; height: 100%; object-fit: cover; display: block; animation: memFade .35s var(--ease-soft) both; }
+@keyframes memFade { from { opacity: 0 } to { opacity: 1 } }
+.mem__cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 1.6rem .7rem .5rem;
+  background: linear-gradient(transparent, #14110Dcc);
+  color: #F9F2E4; font-size: .76rem; line-height: 1.4;
+}
+.mem__roll { display: flex; gap: .4rem; }
+.mem__thumb {
+  flex: 1 1 0;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  overflow: hidden;
+  border: 1.5px solid var(--ink);
+  border-radius: 7px;
+  background: var(--paper-3);
+  cursor: pointer;
+  opacity: .55;
+  transition: opacity .3s, translate .3s var(--ease);
+}
+.mem__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mem__thumb:hover { opacity: .85; translate: 0 -2px; }
+.mem__thumb.is-on { opacity: 1; box-shadow: 0 0 0 2px var(--gold); }
+.mem__head { display: grid; gap: .2rem; }
+.mem__place { margin: 0; font-family: var(--display); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.15; }
+.mem__date { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.mem__text { margin: 0; font-size: .92rem; line-height: 1.6; color: var(--ink-2); }
+.mem__go {
+  justify-self: start;
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .5rem .95rem;
+  border: var(--keyline);
+  border-radius: 999px;
+  background: var(--gold);
+  color: #14110D;
+  font-size: .82rem; font-weight: 500;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.mem__go:hover { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+
+/* Nothing filed under this one yet, said plainly rather than left blank */
+.mem__none {
+  display: grid; gap: .6rem; justify-items: start;
+  padding: 1.25rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--r-md);
+  color: var(--ink-3); font-size: .9rem; line-height: 1.6;
+}
+.mem__none.is-soon { border-style: solid; border-color: var(--gold); color: var(--ink-2); }
+.mem__soon {
+  padding: .26rem .7rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--gold);
+  color: #14110D;
+  font-size: .64rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+}
+
+@media (max-width: 999px) {
+  .mem__panel { min-height: 0; }
+  .mem__open { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+  /* The count goes above the map here, so that nothing sits between the map
+     and the photographs for the pill to float over on its way past. It reads
+     as an opening line there in any case. */
+  .mem__mapcol { display: flex; flex-direction: column; }
+  .mem__hint { order: -1; margin: 0 0 .9rem; }
+}
+
+/* ── 02 The tally ──────────────────────────────────────────────────────── */
+
+.tally__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(.8rem, 2vw, 1.5rem);
+}
+.tally__card {
+  position: relative;
+  display: grid;
+  gap: .3rem;
+  padding: clamp(1rem, 2.2vw, 1.5rem);
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--fill, var(--gold));
+  rotate: -.6deg;
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease), rotate .4s var(--ease);
+}
+.tally__card:nth-child(even) { rotate: .7deg; }
+.tally__card:hover { rotate: 0deg; transform: translateY(-5px); box-shadow: 9px 9px 0 var(--fill, var(--gold)); }
+.tally__mark { display: block; width: clamp(42px, 6vw, 56px); margin-bottom: .35rem; }
+.tally__mark svg { display: block; width: 100%; height: auto; }
+.tally__n {
+  font-family: var(--display);
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
+  line-height: 1;
+  transform-origin: 12% 80%;
+}
+.tally__card:hover .tally__n { animation: wobble .6s var(--ease); }
+.tally__k { font-size: .92rem; font-weight: 500; line-height: 1.3; }
+/* the page accent on its own comes to 4.1:1 on cream, under AA for text
+   this size, so the note is taken a little further towards the ink */
+.tally__q { font-family: var(--hand); font-size: 1.05rem; line-height: 1.25;
+  color: color-mix(in srgb, var(--page-ink) 72%, var(--ink)); }
+
+.tally__end {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+  margin-top: clamp(3rem, 7vw, 5.5rem);
+}
+.tally__cal { justify-items: start; }
+.tally__cta { display: grid; gap: 1rem; justify-items: start; max-width: 46ch; }
+.tally__cta .lede { margin: 0; }
+
+@media (max-width: 860px) {
+  .tally__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tally__end { grid-template-columns: 1fr; justify-items: start; }
+  .tally__end .cal { margin-inline: 0 3rem; }
+}
+
+/* ── 03 Said about us ──────────────────────────────────────────────────────
+   A rail that scrolls itself. It is a real scroller, so a thumb can push it
+   about and the keyboard can reach it; initSay only nudges it along.      */
+
+.say__head { display: grid; gap: .6rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+.say__rail {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.say__rail::-webkit-scrollbar { display: none; }
+.say__track { display: flex; gap: clamp(.9rem, 2vw, 1.5rem); width: max-content; padding: .5rem var(--gutter) 1.25rem; }
+
+.said {
+  flex: none;
+  width: clamp(232px, 68vw, 310px);
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-areas: "bubble bubble" "pic who";
+  gap: .85rem .7rem;
+  margin: 0;
+  align-content: start;
+}
+.said__bubble {
+  grid-area: bubble;
+  position: relative;
+  margin: 0;
+  padding: .95rem 1.05rem;
+  border: var(--keyline);
+  border-radius: 16px 16px 16px 5px;
+  background: #ffffff10;
+  color: var(--deep-ink);
+  font-family: var(--hand);
+  font-size: 1.24rem; line-height: 1.34;
+}
+.said__bubble::after {                       /* the tail, pointing at the face */
+  content: "";
+  position: absolute;
+  left: 22px; bottom: -9px;
+  width: 14px; height: 14px;
+  background: var(--deep);
+  border-left: var(--keyline);
+  border-bottom: var(--keyline);
+  rotate: -45deg;
+}
+.said__who {
+  grid-area: who;
+  align-self: center;
+  display: grid; gap: .1rem;
+  font-size: .86rem; font-weight: 500;
+}
+.said__who span { font-size: .68rem; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--deep-ink-3); }
+.said__pic {
+  grid-area: pic;
+  width: 48px; height: 48px;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: 50%;
+  background: var(--deep);
+}
+.said__pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+.say__foot { margin-top: .75rem; }
+
+@media (max-width: 620px) {
+  .said { width: 78vw; }
+  .said__bubble { font-size: 1.16rem; }
+}
+
+/* ── Pages still being written ─────────────────────────────────────────────
+   Honeymoon and Highlights carry the nav and the footer and say plainly that
+   there is nothing here yet, with the places the writing already lives.   */
+
+.soon {
+  display: grid; justify-items: start; gap: 1.25rem;
+  max-width: 64ch;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 2px dashed var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper-2);
+}
+.soon__tag {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .28rem .8rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--page);
+  color: #14110D;
+  font-size: .68rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+}
+.soon__line { margin: 0; font-size: clamp(1rem, 1.5vw, 1.1rem); line-height: 1.65; color: var(--ink-2); }
+
+/* A phone on its side is wide and very short: stacking the map and the sheet
+   there would be two screens of scrolling for one choice, so it takes the two
+   columns, with the map given less of the width than a desktop gives it. */
+@media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
+  .mem { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; }
+  .mem__panel {
+    z-index: auto; margin-top: 0; padding: 0; min-height: 0;
+    border: 0; border-radius: 0; background: none; box-shadow: none;
+  }
+  .mem__panel::before { content: none; }
+  .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
+  .mem__hint { justify-content: flex-start; margin-bottom: 0; }
+  .tally__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tally__end { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+}
+
+/* ── The map as a pill (phones) ───────────────────────────────────────────
+   A phone cannot hold the map and the photographs on screen together, and a
+   map that has scrolled away is a map nobody can reach. So the map scrolls
+   away like anything else and hands over, as it goes, to a small pill that
+   stays put: what you are looking at, a die to reshuffle it, and the map one
+   tap away. Tapping it does not raise a panel from somewhere else, the pill
+   itself grows into the map and shrinks back into the pill afterwards, which
+   is what keeps the two reading as one object rather than two.            */
+
+:root { --stamp: cubic-bezier(.34, 1.42, .5, 1); }
+
+.mem__bar {
+  position: fixed;
+  z-index: 70;
+  top: calc(var(--nav-h) + 10px);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: .1rem;
+  max-width: calc(100vw - 2rem);
+  padding: .26rem .26rem .26rem .6rem;
+  border-radius: 999px;
+  background: var(--deep);
+  color: var(--deep-ink);
+  box-shadow: 0 12px 34px #00000059, 0 2px 8px #00000038;
+  translate: -50% -12px;
+  scale: .84;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .26s var(--ease-soft), scale .44s var(--stamp), translate .44s var(--stamp);
+}
+.mem__bar.is-up { opacity: 1; scale: 1; translate: -50% 0; pointer-events: auto; }
+/* while the map is up, the pill it grew out of is not there to see */
+.memsheet-open .mem__bar { opacity: 0; scale: .9; pointer-events: none; transition-duration: .16s; }
+@media (min-width: 1000px) { .mem__bar { display: none; } }
+
+.mem__pick {
+  display: flex; align-items: center; gap: .55rem;
+  min-width: 0;
+  padding: .3rem .5rem .3rem 0;
+  border: 0; background: none; color: inherit; font: inherit;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.mem__shape { flex: none; display: grid; place-items: center; width: 23px; height: 23px; }
+.mem__shape svg { display: block; width: 100%; height: 100%; }
+.mem__shape path { fill: var(--gold); }
+.mem__now { display: grid; gap: .05rem; min-width: 0; text-align: left; }
+.mem__now b {
+  font-weight: 500; font-size: .84rem; line-height: 1.15;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mem__now span { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--deep-ink-3); }
+/* A rotated bordered square puts its visual weight below its own box, which
+   is what had the chevron sitting low in the circle. An svg centres exactly. */
+.mem__chev {
+  flex: none;
+  display: grid; place-items: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #ffffff1f;
+  color: var(--deep-ink);
+}
+.mem__chev svg { display: block; }
+.mem__dice {
+  flex: none;
+  display: grid; place-items: center;
+  width: 34px; height: 34px;
+  border: 0; border-radius: 50%;
+  background: #ffffff1f;
+  color: var(--deep-ink);
+  cursor: pointer;
+  transition: background .25s, color .25s, rotate .5s var(--stamp);
+}
+.mem__dice:hover, .mem__dice:active { background: var(--gold); color: #14110D; rotate: -20deg; }
+.mem__pick:focus-visible, .mem__dice:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ── The pill, grown ──────────────────────────────────────────────────────
+   Hung off <body>, so no frosted or clipped ancestor can trap it. The card
+   starts at the pill's own place and size, fully round, and opens out from
+   there; everything inside waits for the shape to arrive before fading up. */
+
+.memsheet { position: fixed; inset: 0; z-index: 95; }
+.memsheet[hidden] { display: none; }
+.memsheet__scrim {
+  position: absolute; inset: 0;
+  background: #14110Dbf;
+  opacity: 0;
+  transition: opacity .34s var(--ease-soft);
+}
+.memsheet.is-open .memsheet__scrim { opacity: 1; }
+
+.memsheet__card {
+  position: absolute;
+  top: var(--fy, 40%); left: var(--fx, 25%);
+  width: var(--fw, 180px); height: var(--fh, 44px);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  /* the pill's own radius, in pixels: "999px" would uncap as the box grows and
+     the card would pass through a great circle on its way open */
+  border-radius: calc(var(--fh, 44px) / 2);
+  background: var(--deep);
+  color: var(--deep-ink);
+  box-shadow: 0 26px 70px #00000073;
+  transition:
+    top .46s var(--stamp), left .46s var(--stamp),
+    width .46s var(--stamp), height .46s var(--stamp),
+    border-radius .3s var(--ease-soft);
+}
+.memsheet.is-open .memsheet__card {
+  top: calc(var(--nav-h) + 10px);
+  left: calc((100% - var(--tw, 320px)) / 2);
+  width: var(--tw, 320px);
+  height: var(--th, 320px);
+  border-radius: 30px;
+}
+.memsheet__card > * { opacity: 0; transition: opacity .14s var(--ease-soft); }
+.memsheet.is-open .memsheet__card > * { opacity: 1; transition: opacity .26s var(--ease-soft) .2s; }
+
+.memsheet__grab {
+  flex: none;
+  width: 40px; height: 4px;
+  margin: .5rem auto .1rem;
+  border-radius: 999px;
+  background: #ffffff33;
+}
+.memsheet__head {
+  flex: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .3rem .95rem .1rem 1.1rem;
+}
+.memsheet__title { margin: 0; font-family: var(--display); font-size: 1.3rem; line-height: 1.2; }
+.memsheet__x {
+  display: grid; place-items: center;
+  width: 34px; height: 34px;
+  border: 0; border-radius: 50%;
+  background: var(--deep-ink);
+  color: var(--deep);
+  cursor: pointer;
+  box-shadow: 0 2px 10px #00000047;
+  transition: background .25s, color .25s, scale .25s var(--ease);
+}
+.memsheet__x:hover, .memsheet__x:focus-visible { background: var(--gold); color: #14110D; scale: 1.06; }
+.memsheet__map { flex: 1; min-height: 0; display: grid; place-items: center; padding: .2rem .9rem; }
+/* hidden, not visible: left visible the map prints out over the heading and
+   the close button and there is nothing clean for them to sit on */
+.memsheet__map svg { width: 100%; height: 100%; overflow: hidden; }
+/* On the deep ground the map needs its own paper, not the page's */
+.memsheet__map .memmap__st { fill: #ffffff14; stroke: #ffffff26; }
+.memsheet__map .memmap__been { stroke: var(--deep); }
+.memsheet__map .memmap__ring { stroke: var(--gold); stroke-width: 3px; }
+.memsheet__map .memmap__label { fill: var(--deep-ink-3); }
+.memsheet__map .memmap__home { stroke: var(--deep); }
+.memsheet__foot {
+  flex: none;
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  padding: .55rem 1.1rem 1rem;
+}
+.memsheet__all {
+  padding: .4rem .9rem;
+  border: 1.5px solid #ffffff3d;
+  border-radius: 999px;
+  background: none;
+  color: var(--deep-ink);
+  font: inherit; font-size: .8rem;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, color .25s;
+}
+.memsheet__all:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+.memsheet__note { font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--deep-ink-3); text-align: right; }
+
+@media (min-width: 1000px) { .memsheet { display: none; } }
