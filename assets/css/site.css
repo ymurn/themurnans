@@ -2760,228 +2760,335 @@ a.yearbtn { display: inline-block; }
   [data-reveal="stamp"].is-in { animation: none; }
 }
 
-/* Speeches: five people at one microphone. The portraits alternate sides
-   and sit at a slight angle, like snapshots laid out on a table. ─────── */
+/* Speeches: five cards on a rail that scrolls itself ───────────────────
+   Set out as a grid of portraits, each speech had to hold a photograph, a
+   name, a role and a quote inside one card, and no two screens wanted the
+   same shape: two up on a desktop, one up on a tablet, stacked on a phone,
+   and none of it fitted a phone held sideways. A rail asks for one shape
+   only, so it is the same card from 320px to a wide desktop, and the page
+   no longer grows by the length of a speech. Each card carries the line its
+   speech is remembered for; the whole speech opens in a window over the
+   page. The rail is a real scroller, so a thumb can push it about and the
+   keyboard can reach it; initTalk only nudges it along.                  */
 
-/* Two per row so the cards use the full measure. The right-hand card mirrors
-   the left, which frames the quotes between the two portraits. The closing
-   speech sits on its own row, centred.
+.talk {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+}
+.talk::-webkit-scrollbar { display: none; }
+/* room above and below for the pulled-out quote mark, the tilts and the
+   printed offset, none of which a scroller will make room for by itself */
+.talk__track {
+  display: flex;
+  /* hung from the names rather than stood on the bubbles: a long line and a
+     short one make bubbles of different heights, and it is the row of faces
+     the eye reads along */
+  align-items: flex-end;
+  gap: clamp(1.1rem, 2.4vw, 1.9rem);
+  width: max-content;
+  padding: 2.6rem var(--gutter) 1.6rem;
+}
 
-   One portrait width for every card, named once: a left-hand card and the
-   mirrored card beside it ran at different sizes before, which reads as a
-   slip rather than a rhythm. */
-.speeches {
-  --pic-w: clamp(118px, 12vw, 152px);
+.talk__item {
+  flex: none;
+  width: clamp(252px, 74vw, 348px);
+  --off: var(--blue);
+  --tilt: -1.5deg;
+}
+.talk__item[data-tone="1"] { --off: var(--blue);     --tilt: -1.5deg; }
+.talk__item[data-tone="2"] { --off: var(--sage-500); --tilt:  1.4deg; }
+.talk__item[data-tone="3"] { --off: var(--gold);     --tilt: -1.1deg; }
+.talk__item[data-tone="4"] { --off: var(--coral);    --tilt:  1.6deg; }
+.talk__item[data-tone="5"] { --off: var(--wine);     --tilt: -1.3deg; }
+
+/* the card is a link to the speech itself, which is on the page under it */
+.talk__card {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.75rem, 3.5vw, 3rem) clamp(1.75rem, 3.5vw, 3.25rem);
-  position: relative;
-}
-.speech {
-  display: grid;
-  grid-template-columns: var(--pic-w) minmax(0, 1fr);
-  gap: clamp(1rem, 2vw, 1.6rem);
-  align-items: start;
-}
-/* The last word, from David's father. Alone on its row, so it is centred and
-   held to a reading measure instead of being stretched across the whole
-   shell: a single quote set 120 characters to the line is not a quote any
-   more. The wider portrait and the larger type are what mark it as the
-   close. */
-.speech:last-child {
-  grid-column: 1 / -1;
-  --pic-w: clamp(150px, 15vw, 196px);
-  grid-template-columns: var(--pic-w) minmax(0, 54ch);
-  justify-content: center;
-  gap: clamp(1.25rem, 2.6vw, 2.25rem);
-  margin-top: clamp(.25rem, 1vw, 1rem);
-}
-.speech:last-child .speech__text { font-size: 1.02rem; }
-.speech:nth-child(even) { grid-template-columns: minmax(0, 1fr) var(--pic-w); }
-.speech:nth-child(even) .speech__pic { grid-column: 2; grid-row: 1; }
-.speech:nth-child(even) .speech__body { grid-column: 1; grid-row: 1; text-align: right; }
-.speech:nth-child(even) .speech__who { justify-content: flex-end; }
-
-.speech__pic {
-  overflow: hidden;
-  align-self: start;                         /* keeps 4/5 when the card grows */
-  aspect-ratio: 4 / 5;
-  border: var(--keyline);
-  border-radius: var(--r-sm);
-  background: var(--paper-3);
-  box-shadow: 6px 6px 0 var(--off, var(--rose));
-  transform: rotate(var(--tilt, -2.5deg));
-  transition: transform .5s var(--ease), box-shadow .5s var(--ease);
-}
-.speech:hover .speech__pic { transform: rotate(0deg) scale(1.03); box-shadow: 3px 3px 0 var(--off, var(--rose)); }
-.speech__pic img { width: 100%; height: 100%; object-fit: cover; }
-
-.speech:nth-child(1) { --off: var(--blue);      --tilt: -3deg; }
-.speech:nth-child(2) { --off: var(--sage-500);  --tilt:  2.5deg; }
-.speech:nth-child(3) { --off: var(--gold);      --tilt: -2deg; }
-.speech:nth-child(4) { --off: var(--coral);     --tilt:  3deg; }
-.speech:nth-child(5) { --off: var(--wine);      --tilt: -2.5deg; }
-
-/* The name sits on its own row and the bubble takes the rest, so the words
-   and the photograph finish on the same line. Before this the bubble was as
-   tall as its two lines and the portrait ran seventy pixels past it, which
-   left every card with a ragged foot. */
-.speech__body {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: .7rem;
-  padding-top: .3rem;
-  min-height: calc(var(--pic-w) * 1.25);     /* the height of the portrait */
-}
-.speech__who {
-  font-family: var(--display);
-  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-  line-height: 1.1;
-  display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap;
-}
-.speech__role {
-  font-family: var(--sans);
-  font-size: .62rem; font-weight: 500;
-  letter-spacing: .22em; text-transform: uppercase;
+  grid-template-columns: 54px minmax(0, 1fr);
+  grid-template-areas: "line line" "pic  who";
+  gap: .9rem .75rem;
   color: var(--ink);
-  background: color-mix(in srgb, var(--off, var(--rose)) 38%, var(--paper));
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  padding: .3em .85em .25em;
-  white-space: nowrap;
 }
-
-/* The quote is an actual speech bubble, tail pointing back at the speaker.
-   Same device as the two characters on the home page. */
-.speech__text {
+.talk__line {
+  grid-area: line;
   position: relative;
-  display: grid;
-  align-content: center;                     /* the quote sits in the middle */
-  margin: 0;
-  padding: 1.05rem 1.2rem;
-  font-size: .95rem; line-height: 1.66; color: var(--ink);
-  background: color-mix(in srgb, var(--off, var(--rose)) 20%, var(--paper));
+  padding: 1.05rem 1.2rem 1.15rem;
+  background: color-mix(in srgb, var(--off) 20%, var(--paper));
   border: var(--keyline);
-  border-radius: 16px 16px 16px 5px;
-  box-shadow: 4px 4px 0 color-mix(in srgb, var(--off, var(--rose)) 55%, var(--paper));
-  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+  /* one sharp corner, on the side the tail comes out of */
+  border-radius: 18px 18px 18px 5px;
+  font-family: var(--hand);
+  font-size: 1.26rem; line-height: 1.34;
+  box-shadow: 5px 5px 0 color-mix(in srgb, var(--off) 55%, var(--paper));
+  rotate: var(--tilt);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease), rotate .4s var(--ease);
 }
-.speech__text::after {                       /* the tail */
+/* The opening quote, pulled out of the bubble and set big in the card's own
+   accent: it says "someone said this" before a word of it is read. Same
+   device as the rail at the foot of the home page. */
+.talk__line::before {
+  content: "\201C";
+  position: absolute;
+  top: -.5em; left: -.05em;
+  font-family: var(--display);
+  font-size: 3.4rem; line-height: 1;
+  color: var(--off);
+  rotate: -7deg;
+  pointer-events: none;
+  transition: rotate .5s var(--ease), scale .5s var(--ease);
+  transform-origin: 60% 80%;
+}
+.talk__line::after {                         /* the tail, pointing at the face */
   content: "";
   position: absolute;
-  top: 24px; left: -9px;
+  left: 22px; bottom: -9px;
   width: 14px; height: 14px;
-  background: color-mix(in srgb, var(--off, var(--rose)) 20%, var(--paper));
+  background: color-mix(in srgb, var(--off) 20%, var(--paper));
   border-left: var(--keyline);
   border-bottom: var(--keyline);
-  transform: rotate(45deg);
+  rotate: -45deg;
 }
-.speech:hover .speech__text { transform: translate(2px, 2px); box-shadow: 2px 2px 0 color-mix(in srgb, var(--off, var(--rose)) 55%, var(--paper)); }
-
-/* In dusk a tint of a light accent over a dark ground just goes muddy, so
-   the bubble becomes a clean dark card and the accent moves to the offset,
-   where it reads bright. Same trick for the pills. */
-[data-theme="dusk"] .speech__text,
-[data-theme="dusk"] .speech__text::after { background: var(--paper-2); }
-[data-theme="dusk"] .speech__text { box-shadow: 4px 4px 0 var(--off, var(--rose)); }
-[data-theme="dusk"] .speech:hover .speech__text { box-shadow: 2px 2px 0 var(--off, var(--rose)); }
-[data-theme="dusk"] .speech__role {
-  background: var(--off, var(--rose));
-  color: #14110D;
-  border-color: #14110D;
+.talk__pic {
+  grid-area: pic;
+  width: 54px; height: 54px;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: 50%;
+  background: var(--paper-3);
+  box-shadow: 3px 3px 0 var(--off);
+  rotate: -5deg;
+  transition: rotate .4s var(--ease), box-shadow .4s var(--ease);
 }
-
-/* mirrored cards point the other way */
-.speech:nth-child(even) .speech__text { border-radius: 16px 16px 5px 16px; }
-.speech:nth-child(even) .speech__text::after {
-  left: auto; right: -9px;
-  border-left: 0; border-bottom: 0;
-  border-right: var(--keyline); border-top: var(--keyline);
+.talk__pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+.talk__who {
+  grid-area: who;
+  align-self: center;
+  display: grid; gap: .25rem; justify-items: start;
+  font-family: var(--display);
+  font-size: 1.28rem; line-height: 1.1;
 }
-
-/* Each bubble opens on the line that matters most. A click or tap grows the
-   bubble in place: the rest of the speech writes itself in around that line.
-   Without JS the whole speech simply shows. */
-.speech__text { cursor: pointer; }
-.speech:nth-child(even) .speech__text { text-align: left; }
-.speech__words { margin: 0; }
-.speech__gap,
-.speech__more { display: none; }
-.speeches.is-ready .speech__text:not(.is-open) .speech__rest { display: none; }
-.speeches.is-ready .speech__text:not(.is-open) .speech__gap { display: inline; }
-.speeches.is-ready .speech__text.is-open .speech__rest { animation: speech-ink .7s var(--ease-soft) both; }
-@keyframes speech-ink { from { opacity: 0; } }
-
-.speeches.is-ready .speech__more {
-  display: block;
-  position: absolute;
-  bottom: -.8rem; right: 1.1rem;
+.talk__role {
+  font-family: var(--sans);
+  font-size: .56rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--off) 38%, var(--paper));
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: .32em .8em .26em;
+  /* it wraps rather than running out of the card: "Officiant, Yinja's former
+     boss" is wider than a 320px screen leaves beside a face */
+  max-width: 100%;
+  text-align: center;
+}
+/* the invitation, tucked into the bubble's own corner */
+.talk__more {
+  grid-area: line;
+  align-self: end; justify-self: end;
+  position: relative;
+  margin: 0 1rem -.75rem 0;
+  display: none;
   font-family: var(--sans);
   font-size: .58rem; font-weight: 500;
   letter-spacing: .2em; text-transform: uppercase; line-height: 1;
   color: var(--paper);
   background: var(--ink);
   border-radius: 999px;
-  padding: .5em .95em .45em;
-  transition: transform .4s var(--ease);
+  padding: .55em 1em .5em;
+  rotate: var(--tilt);
+  transition: transform .4s var(--ease), rotate .4s var(--ease);
 }
-.speech:nth-child(even) .speech__more { right: auto; left: 1.1rem; }
-.speech__text:hover .speech__more { transform: rotate(-4deg) scale(1.06); }
+.talk.is-ready .talk__more { display: block; }
 
-/* the speaker straightens up while their speech is open */
-.speech:has(.speech__text.is-open) .speech__pic { transform: rotate(0deg); box-shadow: 3px 3px 0 var(--off, var(--rose)); }
+.talk__card:hover .talk__line,
+.talk__card:focus-visible .talk__line {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--off) 55%, var(--paper));
+  rotate: 0deg;
+}
+.talk__card:hover .talk__line::before { rotate: 2deg; scale: 1.1; }
+.talk__card:hover .talk__pic { rotate: 0deg; box-shadow: 2px 2px 0 var(--off); }
+.talk__card:hover .talk__more { transform: translate(2px, 2px) scale(1.05); rotate: 0deg; }
+.talk__card:focus-visible { outline: none; }
+.talk__card:focus-visible .talk__line { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+/* In dusk a tint of a light accent over a dark ground goes muddy, so the
+   bubble becomes a clean dark card and the accent moves to the offset and
+   the pill, where it reads bright. Same trick the vows and the pile use. */
+[data-theme="dusk"] .talk__line,
+[data-theme="dusk"] .talk__line::after { background: var(--paper-2); }
+[data-theme="dusk"] .talk__line { box-shadow: 5px 5px 0 var(--off); }
+[data-theme="dusk"] .talk__card:hover .talk__line,
+[data-theme="dusk"] .talk__card:focus-visible .talk__line { box-shadow: 3px 3px 0 var(--off); }
+[data-theme="dusk"] .talk__role { background: var(--off); color: #14110D; border-color: #14110D; }
+
+.talk__foot {
+  margin: clamp(.75rem, 1.6vw, 1.25rem) 0 0;
+  font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* The whole speech, on the page under its own card. The script hides these
+   and opens them in a window instead; without it they are simply read where
+   they are, which is where each card's link points. */
+.talk__full {
+  margin: 1rem 0 0;
+  padding: 1rem 1.15rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--r-sm);
+  font-size: .95rem; line-height: 1.66;
+}
+.talk__full p { margin: 0; }
+.talk.is-ready .talk__full { display: none; }
+
+/* A highlighter under the line the card carries, the same marker the vows
+   use. It sits behind the words in dawn and drops to an underline in dusk,
+   where a band of color behind light text would put cream on gold. The
+   marker is the accent mixed back into the paper rather than laid over it:
+   wine and coral at full strength are dark, and dark ink on a dark band is
+   the one thing a highlighter must not do. */
+.talk__key {
+  font-weight: 500;
+  background-image: linear-gradient(color-mix(in srgb, var(--off) 45%, var(--paper)), color-mix(in srgb, var(--off) 45%, var(--paper)));
+  background-repeat: no-repeat;
+  background-position: 0 90%;
+  background-size: 100% .85em;
+}
+[data-theme="dusk"] .talk__key {
+  background-image: linear-gradient(var(--off), var(--off));
+  background-position: 0 100%;
+  background-size: 100% .12em;
+}
+
+/* ── The speech, opened over the page ─────────────────────────────────────
+   One card, the speaker at the top of it and the speech under them, with a
+   way through to the next one so five can be read without closing it. The
+   card is held to a reading measure and scrolls inside itself, which is what
+   makes it work on a phone held sideways, where there are 390px of height
+   to put a speech into.                                                   */
+
+.quote {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: clamp(.75rem, 3vw, 2rem);
+  background: color-mix(in srgb, var(--deep) 92%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 0; visibility: hidden;
+  /* Visible the instant it opens and hidden only once it has faded out: the
+     close button has to be reachable in the same frame the window opens, and
+     nothing inside a hidden window can take the focus. */
+  transition: opacity .4s var(--ease), visibility 0s .4s;
+}
+.quote.is-open {
+  opacity: 1; visibility: visible;
+  transition: opacity .4s var(--ease), visibility 0s;
+}
+.quote[data-tone="1"] { --off: var(--blue); }
+.quote[data-tone="2"] { --off: var(--sage-500); }
+.quote[data-tone="3"] { --off: var(--gold); }
+.quote[data-tone="4"] { --off: var(--coral); }
+.quote[data-tone="5"] { --off: var(--wine); }
+.quote__card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(58ch, 100%);
+  max-height: min(86svh, 100%);
+  /* a clean sheet to read a whole speech off: the accent stays on the
+     printed offset, the portrait and the marker, where it is a mark rather
+     than a tint over four hundred words */
+  background: var(--paper);
+  color: var(--ink);
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  box-shadow: 10px 10px 0 var(--off, var(--blue));
+  transform: translateY(14px) scale(.98);
+  transition: transform .5s var(--ease);
+}
+.quote.is-open .quote__card { transform: none; }
+[data-theme="dusk"] .quote__card { background: var(--paper-2); }
+
+.quote__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .9rem;
+  padding: clamp(1rem, 2.4vw, 1.5rem) clamp(1.1rem, 3vw, 1.9rem) .9rem;
+  padding-right: calc(clamp(1.1rem, 3vw, 1.9rem) + 44px);
+  border-bottom: 1.5px solid var(--line);
+}
+.quote__pic {
+  width: 62px; height: 62px;
+  overflow: hidden;
+  border: var(--keyline);
+  border-radius: 50%;
+  background: var(--paper-3);
+  box-shadow: 3px 3px 0 var(--off, var(--blue));
+  rotate: -5deg;
+}
+.quote__pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+.quote__who {
+  display: grid; gap: .3rem; justify-items: start;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 3.2vw, 1.7rem); line-height: 1.1;
+}
+
+.quote__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1rem, 2.6vw, 1.5rem) clamp(1.1rem, 3vw, 1.9rem) clamp(1.1rem, 3vw, 1.75rem);
+  font-size: clamp(.95rem, 2.2vw, 1.02rem); line-height: 1.7;
+}
+.quote__body p { margin: 0; }
+.quote__body p + p { margin-top: .9rem; }
+
+.quote__x {
+  position: absolute;
+  top: clamp(.6rem, 2vw, 1rem); right: clamp(.6rem, 2vw, 1rem);
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  transition: background-color .35s, transform .5s var(--ease);
+}
+.quote__x:hover { background: var(--paper-3); transform: rotate(90deg); }
+
+/* previous and next sit under the speech rather than over it: at 390px wide
+   there is no room beside the card, and inside it they are reachable by a
+   thumb on any screen */
+.quote__feet {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  padding: .75rem clamp(1.1rem, 3vw, 1.9rem) clamp(1rem, 2.4vw, 1.4rem);
+  border-top: 1.5px solid var(--line);
+}
+.quote__nav {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--sans);
+  font-size: .6rem; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: .6em 1em .55em;
+  background: var(--paper);
+  transition: background-color .35s var(--ease), transform .4s var(--ease);
+}
+.quote__nav:hover { background: var(--off, var(--blue)); transform: translateY(-1px); }
+[data-theme="dusk"] .quote__nav:hover { color: #14110D; }
+.quote__count { font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
 
 @media (prefers-reduced-motion: reduce) {
-  .speeches.is-ready .speech__text.is-open .speech__rest { animation: none; }
-}
-
-/* One column, so the closing speech is no longer the odd one out and takes
-   the same card as the other four. */
-@media (max-width: 900px) {
-  .speeches { grid-template-columns: 1fr; }
-  .speech:last-child {
-    --pic-w: clamp(118px, 12vw, 152px);
-    grid-template-columns: var(--pic-w) minmax(0, 1fr);
-    justify-content: stretch;
-    margin-top: 0;
-  }
-  .speech:last-child .speech__text { font-size: .95rem; }
-}
-
-/* On a phone every speaker goes above their own words, mirrored cards
-   included, and the bubble points up at the face instead of sideways. Set
-   beside a portrait, a column this narrow leaves a speech reading four or
-   five words to the line. The three rules below have to name the same
-   :nth-child and :last-child cards the wide layout does, or those cards keep
-   their two columns here. */
-@media (max-width: 620px) {
-  .speech,
-  .speech:nth-child(even),
-  .speech:last-child {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
-  }
-  .speech:nth-child(even) .speech__pic,
-  .speech:last-child .speech__pic { grid-column: 1; grid-row: 1; }
-  .speech:nth-child(even) .speech__body,
-  .speech:last-child .speech__body { grid-column: 1; grid-row: 2; text-align: left; }
-  /* stacked, so the words no longer have a portrait to match */
-  .speech__body { min-height: 0; }
-  .speech:nth-child(even) .speech__who { justify-content: flex-start; }
-  .speech__pic { max-width: 190px; }
-
-  /* the tail turns to point straight up at the photograph above it */
-  .speech__text,
-  .speech:nth-child(even) .speech__text { border-radius: 5px 16px 16px 16px; text-align: left; }
-  .speech__text::after,
-  .speech:nth-child(even) .speech__text::after {
-    top: -9px; left: 30px; right: auto;
-    border: 0;
-    border-top: var(--keyline);
-    border-left: var(--keyline);
-  }
-  .speeches.is-ready .speech__more,
-  .speech:nth-child(even) .speech__more { right: 1.1rem; left: auto; }
+  .talk__line, .talk__pic, .talk__more, .quote, .quote__card, .quote__x, .quote__nav { transition: none; }
 }
 
 /* The pile: snapshots dropped on a table, each at its own angle ───────── */
@@ -3732,8 +3839,15 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 
   /* three to a row, since the row is wide and the screen is short */
   .frames { --cols: 3; }
-  .speeches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
+  /* Sideways there are 390px of height, most of it under the bar, so the
+     rail gives back the room it keeps for the tilts and the printed offset,
+     and the speech window takes nearly the whole screen. */
+  .talk__track { padding-block: 2rem 1.1rem; }
+  .quote { padding: .6rem; }
+  .quote__card { max-height: 94svh; }
+  .quote__head { padding-block: .7rem .6rem; }
+  .quote__pic { width: 48px; height: 48px; }
 }
 
 /* The menu is a full-screen takeover, and sideways the screen is 390px tall.

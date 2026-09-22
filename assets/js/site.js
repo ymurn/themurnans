@@ -1204,54 +1204,126 @@
     });
   }
 
-  /* ── Speeches ──────────────────────────────────────────────────────
-     A bubble shows one line until it is clicked, then grows in place to
-     the full speech. The height is tweened on the paragraph (the bubble's
-     tail and tag sit outside it, so they are never clipped). Closing fades
-     the extra words first, then shrinks.                                 */
+  /* ── Speeches: a rail, and one speech opened over the page ─────────────
+     Five cards go past, each carrying the line its speech is remembered
+     for, and opening one puts the whole speech in a window with a way
+     through to the next. The speeches are on the page already, under their
+     own cards, which is where each card's link points: the window is what
+     the script adds, and the link is what is left without it.            */
 
-  function initSpeeches() {
-    const list = $('.speeches');
-    if (!list) return;
-    list.classList.add('is-ready');
+  function initTalk() {
+    const rail = $('#talk');
+    const track = rail && $('.talk__track', rail);
+    if (!rail || !track) return;
+    const items = $$('.talk__item', track);
+    if (!items.length) return;
 
-    const ease = 'cubic-bezier(.22, 1, .36, 1)';
+    rail.classList.add('is-ready');
+    rail.tabIndex = 0;
 
-    $$('.speech__text', list).forEach(bubble => {
-      const words = $('.speech__words', bubble);
-      const btn = $('.speech__more', bubble);
-      let run = 0;
+    const box = document.createElement('div');
+    box.className = 'quote';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', 'A speech from the wedding');
+    box.innerHTML = `
+      <div class="quote__card">
+        <button class="quote__x" type="button" aria-label="Close">
+          <svg width="15" height="15" viewBox="0 0 17 17" fill="none" aria-hidden="true"><path d="M1 1l15 15M16 1L1 16" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <div class="quote__head">
+          <span class="quote__pic"><img alt="" width="102" height="128" decoding="async"></span>
+          <p class="quote__who"></p>
+        </div>
+        <div class="quote__body"></div>
+        <div class="quote__feet">
+          <button class="quote__nav quote__nav--prev" type="button">
+            <svg width="9" height="14" viewBox="0 0 11 18" fill="none" aria-hidden="true"><path d="M10 1L2 9l8 8" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span></span>
+          </button>
+          <p class="quote__count"></p>
+          <button class="quote__nav quote__nav--next" type="button">
+            <span></span>
+            <svg width="9" height="14" viewBox="0 0 11 18" fill="none" aria-hidden="true"><path d="M1 1l8 8-8 8" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+        </div>
+      </div>`;
+    document.body.appendChild(box);
 
-      const grow = from => {
-        const to = words.offsetHeight;
-        if (calm || from === to) return;
-        words.style.overflow = 'clip';
-        words.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 560, easing: ease })
-          .finished.then(() => { words.style.overflow = ''; }, () => {});
-      };
+    const pic = $('.quote__pic img', box);
+    const who = $('.quote__who', box);
+    const body = $('.quote__body', box);
+    const count = $('.quote__count', box);
+    const prev = $('.quote__nav--prev', box);
+    const next = $('.quote__nav--next', box);
+    /* who each speaker is, so the two buttons can say whose speech is on
+       either side of this one rather than "previous" and "next" */
+    const names = items.map(it => $('.talk__who', it).firstChild.textContent.trim());
+    let idx = 0, opener = null, rest = null;
 
-      const set = async on => {
-        const token = ++run;
-        words.getAnimations().forEach(a => a.cancel());
-        const from = words.offsetHeight;
-        btn.setAttribute('aria-expanded', String(on));
-        btn.textContent = on ? 'Show less' : 'Full speech';
+    const show = i => {
+      idx = (i + items.length) % items.length;
+      const item = items[idx];
+      const face = $('.talk__pic img', item);
+      box.dataset.tone = item.dataset.tone || '1';
+      pic.src = item.dataset.big || face.src;
+      pic.alt = face.alt || '';
+      who.replaceChildren(...[...$('.talk__who', item).cloneNode(true).childNodes]);
+      body.replaceChildren(...[...$('.talk__full', item).cloneNode(true).childNodes]);
+      count.textContent = `${idx + 1} / ${items.length}`;
+      const before = (idx - 1 + items.length) % items.length;
+      const after = (idx + 1) % items.length;
+      $('span', prev).textContent = names[before];
+      $('span', next).textContent = names[after];
+      prev.setAttribute('aria-label', `${names[before]}'s speech`);
+      next.setAttribute('aria-label', `${names[after]}'s speech`);
+      body.scrollTop = 0;
+    };
 
-        if (!on && !calm) {
-          const fades = $$('.speech__rest', words).map(r => r.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'forwards' }));
-          await Promise.all(fades.map(f => f.finished.catch(() => {})));
-          fades.forEach(f => f.cancel());
-          if (token !== run) return;
-        }
-        bubble.classList.toggle('is-open', on);
-        grow(from);
-      };
+    const open = i => {
+      opener = document.activeElement;
+      show(i);
+      box.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      if (rest) rest(1e9);                       // the rail waits where it is
+      $('.quote__x', box).focus();               // visible in this same frame
+    };
 
-      bubble.addEventListener('click', () => {
-        if (String(getSelection()).length) return;      // let people copy a line
-        set(!bubble.classList.contains('is-open'));
-      });
+    const close = () => {
+      box.classList.remove('is-open');
+      document.body.style.overflow = '';
+      if (rest) rest(600);
+      // back where it came from, and never left on a button inside a window
+      // that is on its way out
+      if (opener && opener !== document.body) opener.focus();
+      else $('.quote__x', box).blur();
+    };
+
+    /* delegated, because the rail clones its cards to loop and a clone has
+       to open the same speech as the card it was cut from */
+    track.addEventListener('click', e => {
+      const card = e.target.closest('.talk__card');
+      if (!card || !track.contains(card)) return;
+      const id = (card.getAttribute('href') || '').slice(1);
+      const i = items.findIndex(it => $('.talk__full', it).id === id);
+      if (i < 0) return;
+      e.preventDefault();
+      open(i);
     });
+
+    $('.quote__x', box).addEventListener('click', close);
+    prev.addEventListener('click', () => show(idx - 1));
+    next.addEventListener('click', () => show(idx + 1));
+    box.addEventListener('click', e => { if (e.target === box) close(); });
+
+    addEventListener('keydown', e => {
+      if (!box.classList.contains('is-open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(idx - 1);
+      if (e.key === 'ArrowRight') show(idx + 1);
+    });
+
+    if (!calm) rest = autoRail(rail, track, 22);
   }
 
   /* ── Stickers ──────────────────────────────────────────────────────
@@ -2208,31 +2280,25 @@
     show(null);
   }
 
-  /* ── Said about us (home) ──────────────────────────────────────────────
-     The rail is a real scroller, so a thumb pushes it about and the keyboard
-     reaches it; this only nudges it along and gets out of the way the moment
-     anyone touches it. The cards are cloned once so the loop never shows an
-     edge. It runs only while the rail is on screen.                        */
+  /* ── A rail that scrolls itself ────────────────────────────────────────
+     Two of them: the five lines at the foot of the home page, and the
+     speeches on Our Big Day. The rail is a real scroller, so a thumb pushes
+     it about and the keyboard reaches it; this only nudges it along and gets
+     out of the way the moment anyone touches it. The cards are cloned once
+     so the loop never shows an edge, and it runs only while the rail is on
+     screen. It hands back the hold, so whatever owns the rail can ask it to
+     wait: the speeches do that while one of them is open.                 */
 
-  function initSay() {
-    const rail = $('#say');
-    const track = rail && $('.say__track', rail);
-    if (!rail || !track) return;
-
-    rail.setAttribute('tabindex', '0');
-    rail.setAttribute('role', 'group');
-    rail.setAttribute('aria-label', 'What friends and family said at the wedding');
-    if (calm) return;                       // a plain swipe rail, and nothing moves
-
-    const cards = $$('.said', track);
-    cards.forEach(c => {
+  function autoRail(rail, track, speed = 24) {
+    [...track.children].forEach(c => {
       const copy = c.cloneNode(true);
       copy.setAttribute('aria-hidden', 'true');
       $$('img', copy).forEach(i => { i.alt = ''; });
+      $$('[id]', copy).forEach(el => el.removeAttribute('id'));
+      $$('a, button', copy).forEach(el => { el.tabIndex = -1; });
       track.appendChild(copy);
     });
 
-    const SPEED = 24;                        // pixels a second, a slow read
     let x = 0, half = 0, held = 0, last = 0, running = false, frame = 0;
 
     const measure = () => { half = track.scrollWidth / 2; };
@@ -2245,7 +2311,7 @@
       last = now;
       if (held > 0) { held -= dt; x = rail.scrollLeft; return; }
       if (!half) return;
-      x += SPEED * dt / 1000;
+      x += speed * dt / 1000;
       if (x >= half) x -= half;
       rail.scrollLeft = x;
     };
@@ -2271,6 +2337,23 @@
 
     new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0 }).observe(rail);
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+
+    return hold;
+  }
+
+  /* ── Said about us (home) ─────────────────────────────────────────────── */
+
+  function initSay() {
+    const rail = $('#say');
+    const track = rail && $('.say__track', rail);
+    if (!rail || !track) return;
+
+    rail.setAttribute('tabindex', '0');
+    rail.setAttribute('role', 'group');
+    rail.setAttribute('aria-label', 'What friends and family said at the wedding');
+    if (calm) return;                       // a plain swipe rail, and nothing moves
+
+    autoRail(rail, track);
   }
 
   /* ── Since the wedding (home) ──────────────────────────────────────────
@@ -2471,7 +2554,7 @@
     initTilt();
     initPile();
     initLightbox();
-    initSpeeches();
+    initTalk();
     initStickers();
     initDrag();
     initRails();

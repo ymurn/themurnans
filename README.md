@@ -541,9 +541,11 @@ reads on the dark ground.
   carrying a map pin. Tap it and it grows back into the map.
 - *The countdown*: a desk calendar page for the anniversary, with the days left on a gold
   sticker. Click the sticker for confetti.
-- *The speech rail*: the five lines at the foot of the home page scroll themselves and
-  stop the moment a pointer, a thumb or the keyboard reaches them, then start again a
-  couple of seconds after it leaves.
+- *The speech rails*: the five lines at the foot of the home page and the five speeches
+  on Our Big Day scroll themselves and stop the moment a pointer, a thumb or the keyboard
+  reaches them, then start again a couple of seconds after it leaves. Both run on
+  `autoRail()` in `assets/js/site.js`, which clones the cards once so the loop never
+  shows an edge and only moves while the rail is on screen.
 - *On `home-archive.html`*: the devices the old home page had, all still working. Three
   photographs of the two of you that deal again when you click an empty spot in that
   section, and the memory machine, which pulls a random trip in a random card style.
@@ -595,18 +597,33 @@ Three more things change shape on the way down. **A pair of buttons** sits in a 
 the row has space for the pair and stacks when it hasn't, both set to one width and
 centered. Whether it fits depends on what the buttons say, not on the width of the screen,
 so `initButtonRows()` in `assets/js/site.js` measures each row and hangs `.is-stacked` on
-it; the only CSS breakpoint left is a 520px floor for when the script hasn't run. Each of
-the five speeches on **Our Big Day** puts the
-speaker above their own words below 620px, with the bubble pointing up at the face:
-beside a portrait, a column that narrow leaves a speech reading four words to the line.
-On a wide screen the bubble is held to the height of the portrait beside it, so the
-words and the photograph finish on the same line rather than leaving every card with a
-portrait running seventy pixels past its quote; a speech opened to its full length grows
-past that on its own, and leaves the card next to it alone. The closing speech has no
-card beside it, so it is centred and held to a reading measure instead of stretched
-across the shell, where its one line ran a hundred and twenty characters.
-And **the pile** on that page stays two photographs to a row down to the smallest phone,
-leans and all, because one long column of big photographs stops reading as a pile.
+it; the only CSS breakpoint left is a 520px floor for when the script hasn't run.
+And **the pile** on **Our Big Day** stays two photographs to a row down to the smallest
+phone, leans and all, because one long column of big photographs stops reading as a pile.
+
+**The speeches** on that page are a rail, for the same reason. Set out as a grid, each
+speech had to hold a photograph, a name, a role and a quote inside one card, and no two
+screens wanted the same shape: two up on a desktop, one up on a tablet, stacked on a
+phone, and none of it fitted a phone held sideways, where there are 390 pixels of height
+to put five speeches into. A rail asks for one shape only, so it is the same card from
+320px to a wide desktop, and the section no longer grows by the length of a speech. Each
+card carries the line its speech is remembered for, cut where the home page cuts it; the
+cards are hung from the row of faces rather than stood on the bubbles, since a long line
+and a short one make bubbles of different heights and it is the faces the eye reads
+along.
+
+**A speech opens over the page**, in a window with the speaker at the top, the whole
+speech under them with the card's line picked out by the same highlighter the vows use,
+and the names of the speeches on either side at the foot, so five can be read without
+closing it. Arrow keys move between them and Escape closes. The window is held to a
+reading measure and scrolls inside itself, which is what makes it work sideways on a
+phone. The marker is the card's accent mixed back into the paper rather than laid over
+it: wine and coral at full strength are dark, and dark ink on a dark band is the one
+thing a highlighter must not do.
+
+Every speech is already on the page, in full, under its own card, which is where that
+card's link points. `initTalk()` in `assets/js/site.js` hides them and opens them in the
+window instead, so without the script the link still lands on the speech it names.
 
 **The pile's columns** are dealt by `initPile()` in `assets/js/site.js`, not by the
 browser. CSS columns fill one at a time, so the third one ran out of photographs early

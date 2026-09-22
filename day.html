@@ -210,6 +210,11 @@
 </section>
 
 <!-- Speeches -------------------------------------------------------------- -->
+<!-- A rail that scrolls itself, five cards carrying the line each speech is
+     remembered for. A card opens the whole speech in a window over the page:
+     see initTalk in assets/js/site.js. Without the script the rail is still a
+     scroller and every speech is already on the page under its own card, which
+     is where each card's link goes. -->
 <section class="band band--paper2" id="speeches">
   <div class="shell">
     <div class="sec-head">
@@ -221,63 +226,76 @@
         we replay most.</p>
       </div>
     </div>
+  </div>
 
-    <div class="speeches">
-      <article class="speech" data-reveal="up">
-        <div class="speech__pic"><img src="assets/photos/speech-melissa.jpg" alt="Melissa speaking" width="639" height="800" loading="lazy" decoding="async"></div>
-        <div class="speech__body">
-          <span class="speech__who">Melissa <span class="speech__role">Officiant, Yinja's former boss</span></span>
-          <div class="speech__text">
-            <p class="speech__words" id="speech-melissa"><span class="speech__rest">I would venture to say that there's nothing better in this world than to find the people with whom we feel safe, seen, and free to be unapologetically ourselves. We search to find the person who supports our dreams, even the crazy ones. We search for the person most accepting of our quirks, even the ones we try not to show until at least the fifth date. </span><span class="speech__key">But most of all, we search to find the person who loves us unconditionally.</span></p>
-            <button class="speech__more" type="button" aria-expanded="false" aria-controls="speech-melissa">Full speech</button>
-          </div>
-        </div>
-      </article>
+  <div class="talk" id="talk" role="group" aria-label="Five lines from the wedding speeches">
+    <div class="talk__track">
 
-      <article class="speech" data-reveal="up" style="--d:80ms">
-        <div class="speech__pic"><img src="assets/photos/speech-yao.jpg" alt="Yao speaking" width="639" height="800" loading="lazy" decoding="async"></div>
-        <div class="speech__body">
-          <span class="speech__who">Yao <span class="speech__role">Yinja's friend</span></span>
-          <div class="speech__text">
-            <p class="speech__words" id="speech-yao"><span class="speech__rest">When you introduced David to me, I felt genuinely happy from the bottom of my heart that there is someone who can do that for you and love you deeply. I can see from those joyful as well as perilous moments you guys journeyed and persisted together that </span><span class="speech__gap">…</span><span class="speech__key">you deserve each other more than anyone in this walk of life.</span></p>
-            <button class="speech__more" type="button" aria-expanded="false" aria-controls="speech-yao">Full speech</button>
-          </div>
+      <div class="talk__item" data-tone="1" data-big="assets/photos/speech-melissa.jpg">
+        <a class="talk__card" href="#speech-melissa">
+          <span class="talk__line">But most of all, we search to find the person who loves us unconditionally.</span>
+          <span class="talk__pic"><img src="assets/photos/speech-melissa-sm.jpg" alt="Melissa speaking" width="102" height="128" loading="lazy" decoding="async"></span>
+          <span class="talk__who">Melissa <span class="talk__role">Officiant, Yinja's former boss</span></span>
+          <span class="talk__more">Read the speech</span>
+        </a>
+        <div class="talk__full" id="speech-melissa">
+          <p>I would venture to say that there's nothing better in this world than to find the people with whom we feel safe, seen, and free to be unapologetically ourselves. We search to find the person who supports our dreams, even the crazy ones. We search for the person most accepting of our quirks, even the ones we try not to show until at least the fifth date. <span class="talk__key">But most of all, we search to find the person who loves us unconditionally.</span></p>
         </div>
-      </article>
+      </div>
 
-      <article class="speech" data-reveal="up" style="--d:160ms">
-        <div class="speech__pic"><img src="assets/photos/speech-adam.jpg" alt="Adam speaking" width="639" height="800" loading="lazy" decoding="async"></div>
-        <div class="speech__body">
-          <span class="speech__who">Adam <span class="speech__role">Pookie</span></span>
-          <div class="speech__text">
-            <p class="speech__words" id="speech-adam"><span class="speech__key">When you see someone that much in love with a partner,</span><span class="speech__gap"> you know </span><span class="speech__rest"> you showed not only a genuine interest in his passions, but also in his friends and their passions, too. You know, </span><span class="speech__key">you can't let him go.</span></p>
-            <button class="speech__more" type="button" aria-expanded="false" aria-controls="speech-adam">Full speech</button>
-          </div>
+      <div class="talk__item" data-tone="2" data-big="assets/photos/speech-yao.jpg">
+        <a class="talk__card" href="#speech-yao">
+          <span class="talk__line">&hellip; you deserve each other more than anyone in this walk of life.</span>
+          <span class="talk__pic"><img src="assets/photos/speech-yao-sm.jpg" alt="Yao speaking" width="102" height="128" loading="lazy" decoding="async"></span>
+          <span class="talk__who">Yao <span class="talk__role">Yinja's friend</span></span>
+          <span class="talk__more">Read the speech</span>
+        </a>
+        <div class="talk__full" id="speech-yao">
+          <p>When you introduced David to me, I felt genuinely happy from the bottom of my heart that there is someone who can do that for you and love you deeply. I can see from those joyful as well as perilous moments you guys journeyed and persisted together that <span class="talk__key">you deserve each other more than anyone in this walk of life.</span></p>
         </div>
-      </article>
+      </div>
 
-      <article class="speech" data-reveal="up" style="--d:240ms">
-        <div class="speech__pic"><img src="assets/photos/speech-jen.jpg" alt="Jen speaking" width="640" height="800" loading="lazy" decoding="async"></div>
-        <div class="speech__body">
-          <span class="speech__who">Jen <span class="speech__role">Sister-in-law</span></span>
-          <div class="speech__text">
-            <p class="speech__words" id="speech-jen"><span class="speech__rest">I have obviously always known David over these past ten years, but </span><span class="speech__key">I feel like I am seeing his most happy and authentic self because of Yinja.</span><span class="speech__rest"> You can just sense happiness and true love in their presence. I am so glad to be here today to celebrate you both and I wish you so much happiness as you begin your lives together.</span></p>
-            <button class="speech__more" type="button" aria-expanded="false" aria-controls="speech-jen">Full speech</button>
-          </div>
+      <div class="talk__item" data-tone="3" data-big="assets/photos/speech-adam.jpg">
+        <a class="talk__card" href="#speech-adam">
+          <span class="talk__line">When you see someone that much in love with a partner, you know you can't let him go.</span>
+          <span class="talk__pic"><img src="assets/photos/speech-adam-sm.jpg" alt="Adam speaking" width="102" height="128" loading="lazy" decoding="async"></span>
+          <span class="talk__who">Adam <span class="talk__role">Pookie</span></span>
+          <span class="talk__more">Read the speech</span>
+        </a>
+        <div class="talk__full" id="speech-adam">
+          <p><span class="talk__key">When you see someone that much in love with a partner,</span> you showed not only a genuine interest in his passions, but also in his friends and their passions, too. You know, <span class="talk__key">you can't let him go.</span></p>
         </div>
-      </article>
+      </div>
 
-      <article class="speech" data-reveal="up" style="--d:320ms">
-        <div class="speech__pic"><img src="assets/photos/speech-dad.jpg" alt="David's father speaking" width="639" height="800" loading="lazy" decoding="async"></div>
-        <div class="speech__body">
-          <span class="speech__who">Dad <span class="speech__role">David's father</span></span>
-          <div class="speech__text">
-            <p class="speech__words" id="speech-dad"><span class="speech__rest">In closing, I will share that the new stretch of the road that you've begun today will have its bumps. It'll have its curves and splits. </span><span class="speech__key">But know that the love you share</span><span class="speech__gap">… </span><span class="speech__rest">, your affinity for craft beer that you both love, and good food, </span><span class="speech__key">and David being a traffic engineer, will always get you back on the smooth, smooth road.</span><span class="speech__rest"> God bless you both!</span></p>
-            <button class="speech__more" type="button" aria-expanded="false" aria-controls="speech-dad">Full speech</button>
-          </div>
+      <div class="talk__item" data-tone="4" data-big="assets/photos/speech-jen.jpg">
+        <a class="talk__card" href="#speech-jen">
+          <span class="talk__line">I feel like I am seeing his most happy and authentic self because of Yinja.</span>
+          <span class="talk__pic"><img src="assets/photos/speech-jen-sm.jpg" alt="Jen speaking" width="102" height="128" loading="lazy" decoding="async"></span>
+          <span class="talk__who">Jen <span class="talk__role">Sister-in-law</span></span>
+          <span class="talk__more">Read the speech</span>
+        </a>
+        <div class="talk__full" id="speech-jen">
+          <p>I have obviously always known David over these past ten years, but <span class="talk__key">I feel like I am seeing his most happy and authentic self because of Yinja.</span> You can just sense happiness and true love in their presence. I am so glad to be here today to celebrate you both and I wish you so much happiness as you begin your lives together.</p>
         </div>
-      </article>
+      </div>
+
+      <div class="talk__item" data-tone="5" data-big="assets/photos/speech-dad.jpg">
+        <a class="talk__card" href="#speech-dad">
+          <span class="talk__line">But know that the love you share &hellip; and David being a traffic engineer, will always get you back on the smooth, smooth road.</span>
+          <span class="talk__pic"><img src="assets/photos/speech-dad-sm.jpg" alt="David's father speaking" width="102" height="128" loading="lazy" decoding="async"></span>
+          <span class="talk__who">Dad <span class="talk__role">David's father</span></span>
+          <span class="talk__more">Read the speech</span>
+        </a>
+        <div class="talk__full" id="speech-dad">
+          <p>In closing, I will share that the new stretch of the road that you've begun today will have its bumps. It'll have its curves and splits. <span class="talk__key">But know that the love you share</span>, your affinity for craft beer that you both love, and good food, <span class="talk__key">and David being a traffic engineer, will always get you back on the smooth, smooth road.</span> God bless you both!</p>
+        </div>
+      </div>
+
     </div>
+  </div>
+
+  <div class="shell">
+    <p class="talk__foot">Five cards, going past. Open one for the whole speech.</p>
   </div>
 </section>
 
