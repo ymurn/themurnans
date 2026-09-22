@@ -127,7 +127,6 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
 .ytl { padding-block: clamp(2rem, 4vw, 3.5rem); }
 .yfacts + .ytl, .yrest + .ytl { padding-top: 0; }
 .yrest { padding-bottom: 0; }
-.yfacts { padding-bottom: clamp(1rem, 2vw, 1.5rem); }
 
 .chap__month,
 .chap__day {

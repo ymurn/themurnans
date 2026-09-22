@@ -127,11 +127,24 @@
 
   /* ── Pieces ──────────────────────────────────────────────────────────── */
 
+  /* A number at the head of a value counts up, with whatever follows it held
+     still, so "45+" and "12 of 12" animate the way a bare "15" does. Before
+     this only pure digits were wrapped, which left the same card counting on
+     one page and sitting still on another. initCounters in site.js reads
+     data-count and data-suffix; day.html has always written the pair by hand.
+     The same three lines are in assets/js/trip.js, which builds the identical card. */
+  const countable = v => String(v).match(/^(\d+)(\D[\s\S]*)?$/);
+  const factValue = v => {
+    const m = countable(v);
+    if (!m) return esc(v);
+    return `<span data-count="${m[1]}"${m[2] ? ` data-suffix="${esc(m[2])}"` : ''}>${esc(v)}</span>`;
+  };
+
   function factsHTML(list) {
-    return `<div class="facts yfacts__list">${list.map((f, i) => `
+    return `<div class="facts">${list.map((f, i) => `
       <div class="fact" data-reveal="up" style="--d:${i * 80}ms">
         <span class="fact__k">${esc(f.k)}</span>
-        <span class="fact__v">${/^\d+$/.test(f.v) ? `<span data-count="${f.v}">${f.v}</span>` : esc(f.v)}</span>
+        <span class="fact__v">${factValue(f.v)}</span>
         <span class="fact__s">${esc(f.s)}</span>
       </div>`).join('')}</div>`;
   }
@@ -214,7 +227,7 @@
       </article>`).join('');
 
     return `
-      <section class="band band--tight moon-head" id="honeymoon" data-month="${h.month}">
+      <section class="band band--facts moon-head" id="honeymoon" data-month="${h.month}">
         <div class="shell">
           <div class="sec-head">
             <span class="sec-head__idx">${esc(h.dates)}</span>
@@ -293,7 +306,7 @@
       </section>` : '';
 
     host.innerHTML = [
-      Y.facts ? `<section class="band band--tight yfacts"><div class="shell">${factsHTML(Y.facts)}${!Y.honeymoon && Y.note ? `<p class="ynote" data-reveal="up">${esc(Y.note)}</p>` : ''}</div></section>` : '',
+      Y.facts ? `<section class="band band--facts yfacts"><div class="shell">${factsHTML(Y.facts)}${!Y.honeymoon && Y.note ? `<p class="ynote" data-reveal="up">${esc(Y.note)}</p>` : ''}</div></section>` : '',
       Y.honeymoon ? honeymoonHTML(Y.honeymoon) : '',
       Y.quote ? quoteHTML(Y.quote) : '',
       months.length ? restHead + timelineHTML(`

@@ -11,7 +11,6 @@
 window.MW_YEAR = {
  "year": "2022",
  "from": 8,
- "note": "Each month is still David's writing from our posts, cut down to the highlights.",
 
  "honeymoon": {
   "month": 8,

@@ -321,24 +321,57 @@
          this page that points off the site. initAnniversary fills in the
          year, the weekday and the count. -->
     <div class="tally__end">
-      <!-- The sticker and the pen ring are drawn once .anniv__count scrolls in,
-           the same wrapper the calendar has always used. -->
+      <!-- A tear-off pad, not a single page: the number is how many pages are
+           still under the top one, so the pile is the countdown and the
+           perforation is the invitation. Drawn rather than boxed, in the same
+           flat-color-and-one-heavy-ink-line hand as the four marks above it:
+           the off-register print at the back doubles as the thickness of the
+           pad, the wire goes over the top edge into punched holes, and the
+           notches are bitten out of the page edges.
+
+           The year, the weekday and the count are filled by initAnniversary
+           in assets/js/site.js, which writes textContent and so works on the
+           SVG text as happily as on the stamp. The pen ring and the stamp
+           land once .anniv__count scrolls into view. -->
       <div class="anniv__count tally__cal" data-reveal="up">
       <div class="cal">
-        <div class="cal__page">
-          <span class="cal__rings" aria-hidden="true"><i></i><i></i></span>
-          <div class="cal__head">
-            <span class="cal__month">August</span>
-            <span class="cal__year" data-anniv="milestone-year">2027</span>
-          </div>
-          <div class="cal__body">
-            <span class="cal__date">6<svg class="cal__ring" viewBox="0 0 120 96" aria-hidden="true"><path pathLength="1" d="M30 70C12 52 18 18 56 11c34-6 56 12 54 38-2 27-30 40-58 38-28-2-44-20-40-42 3-15 16-25 34-29"/></svg></span>
-            <span class="cal__dow" data-anniv="milestone-day">Friday</span>
-          </div>
-        </div>
-        <div class="cal__sticker">
+        <svg class="calart" viewBox="0 0 242 250" role="img"
+             aria-label="A tear-off desk calendar, open at Friday the 6th of August 2027">
+          <!-- the color printed off register, which is also the foot of the pile -->
+          <rect class="calart__print" x="24" y="34" width="204" height="204" rx="14"/>
+          <!-- the rest of the year, still to come -->
+          <rect class="calart__sheet" x="20" y="30" width="204" height="204" rx="14"/>
+          <rect class="calart__sheet calart__sheet--a" x="16" y="26" width="204" height="204" rx="14"/>
+          <!-- today's page -->
+          <rect class="calart__page" x="12" y="22" width="204" height="204" rx="14"/>
+          <path class="calart__band" d="M12 36a14 14 0 0 1 14-14h176a14 14 0 0 1 14 14v34H12Z"/>
+          <path class="calart__rule" d="M12 70h204"/>
+          <ellipse class="calart__hole" cx="54" cy="40" rx="4" ry="3.2"/>
+          <ellipse class="calart__hole" cx="114" cy="40" rx="4" ry="3.2"/>
+          <ellipse class="calart__hole" cx="174" cy="40" rx="4" ry="3.2"/>
+          <text class="calart__month" x="89" y="59" text-anchor="middle">August</text>
+          <text class="calart__year" x="158" y="58" text-anchor="middle" data-anniv="milestone-year">2027</text>
+
+          <text class="calart__date" x="114" y="162" text-anchor="middle">6</text>
+          <g transform="translate(114 136) scale(.76) translate(-60 -48)">
+            <path class="cal__ring" pathLength="1" d="M30 70C12 52 18 18 56 11c34-6 56 12 54 38-2 27-30 40-58 38-28-2-44-20-40-42 3-15 16-25 34-29"/>
+          </g>
+          <text class="calart__dow" x="114" y="186" text-anchor="middle" data-anniv="milestone-day">Friday</text>
+
+          <!-- tear here -->
+          <path class="calart__perf" d="M19 206h190"/>
+          <circle class="calart__notch" cx="12" cy="206" r="4.6"/>
+          <circle class="calart__notch" cx="216" cy="206" r="4.6"/>
+          <path class="calart__wire" style="--d:.12s" pathLength="1" d="M54 40C42 35 39 14 47 9C57 3 67 9 65 22"/>
+          <path class="calart__wire" style="--d:.2s" pathLength="1" d="M114 40C102 35 99 14 107 9C117 3 127 9 125 22"/>
+          <path class="calart__wire" style="--d:.28s" pathLength="1" d="M174 40C162 35 159 14 167 9C177 3 187 9 185 22"/>
+        </svg>
+
+        <div class="cal__stamp">
+          <svg class="cal__star cal__star--a" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z"/></svg>
+          <svg class="cal__star cal__star--b" viewBox="-11 -11 22 22" aria-hidden="true"><path d="M0-10.5C.8-3.3 2.8-1.1 8.4 0 2.8 1.1.8 3.3 0 10.5-.8 3.3-2.8 1.1-8.4 0-2.8-1.1-.8-3.3 0-10.5Z"/></svg>
           <span class="anniv__big" data-anniv="days" data-count="0">&hellip;</span>
-          <span class="anniv__k">days to our fifth</span>
+          <span class="anniv__k">days to tear off</span>
         </div>
       </div>
       </div>
@@ -348,11 +381,11 @@
         <h3 class="t-md">Five years, come August 2027.</h3>
         <p class="lede">Which leaves us <span data-anniv="days">a while</span> days to add more states, more breweries to be disappointed by, and more waterfalls that are worth the detour. The new ones turn up here first.</p>
         <div class="btns">
-          <a class="btn" href="https://www.instagram.com/themurnans/" target="_blank" rel="noopener" data-magnet>
-            Follow @themurnans
+          <a class="btn" href="highlights.html" data-magnet>
+            View our highlights
             <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
           </a>
-          <a class="btn btn--ghost" href="highlights.html" data-magnet>Our highlights</a>
+          <a class="btn btn--ghost" href="https://www.instagram.com/themurnans/" target="_blank" rel="noopener" data-magnet>Follow @themurnans</a>
         </div>
       </div>
     </div>
@@ -404,7 +437,7 @@
   </div>
 
   <div class="shell say__foot">
-    <a class="btn btn--ghost" href="day.html#speeches" data-magnet>Hear all five in full</a>
+    <a class="btn btn--ghost" href="day.html" data-magnet>Recap our big day</a>
   </div>
 </section>
 
@@ -419,7 +452,7 @@
         <p class="lede" style="max-width:32ch">Astoria, New York. Married August 6th, 2022.</p>
       </div>
       <nav class="footer__cols" aria-label="Footer">
-        <span class="tag">Pages</span>
+        <span class="tag">In here</span>
         <a href="index.html">Home</a>
         <a href="day.html">Hitched</a>
         <a href="honeymoon.html">Honeymoon</a>
@@ -445,6 +478,7 @@
     <hr class="rule">
     <div class="footer__meta" style="margin-top:1.5rem">
       <span>Astoria · NY</span>
+      <span>Words by David Murnan</span>
       <span>Illustrations by <a class="link" href="https://www.instagram.com/bymarquisfortune" target="_blank" rel="noopener">@bymarquisfortune</a></span>
       <span>Photography by <a class="link" href="https://www.instagram.com/jingyao_huang/" target="_blank" rel="noopener">@jingyao_huang</a></span>
     </div>

@@ -10,7 +10,6 @@
 window.MW_YEAR = {
  "year": "2024",
  "from": 1,
- "note": "Every month below is David's writing from our posts, cut down to the highlights.",
 
  "facts": [
   { "k": "National parks", "v": "8", "s": "White Sands, Saguaro, Carlsbad Caverns, Guadalupe Mountains, Big Bend, Acadia, New River Gorge and Congaree." },

@@ -1054,6 +1054,85 @@
     });
   }
 
+  /* ── The pile ──────────────────────────────────────────────────────
+     CSS columns fill one at a time, so the third column ran out of
+     photographs early and the pile finished on a step. This deals each
+     photograph into whichever column is shortest so far, which lands all
+     three within a photograph of each other. Heights come from the width
+     and height on the img, so nothing has to have loaded first, and the
+     count of columns comes from --cols in the stylesheet: the breakpoints
+     stay where the rest of them are.                                     */
+
+  function initPile() {
+    const pile = $('.frames');
+    if (!pile) return;
+    const frames = $$('.frame', pile);
+    if (!frames.length) return;
+
+    const tall = frames.map(f => {
+      const img = $('img', f);
+      const w = +img.getAttribute('width') || img.naturalWidth || 1;
+      const h = +img.getAttribute('height') || img.naturalHeight || 1;
+      return h / w + .08;                      // the photograph and its gap
+    });
+
+    let cols = 0;
+    const deal = () => {
+      const want = parseInt(getComputedStyle(pile).getPropertyValue('--cols'), 10) || 1;
+      if (want === cols) return;
+      cols = want;
+
+      /* shortest column first, then moves and swaps until neither helps.
+         A portrait is twice the height of a landscape, so the first pass on
+         its own can still leave a column a third of a photograph short. */
+      const run = new Array(want).fill(0);
+      const at = frames.map((f, i) => {
+        let k = 0;
+        for (let j = 1; j < want; j++) if (run[j] < run[k]) k = j;
+        run[k] += tall[i];
+        return k;
+      });
+
+      const spread = () => Math.max(...run) - Math.min(...run);
+      for (let pass = 0; pass < 12; pass++) {
+        let better = false;
+        for (let i = 0; i < frames.length && !better; i++) {
+          for (let k = 0; k < want && !better; k++) {
+            if (k === at[i]) continue;
+            const was = spread(), from = at[i];
+            run[from] -= tall[i]; run[k] += tall[i];
+            if (spread() < was - .001) { at[i] = k; better = true; }
+            else { run[from] += tall[i]; run[k] -= tall[i]; }
+          }
+        }
+        for (let i = 0; i < frames.length && !better; i++) {
+          for (let j = i + 1; j < frames.length && !better; j++) {
+            const a = at[i], b = at[j];
+            if (a === b || Math.abs(tall[i] - tall[j]) < .001) continue;
+            const was = spread();
+            run[a] += tall[j] - tall[i]; run[b] += tall[i] - tall[j];
+            if (spread() < was - .001) { at[i] = b; at[j] = a; better = true; }
+            else { run[a] -= tall[j] - tall[i]; run[b] -= tall[i] - tall[j]; }
+          }
+        }
+        if (!better) break;
+      }
+
+      const tracks = [];
+      for (let i = 0; i < want; i++) {
+        const col = document.createElement('div');
+        col.className = 'frames__col';
+        tracks.push(col);
+      }
+      frames.forEach((f, i) => tracks[at[i]].appendChild(f));
+      pile.replaceChildren(...tracks);
+      pile.classList.add('is-packed');
+    };
+
+    deal();
+    addEventListener('resize', deal, { passive: true });
+  }
+
   /* ── Lightbox ──────────────────────────────────────────────────────── */
 
   function initLightbox() {
@@ -1629,6 +1708,14 @@
   const SIDEWAYS = '(min-width: 700px) and (max-height: 520px) and (orientation: landscape)';
   const wide = () => innerWidth >= 1000 && !matchMedia(UPRIGHT).matches;
   const beside = () => wide() || matchMedia(SIDEWAYS).matches;
+  /* The pill stands in for a map that has scrolled away, which only ever
+     happens on a phone. Sideways the map is stuck beside the photographs,
+     upright on a tablet the map and one row of cards are a single screen,
+     and on a desktop the map is in the other column: on all three there is
+     nothing for it to stand in for, and a control that answers a question
+     nobody asked is a control that can only be in the way. Matches the rule
+     that hides it in site.css. */
+  const phone = () => innerWidth < 700;
 
   function shuffled(list) {
     const a = list.slice();
@@ -1980,7 +2067,7 @@
       // Someone who jumped past the map never saw it print, and a map that has
       // not printed is a blank map when the pop-up puts it up. Land it.
       if (m.bottom < GONE) print(true);
-      if (bar) bar.classList.toggle('is-up', !beside() && !sheetOpen() && m.bottom < GONE && h.bottom > 220);
+      if (bar) bar.classList.toggle('is-up', phone() && !sheetOpen() && m.bottom < GONE && h.bottom > 220);
     });
     addEventListener('scroll', watch, { passive: true });
     addEventListener('resize', watch);
@@ -2382,6 +2469,7 @@
     initCursor();
     initMagnets();
     initTilt();
+    initPile();
     initLightbox();
     initSpeeches();
     initStickers();

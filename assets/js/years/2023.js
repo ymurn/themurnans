@@ -10,7 +10,6 @@
 window.MW_YEAR = {
  "year": "2023",
  "from": 1,
- "note": "Every month below is David's writing from our posts, cut down to the highlights.",
 
  "facts": [
   { "k": "States", "v": "15", "s": "Plus one province and one federal district." },

@@ -599,8 +599,27 @@ it; the only CSS breakpoint left is a 520px floor for when the script hasn't run
 the five speeches on **Our Big Day** puts the
 speaker above their own words below 620px, with the bubble pointing up at the face:
 beside a portrait, a column that narrow leaves a speech reading four words to the line.
+On a wide screen the bubble is held to the height of the portrait beside it, so the
+words and the photograph finish on the same line rather than leaving every card with a
+portrait running seventy pixels past its quote; a speech opened to its full length grows
+past that on its own, and leaves the card next to it alone. The closing speech has no
+card beside it, so it is centred and held to a reading measure instead of stretched
+across the shell, where its one line ran a hundred and twenty characters.
 And **the pile** on that page stays two photographs to a row down to the smallest phone,
 leans and all, because one long column of big photographs stops reading as a pile.
+
+**The pile's columns** are dealt by `initPile()` in `assets/js/site.js`, not by the
+browser. CSS columns fill one at a time, so the third one ran out of photographs early
+and the section finished on a step with a couple of hundred pixels of nothing under its
+right-hand side. The script gives each photograph to whichever column is shortest so far,
+then moves and swaps until neither helps, which lands the three within a photograph of
+each other; the column that is still short spreads what is left through its own gaps, so
+the pile finishes on one line. Heights come from the `width` and `height` on each `img`,
+so nothing has to have loaded first, and how many columns there are is still a
+stylesheet decision: `--cols` on `.frames`, three or two, read back in the script. The
+color and lean of a frame is stamped on it as `data-tone` in the markup rather than
+counted off its position, since the packer moves photographs between columns. Without
+the script the CSS columns underneath still work.
 
 **The nav** is a row of four labels while the row fits on one line; below 1020px the
 hamburger takes over instead, because a label on two lines sets the whole bar crooked.

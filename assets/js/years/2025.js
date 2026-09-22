@@ -10,7 +10,6 @@
 window.MW_YEAR = {
  "year": "2025",
  "from": 1,
- "note": "Every month below is David's writing from our posts, cut down to the highlights.",
 
  "facts": [
   { "k": "Utah's Mighty Five", "v": "5 of 5", "s": "Arches, Canyonlands, Capitol Reef, Bryce Canyon and Zion, all on one trip." },

@@ -1562,56 +1562,159 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .anniv__k { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3); max-width: 22ch; }
 .anniv__ord { color: var(--brass-ink); }
 
-/* The countdown as the page of a desk calendar: the day circled in pen, the
-   days left on a round sticker stuck over the corner */
-.cal { position: relative; width: min(100%, 240px); margin: 1rem 3rem 3.25rem 0; }
-.cal__page {
+/* ── THE COUNTDOWN ───────────────────────────────────────────────────────
+   A tear-off pad rather than a single page, because the number means
+   something you can picture: three hundred and nineteen pages still under
+   the top one. Drawn, not boxed, in the same hand as the four marks above
+   it, so the fills and the one heavy ink line are the drawing and the CSS
+   only colors it and tilts it.                                            */
+
+.cal {
   position: relative;
-  border: var(--keyline);
-  border-radius: var(--r-md);
-  background: var(--paper);
-  box-shadow: 7px 7px 0 var(--rose);
+  width: 252px; max-width: 100%;
+  margin: .6rem 2.6rem 2.3rem 0;
+}
+/* ── What animates, and what does not ───────────────────────────────────
+   The wrapper this sits in carries data-reveal="up", which already fades it
+   in and lifts it 26px over most of a second. Rotating and scaling the pad
+   on top of that, and sliding the sheets inside it at the same time, put
+   three motions on one object at once: the whole thing wobbled, and the
+   stamp did not land until two seconds in.
+
+   So the arrival belongs to the wrapper. The pad only does the things that
+   are actually being done to it, in the order somebody would do them: the
+   wire threads itself loop by loop, the perforation is scored across, the
+   pen goes round the day, and the stamp comes down last. All of it runs
+   under the wrapper's lift, so the whole thing is finished in about 1.3s. */
+.calart {
+  display: block;
+  width: 100%; height: auto;
+  overflow: visible;
   rotate: -2.5deg;
-  text-align: center;
 }
-.cal__rings { position: absolute; top: -13px; left: 0; right: 0; display: flex; justify-content: space-between; padding-inline: 24%; pointer-events: none; }
-.cal__rings i { width: 9px; height: 25px; border-radius: 5px; background: var(--ink); }
-/* a fixed wine and cream, so the header reads the same in dawn and dusk */
-.cal__head {
-  display: flex; align-items: baseline; justify-content: center; gap: .6rem;
-  padding: 1.1rem 1rem .7rem;
-  border-bottom: var(--keyline);
-  border-radius: calc(var(--r-md) - 2px) calc(var(--r-md) - 2px) 0 0;
-  background: #7A2436;
-  color: #F9F2E4;
+.calart__print { fill: var(--rose); }
+.calart__sheet, .calart__page {
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  vector-effect: non-scaling-stroke;
 }
-.cal__month { font-family: var(--display); font-size: 1.5rem; line-height: 1; }
-.cal__year { font-size: .66rem; font-weight: 500; letter-spacing: .22em; }
-.cal__body { display: grid; justify-items: center; gap: .2rem; padding: .8rem 1rem 1.4rem; }
-.cal__date { position: relative; font-family: var(--display); font-size: clamp(4.8rem, 8vw, 6.2rem); line-height: 1.05; color: var(--ink); }
-.cal__ring { position: absolute; left: 50%; top: 50%; width: 1.4em; height: 1.08em; max-width: none; translate: -50% -47%; overflow: visible; fill: none; stroke: var(--coral); stroke-width: 3.4; stroke-linecap: round; pointer-events: none; }
-.cal__ring path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s var(--ease) .6s; }
-.anniv__count.is-in .cal__ring path { stroke-dashoffset: 0; }
-.cal__dow { font-size: .66rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); }
-/* fixed gold and near-black, like the other stickers on the site */
-.cal__sticker {
-  position: absolute; right: -3rem; bottom: -3.25rem;
-  display: grid; place-content: center; justify-items: center; gap: .2rem;
-  width: 118px; height: 118px;
+.calart__sheet { fill: var(--paper-3); }
+.calart__sheet--a { fill: var(--paper-2); }
+.calart__page { fill: var(--paper); }
+/* a fixed wine and cream, so the head reads the same in dawn and dusk */
+.calart__band { fill: #7A2436; }
+.calart__rule { stroke: var(--ink); stroke-width: 2.6; vector-effect: non-scaling-stroke; }
+/* the punched hole, dark enough against the band that the wire is visibly
+   going into something */
+.calart__hole { fill: #3D101B; stroke: #21070D; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+/* the wire: out of its hole, up across the top edge, over the crest, and
+   behind the paper on the far side, where it simply stops */
+.calart__wire {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset .5s var(--ease) var(--d, 0s);
+}
+.anniv__count.is-in .calart__wire { stroke-dashoffset: 0; }
+.calart__month { font-family: var(--display); font-size: 21px; fill: #F9F2E4; }
+.calart__year { font-family: var(--sans); font-size: 9px; font-weight: 500; letter-spacing: 2.2px; fill: #F9F2E4; }
+.calart__date { font-family: var(--display); font-size: 72px; fill: var(--ink); }
+.calart__dow { font-family: var(--sans); font-size: 9px; font-weight: 500; letter-spacing: 2.4px; text-transform: uppercase; fill: var(--ink-3); }
+/* tear here: a dotted rule with a notch bitten out of each edge */
+.calart__perf {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  stroke-dasharray: 0 6.5;
+  stroke-linecap: round;
+  opacity: .55;
+  vector-effect: non-scaling-stroke;
+  transition: opacity .45s var(--ease-soft) .34s;
+}
+.anniv__count:not(.is-in) .calart__perf { opacity: 0; }
+.calart__notch {
+  fill: var(--paper-2);
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box; transform-origin: 50% 50%;
+  transition: scale .45s cubic-bezier(.34, 1.56, .64, 1) .38s;
+}
+.anniv__count:not(.is-in) .calart__notch { scale: 0; }
+/* the day circled in pen, drawn on once the pad scrolls in */
+.cal__ring {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset .85s var(--ease) .48s;
+}
+.anniv__count.is-in .cal__ring { stroke-dashoffset: 0; }
+
+/* The stamp. Gold and near-black pinned, like the postmark on the letters
+   and the sticker between the vows, with the count in the hand so it never
+   reads as another number on the calendar. It sits over the corner of the
+   pad, clear of the date and clear of the perforation. */
+.cal__stamp {
+  position: absolute;
+  z-index: 4;
+  right: -2.4rem; bottom: -2rem;
+  width: 122px; aspect-ratio: 1;
+  display: grid; place-content: center; justify-items: center; gap: 0;
   border: 2px solid #14110D;
   border-radius: 50%;
   background: #F0CE84;
   color: #14110D;
+  box-shadow: 3px 3px 0 #14110D;
   text-align: center;
-  rotate: 9deg;
+  rotate: -7deg;
   scale: 0;
-  transition: scale .65s cubic-bezier(.34, 1.56, .64, 1) .35s;
+  transition: scale .55s cubic-bezier(.34, 1.7, .6, 1) .76s,
+              rotate .55s cubic-bezier(.34, 1.56, .64, 1) .76s;
 }
-.anniv__count.is-in .cal__sticker { scale: 1; }
-.cal__sticker .anniv__big { font-size: 2.35rem; line-height: .95; letter-spacing: -.01em; color: #14110D; }
-.cal__sticker .anniv__k { max-width: 12ch; font-size: .54rem; font-weight: 600; line-height: 1.3; letter-spacing: .14em; color: #14110D; }
+/* the postmark's inner ring, a hair inside the edge */
+.cal__stamp::before {
+  content: "";
+  position: absolute; inset: 7px;
+  border: 1.5px dashed color-mix(in srgb, #14110D 45%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.anniv__count.is-in .cal__stamp { scale: 1; }
+/* it comes down a shade over-rotated and rights itself */
+.anniv__count:not(.is-in) .cal__stamp { rotate: -22deg; }
+.cal:hover .cal__stamp { rotate: 4deg; }
+/* Space Grotesk, not the hand: in Caveat the 1 has no flag to speak of and
+   "319" kept reading as 379. A grotesque numeral is what a postmark would
+   be set in anyway, and it cannot be mistaken for the serif 6 on the page. */
+.cal__stamp .anniv__big {
+  font-family: var(--sans); font-weight: 700;
+  font-size: 2.45rem; line-height: .95; letter-spacing: -.01em;
+  color: #14110D;
+}
+.cal__stamp .anniv__k {
+  max-width: 10ch;
+  margin-top: .12rem;
+  font-size: .5rem; font-weight: 700; line-height: 1.22; letter-spacing: .11em;
+  color: #14110D;
+}
+/* two brass sparks tucked at its corners, the same pair the vows sticker has */
+.cal__star { position: absolute; fill: var(--brass); transition: rotate .8s var(--ease), scale .8s var(--ease); }
+.cal__star--a { width: 16px; top: -10px; right: -7px; }
+.cal__star--b { width: 11px; bottom: -5px; left: -10px; }
+.cal:hover .cal__star { rotate: 90deg; scale: 1.18; }
+
 @media (prefers-reduced-motion: reduce) {
-  .cal__ring path, .cal__sticker { transition-delay: 0ms !important; }
+  .calart, .calart__print, .calart__sheet, .calart__wire,
+  .calart__perf, .calart__notch, .cal__ring, .cal__stamp,
+  .cal__star { transition: none !important; }
 }
 @media (max-width: 860px) {
   .anniv { grid-template-columns: 1fr; align-items: start; }
@@ -2364,6 +2467,13 @@ a.yearbtn { display: inline-block; }
 .toast .day-date__part { font-size: clamp(2.6rem, 11vw, 9.5rem); }
 .day-ring { width: clamp(90px, 12vw, 150px); filter: invert(var(--art-invert)); opacity: .85; }
 
+/* The band the summary cards sit in. They are the same object on every page
+   that has them, so the room around them is the same too, and the rule lives
+   here beside .facts rather than in trip.css or year.css: day.html loads
+   neither of those and had been carrying the full band padding, close to
+   twice the top and four times the bottom of everywhere else. */
+.band--facts { padding-block: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 2.5vw, 2rem); }
+
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: clamp(.9rem, 1.6vw, 1.4rem); }
 /* four of them: two by two once four no longer fit, then one, never three
    with the fourth alone underneath */
@@ -2655,8 +2765,13 @@ a.yearbtn { display: inline-block; }
 
 /* Two per row so the cards use the full measure. The right-hand card mirrors
    the left, which frames the quotes between the two portraits. The closing
-   speech runs the full width. */
+   speech sits on its own row, centred.
+
+   One portrait width for every card, named once: a left-hand card and the
+   mirrored card beside it ran at different sizes before, which reads as a
+   slip rather than a rhythm. */
 .speeches {
+  --pic-w: clamp(118px, 12vw, 152px);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(1.75rem, 3.5vw, 3rem) clamp(1.75rem, 3.5vw, 3.25rem);
@@ -2664,22 +2779,32 @@ a.yearbtn { display: inline-block; }
 }
 .speech {
   display: grid;
-  grid-template-columns: clamp(112px, 12.5vw, 158px) minmax(0, 1fr);
+  grid-template-columns: var(--pic-w) minmax(0, 1fr);
   gap: clamp(1rem, 2vw, 1.6rem);
   align-items: start;
 }
+/* The last word, from David's father. Alone on its row, so it is centred and
+   held to a reading measure instead of being stretched across the whole
+   shell: a single quote set 120 characters to the line is not a quote any
+   more. The wider portrait and the larger type are what mark it as the
+   close. */
 .speech:last-child {
   grid-column: 1 / -1;
-  grid-template-columns: clamp(150px, 17vw, 230px) minmax(0, 1fr);
+  --pic-w: clamp(150px, 15vw, 196px);
+  grid-template-columns: var(--pic-w) minmax(0, 54ch);
+  justify-content: center;
   gap: clamp(1.25rem, 2.6vw, 2.25rem);
+  margin-top: clamp(.25rem, 1vw, 1rem);
 }
-.speech:nth-child(even) { grid-template-columns: minmax(0, 1fr) clamp(120px, 15vw, 176px); }
+.speech:last-child .speech__text { font-size: 1.02rem; }
+.speech:nth-child(even) { grid-template-columns: minmax(0, 1fr) var(--pic-w); }
 .speech:nth-child(even) .speech__pic { grid-column: 2; grid-row: 1; }
 .speech:nth-child(even) .speech__body { grid-column: 1; grid-row: 1; text-align: right; }
 .speech:nth-child(even) .speech__who { justify-content: flex-end; }
 
 .speech__pic {
   overflow: hidden;
+  align-self: start;                         /* keeps 4/5 when the card grows */
   aspect-ratio: 4 / 5;
   border: var(--keyline);
   border-radius: var(--r-sm);
@@ -2697,7 +2822,17 @@ a.yearbtn { display: inline-block; }
 .speech:nth-child(4) { --off: var(--coral);     --tilt:  3deg; }
 .speech:nth-child(5) { --off: var(--wine);      --tilt: -2.5deg; }
 
-.speech__body { display: grid; gap: .7rem; align-content: start; padding-top: .3rem; }
+/* The name sits on its own row and the bubble takes the rest, so the words
+   and the photograph finish on the same line. Before this the bubble was as
+   tall as its two lines and the portrait ran seventy pixels past it, which
+   left every card with a ragged foot. */
+.speech__body {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: .7rem;
+  padding-top: .3rem;
+  min-height: calc(var(--pic-w) * 1.25);     /* the height of the portrait */
+}
 .speech__who {
   font-family: var(--display);
   font-size: clamp(1.35rem, 2.2vw, 1.75rem);
@@ -2720,6 +2855,8 @@ a.yearbtn { display: inline-block; }
    Same device as the two characters on the home page. */
 .speech__text {
   position: relative;
+  display: grid;
+  align-content: center;                     /* the quote sits in the middle */
   margin: 0;
   padding: 1.05rem 1.2rem;
   font-size: .95rem; line-height: 1.66; color: var(--ink);
@@ -2798,8 +2935,17 @@ a.yearbtn { display: inline-block; }
   .speeches.is-ready .speech__text.is-open .speech__rest { animation: none; }
 }
 
+/* One column, so the closing speech is no longer the odd one out and takes
+   the same card as the other four. */
 @media (max-width: 900px) {
   .speeches { grid-template-columns: 1fr; }
+  .speech:last-child {
+    --pic-w: clamp(118px, 12vw, 152px);
+    grid-template-columns: var(--pic-w) minmax(0, 1fr);
+    justify-content: stretch;
+    margin-top: 0;
+  }
+  .speech:last-child .speech__text { font-size: .95rem; }
 }
 
 /* On a phone every speaker goes above their own words, mirrored cards
@@ -2819,6 +2965,8 @@ a.yearbtn { display: inline-block; }
   .speech:last-child .speech__pic { grid-column: 1; grid-row: 1; }
   .speech:nth-child(even) .speech__body,
   .speech:last-child .speech__body { grid-column: 1; grid-row: 2; text-align: left; }
+  /* stacked, so the words no longer have a portrait to match */
+  .speech__body { min-height: 0; }
   .speech:nth-child(even) .speech__who { justify-content: flex-start; }
   .speech__pic { max-width: 190px; }
 
@@ -2839,9 +2987,36 @@ a.yearbtn { display: inline-block; }
 /* The pile: snapshots dropped on a table, each at its own angle ───────── */
 
 .frames {
-  columns: 3;
-  column-gap: clamp(1rem, 2vw, 1.6rem);
+  --cols: 3;
+  --col-gap: clamp(1rem, 2vw, 1.6rem);
+  columns: var(--cols);
+  column-gap: var(--col-gap);
 }
+/* Browser columns fill one at a time, so the last one ran out early and left
+   the pile with a couple of hundred pixels of nothing under its right-hand
+   side. initPile() in site.js deals the photographs into columns of its own
+   instead, each one going to whichever column is shortest, so all three
+   finish within a photograph of each other. Without the script the columns
+   above still work. */
+.frames.is-packed {
+  columns: auto;
+  display: flex;
+  align-items: stretch;
+  gap: 0 var(--col-gap);
+}
+/* The columns come out within a photograph of each other, and the column
+   that is still short spreads what is left of the difference through its own
+   gaps, so the pile finishes on one line. A few pixels between two snapshots
+   is not something anyone reads; a column ending short is. */
+.frames__col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.frames__col .frame { flex: 0 0 auto; }
+.frames__col .frame:last-child { margin-bottom: 0; }
 .frame {
   break-inside: avoid;
   margin: 0 0 clamp(1.1rem, 2.2vw, 1.8rem);
@@ -2863,27 +3038,30 @@ a.yearbtn { display: inline-block; }
   position: relative;
 }
 
-/* every frame gets its own color and lean, cycling through the palette */
-.frame:nth-child(6n+1) { --off: var(--blue);     --tilt: -1.8deg; }
-.frame:nth-child(6n+2) { --off: var(--gold);     --tilt:  1.4deg; }
-.frame:nth-child(6n+3) { --off: var(--rose);     --tilt: -1.1deg; }
-.frame:nth-child(6n+4) { --off: var(--sage-500); --tilt:  2deg; }
-.frame:nth-child(6n+5) { --off: var(--coral);    --tilt: -2.2deg; }
-.frame:nth-child(6n+6) { --off: var(--khaki);    --tilt:  1.6deg; }
+/* Every frame gets its own color and lean, cycling through the palette. The
+   tone is stamped in the markup rather than counted off the position, since
+   the packer moves a photograph into whichever column has room and a
+   nth-child count would repaint half the pile as it went. */
+.frame[data-tone="1"] { --off: var(--blue);     --tilt: -1.8deg; }
+.frame[data-tone="2"] { --off: var(--gold);     --tilt:  1.4deg; }
+.frame[data-tone="3"] { --off: var(--rose);     --tilt: -1.1deg; }
+.frame[data-tone="4"] { --off: var(--sage-500); --tilt:  2deg; }
+.frame[data-tone="5"] { --off: var(--coral);    --tilt: -2.2deg; }
+.frame[data-tone="6"] { --off: var(--khaki);    --tilt:  1.6deg; }
 
-@media (max-width: 900px) { .frames { columns: 2; } }
+@media (max-width: 900px) { .frames { --cols: 2; } }
 /* Two to a row right down to the smallest phone: one long column of big
    photographs stops reading as a pile. The leans stay, and the offset print
    comes in so a tilted frame and its color clear the column beside it. */
 @media (max-width: 520px) {
-  .frames { columns: 2; column-gap: .7rem; }
+  .frames { --cols: 2; --col-gap: .7rem; }
   .frame { margin-bottom: .9rem; box-shadow: 4px 4px 0 var(--off, var(--blue)); }
-  .frame:nth-child(6n+1) { --tilt: -1.4deg; }
-  .frame:nth-child(6n+2) { --tilt:  1.1deg; }
-  .frame:nth-child(6n+3) { --tilt: -.9deg; }
-  .frame:nth-child(6n+4) { --tilt:  1.5deg; }
-  .frame:nth-child(6n+5) { --tilt: -1.7deg; }
-  .frame:nth-child(6n+6) { --tilt:  1.2deg; }
+  .frame[data-tone="1"] { --tilt: -1.4deg; }
+  .frame[data-tone="2"] { --tilt:  1.1deg; }
+  .frame[data-tone="3"] { --tilt: -.9deg; }
+  .frame[data-tone="4"] { --tilt:  1.5deg; }
+  .frame[data-tone="5"] { --tilt: -1.7deg; }
+  .frame[data-tone="6"] { --tilt:  1.2deg; }
 }
 
 /* A hand-written phrase inside a set heading */
@@ -3553,7 +3731,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   body[data-page="story"] .chap__dot { top: .55rem; left: -4.5px; }
 
   /* three to a row, since the row is wide and the screen is short */
-  .frames { columns: 3; }
+  .frames { --cols: 3; }
   .speeches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 }
@@ -3989,7 +4167,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   margin-top: clamp(3rem, 7vw, 5.5rem);
 }
 .tally__cal { justify-items: start; }
-.tally__cta { display: grid; gap: 1rem; justify-items: start; max-width: 46ch; }
+/* Wide enough for the pair of buttons to stay a pair: the prose keeps its
+   own measure below. */
+.tally__cta { display: grid; gap: 1rem; justify-items: start; max-width: 52ch; }
+.tally__cta .lede, .tally__cta .t-md { max-width: 44ch; }
 .tally__cta .lede { margin: 0; }
 /* The pair of buttons takes the column, not just the width of its words, so
    initButtonRows has a width to measure the pair against. */
@@ -3998,7 +4179,6 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 @media (max-width: 860px) {
   .tally__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tally__end { grid-template-columns: 1fr; justify-items: start; }
-  .tally__end .cal { margin-inline: 0 3rem; }
 }
 
 /* ── 03 Said about us ──────────────────────────────────────────────────────
@@ -4015,40 +4195,89 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
           mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
 }
 .say__rail::-webkit-scrollbar { display: none; }
-.say__track { display: flex; gap: clamp(.9rem, 2vw, 1.5rem); width: max-content; padding: .5rem var(--gutter) 1.25rem; }
+/* room above for the pulled-out quote marks and the tilts */
+.say__track { display: flex; gap: clamp(1.1rem, 2.2vw, 1.7rem); width: max-content; padding: 2.5rem var(--gutter) 1.5rem; }
 
+/* This band is the oxblood in dawn and in dusk, so everything on it is
+   pinned rather than themed, the way the postmark and the calendar sticker
+   are: one wine for the paper, cream for the line, and one accent a card
+   printed off register behind it.
+
+   --keyline is no use here. It is declared on :root as "2px solid
+   var(--ink)", so it resolves against root's ink and inherits already
+   resolved: overriding --ink on .band--deep cannot reach back into it. In
+   dawn that left a near-black line on the oxblood, which is what made these
+   read as unfinished beside the speeches on day.html. */
 .said {
   flex: none;
-  width: clamp(232px, 68vw, 310px);
+  width: clamp(232px, 68vw, 340px);
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
+  /* the face grows with the card: 48px is right on a phone and too shy of
+     the bubble above it on a desktop */
+  --face: 48px;
+  grid-template-columns: var(--face) minmax(0, 1fr);
   grid-template-areas: "bubble bubble" "pic who";
   gap: .85rem .7rem;
   margin: 0;
   align-content: start;
+  --line-ink: var(--deep-ink);
+  --off: #F0CE84;
 }
+.said:nth-child(2) { --off: #5E9BB4; }
+.said:nth-child(3) { --off: #7FA08A; }
+.said:nth-child(4) { --off: #DCC0BE; }
+.said:nth-child(5) { --off: #E2604F; }
+/* Pinned up, not laid out. Nothing on this site sits square: the calendar
+   page, the memory cards, the prints and the signatures all sit a degree or
+   two off and come back to true when you go near them. These were the one
+   set that did not, which is most of why they read as a table of quotes
+   rather than five notes somebody stuck on the wall. */
+.said:nth-child(odd)  { --tilt: -1.5deg; }
+.said:nth-child(even) { --tilt: 1.3deg; }
 .said__bubble {
   grid-area: bubble;
   position: relative;
   margin: 0;
-  padding: .95rem 1.05rem;
-  border: var(--keyline);
-  border-radius: 16px 16px 16px 5px;
+  padding: 1rem 1.15rem;
+  border: 2px solid var(--line-ink);
+  /* one sharp corner, on the side the tail comes out of, the shape the
+     speeches on day.html are cut to */
+  border-radius: 18px 18px 18px 5px;
   /* the same wine as the band behind it, so the bubble and its tail are one
-     color and the keyline is the only thing drawing the shape */
+     color and the line is the only thing drawing the shape */
   background: var(--deep);
   color: var(--deep-ink);
   font-family: var(--hand);
   font-size: 1.24rem; line-height: 1.34;
+  box-shadow: 5px 5px 0 var(--off);
+  rotate: var(--tilt, 0deg);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease), rotate .4s var(--ease);
 }
+.said:hover .said__bubble { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--off); rotate: 0deg; }
+/* The opening quote, pulled out of the bubble and set big in the card's own
+   accent, the way the ampersand and the squiggles are set: it says "someone
+   said this" before a word of it is read. */
+.said__bubble::before {
+  content: "\201C";
+  position: absolute;
+  top: -.52em; left: -.06em;
+  font-family: var(--display);
+  font-size: 3.4rem; line-height: 1;
+  color: var(--off);
+  rotate: -7deg;
+  pointer-events: none;
+  transition: rotate .5s var(--ease), scale .5s var(--ease);
+  transform-origin: 60% 80%;
+}
+.said:hover .said__bubble::before { rotate: 2deg; scale: 1.1; }
 .said__bubble::after {                       /* the tail, pointing at the face */
   content: "";
   position: absolute;
   left: 22px; bottom: -9px;
   width: 14px; height: 14px;
   background: var(--deep);
-  border-left: var(--keyline);
-  border-bottom: var(--keyline);
+  border-left: 2px solid var(--line-ink);
+  border-bottom: 2px solid var(--line-ink);
   rotate: -45deg;
 }
 .said__who {
@@ -4057,18 +4286,34 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   display: grid; gap: .1rem;
   font-size: .86rem; font-weight: 500;
 }
-.said__who span { font-size: .68rem; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--deep-ink-3); }
+/* the role as a pill in the card's own accent, the way day.html sets it */
+.said__who span {
+  justify-self: start;
+  margin-top: .1rem;
+  padding: .3em .7em .24em;
+  border: 1.5px solid var(--line-ink);
+  border-radius: 999px;
+  background: var(--off);
+  color: #14110D;
+  font-size: .56rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  white-space: nowrap;
+}
 .said__pic {
   grid-area: pic;
-  width: 48px; height: 48px;
+  width: var(--face); height: var(--face);
   overflow: hidden;
-  border: var(--keyline);
+  border: 2px solid var(--line-ink);
   border-radius: 50%;
   background: var(--deep);
+  box-shadow: 3px 3px 0 var(--off);
+  rotate: -5deg;
+  transition: rotate .4s var(--ease), box-shadow .4s var(--ease);
 }
+.said:hover .said__pic { rotate: 0deg; box-shadow: 2px 2px 0 var(--off); }
 .said__pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
 .say__foot { margin-top: .75rem; }
 
+@media (min-width: 900px) { .say .said { --face: 64px; } }
 @media (max-width: 620px) {
   .said { width: 78vw; }
   .said__bubble { font-size: 1.16rem; }
@@ -4181,10 +4426,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__bar.is-up { opacity: 1; scale: 1; translate: -50% 0; pointer-events: auto; }
 /* while the map is up, the pill it grew out of is not there to see */
 .memsheet-open .mem__bar { opacity: 0; scale: .9; pointer-events: none; transition-duration: .16s; }
-/* The desktop keeps the map beside the photographs, so the pill is never
-   needed there. A tablet stood up is 1024 wide and still scrolls the map off
-   the top, so it keeps it. */
-@media (min-width: 1000px) and (orientation: landscape) { .mem__bar { display: none; } }
+/* Phones only. Anything wider either keeps the map beside the photographs
+   or fits the map and the cards on one screen, so the pill has nothing to
+   stand in for. Matches phone() in assets/js/site.js. */
+@media (min-width: 700px) { .mem__bar { display: none; } }
 
 .mem__pick {
   display: flex; align-items: center; gap: .55rem;

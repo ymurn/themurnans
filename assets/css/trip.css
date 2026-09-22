@@ -35,34 +35,42 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 .thead__back { display: inline-flex; align-items: center; gap: .5rem; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
 .thead__back:hover { color: var(--page-ink); }
 
-/* Four prints from the trip, pinned up at their own angles and dealt fresh
-   on every visit. They develop from the top as they come in, one after the
-   other, the way the photo strips down the page do. */
-/* The four of them together are about as tall as the title beside them:
-   any bigger and the first day of the trip starts a screen and a half down. */
-.tgal { display: grid; gap: 1rem; margin: 0; min-width: 0; width: min(100%, 400px); justify-self: end; }
+/* Six prints from the trip, pinned up at their own angles and dealt fresh on
+   every visit. They develop from the top as they come in, one after the
+   other, the way the photo strips down the page do.
+
+   The gallery fills its column now. Capped at 400px and pushed to the right
+   of a 596px column, it left about 200px of nothing between the last line of
+   the title and the first print, on top of the column gap that was supposed
+   to be the whole of the space between them. Three across rather than two
+   keeps the block from growing taller as it grows wider: six of these come
+   out shorter than four of the old ones, so the first day of the trip starts
+   higher up the page, not lower. */
+.tgal { display: grid; gap: 1rem; margin: 0; min-width: 0; width: 100%; justify-self: stretch; }
 .tgal__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(.8rem, 1.6vw, 1.35rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(.7rem, 1.4vw, 1.1rem);
   align-items: start;
   /* room on the right and underneath for the off-register shadows */
   padding: 0 10px 10px 0;
 }
 [data-reveal="wipe"].tgal__grid > *:nth-child(4) { transition-delay: calc(var(--d) + 390ms); }
+[data-reveal="wipe"].tgal__grid > *:nth-child(5) { transition-delay: calc(var(--d) + 520ms); }
+[data-reveal="wipe"].tgal__grid > *:nth-child(6) { transition-delay: calc(var(--d) + 650ms); }
 
 .tgal__pic {
   aspect-ratio: 4 / 5;
   rotate: var(--tilt, 0deg);
-  box-shadow: 8px 8px 0 var(--off, var(--gold));
+  box-shadow: 7px 7px 0 var(--off, var(--gold));
   transition: rotate .55s var(--ease), translate .45s var(--ease), box-shadow .45s var(--ease);
 }
 .tgal__pic:hover,
 .tgal__pic:focus-visible { rotate: 0deg; translate: 4px 4px; box-shadow: 4px 4px 0 var(--off, var(--gold)); }
-/* the two inside corners step down and up, so the four read as a pinned-up
-   handful rather than a grid of four */
-.tgal__pic:nth-child(2) { margin-top: clamp(1rem, 2.4vw, 2.1rem); }
-.tgal__pic:nth-child(3) { margin-bottom: clamp(1rem, 2.4vw, 2.1rem); }
+/* the middle column rides low, so the six read as a pinned-up handful rather
+   than a grid of six */
+.tgal__pic:nth-child(2),
+.tgal__pic:nth-child(5) { margin-top: clamp(.9rem, 2vw, 1.7rem); }
 
 .tgal__cap {
   display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1rem;
@@ -73,7 +81,6 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 /* 3 ── THE STOPS ───────────────────────────────────────────────────────── */
 
 .ttl { padding-top: 0; }
-.tfacts { padding-bottom: clamp(1.25rem, 2.5vw, 2rem); }
 /* our own line about a stop, next to David's paragraphs but lighter, so his
    words and ours never read as one voice */
 .stop__line { max-width: 60ch; margin: 0; font-size: .95rem; line-height: 1.62; color: var(--ink-3); }
@@ -314,15 +321,16 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 /* 7 ── RESPONSIVE ──────────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {
+  /* stacked, so the gallery has the whole measure and does not need capping */
   .thead__grid { grid-template-columns: minmax(0, 1fr); row-gap: clamp(2rem, 5vw, 2.75rem); }
-  .tgal { width: min(100%, 520px); justify-self: stretch; }
+  .tgal { width: min(100%, 560px); }
 }
 
 @media (max-width: 620px) {
   .tgal__grid { gap: .6rem; padding: 0 6px 6px 0; }
   .tgal__pic { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
-  .tgal__pic:nth-child(2) { margin-top: .9rem; }
-  .tgal__pic:nth-child(3) { margin-bottom: .9rem; }
+  .tgal__pic:nth-child(2),
+  .tgal__pic:nth-child(5) { margin-top: .8rem; }
   .tgal__cap { font-size: .56rem; letter-spacing: .14em; }
 }
 

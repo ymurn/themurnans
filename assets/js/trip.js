@@ -60,13 +60,16 @@
     return out;
   }
 
-  const TILT = [-2.4, 1.8, 1.4, -2.2];
-  const WASH = ['--blue', '--gold', '--rose', '--sage-500'];
+  const TILT = [-2.4, 1.8, 1.4, -2.2, -1.6, 2.1];
+  const WASH = ['--blue', '--gold', '--rose', '--sage-500', '--coral', '--khaki'];
 
   function renderGallery() {
     const host = $('#gallery');
     if (!host) return;
-    const shots = deal(4);
+    // Six, three across. Four in two columns left most of the column they
+    // sit in empty on a wide screen, with a couple of hundred pixels of
+    // nothing between them and the title.
+    const shots = deal(6);
     if (!shots.length) return host.remove();
     host.innerHTML = `
       <div class="tgal__grid" data-reveal="wipe" style="--d:140ms">${shots.map((p, i) => `
@@ -83,13 +86,26 @@
 
   /* ── The facts ─────────────────────────────────────────────────────── */
 
+  /* A number at the head of a value counts up, with whatever follows it held
+     still, so "45+" and "12 of 12" animate the way a bare "15" does. Before
+     this only pure digits were wrapped, which left the same card counting on
+     one page and sitting still on another. initCounters in site.js reads
+     data-count and data-suffix; day.html has always written the pair by hand.
+     The same three lines are in assets/js/year.js, which builds the identical card. */
+  const countable = v => String(v).match(/^(\d+)(\D[\s\S]*)?$/);
+  const factValue = v => {
+    const m = countable(v);
+    if (!m) return esc(v);
+    return `<span data-count="${m[1]}"${m[2] ? ` data-suffix="${esc(m[2])}"` : ''}>${esc(v)}</span>`;
+  };
+
   function renderFacts() {
     const host = $('#facts');
     if (!host || !T.facts) return;
     host.innerHTML = `<div class="facts">${T.facts.map((f, i) => `
       <div class="fact" data-reveal="up" style="--d:${i * 80}ms">
         <span class="fact__k">${esc(f.k)}</span>
-        <span class="fact__v">${/^\d+$/.test(f.v) ? `<span data-count="${f.v}">${f.v}</span>` : esc(f.v)}</span>
+        <span class="fact__v">${factValue(f.v)}</span>
         <span class="fact__s">${esc(f.s)}</span>
       </div>`).join('')}</div>
       ${T.note ? `<p class="ynote" data-reveal="up">${esc(T.note)}</p>` : ''}`;
