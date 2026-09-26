@@ -32,6 +32,16 @@
 <link rel="stylesheet" href="assets/css/trip.css">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
 <script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<!-- Microsoft Clarity: visit recordings and heatmaps, on the live site only so local previews stay out of the numbers -->
+<script>
+if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "yo5bawkopu");
+}
+</script>
 </head>
 <body data-page="honeymoon">
 
