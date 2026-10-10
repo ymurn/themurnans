@@ -10,8 +10,9 @@
   'use strict';
 
   const Y = window.MW_YEAR;
-  const YEARS = window.MW_YEARS || [];
   if (!Y) return;
+  // a year marked "hidden" in years/index.js is on no list but its own page's
+  const YEARS = (window.MW_YEARS || []).filter(y => !y.hidden || y.year === Y.year);
 
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -107,7 +108,8 @@
     if (Y.honeymoon) has.add(Y.honeymoon.month);
 
     const months = [];
-    for (let m = Y.from || 1; m <= 12; m++) months.push(m);
+    // "to" stops the bar short while the year is still being written
+    for (let m = Y.from || 1; m <= (Y.to || 12); m++) months.push(m);
 
     host.innerHTML = `
       <span class="yearbar__label">Jump to</span>
@@ -186,7 +188,7 @@
           <span class="chap__dot" aria-hidden="true"></span>
           <div class="chap__sticky">
             <h2 class="chap__month">${name}</h2>
-            <span class="chap__count">${COUNT[n] || n} ${n === 1 ? 'trip' : 'trips'}</span>
+            <span class="chap__count">${m.label ? esc(m.label) : `${COUNT[n] || n} ${n === 1 ? 'trip' : 'trips'}`}</span>
           </div>
         </div>
         <div class="chap__body mrow">

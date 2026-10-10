@@ -32,6 +32,7 @@ once the home page has made you curious, not the first thing you are asked to re
 | `highlights-yinjas-30th.html`<br>`highlights-citizenship.html` | From the Highlights bar | The other two highlights, still to come. Each says so and links across to the others |
 | `story.html`  | Footer, Timelines | **The Long Way Round**: the chapter timeline, built from `assets/js/data.js`, with a map beside it |
 | `2022.html` to `2025.html` | Footer, Timelines | One page per year since the wedding, built from `assets/js/years/` |
+| `2026.html` | Not linked | The year still being written, January to July so far. See **A year in progress** below |
 | `table.html`  | Footer, Pages | **At Our Table**: the two drinks, the nine restaurants, the wedding feast |
 | `home-archive.html` | Not linked | The home page as it was: six bands, the four doors, the memory machine, the years since the wedding. Kept whole as the place to pull a device from when building a new page. **Do not edit it.** |
 
@@ -297,6 +298,21 @@ sips -m "/System/Library/ColorSync/Profiles/sRGB Profile.icc" -s format jpeg -s 
 4. Copy `2025.html` to `2026.html` and change the title, the description, the heading,
    the intro under it, and the `years/2025.js` script near the bottom.
 
+**A year in progress.** 2026 already has its page, its data file and its entry in
+`index.js`, but the entry carries `"hidden": true`, which keeps it off every list of years:
+the deck and the bar on the other year pages, the cards at the foot of every long page,
+and the home page. Nothing links to `2026.html`, its footer does not list it, and it asks
+search engines not to index it. Its trips are on the home page's map all the same, without
+a link into the page; a trip with a highlight page of its own (`"highlight"` on the trip)
+links there instead. To put the year on show:
+
+1. Take `"hidden": true` out of `assets/js/years/index.js` and give it its card.
+2. Take `<meta name="robots" content="noindex">` out of `2026.html`, and `"to"` out of
+   `assets/js/years/2026.js` once December is written.
+3. Add 2026 to the footer's row of years on every page, and change each
+   `href="2025.html"` as described below.
+4. Run `node tools/build-memories.mjs`, so the map links into the page.
+
 The home page's **Since 2022** section is built from the same `index.js`, so the new
 year's card turns up there by itself, with the "Latest" sticker moved onto it.
 
@@ -478,7 +494,7 @@ names it, `Fallingwater` does not) needs a line adding there. Leave off any town
 namesake: Newport is in Rhode Island and on the Oregon coast, and we have been to both.
 
 A state we have been to with nothing filed under it shows on the map and says so when
-tapped. Nevada and Kentucky have no photograph in any memory; Delaware and Connecticut are
+tapped. Nevada has no photograph in any memory; Delaware and Connecticut are
 written up (Rehoboth Beach, Mystic) with no photograph from the state itself; and North
 Dakota, South Dakota, Wyoming and Nebraska are the 2026 trips still to come.
 

@@ -20,7 +20,8 @@ window.MW_CLOSING = function closing(host, opts) {
   'use strict';
 
   const o = opts || {};
-  const YEARS = window.MW_YEARS || [];
+  // a year marked "hidden" in years/index.js gets a card on its own page only
+  const YEARS = (window.MW_YEARS || []).filter(y => !y.hidden || y.year === o.here);
   if (!host || !YEARS.length) return;
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>

@@ -190,6 +190,16 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
 .strip--yr[data-n="5"] .shot:first-child { grid-column: span 2; grid-row: span 2; }
 .strip--yr[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .strip--yr[data-n="6"] .shot { aspect-ratio: 4 / 3; }
+/* Beside the writing the column is narrow, and three across made six small
+   prints: there they go two across and three down. That is taller than it is
+   wide, and it sticks under the bars, so on a short window it is held to the
+   width at which all three rows still fit on screen. */
+@media (min-width: 1081px) {
+  .strip--yr[data-n="6"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: max(260px, calc((100svh - var(--nav-h) - 7.5rem) / 1.16));
+  }
+}
 
 /* A slot still waiting for its photograph: a wash of color, a doodle,
    and the caption as a hint for which picture goes there. */
@@ -346,6 +356,11 @@ a.yclose__card:hover img { transform: scale(1.04); }
 /* four cards, two by two, at every width: three across would leave the
    fourth alone on a line of its own */
 .yclose__cards[data-n="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* five cards, three then two, at every width: auto-fit leaves the fifth alone
+   under four, or under two pairs. The two sit centered under the three. */
+.yclose__cards[data-n="5"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.yclose__cards[data-n="5"] > * { grid-column: span 2; }
+.yclose__cards[data-n="5"] > :nth-child(4) { grid-column: 2 / span 2; }
 .yclose__item { min-width: 0; }
 /* the card for the page you are on lies flat, and its year is picked out */
 .yclose__item.is-here .yclose__year { color: var(--brass); }
@@ -398,9 +413,10 @@ a.yclose__card:hover img { transform: scale(1.04); }
   .ydeck__here { top: -.6rem; right: -.4rem; padding: .28em .5em .22em; font-size: .46rem; letter-spacing: .08em; }
   /* three earlier cards share one row, rather than leaving the last one alone on a second */
   .yclose__cards[data-n="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem .9rem; }
-  .yclose__cards[data-n="3"] .yclose__pic { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
-  .yclose__cards[data-n="3"] .yclose__year { font-size: 1.15rem; }
-  .yclose__cards[data-n="3"] .yclose__title { font-size: .68rem; }
+  .yclose__cards[data-n="5"] { gap: 1.25rem .9rem; }
+  .yclose__cards:is([data-n="3"], [data-n="5"]) .yclose__pic { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
+  .yclose__cards:is([data-n="3"], [data-n="5"]) .yclose__year { font-size: 1.15rem; }
+  .yclose__cards:is([data-n="3"], [data-n="5"]) .yclose__title { font-size: .68rem; }
   /* on a phone four or more photographs sit in one row you swipe through,
      running off the right edge so the next one peeks in, instead of stacking
      a screen tall; two or three stay a small mosaic that fits the screen */
@@ -436,6 +452,8 @@ a.yclose__card:hover img { transform: scale(1.04); }
     padding: 0;
   }
   .strip--yr:is([data-n="4"], [data-n="5"], [data-n="6"]) .shot { flex: none; scroll-snap-align: none; }
+  /* six stay three across here: three rows would be taller than the screen */
+  .strip--yr[data-n="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
