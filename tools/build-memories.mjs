@@ -89,6 +89,13 @@ const KNOWN = {
   'stow': 'OH', 'kings island': 'OH', 'cuyahoga': 'OH', 'ferdinand': 'IN',
   'luray': 'VA', 'old town alexandria': 'VA', 'provincetown': 'MA', 'tybee island': 'GA', 'cloudland canyon': 'GA',
   'fall creek falls': 'TN', 'watkins glen': 'NY', 'letchworth': 'NY',
+  // 2026
+  'key west': 'FL', 'the florida keys': 'FL', 'shark valley': 'FL',
+  'humpback rocks': 'VA', 'hocking hills': 'OH', 'mammoth cave': 'KY',
+  'ricketts glen': 'PA', 'worlds end': 'PA', 'coronado': 'CA', 'encinitas': 'CA',
+  'kings canyon': 'CA', 'sequoia': 'CA', 'yosemite': 'CA', 'muir woods': 'CA',
+  'sonoma': 'CA', 'lake tahoe': 'CA', 'napa': 'CA',
+  "camel's hump": 'VT', 'mount hunger': 'VT',
 };
 
 /* Towns with a namesake stay off that list: Newport is in Rhode Island and on
@@ -409,8 +416,13 @@ MW.timeline.forEach((c, i) => {
 });
 
 /* Volume two: the year pages. The honeymoon runs a day at a time, the rest of
-   the year a trip at a time. */
-YEARS.forEach(({ year }) => {
+   the year a trip at a time.
+
+   A year marked "hidden" in years/index.js is still being written: its trips
+   go on the map, but nothing links to its page. A trip of that year that has
+   a highlight page of its own (the trip's "highlight") links there instead,
+   and the rest have no link until the year is on show. */
+YEARS.forEach(({ year, hidden }) => {
   const Y = read(`assets/js/years/${year}.js`, 'MW_YEAR');
 
   const H = Y.honeymoon;
@@ -440,7 +452,8 @@ YEARS.forEach(({ year }) => {
         date: dated(t.dates, year),
         year,
         text: blurb(t.text),
-        href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
+        href: hidden ? (t.highlight || '') : `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
+        go: hidden && t.highlight ? 'Read the highlight' : '',
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
       });
     });
@@ -457,7 +470,8 @@ items.forEach((m, i) => m.st.forEach(s => (by[s] ||= []).push(i)));
 /* A state with nothing filed under it, but a trip that names it: the panel
    says which trip and links to it, instead of calling it a drive through. */
 const bare = {};
-unfiled.filter(u => !by[u.c]).forEach(u => (bare[u.c] ||= []).push({ n: u.n, y: u.m.year, h: u.m.href }));
+// a trip with no page to link to yet cannot be the answer, so it is left out
+unfiled.filter(u => !by[u.c] && u.m.href).forEach(u => (bare[u.c] ||= []).push({ n: u.n, y: u.m.year, h: u.m.href }));
 const key = i => `${items[i].year}${items[i].date}`;
 Object.values(by).forEach(list => list.sort((a, b) => (key(a) < key(b) ? 1 : -1)));
 
@@ -469,7 +483,8 @@ const body = items.map(m => {
   // there is nothing to say.
   const pics = m.pics.map(p => `{"u":${j(url(p.src))}${p.cap ? `,"c":${j(p.cap)}` : ''}${p.pos ? `,"p":${j(p.pos)}` : ''}${p.st ? `,"s":${j(p.st)}` : ''}}`);
   const t = Object.keys(m.t).length ? `"t":${j(m.t)},` : '';
-  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   "text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
+  const go = m.go ? `"go":${j(m.go)},` : '';
+  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${go}${t}\n   "text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
 }).join(',\n');
 
 const out = `/* Every trip on the site, filed under the state it happened in, so the map on
@@ -480,7 +495,9 @@ const out = `/* Every trip on the site, filed under the state it happened in, so
    "t" is what to call it when a given state is picked, and a photograph's
    "s" is the state it was taken in, so a trip that crossed a line shows the
    right half of itself under either one. "bare" is a state with nothing
-   filed under it, and the trips that name it all the same. */
+   filed under it, and the trips that name it all the same. A memory from a
+   year that is not on show yet has an empty "href", or a highlight page and
+   the "go" to print on the link to it. */
 window.MW_MEMORIES = {
  "items": [
 ${body}
