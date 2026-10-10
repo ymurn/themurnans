@@ -244,7 +244,9 @@ window.MW_YEAR = {
     { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-08.jpg", "cap": "Providence Canyon" },
     { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-04.jpg", "cap": "The falls at Cloudland Canyon" },
     { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-05.jpg", "cap": "Thanksgiving in Georgia" },
-    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-03.jpg", "cap": "Dinner with family in Georgia" }
+    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-03.jpg", "cap": "Dinner with family in Georgia" },
+    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-09.jpg", "cap": "An uprooted tree at Congaree" },
+    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-01.jpg", "cap": "At a brewery in Raleigh with Yao" }
    ]
   },
   {

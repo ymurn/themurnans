@@ -2016,18 +2016,20 @@
        A trip that crossed a line is filed under both states. Under Indiana
        it should say Holiday World and show the day at Holiday World, not the
        Cincinnati half of the same week. memories.js carries the name for each
-       state on "t" and the state each photograph was taken in on "s", and a
-       memory that has nothing to say about it falls back to what it has. */
+       state on "t" and the state each photograph was taken in on "s". A
+       photograph with no "s" could not be placed, on a state line say, and
+       comes after the ones that could, ahead of the ones from elsewhere. */
 
     const titleOf = (m, id) => (id && m.t && m.t[id]) || m.short;
     const inState = (m, id) => (id ? m.pics.filter(p => p.s === id) : []);
-    const forState = (m, id) => {
-      const mine = inState(m, id);
-      return mine.length ? [...mine, ...m.pics.filter(p => p.s !== id)] : m.pics;
-    };
+    const unplaced = m => m.pics.filter(p => !p.s);
+    const forState = (m, id) => (id
+      ? [...inState(m, id), ...unplaced(m), ...m.pics.filter(p => p.s && p.s !== id)]
+      : m.pics);
 
     const dealt = m => {
-      const pool = inState(m, on).length ? inState(m, on) : m.pics;
+      const mine = inState(m, on);
+      const pool = mine.length ? mine : (on && unplaced(m).length ? unplaced(m) : m.pics);
       return { m, shot: pool[Math.floor(Math.random() * pool.length)] };
     };
 
@@ -2045,13 +2047,19 @@
         </div>`;
 
       if (!picks.length) {
+        // A trip that names the state, with no photograph taken there: say
+        // which trip and link to it, since "a drive through" would be wrong.
+        const told = !FRESH[id] && M.bare && M.bare[id] && M.bare[id][0];
         const said = FRESH[id]
           ? `We have only just been to ${esc(nameOf(id))}, in ${FRESH[id]}. The photographs and the writing land here as soon as they are ready.`
-          : `We have been, but nothing from ${esc(nameOf(id))} has made it onto the site yet. It was probably a drive through on the way somewhere else.`;
+          : told
+            ? `We wrote about ${esc(told.n)} in ${esc(told.y)}, but no photograph from ${esc(nameOf(id))} has made it onto the site yet.`
+            : `We have been, but nothing from ${esc(nameOf(id))} has made it onto the site yet. It was probably a drive through on the way somewhere else.`;
         return `${head}
           <div class="mem__none${FRESH[id] ? ' is-soon' : ''}">
             ${FRESH[id] ? '<span class="mem__soon">Coming soon</span>' : ''}
             <p>${said}</p>
+            ${told ? `<a class="mem__go" href="${esc(told.h)}">Read it in ${esc(told.y)} &rarr;</a>` : ''}
             <button class="mem__back" type="button" data-all>&larr; Somewhere else</button>
           </div>`;
       }
@@ -2077,16 +2085,22 @@
       return `${head}<div class="mem__grid">${cards}</div>`;
     };
 
+    /* The photographs the open memory is showing, in the order its thumbnails
+       are in. A picked state puts its own first, so this is not the order
+       memories.js has them in, and a tap on the third thumbnail has to mean
+       the third one here. */
+    let roll = [];
+
     const opened = i => {
       const m = M.items[i];
-      const pics = forState(m, on).slice(0, 5);
+      const pics = roll = forState(m, on).slice(0, 5);
       const back = on ? nameOf(on) : 'the pile';
       return `
         <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]})">
           <button class="mem__back" type="button" data-back>&larr; Back to ${esc(back)}</button>
           <span class="mem__lead">
             <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
-            ${pics[0].c ? `<span class="mem__cap">${esc(pics[0].c)}</span>` : ''}
+            <span class="mem__cap"${pics[0].c ? '' : ' hidden'}>${esc(pics[0].c || '')}</span>
           </span>
           ${pics.length > 1 ? `<div class="mem__shots">${pics.map((p, k) => `
             <button class="mem__thumb${k ? '' : ' is-on'}" type="button" data-shot="${k}" aria-label="Photograph ${k + 1} of ${pics.length}">
@@ -2249,7 +2263,8 @@
 
       const thumb = e.target.closest('[data-shot]');
       if (thumb && open !== null) {
-        const p = M.items[open].pics[+thumb.dataset.shot];
+        const p = roll[+thumb.dataset.shot];
+        if (!p) return;
         const lead = $('.mem__lead img', panel);
         const cap = $('.mem__cap', panel);
         lead.style.animation = 'none';
@@ -2257,7 +2272,9 @@
         lead.style.animation = '';
         lead.src = p.u;
         lead.style.objectPosition = p.p || '';
-        if (cap) cap.textContent = p.c || '';
+        // the caption comes and goes with the photograph it belongs to
+        cap.textContent = p.c || '';
+        cap.hidden = !p.c;
         $$('.mem__thumb', panel).forEach(t => t.classList.toggle('is-on', t === thumb));
       }
     });

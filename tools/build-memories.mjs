@@ -7,8 +7,11 @@
      assets/js/data.js          the twenty-nine chapters before the wedding
      assets/js/years/20XX.js    every trip since, month by month
      assets/js/years/places.js  where each trip's photographs were taken, from
-                                the GPS in the originals, which is what says
-                                which state a trip belongs to
+                                the GPS in the originals
+
+   A memory is filed under a state only when one of its own photographs was
+   taken there, so a state never opens on a picture from somewhere else. The
+   run ends by listing anything it could not place: read that list.
 
    Run it after adding a trip or a year:  node tools/build-memories.mjs        */
 
@@ -82,7 +85,18 @@ const KNOWN = {
   'the finger lakes': 'NY', 'the four corners': 'CO',
   "utah's mighty five": 'UT', 'utah': 'UT', 'the north fork': 'NY',
   'the desert southwest': 'NM',
+  // named in captions rather than in titles
+  'stow': 'OH', 'kings island': 'OH', 'cuyahoga': 'OH', 'ferdinand': 'IN',
+  'luray': 'VA', 'old town alexandria': 'VA', 'provincetown': 'MA', 'tybee island': 'GA', 'cloudland canyon': 'GA',
+  'fall creek falls': 'TN', 'watkins glen': 'NY', 'letchworth': 'NY',
 };
+
+/* Towns with a namesake stay off that list: Newport is in Rhode Island and on
+   the Oregon coast, and we have photographs of both.
+
+   Things a place name says that are not where it happened: Cincinnati Night
+   was a night out in New York. */
+const NOT_THERE = [/cincinnati night/gi];
 
 /* Pull every state a place name gives up: a trailing code ("Beacon, NY"), a
    state written out ("Cincinnati, Ohio"), or a town on the list above.
@@ -98,20 +112,25 @@ function statesFromPlace(place) {
   // "Washington, DC" is the district, not the state, so it is taken out of
   // the line before the state names are read off it.
   const DC_RE = /washington,?\s*d\.?\s*c\.?(?![a-z])/g;
-  const s = String(place).toLowerCase().replace(DC_RE, ' · ');
+  place = NOT_THERE.reduce((t, re) => t.replace(re, ' · '), String(place));
+  const s = place.toLowerCase().replace(DC_RE, ' · ');
   const out = new Set();
   (place.match(/\b([A-Z]{2})\b/g) || []).forEach(c => { if (CODES.has(c)) out.add(c); });
-  if (DC_RE.test(String(place).toLowerCase())) out.add('DC');
+  if (DC_RE.test(place.toLowerCase())) out.add('DC');
   if (/\bqc\b/i.test(place)) out.add('CA-QC');
-  for (const [name, code] of Object.entries(NAMES)) {
-    if (new RegExp(`(^|[^a-z])${name}([^a-z]|$)`).test(s)) out.add(code);
+  // "West Virginia" is read first and taken out, or it is Virginia as well
+  const longest = Object.entries(NAMES).sort((a, b) => b[0].length - a[0].length);
+  let rest = s;
+  for (const [name, code] of longest) {
+    const re = new RegExp(`(^|[^a-z])${name}(?=[^a-z]|$)`, 'g');
+    if (re.test(rest)) { out.add(code); rest = rest.replace(re, '$1 · '); }
   }
   const took = [];
   const free = (a, b) => !took.some(([x, y]) => a < y && b > x);
   for (const name of KEYS) {
     const re = new RegExp(`(^|[^a-z])(${esc_re(name)})([^a-z]|$)`, 'g');
     let m;
-    while ((m = re.exec(s))) {
+    while ((m = re.exec(rest))) {
       const a = m.index + m[1].length;
       if (free(a, a + name.length)) { took.push([a, a + name.length]); out.add(KNOWN[name]); }
       re.lastIndex = a + 1;
@@ -121,7 +140,8 @@ function statesFromPlace(place) {
 }
 
 /* The GPS answer: which folder a photograph sits in, and what places.js says
-   was photographed there. This wins, because it was measured rather than read. */
+   was photographed there. A folder is a whole trip, though, so this names the
+   places a trip stopped at, not where any one photograph was taken. */
 const slugOf = src => {
   const m = String(src).match(/continued_trips\/([^/]+)\//);
   return m ? m[1] : null;
@@ -137,11 +157,6 @@ const stopsOf = pics => {
   }));
   return out;
 };
-function statesFromPics(pics) {
-  const out = new Set();
-  stopsOf(pics).forEach(s => { if (s.st) out.add(s.st); });
-  return [...out];
-}
 
 /* ── One memory, one state at a time ──────────────────────────────────────
    A trip that crossed a line is filed under both states, and a card filed
@@ -205,37 +220,71 @@ function titlesByState(place, short, all, stops) {
   return out;
 }
 
-/* Which state a photograph was taken in: the folder's only stop, the stop its
-   caption names, or the state its caption names outright. One that matches
-   nothing is left unmarked and shows under any of the memory's states.     */
+/* Which state a photograph was taken in.
+
+   What its caption says comes first, because a folder holds a whole trip:
+   "Luray Caverns" is in Virginia even when every GPS stop in its folder is
+   in Georgia. A caption is only believed about a state the trip could have
+   been in, one its title names or its folder has a stop in, so that "The
+   Washington Monument at night" stays in the district. Then the folder, but
+   only when every stop in it is in the one state. A photograph neither of
+   those settles is left unmarked, and shows under any of its memory's states
+   rather than under the wrong one.
+
+   PIC_ST is for the few a caption cannot place ("The snowstorm"). Each was
+   read off the GPS in the original, by hand, and "" means on a state line. */
+const PIC_ST = {
+  '2022-12-cincy-07.jpg': 'OH',              // The snowstorm: Harrison, Ohio
+  '2023-09-family-trip-06.jpg': 'TN',        // The waterfall hike: above Gatlinburg
+  '2023-09-family-trip-10.jpg': 'NC',        // The highest point on the Parkway
+  '2025-02-rhode-island-03.jpg': 'RI',       // The White Horse Tavern: Newport
+  '2023-08-cincy-08.jpg': '',                // Beers with family: Covington, over the river
+};
 const hay = s => String(s).toLowerCase();
-function stateOfPic(pic, all) {
+function stateOfPic(pic, said) {
+  const file = path.basename(pic.src);
+  if (PIC_ST[file] !== undefined) return PIC_ST[file];
   const stops = (PLACES[slugOf(pic.src) || ''] || [])
-    .map(s => ({ n: s.n, st: s.st === 'QC' ? 'CA-QC' : s.st }))
-    .filter(s => s.st && all.includes(s.st));
-  if (stops.length === 1) return stops[0].st;
-  // The caption only. The folder is named after the whole trip, so
-  // 2024-06-cincinnati-holiday-world would put every photograph in Ohio.
+    .map(s => ({ n: s.n, st: s.st === 'QC' ? 'CA-QC' : s.st }));
   if (pic.cap) {
-    const hit = stops.find(s => hay(pic.cap).includes(hay(s.n)));
+    const hit = stops.find(s => s.st && hay(pic.cap).includes(hay(s.n)));
     if (hit) return hit.st;
-    const c = statesFromPlace(pic.cap).filter(x => all.includes(x));
+    const could = new Set([...said, ...stops.map(s => s.st)]);
+    const c = statesFromPlace(pic.cap).filter(x => could.has(x));
     if (c.length === 1) return c[0];
+    // "The Tennessee and North Carolina line" is in both and neither
+    if (c.length > 1) return '';
   }
-  return !stops.length && all.length === 1 ? all[0] : '';
+  const sts = new Set(stops.map(s => s.st));
+  return sts.size === 1 && !sts.has('') ? [...sts][0] : '';
 }
 
 /* ── Photographs ──────────────────────────────────────────────────────────
-   A month's photographs are split between that month's trips exactly the way
-   the memory machine in site.js splits them: each trip takes the ones whose
-   caption names one of its places, then any uncaptioned photograph from a
-   folder named after one, and a trip that matches nothing takes what is left. */
+   A month's photographs are split between that month's trips. A caption that
+   names something only one trip's own writing mentions goes to that trip
+   first: "Holding up the Ledges" to the day at Cuyahoga Valley, and "The
+   falls at Cloudland Canyon" to the Thanksgiving trip that hiked it, not to
+   the one called Providence Canyon. Then each trip takes the ones whose
+   caption names one of its places, then photographs from a folder named
+   after it, and a trip that matches nothing takes what is left. Anything
+   still unclaimed goes with its neighbour from the same folder, and what
+   that leaves is listed at the end of the run.                             */
 
 const ALIAS = { cincinnati: 'cincy', philadelphia: 'philly', washington: 'dc' };
 const SKIP = new Set(['with', 'from', 'home', 'long', 'this', 'that', 'trip']);
 const words = place => (String(place).toLowerCase().match(/[a-z]{4,}/g) || [])
   .filter(w => !SKIP.has(w))
   .flatMap(w => (ALIAS[w] ? [w, ALIAS[w]] : [w]));
+
+// The names in a caption: capitalised words of four letters up. The first
+// word is capitalised whatever it is, so it has to be six ("Thanksgiving",
+// "Winterfest") to count, which keeps "With" and "The" out.
+const proper = cap => {
+  const [first, ...rest] = String(cap).split(/\s+/);
+  return [...(/^[A-Z][a-z]{5,}$/.test(first) ? [first] : []),
+    ...(rest.join(' ').match(/[A-Z][a-z]{3,}/g) || [])];
+};
+const unclaimed = [];   // a photograph no trip in its month took
 
 function splitPhotos(month) {
   const shots = (month.photos || []).filter(p => p.src).map(p => ({
@@ -246,13 +295,45 @@ function splitPhotos(month) {
   if (!shots.length || !trips.length) return trips.map(() => []);
   if (trips.length === 1) return [shots];
 
-  const byCap = trips.map(t => shots.filter(s => words(t.place).some(x => s.hay.includes(x))));
-  const named = new Set(byCap.flat());
-  const claims = trips.map((t, k) => [...byCap[k],
-    ...shots.filter(s => !named.has(s) && words(t.place).some(x => s.path.includes(x)))]);
-  const taken = new Set(claims.flat());
-  const left = shots.filter(s => !taken.has(s));
-  return claims.map(c => (c.length ? c : left.length ? left : shots));
+  const claims = trips.map(() => []);
+  const free = () => { const taken = new Set(claims.flat()); return shots.filter(s => !taken.has(s)); };
+  const only = hits => (hits.filter(Boolean).length === 1 ? hits.indexOf(true) : -1);
+
+  // what only one trip's writing mentions: a name both mention says nothing
+  const told = trips.map(t => [].concat(t.text).join(' '));
+  shots.forEach(s => {
+    const votes = new Set(proper(s.cap).map(n => only(told.map(text => text.includes(n)))).filter(k => k >= 0));
+    if (votes.size === 1) claims[[...votes][0]].push(s);
+  });
+
+  // a caption that names one of a trip's places
+  const open = free();
+  trips.forEach((t, k) => claims[k].push(
+    ...open.filter(s => words(t.place).some(x => s.hay.includes(x)))));
+
+  // a folder named after a trip
+  const unnamed = free();
+  trips.forEach((t, k) => claims[k].push(
+    ...unnamed.filter(s => words(t.place).some(x => s.path.includes(x)))));
+
+  // When every trip has something, a photograph nothing placed goes with the
+  // nearest placed one from its own folder, the one before it first: "Dinner
+  // with family in Georgia" follows "Thanksgiving in Georgia". One from a
+  // folder no trip took anything from stays out, and is listed.
+  if (claims.every(c => c.length)) {
+    free().forEach(s => {
+      const i = shots.indexOf(s);
+      const dir = slugOf(s.src);
+      const near = dir && [...shots.slice(0, i).reverse(), ...shots.slice(i + 1)]
+        .find(o => slugOf(o.src) === dir && claims.some(c => c.includes(o)));
+      if (near) claims.find(c => c.includes(near)).push(s);
+    });
+    unclaimed.push(...free());
+  }
+  const left = free();
+  // in the order the month shows them
+  return claims.map(c => (c.length ? c : left.length ? left : shots))
+    .map(c => shots.filter(s => c.includes(s)));
 }
 
 /* ── The line on the card ─────────────────────────────────────────────────
@@ -268,16 +349,48 @@ function blurb(text, max = 165) {
   return `${first.slice(0, first.lastIndexOf(' ', max)).trim()}…`;
 }
 
+/* A trip's dates with its year on. One that starts in December and ends in
+   January ends in the next year, so it carries both. */
+const dated = (dates, year) => {
+  if (/\d{4}/.test(dates)) return dates;
+  const over = String(dates).match(/^(December \d+) to (January \d+)$/);
+  return over ? `${over[1]}, ${year} to ${over[2]}, ${Number(year) + 1}` : `${dates}, ${year}`;
+};
+
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
 const items = [];
-/* The per-state name and the per-photograph state are worked out here rather
-   than at each push, so every memory gets them the same way. */
+const unfiled = [];   // a place a trip names, with no photograph taken there
+const unsure = [];    // a photograph nothing could place, on a trip of several states
+
+/* Where a memory is filed is worked out here rather than at each push, so
+   every memory gets it the same way: the states its photographs were taken
+   in. A state the title names is one the trip went to, but with no picture
+   from there it would open on a picture from somewhere else, so it is left
+   off and listed at the end of the run instead. */
 const push = m => {
-  if (!m.st.length || !m.pics.length) return;
+  if (!m.pics.length) return;
+  const said = statesFromPlace(m.place);
+  m.pics.forEach(p => { p.st = stateOfPic(p, said); });
+  const shot = [...new Set(m.pics.map(p => p.st).filter(Boolean))];
+  const all = [...new Set([...shot, ...said])];
+  // a trip that never left one state: every photograph of it was taken there
+  if (all.length === 1) m.pics.forEach(p => { p.st = all[0]; });
+  // an unplaced photograph could be from any of them, so it keeps them all
+  const loose = m.pics.filter(p => !p.st);
+  m.st = all.filter(c => loose.length || m.pics.some(p => p.st === c));
+  if (all.length > 1) {
+    loose.filter(p => PIC_ST[path.basename(p.src)] === undefined && statesFromPlace(p.cap || '').length < 2)
+      .forEach(p => unsure.push({ m, p }));
+  }
+  all.filter(c => !m.st.includes(c)).forEach(c => {
+    const names = [...new Set(namedPlaces(m.place)
+      .filter(n => n.st.includes(c) && !n.bare).map(n => n.name))];
+    unfiled.push({ c, m, n: names.slice(0, 2).join(' & ') || m.short });
+  });
+  if (!m.st.length) return;
   m.t = titlesByState(m.place, m.short, m.st, stopsOf(m.pics));
-  m.pics.forEach(p => { p.st = stateOfPic(p, m.st); });
   items.push(m);
 };
 
@@ -289,7 +402,6 @@ MW.timeline.forEach((c, i) => {
     short: c.short || String(c.place).split(/[,&]/)[0].trim(),
     date: c.date,
     year: c.year,
-    st: statesFromPlace(c.place),
     text: blurb(c.text),
     href: `story.html#chap-${i + 1}`,
     pics: (c.photos || []).map(p => ({ src: `photos/${p}` })),
@@ -310,9 +422,9 @@ YEARS.forEach(({ year }) => {
         short: d.title,
         date: `${d.date}, ${year}`,
         year,
-        st: statesFromPics(pics).length ? statesFromPics(pics) : statesFromPlace(d.where || ''),
         text: blurb(d.text),
-        href: `${year}.html#day-${d.day}`,
+        // the same id year.js gives the day: two halves of one day are -1 and -2
+        href: `${year}.html#day-${d.day}${d.part ? `-${String(d.part).replace(/\D/g, '')}` : ''}`,
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
       });
     });
@@ -322,16 +434,11 @@ YEARS.forEach(({ year }) => {
     const split = splitPhotos(m);
     (m.trips || []).forEach((t, k) => {
       const pics = split[k] || [];
-      const gps = statesFromPics(pics);
-      const said = statesFromPlace(t.place);
-      // GPS first; anything the title names that the GPS missed comes after
-      const st = [...new Set([...gps, ...said])];
       push({
         place: t.place,
         short: String(t.place).split(/[,:&]| to /)[0].trim(),
-        date: /\d{4}/.test(t.dates) ? t.dates : `${t.dates}, ${year}`,
+        date: dated(t.dates, year),
         year,
-        st,
         text: blurb(t.text),
         href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
@@ -346,6 +453,11 @@ YEARS.forEach(({ year }) => {
 
 const by = {};
 items.forEach((m, i) => m.st.forEach(s => (by[s] ||= []).push(i)));
+
+/* A state with nothing filed under it, but a trip that names it: the panel
+   says which trip and links to it, instead of calling it a drive through. */
+const bare = {};
+unfiled.filter(u => !by[u.c]).forEach(u => (bare[u.c] ||= []).push({ n: u.n, y: u.m.year, h: u.m.href }));
 const key = i => `${items[i].year}${items[i].date}`;
 Object.values(by).forEach(list => list.sort((a, b) => (key(a) < key(b) ? 1 : -1)));
 
@@ -367,19 +479,31 @@ const out = `/* Every trip on the site, filed under the state it happened in, so
    "by" is a state code to the memories under it, newest first. On a memory,
    "t" is what to call it when a given state is picked, and a photograph's
    "s" is the state it was taken in, so a trip that crossed a line shows the
-   right half of itself under either one. */
+   right half of itself under either one. "bare" is a state with nothing
+   filed under it, and the trips that name it all the same. */
 window.MW_MEMORIES = {
  "items": [
 ${body}
  ],
- "by": ${JSON.stringify(by)}
+ "by": ${JSON.stringify(by)},
+ "bare": ${JSON.stringify(bare)}
 };
 `;
 
 fs.writeFileSync(path.join(ROOT, 'assets/js/memories.js'), out);
 
-const none = items.filter(m => !m.st.length);
 console.log(`${items.length} memories, ${Object.keys(by).length} states`);
 console.log(Object.entries(by).sort((a, b) => b[1].length - a[1].length)
   .map(([s, l]) => `${s}:${l.length}`).join('  '));
-if (none.length) console.log('NO STATE:', none.map(m => m.place).join(' | '));
+if (unfiled.length) {
+  console.log('\nNamed by a trip, but no photograph from there, so not on the map under it:');
+  unfiled.forEach(u => console.log(`  ${u.c}  ${u.n}, ${u.m.year}  (${u.m.place})${by[u.c] ? '' : '  <- the state has nothing else'}`));
+}
+if (unclaimed.length) {
+  console.log('\nOn a month page, but in no memory, because nothing says which of the month\'s trips they are from:');
+  unclaimed.forEach(p => console.log(`  ${path.basename(p.src)}  ${p.cap || '(no caption)'}`));
+}
+if (unsure.length) {
+  console.log('\nNothing says which state these were taken in. Name the place in the caption, or add them to PIC_ST:');
+  unsure.forEach(({ m, p }) => console.log(`  ${path.basename(p.src)}  ${p.cap || '(no caption)'}  (${m.place})`));
+}

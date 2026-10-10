@@ -432,21 +432,55 @@ It reads the same three sources the rest of the site reads, `assets/js/data.js`,
 `assets/js/years/20XX.js`, and `assets/js/years/places.js`, and prints what it found:
 
 ```
-96 memories, 32 states
-NY:24  OH:14  WA:14  VA:8  CA:7  PA:5  DC:5  MD:5 ...
+96 memories, 29 states
+NY:23  OH:11  WA:9  CA:7  PA:5  DC:5  MD:5  OR:5 ...
 ```
 
-Which state a trip belongs to comes from the GPS in the photographs, by way of
-`places.js`, and only falls back to reading the trip's own title when a trip has no
-photographs in `assets/continued_trips/`. Chapters before the wedding have their
-photographs loose in `assets/photos/` with no GPS, so those are read from the title
-alone, against the list of place names at the top of the script. A new town that is not
-on that list and does not name its state (`Beacon, NY` names it, `Fallingwater` does
-not) needs a line adding there.
+**A memory is filed under a state only when one of its own photographs was taken
+there.** That is the rule that keeps a state from opening on a picture of somewhere else:
+the New Year trip that ended at Rehoboth Beach has no photograph from Delaware, so it is
+not under Delaware, however clearly its title names it.
 
-A state we have been to with nothing written up yet shows on the map and says so when
-tapped. That is four of the thirty-six: Nevada, North Dakota, South Dakota and Wyoming,
-all drives through on the way somewhere else.
+Which state a photograph was taken in is worked out one photograph at a time:
+
+1. **Its caption**, when it names a place: a stop from its folder in `places.js`, a town
+   on the list at the top of the script, or a state outright. `Luray Caverns` is Virginia
+   even though every GPS stop in its folder is in Georgia. A caption is only believed
+   about a state the trip could have been in, so `The Washington Monument at night` does
+   not land in Washington state.
+2. **Its folder**, when every stop `places.js` has for that folder is in the one state.
+3. **Neither**: it is left unmarked. An unmarked photograph shows under any of its trip's
+   states, after the ones that are known to be from there.
+
+A trip that never left one state skips all of that: every photograph of it is from there.
+
+In a month with more than one trip, the month's photographs are shared out between them:
+a caption that names something only one trip's writing mentions goes to that trip, then
+one that names a trip's place, then one from a folder named after it. A photograph none
+of that places goes with its neighbour from the same folder.
+
+The run ends with up to three lists, and all are worth reading:
+
+- **Named by a trip, but no photograph from there.** The place is written up and has no
+  picture, so it is off the map under that state. Add a photograph of it to the month and
+  it files itself. When the state has nothing else, the panel says which trip wrote about
+  it and links there (`bare` in `memories.js`) instead of calling it a drive through.
+- **On a month page, but in no memory.** Nothing says which of the month's trips the
+  photograph is from. Naming the place in its caption settles it.
+- **Nothing says which state these were taken in.** Name the place in the caption, or, for
+  a caption that cannot (`The snowstorm`), add the file to `PIC_ST` in the script with the
+  state read off the original's GPS.
+
+Chapters before the wedding have their photographs loose in `assets/photos/` with no GPS,
+so those are read from the title alone, against the list of place names at the top of the
+script. A new town that is not on that list and does not name its state (`Beacon, NY`
+names it, `Fallingwater` does not) needs a line adding there. Leave off any town with a
+namesake: Newport is in Rhode Island and on the Oregon coast, and we have been to both.
+
+A state we have been to with nothing filed under it shows on the map and says so when
+tapped. Nevada and Kentucky have no photograph in any memory; Delaware and Connecticut are
+written up (Rehoboth Beach, Mystic) with no photograph from the state itself; and North
+Dakota, South Dakota, Wyoming and Nebraska are the 2026 trips still to come.
 
 ---
 
