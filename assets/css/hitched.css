@@ -183,6 +183,21 @@ body[data-page="day"] main .btn:not(.btn--ghost) { --btn-bg: #F0CE84; --btn-fg: 
   .tv__grille i { width: 34px; }
 }
 
+/* the vows: two cards of clean cream stationery with black ink, the colour
+   only in the block behind, the label and the marker. Like the note and the
+   cake they stay lit in dusk, rather than mixing their colour into the dark
+   (which read as olive). Colours are fixed so they hold in both themes. */
+.hd-vows .vows__slot:first-child { --off: #8DBBCD; }
+.hd-vows .vows__slot:last-child  { --off: #F0CE84; }
+.hd-vows .vow { background: #FBF7EE; color: #14110D; border-color: #14110D; }
+.hd-vows .vow::before { border-color: color-mix(in srgb, var(--off) 70%, #FBF7EE); }
+.hd-vows .vow__pic { background: #FBF7EE; border-color: #14110D; box-shadow: 4px 4px 0 color-mix(in srgb, var(--off) 80%, #14110D); }
+.hd-vows .vow__to { color: #14110D; background: color-mix(in srgb, var(--off) 55%, #FBF7EE); border-color: #14110D; }
+.hd-vows .vow__text { color: #14110D; }
+.hd-vows .vow__sign { filter: none; }
+[data-theme="dusk"] .hd-vows .vow__promise { background-image: linear-gradient(color-mix(in srgb, var(--off) 75%, transparent), color-mix(in srgb, var(--off) 75%, transparent)); background-position: 0 88%; background-size: 0% .42em; }
+[data-theme="dusk"] .hd-vows .is-in .vow__promise { background-size: 100% .42em; }
+
 /* ---- still: no script, or reduced motion ---------------------------------
    The script adds .hx-on when it is going to fly the camera. Without it the
    hero is a still poster one screen tall, and the note is set beneath it. */
