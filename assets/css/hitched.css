@@ -137,6 +137,52 @@
 }
 @keyframes hx-fadein { from { opacity: 0; } to { opacity: 1; } }
 
+/* ---- the rest of the page, in the same hand -------------------------------
+   Every section opens the same way: a small flat drawing in the cake's
+   language (gold and cream fills, a 2px ink keyline), then the heading
+   centred, then the intro. The drawings keep black ink in both themes. */
+.hd-head { display: grid; justify-items: center; gap: 1rem; text-align: center; margin-bottom: clamp(2.25rem, 5vw, 3.5rem); }
+.hd-head .lede { margin: 0 auto; max-width: 40ch; text-align: center; text-wrap: balance; }
+.hd-mark { display: block; width: 52px; height: 52px; rotate: var(--t, 0deg); }
+.hd-mark svg { width: 100%; height: 100%; overflow: visible; }
+.hd-mark svg * { stroke: #14110D; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.hd-mark svg [stroke-width="1.6"] { stroke-width: 1.6; }
+
+/* the film, in a little TV set: blue cabinet, gold aerials, two knobs */
+.tv { position: relative; max-width: 780px; margin: 0 auto; padding-top: 50px; }
+.tv__aerial { position: absolute; z-index: 0; top: 0; left: 50%; width: 120px; translate: -50% 0; overflow: visible; }
+.tv__rod { fill: none; stroke: #14110D; stroke-width: 2.4; stroke-linecap: round; }
+.tv__tip { fill: #F0CE84; stroke: #14110D; stroke-width: 1.6; }
+.tv__dome { fill: #F0CE84; stroke: #14110D; stroke-width: 2; }
+.tv__block { position: absolute; z-index: 0; inset: 50px 0 14px; background: #F0CE84; border-radius: 22px; rotate: 1.4deg; translate: 8px 10px; }
+.tv__body { position: relative; z-index: 1; display: grid; gap: 12px; padding: 12px; background: #8DBBCD; border: 2px solid #14110D; border-radius: 22px; }
+.tv .tube { border: 2px solid #14110D; border-radius: 12px; box-shadow: none; transform: none; }
+.tv .tube:hover { transform: none; box-shadow: none; }
+.tv__panel { display: flex; align-items: center; gap: 10px; padding: 0 4px 2px; }
+.tv__knob { position: relative; width: 22px; height: 22px; border-radius: 50%; background: #F0CE84; border: 2px solid #14110D; rotate: -30deg; transition: rotate .6s var(--ease); }
+.tv__knob::after { content: ""; position: absolute; left: 50%; top: 2px; width: 2px; height: 7px; translate: -50% 0; border-radius: 1px; background: #14110D; }
+.tv__knob--b { background: #E4CBC8; rotate: 60deg; }
+.tv:hover .tv__knob { rotate: 40deg; }
+.tv:hover .tv__knob--b { rotate: -20deg; }
+.tv__grille { display: grid; gap: 4px; margin-left: auto; }
+.tv__grille i { display: block; width: 38px; height: 4px; border-radius: 2px; background: #14110D; }
+.tv__feet { position: relative; z-index: 1; display: flex; justify-content: space-between; width: 62%; margin: -2px auto 0; }
+.tv__feet i { display: block; width: 26px; height: 14px; background: #14110D; border-radius: 0 0 8px 8px; }
+.hd-film__btns { margin-top: clamp(2.5rem, 6vw, 3.5rem); }
+/* the page's buttons wear the cake's gold rather than the old oxblood */
+body[data-page="day"] main .btn:not(.btn--ghost) { --btn-bg: #F0CE84; --btn-fg: #14110D; }
+@media (min-width: 760px) {
+  .tv { padding-top: 58px; }
+  .tv__aerial { width: 140px; }
+  .tv__block { inset: 58px 0 14px; }
+  .tv__body { grid-template-columns: minmax(0, 1fr) 76px; gap: 16px; padding: 16px; border-radius: 26px; }
+  .tv__panel { flex-direction: column; justify-content: center; gap: 18px; padding: 0; }
+  .tv__knob { width: 34px; height: 34px; }
+  .tv__knob::after { height: 11px; top: 3px; }
+  .tv__grille { margin: 6px 0 0; }
+  .tv__grille i { width: 34px; }
+}
+
 /* ---- still: no script, or reduced motion ---------------------------------
    The script adds .hx-on when it is going to fly the camera. Without it the
    hero is a still poster one screen tall, and the note is set beneath it. */

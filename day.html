@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
-<link rel="stylesheet" href="assets/css/hitched.css?v=5">
+<link rel="stylesheet" href="assets/css/hitched.css?v=6">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
 <script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Microsoft Clarity: visit recordings and heatmaps, on the live site only so local previews stay out of the numbers -->
@@ -119,8 +119,8 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <!-- The record: the cake ----------------------------------------------- -->
 <section class="hx-record">
   <div class="shell">
-    <header class="hx-head">
-      <span class="sec-head__idx">01 / The record</span>
+    <header class="hd-head hx-head">
+      <span class="hd-mark" style="--t:-6deg" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M20 4.5h8M24 4.5v3"/><circle cx="24" cy="26" r="18" fill="#FBF7EE"/><path d="M24 26V8A18 18 0 1 1 13.42 40.56Z" fill="#F0CE84"/><circle cx="24" cy="26" r="18" fill="none"/><path d="M24 26V12M24 26l-7.1 9.7" fill="none"/><circle cx="24" cy="26" r="2" fill="#14110D"/></svg></span>
       <h2 class="t-lg">Thirty-six minutes to say <span class="squiggle">forever.</span></h2>
     </header>
 
@@ -166,20 +166,20 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
   </div>
 </section>
 
-<!-- Watch / see --------------------------------------------------------- -->
-<section class="band band--deep">
+<!-- Watch / see: the film, in a little TV set ------------------------------ -->
+<section class="band band--paper2 hd-film">
   <div class="shell">
-    <div class="feature feature--film">
-      <div class="stack gap-m feature__words">
-        <span class="eyebrow eyebrow--brass" data-reveal="fade">02 / Keep it</span>
-        <h2 class="t-xl" data-split>The whole thing, <span class="squiggle">on tape.</span></h2>
-        <p class="lede" data-reveal="up" style="--d:120ms">
-          We asked everyone to put their cameras down so we could see your faces.
-          A professional caught the rest. Here it all is.
-        </p>
-      </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:5deg" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="#F0CE84"/><circle cx="24" cy="13.5" r="3.8" fill="#FBF7EE"/><circle cx="34" cy="20.8" r="3.8" fill="#FBF7EE"/><circle cx="30.2" cy="32.5" r="3.8" fill="#FBF7EE"/><circle cx="17.8" cy="32.5" r="3.8" fill="#FBF7EE"/><circle cx="14" cy="20.8" r="3.8" fill="#FBF7EE"/><circle cx="24" cy="24" r="2.4" fill="#14110D"/></svg></span>
+      <h2 class="t-lg" data-split>The whole thing, <span class="squiggle">on tape.</span></h2>
+      <p class="lede">We asked everyone to put their cameras down so we could see your faces. A professional caught the rest. Here it all is.</p>
+    </header>
 
-      <div class="tube" data-video="1S_qJkxuk_0" data-title="Murnans' wedding speech moments" data-reveal="up" style="--d:200ms;--off:var(--gold)">
+    <div class="tv" data-reveal="up">
+      <svg class="tv__aerial" viewBox="0 0 120 64" aria-hidden="true"><path class="tv__rod" d="M60 60L28 14M60 60L94 9"/><path class="tv__tip" d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z" transform="translate(19 5) scale(.75)"/><path class="tv__tip" d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z" transform="translate(86 1) scale(.66)"/><path class="tv__dome" d="M42 63a18 11 0 0 1 36 0Z"/></svg>
+      <span class="tv__block" aria-hidden="true"></span>
+      <div class="tv__body">
+        <div class="tube" data-video="1S_qJkxuk_0" data-title="Murnans' wedding speech moments">
         <button class="tube__poster" type="button">
           <img src="https://img.youtube.com/vi/1S_qJkxuk_0/sddefault.jpg" alt="Still from the wedding video" loading="lazy" decoding="async">
           <span class="tube__play" aria-hidden="true">
@@ -189,8 +189,15 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
         </button>
         <noscript><a class="tube__cta" href="https://www.youtube.com/watch?v=1S_qJkxuk_0" target="_blank" rel="noopener">Watch on YouTube</a></noscript>
       </div>
+        <div class="tv__panel" aria-hidden="true">
+          <span class="tv__knob"></span><span class="tv__knob tv__knob--b"></span>
+          <span class="tv__grille"><i></i><i></i><i></i></span>
+        </div>
+      </div>
+      <span class="tv__feet" aria-hidden="true"><i></i><i></i></span>
+    </div>
 
-      <div class="btns" style="--d:260ms" data-reveal="up">
+    <div class="btns btns--center hd-film__btns" data-reveal="up">
         <a class="btn" href="https://www.icloud.com/sharedalbum/#B125nhQSTGWRcN4" target="_blank" rel="noopener" data-magnet>
           The photographs
           <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
@@ -199,19 +206,16 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
           Watch the ceremony
         </a>
       </div>
-    </div>
   </div>
 </section>
 
 <!-- Vows ----------------------------------------------------------------- -->
-<section class="band">
+<section class="band hd-vows">
   <div class="shell">
-    <div class="sec-head">
-      <span class="sec-head__idx">03 / The vows</span>
-      <div class="sec-head__body">
-        <h2 class="t-lg" data-split>What we <span class="squiggle">promised</span> each other.</h2>
-      </div>
-    </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:-5deg" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="5" y="11" width="38" height="27" rx="3" fill="#FBF7EE"/><path d="M5.5 12.5L24 27.5L42.5 12.5" fill="none"/><path d="M24 36.5c-5.4-3.5-7.6-6-7.6-8.8 0-2.1 1.7-3.6 3.6-3.6 1.6 0 3 .9 4 2.2 1-1.3 2.4-2.2 4-2.2 1.9 0 3.6 1.5 3.6 3.6 0 2.8-2.2 5.3-7.6 8.8Z" fill="#E8998F"/></svg></span>
+      <h2 class="t-lg" data-split>What we <span class="squiggle">promised</span> each other.</h2>
+    </header>
 
     <div class="vows">
       <div class="vows__slot" data-reveal="up">
@@ -253,15 +257,11 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
      is where each card's link goes. -->
 <section class="band band--paper2" id="speeches">
   <div class="shell">
-    <div class="sec-head">
-      <span class="sec-head__idx">04 / The speeches</span>
-      <div class="sec-head__body">
-        <h2 class="t-lg" data-split>And what <span class="squiggle">friends and family</span> said.</h2>
-        <p class="lede lede--wide">Five people, one microphone, no rehearsal. An officiant, a former boss, two
-        friends, a sister-in-law and a father, all of whom had opinions. This is the part of the tape
-        we replay most.</p>
-      </div>
-    </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:6deg" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M11 21v3a13 13 0 0 0 26 0v-3M24 37v6M16 44h16" fill="none"/><rect x="16" y="3" width="16" height="25" rx="8" fill="#F0CE84"/><path d="M19 10h10M18 15h12M19 20h10" fill="none" stroke-width="1.6"/></svg></span>
+      <h2 class="t-lg" data-split>And what <span class="squiggle">friends and family</span> said.</h2>
+      <p class="lede">Five people, one microphone, no rehearsal. An officiant, a former boss, two friends, a sister-in-law and a father, all of whom had opinions. This is the part of the tape we replay most.</p>
+    </header>
   </div>
 
   <div class="talk" id="talk" role="group" aria-label="Five lines from the wedding speeches">
@@ -330,21 +330,16 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     </div>
   </div>
 
-  <div class="shell">
-    <p class="talk__foot">Five cards, going past. Open one for the whole speech.</p>
-  </div>
 </section>
 
 <!-- Gallery ---------------------------------------------------------------- -->
-<section class="band">
+<section class="band hd-pile">
   <div class="shell">
-    <div class="sec-head">
-      <span class="sec-head__idx">05 / The pile</span>
-      <div class="sec-head__body">
-        <h2 class="t-lg" data-split>Eighteen moments we <span class="squiggle">keep coming back</span> to.</h2>
-        <p class="lede">Out of a whole album. Press any one to see it properly.</p>
-      </div>
-    </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:-6deg" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M15 15l3.5-5.5h11L33 15" fill="#8DBBCD"/><rect x="4" y="14" width="40" height="27" rx="5" fill="#8DBBCD"/><circle cx="24" cy="27.5" r="9" fill="#FBF7EE"/><circle cx="24" cy="27.5" r="4.2" fill="#F0CE84"/><rect x="35" y="18" width="5" height="3.6" rx="1" fill="#F0CE84"/></svg></span>
+      <h2 class="t-lg" data-split>Eighteen moments we <span class="squiggle">keep coming back</span> to.</h2>
+      <p class="lede">Out of a whole album. Press any one to see it properly.</p>
+    </header>
 
     <div class="frames">
       <figure class="frame" data-tone="1" data-shot data-src="assets/photos/gallery/w01-bridge-kiss.jpg" data-cap="Kissing on the rustic railing in Prospect Park" tabindex="0" role="button" aria-label="Enlarge: Kissing on the rustic railing in Prospect Park">
@@ -406,14 +401,12 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 </section>
 
 <!-- Credits ------------------------------------------------------------- -->
-<section class="band">
+<section class="band band--paper2 hd-thanks">
   <div class="shell">
-    <div class="sec-head">
-      <span class="sec-head__idx">06 / Thanks</span>
-      <div class="sec-head__body">
-        <h2 class="t-lg" data-split>The people who made it <span class="squiggle">look good.</span></h2>
-      </div>
-    </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:5deg" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 24L6 12.5Q2.5 24 6 35.5Z" fill="#E2604F"/><path d="M24 24L42 12.5Q45.5 24 42 35.5Z" fill="#E2604F"/><rect x="19.5" y="18" width="9" height="12" rx="2.6" fill="#E2604F"/></svg></span>
+      <h2 class="t-lg" data-split>The people who made it <span class="squiggle">look good.</span></h2>
+    </header>
 
     <div class="credits">
       <div class="credits__slot" data-reveal="up">
@@ -504,6 +497,6 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/data.js"></script>
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/site.js"></script>
-<script src="assets/js/hitched.js?v=5"></script>
+<script src="assets/js/hitched.js?v=6"></script>
 </body>
 </html>
