@@ -1,0 +1,363 @@
+/* ==========================================================================
+   THE MURNANS , the 404 page
+   A road sign that drops onto its post, the two of them standing under it,
+   the ways back in, and one trip from the archive picked at random.
+   Laid out for a phone first: the scene on top, everything centred, then
+   two columns from 900px.
+   ========================================================================== */
+
+/* ── The first screen ─────────────────────────────────────────────────── */
+
+.lost {
+  padding-top: clamp(5.5rem, 12vw, 8rem);
+  padding-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+.lost__grid {
+  display: grid;
+  gap: clamp(1.75rem, 5vw, 3rem);
+  justify-items: center;
+  text-align: center;
+}
+
+.lost__text { display: grid; gap: 1rem; justify-items: center; max-width: 34rem; }
+.lost__title { margin-top: .1rem; }
+.lost__lede { margin: 0; text-wrap: balance; }
+.lost__asked {
+  margin: 0;
+  font-size: .82rem;
+  color: var(--ink-3);
+  max-width: 100%;
+}
+.lost__path {
+  font-family: var(--sans);
+  font-size: .78rem;
+  color: var(--ink-2);
+  padding: .2em .6em;
+  border-radius: 6px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  overflow-wrap: anywhere;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--coral) 80%, transparent);
+  text-decoration-thickness: 1.5px;
+}
+.lost__home { margin-top: .5rem; }
+
+/* ── The scene ──────────────────────────────────────────────────────────
+   Everything in it is measured in cqw, so the sign, the post and the two of
+   them keep their places at any width. The sign is a drawn object: its
+   colours and its black keyline stay the same in dusk. */
+
+.lost__scene {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1 / .9;
+  container-type: inline-size;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lost__sign {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 4cqw;
+  width: 72cqw;
+  margin-left: -36cqw;
+  rotate: -3deg;
+  transform-origin: 50% 100%;
+  outline: none;
+}
+.lost__plate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.4cqw;
+  padding: 5.5cqw 7cqw 5cqw;
+  background: #3D7B95;
+  color: #F7F0E0;
+  border: 2.5px solid #14110D;
+  border-radius: 4.5cqw;
+  /* the cream rule a road sign has inside its edge */
+  box-shadow: inset 0 0 0 1.7cqw #3D7B95, inset 0 0 0 calc(1.7cqw + 2px) #F7F0E0;
+}
+/* the gold block printed a touch off register, as everywhere on the site */
+.lost__plate::before {
+  content: "";
+  position: absolute;
+  inset: -2.5px;
+  z-index: -1;
+  border-radius: inherit;
+  background: #F0CE84;
+  translate: 2.6cqw 2.6cqw;
+}
+.lost__code {
+  position: relative;
+  z-index: 1;
+  font-family: var(--display);
+  font-size: 24cqw;
+  line-height: .86;
+  letter-spacing: -.02em;
+}
+.lost__uturn {
+  position: relative;
+  z-index: 1;
+  width: 13cqw;
+  height: auto;
+  color: #F0CE84;
+  translate: 0 1cqw;
+}
+
+/* the gold four-point stars, the same shape the curtain throws */
+.lost__star { position: absolute; fill: #F0CE84; pointer-events: none; }
+[data-theme="dusk"] .lost__star { fill: var(--gold); }
+.lost__star--a { width: 7cqw;   left: -6cqw;  top: -5cqw; }
+.lost__star--b { width: 4.4cqw; left: 3cqw;   top: -9.5cqw; }
+.lost__star--c { width: 5.6cqw; right: -7cqw; top: 40%; }
+
+.lost__post {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 4.6cqw;
+  margin-left: -2.3cqw;
+  top: 30cqw;
+  bottom: 2.2cqw;
+  background: #B49C6C;
+  border: 2px solid #14110D;
+  border-radius: 1.2cqw 1.2cqw 0 0;
+}
+
+.lost__fig {
+  position: absolute;
+  z-index: 3;
+  bottom: 2.4cqw;
+  height: 47cqw;
+  aspect-ratio: 520 / 1001;
+}
+.lost__fig img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lost__fig--bear  { left: 9cqw; }
+.lost__fig--tiger { right: 9cqw; }
+/* in dusk, the same soft glow the hero gives them, so the black line reads */
+[data-theme="dusk"] .lost__fig::before {
+  content: "";
+  position: absolute;
+  inset: -6% -40%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--glacier) 20%, transparent), transparent);
+  filter: blur(10px);
+}
+
+.lost__ground {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4cqw;
+  color: var(--ink-3);
+}
+
+/* ── The sequence ─────────────────────────────────────────────────────── */
+
+@keyframes lost-drop {
+  0%   { translate: 0 -30cqw; rotate: -14deg; opacity: 0; }
+  40%  { opacity: 1; }
+  58%  { translate: 0 0;      rotate: 5deg; }
+  76%  { rotate: -5.5deg; }
+  90%  { rotate: -2deg; }
+  100% { translate: 0 0;      rotate: -3deg; }
+}
+@keyframes lost-hop {
+  0%, 100% { translate: 0 0; }
+  35%      { translate: 0 -5cqw; }
+  60%      { translate: 0 0; }
+  75%      { translate: 0 -1.2cqw; }
+}
+@keyframes lost-star {
+  0%   { scale: 0; rotate: -60deg; opacity: 0; }
+  60%  { scale: 1.3; opacity: 1; }
+  100% { scale: 1; rotate: 0deg; opacity: 1; }
+}
+@keyframes lost-twinkle {
+  0%, 100% { scale: 1; opacity: 1; }
+  50%      { scale: .7; opacity: .55; }
+}
+@keyframes lost-post {
+  from { scale: 1 0; }
+  to   { scale: 1 1; }
+}
+@keyframes lost-rock {
+  0%   { rotate: -3deg; }
+  20%  { rotate: 7deg; }
+  42%  { rotate: -9deg; }
+  62%  { rotate: 4deg; }
+  80%  { rotate: -5deg; }
+  100% { rotate: -3deg; }
+}
+
+.lost__post  { transform-origin: 50% 100%; animation: lost-post .45s var(--ease) .05s backwards; }
+.lost__sign  { animation: lost-drop 1.15s cubic-bezier(.3, .7, .3, 1) .35s backwards; }
+.lost__fig--bear  { animation: lost-hop .6s var(--ease-soft) 1.05s; }
+.lost__fig--tiger { animation: lost-hop .6s var(--ease-soft) 1.17s; }
+.lost__star--a { animation: lost-star .5s cubic-bezier(.34, 1.56, .64, 1) 1.2s backwards, lost-twinkle 3.2s ease-in-out 2s infinite; }
+.lost__star--b { animation: lost-star .5s cubic-bezier(.34, 1.56, .64, 1) 1.3s backwards, lost-twinkle 3.2s ease-in-out 2.9s infinite; }
+.lost__star--c { animation: lost-star .5s cubic-bezier(.34, 1.56, .64, 1) 1.4s backwards, lost-twinkle 3.2s ease-in-out 3.6s infinite; }
+.lost__sign.is-rocking { animation: lost-rock 1s cubic-bezier(.3, .7, .3, 1); }
+
+/* the words follow the sign down, one beat behind it */
+.lost__text > * { animation: lost-rise .8s var(--ease) backwards; }
+.lost__text > :nth-child(1) { animation-delay: .7s; }
+.lost__text > :nth-child(2) { animation-delay: .78s; }
+.lost__text > :nth-child(3) { animation-delay: .86s; }
+.lost__text > :nth-child(4) { animation-delay: .92s; }
+.lost__text > :nth-child(5) { animation-delay: .98s; }
+@keyframes lost-rise { from { opacity: 0; translate: 0 14px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lost__post, .lost__sign, .lost__fig, .lost__star, .lost__text > *,
+  .lost__sign.is-rocking { animation: none !important; }
+}
+
+/* ── The ways back in ─────────────────────────────────────────────────── */
+
+.lost__ways-band { padding-top: clamp(1.5rem, 4vw, 2.5rem); }
+.lost__label { display: block; text-align: center; margin-bottom: 1.25rem; }
+
+.lost__ways {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .9rem;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.lost__way {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: .3rem;
+  padding: 1rem 1rem 1.05rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  box-shadow: 5px 5px 0 var(--tint);
+  transition: translate .35s var(--ease), box-shadow .35s var(--ease);
+}
+.lost__way:hover { translate: 3px 3px; box-shadow: 2px 2px 0 var(--tint); }
+.lost__way:active { translate: 5px 5px; box-shadow: 0 0 0 var(--tint); }
+.lost__way-k {
+  font-family: var(--display);
+  font-size: 1.22rem;
+  line-height: 1.1;
+  padding-right: 1.1rem;
+}
+.lost__way-k::after {
+  content: "\2192";
+  position: absolute;
+  top: .95rem;
+  right: .9rem;
+  font-family: var(--sans);
+  font-size: .95rem;
+  transition: translate .4s var(--ease);
+}
+.lost__way:hover .lost__way-k::after { translate: 3px 0; }
+.lost__way-s { font-size: .78rem; line-height: 1.45; color: var(--ink-2); }
+
+/* ── A trip picked at random ──────────────────────────────────────────── */
+
+.lost__trip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 34rem;
+  margin: 0 auto 1.25rem;
+}
+.lost__trip-head .lost__label { margin: 0; text-align: left; }
+.lost__roll {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem .9rem .55rem .7rem;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: translate .3s var(--ease);
+}
+.lost__roll:hover { translate: 0 -2px; }
+.lost__die { display: grid; place-items: center; }
+.lost__roll.is-rolling .lost__die { animation: lost-roll .55s cubic-bezier(.34, 1.42, .5, 1); }
+@keyframes lost-roll { from { rotate: -200deg; scale: .7; } }
+
+.lost__card {
+  display: grid;
+  gap: 1.4rem;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.lost__pic {
+  display: block;
+  aspect-ratio: 4 / 3;
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--paper-3);
+  rotate: -1.4deg;
+  box-shadow: 7px 7px 0 var(--gold);
+}
+.lost__pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lost__card-text { display: grid; gap: .6rem; justify-items: start; }
+.lost__when { color: var(--brass-ink); }
+.lost__words { margin: 0; color: var(--ink-2); font-size: 1rem; line-height: 1.62; max-width: 46ch; }
+.lost__more { margin-top: .3rem; font-size: .9rem; font-weight: 500; }
+
+/* each new trip is dealt in like a print landing on the table */
+.lost__card.is-dealt .lost__pic { animation: lost-deal .6s cubic-bezier(.34, 1.4, .64, 1); }
+.lost__card.is-dealt .lost__card-text { animation: lost-rise .6s var(--ease) .08s backwards; }
+@keyframes lost-deal {
+  from { opacity: 0; translate: 0 18px; rotate: 3deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lost__card.is-dealt .lost__pic,
+  .lost__card.is-dealt .lost__card-text,
+  .lost__roll.is-rolling .lost__die { animation: none; }
+}
+
+/* ── Wide ─────────────────────────────────────────────────────────────── */
+
+@media (min-width: 900px) {
+  .lost { min-height: 86svh; display: flex; align-items: center; }
+  .lost__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    text-align: left;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+  .lost__text { justify-items: start; order: -1; }
+  .lost__lede { text-wrap: pretty; }
+  .lost__scene { justify-self: center; max-width: 500px; }
+
+  .lost__label { text-align: left; }
+  .lost__ways { grid-template-columns: repeat(4, 1fr); max-width: none; }
+  .lost__way { padding: 1.2rem 1.2rem 1.3rem; }
+  .lost__way-k { font-size: 1.4rem; }
+
+  .lost__trip-head { max-width: none; }
+  .lost__card {
+    max-width: none;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+}

@@ -33,6 +33,7 @@ once the home page has made you curious, not the first thing you are asked to re
 | `story.html`  | Footer, Timelines | **The Long Way Round**: the chapter timeline, built from `assets/js/data.js`, with a map beside it |
 | `2022.html` to `2025.html` | Footer, Timelines | One page per year since the wedding, built from `assets/js/years/` |
 | `table.html`  | Footer, Pages | **At Our Table**: the two drinks, the nine restaurants, the wedding feast |
+| `404.html` | Not linked | **Wrong turn**: what GitHub Pages shows for any address with nothing at it. A road sign that drops onto its post with the two of them under it, the address that went nowhere, the four ways back in, and one trip from `memories.js` with a die to deal another. It sets `<base href="/">`, because it is served at the broken address itself, so every link in it is written from the root. Styled by `assets/css/lost.css`, run by `assets/js/lost.js` |
 | `home-archive.html` | Not linked | The home page as it was: six bands, the four doors, the memory machine, the years since the wedding. Kept whole as the place to pull a device from when building a new page. **Do not edit it.** |
 
 ### The home page
