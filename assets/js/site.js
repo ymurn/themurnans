@@ -250,13 +250,16 @@
   }
 
   /* ── Intro curtain (home only, once per session) ─────────────────────
-     The entrance is all CSS and plays from the first paint. This only
-     decides when the cloth lifts: late enough to see the entrance through,
-     never before the page behind it has booted, and straight away for
-     anyone who clicks or presses a key. The loading line is a fresh draw
-     on every visit.                                                      */
+     The entrance is all CSS and plays once the logo is in (the script after
+     the curtain in index.html marks it ready). This only decides when the
+     cloth lifts: late enough to see the entrance through, never before the
+     drawings behind it have arrived, and straight away for anyone who
+     clicks or presses a key. The loading line is a fresh draw on every
+     visit.                                                               */
 
   const CURTAIN_MS = 2700;   // earliest lift, counted from the start of the page load
+  const ENTRANCE_MS = 2300;  // the entrance through to its loading line, from the moment it starts
+  const ART_WAIT_MS = 2000;  // the longest the lift waits on the drawings after that
   const CURTAIN_LINES = [
     'Taking the long way round',
     'Detouring for a waterfall',
@@ -281,7 +284,7 @@
 
     // Swap the line only while the caption is still hidden, never mid-read.
     const say = $('.curtain__say', curtain);
-    if (say && performance.now() < 1200) {
+    if (say && (!curtain.dataset.readyAt || performance.now() - curtain.dataset.readyAt < 1200)) {
       say.textContent = CURTAIN_LINES[Math.floor(Math.random() * CURTAIN_LINES.length)];
     }
 
@@ -304,7 +307,19 @@
       setTimeout(() => curtain.remove(), 1400);
     };
 
-    setTimeout(lift, Math.max(400, CURTAIN_MS - performance.now()));
+    // On a slow first visit the drawings are still arriving when the entrance
+    // ends, and would paint in strips as the cloth went up. The loading line
+    // keeps going while they finish, up to ART_WAIT_MS.
+    const until = ms => new Promise(r => setTimeout(r, Math.max(0, ms - performance.now())));
+    const art = Promise.all($$('.fig__out, .fig__fill').map(img => img.decode().catch(() => {})));
+    const ready = new Promise(r => {
+      if (curtain.dataset.readyAt) r(+curtain.dataset.readyAt);
+      else curtain.addEventListener('curtain:ready', () => r(+curtain.dataset.readyAt), { once: true });
+    });
+    ready.then(at => {
+      const due = Math.max(400, CURTAIN_MS, at + ENTRANCE_MS);
+      return Promise.race([Promise.all([until(due), art]), until(due + ART_WAIT_MS)]);
+    }).then(lift);
     curtain.addEventListener('click', lift);
     addEventListener('keydown', lift);
   }

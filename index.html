@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=2">
 <!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
 <script>try { if (sessionStorage.getItem('murnan-seen') === '1' && !/[?&]intro\b/.test(location.search)) document.documentElement.classList.add('curtain-seen'); } catch (e) {}</script>
 <noscript><style>.curtain { display: none; }</style></noscript>
@@ -52,7 +52,7 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     <div class="curtain__inner">
       <div class="curtain__print">
         <span class="curtain__block"></span>
-        <img class="curtain__logo" src="assets/art/logo-square.png" alt="" width="520" height="520" fetchpriority="high">
+        <img class="curtain__logo" src="assets/art/logo-square.webp" alt="" width="520" height="520" fetchpriority="high">
         <svg class="curtain__star curtain__star--pin" viewBox="0 0 24 24"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
         <svg class="curtain__star curtain__star--a" viewBox="0 0 24 24"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
         <svg class="curtain__star curtain__star--b" viewBox="0 0 24 24"><path d="M12 0c.9 5.6 2.9 8.9 5.5 10.4 1.6.9 3.6 1.3 6.5 1.6-2.9.3-4.9.7-6.5 1.6C14.9 15.1 12.9 18.4 12 24c-.9-5.6-2.9-8.9-5.5-10.4C4.9 12.7 2.9 12.3 0 12c2.9-.3 4.9-.7 6.5-1.6C9.1 8.9 11.1 5.6 12 0Z"/></svg>
@@ -66,6 +66,25 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     </div>
   </div>
 </div>
+<!-- The entrance waits for the logo, so on a slow first visit the print lands
+     whole instead of painting in strips. Here rather than in site.js so it
+     starts the moment the logo is in, not once every script has loaded. Two
+     seconds is the most it waits; initCurtain counts the lift from readyAt. -->
+<script>
+(function () {
+  var c = document.querySelector('.curtain'), logo = c && c.querySelector('.curtain__logo');
+  if (!c) return;
+  var go = function () {
+    if (c.dataset.readyAt) return;
+    c.dataset.readyAt = Math.round(performance.now());
+    c.classList.add('is-ready');
+    c.dispatchEvent(new Event('curtain:ready'));
+  };
+  if (!logo || !logo.decode) return go();
+  logo.decode().then(go, go);
+  setTimeout(go, Math.max(0, 2000 - performance.now()));
+})();
+</script>
 
 <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
 
@@ -117,10 +136,10 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     <div class="stage">
       <div class="fig fig--bear" data-who="bear" role="button" tabindex="0" aria-label="Poke David, he has opinions">
         <div class="fig__layer">
-          <img class="fig__ghost" src="assets/art/David-fill.png" alt="" aria-hidden="true" width="520" height="1001">
-          <img class="fig__out" src="assets/art/David-Outline.png" alt="Line illustration of David" width="520" height="1001">
+          <img class="fig__ghost" src="assets/art/David-fill.webp" alt="" aria-hidden="true" width="520" height="1001">
+          <img class="fig__out" src="assets/art/David-Outline.webp" alt="Line illustration of David" width="520" height="1001">
           <div class="fig__fillwrap" aria-hidden="true">
-            <img class="fig__fill" src="assets/art/David-fill.png" alt="" width="520" height="1001">
+            <img class="fig__fill" src="assets/art/David-fill.webp" alt="" width="520" height="1001">
           </div>
           <span class="fig__line" aria-hidden="true"></span>
         </div>
@@ -139,10 +158,10 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 
       <div class="fig fig--tiger" data-who="tiger" role="button" tabindex="0" aria-label="Poke Yinja, he has opinions too">
         <div class="fig__layer">
-          <img class="fig__ghost" src="assets/art/Yinjia-fill.png" alt="" aria-hidden="true" width="520" height="1001">
-          <img class="fig__out" src="assets/art/Yinjia-Outline.png" alt="Line illustration of Yinja" width="520" height="1001">
+          <img class="fig__ghost" src="assets/art/Yinjia-fill.webp" alt="" aria-hidden="true" width="520" height="1001">
+          <img class="fig__out" src="assets/art/Yinjia-Outline.webp" alt="Line illustration of Yinja" width="520" height="1001">
           <div class="fig__fillwrap" aria-hidden="true">
-            <img class="fig__fill" src="assets/art/Yinjia-fill.png" alt="" width="520" height="1001">
+            <img class="fig__fill" src="assets/art/Yinjia-fill.webp" alt="" width="520" height="1001">
           </div>
           <span class="fig__line" aria-hidden="true"></span>
         </div>
@@ -193,13 +212,11 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
      page is short, so anyone who only wants pictures never has to scroll far. -->
 <section class="band memories" id="memories">
   <div class="shell">
-    <div class="sec-head">
-      <span class="sec-head__idx">01 / Memories</span>
-      <div class="sec-head__body">
-        <h2 class="t-lg" data-split>Pick a state, <span class="squiggle">get a memory.</span></h2>
-        <p class="lede">Everything we have written up is on here somewhere, sorted by the state it happened in. Some of it ends at a waterfall, some of it ends at Skyline Chili.</p>
-      </div>
-    </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:-5deg" aria-hidden="true"><svg viewBox="0 0 48 48" width="52" height="52"><path d="M5 13l12-4v27L5 40Z" fill="#8DBBCD"/><path d="M17 9l14 4v27l-14-4Z" fill="#FBF7EE"/><path d="M31 13l12-4v27l-12 4Z" fill="#8DBBCD"/><path d="M24 31s-8.5-7.6-8.5-14a8.5 8.5 0 0 1 17 0c0 6.4-8.5 14-8.5 14Z" fill="#E2604F"/><circle cx="24" cy="17" r="3.2" fill="#F0CE84"/></svg></span>
+      <h2 class="t-lg" data-split>Pick a state, <span class="squiggle">get a memory.</span></h2>
+      <p class="lede">Everything we have written up is on here somewhere, sorted by the state it happened in. Some of it ends at a waterfall, some of it ends at Skyline Chili.</p>
+    </header>
 
     <div class="mem" id="mem" data-reveal="up">
       <div class="mem__mapcol">
@@ -240,12 +257,10 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <!-- 02 The tally --------------------------------------------------------- -->
 <section class="band band--paper2 tally">
   <div class="shell">
-    <div class="sec-head">
-      <span class="sec-head__idx">02 / The tally</span>
-      <div class="sec-head__body">
-        <h2 class="t-lg" data-split>What we have <span class="squiggle">got up to.</span></h2>
-      </div>
-    </div>
+    <header class="hd-head">
+      <span class="hd-mark" style="--t:6deg" aria-hidden="true"><svg viewBox="0 0 48 48" width="52" height="52"><rect x="9" y="12" width="34" height="27" rx="5" fill="#F0CE84"/><rect x="5" y="8" width="34" height="27" rx="5" fill="#FBF7EE"/><path d="M13 15v13M19 15v13M25 15v13M31 15v13M10 25.5l24-8" fill="none"/></svg></span>
+      <h2 class="t-lg" data-split>What we have <span class="squiggle">got up to.</span></h2>
+    </header>
 
     <div class="tally__cards">
       <article class="tally__card" style="--fill:var(--sage-500)" data-reveal="up">
@@ -407,10 +422,10 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
      day.html and never reworded. The rail scrolls itself until someone
      touches it: see initSay in assets/js/site.js. -->
 <section class="band band--tight band--deep say">
-  <div class="shell say__head">
-    <span class="sec-head__idx">03 / Said about us</span>
-    <h2 class="t-md">From the people who were there.</h2>
-  </div>
+  <header class="shell hd-head say__head">
+    <span class="hd-mark" style="--t:-6deg" aria-hidden="true"><svg viewBox="0 0 48 48" width="52" height="52"><path d="M11 12h28a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H24l-8 7v-7h-5a5 5 0 0 1-5-5V17a5 5 0 0 1 5-5Z" fill="#8DBBCD"/><path d="M8 8h28a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H21l-8 7v-7H8a5 5 0 0 1-5-5V13a5 5 0 0 1 5-5Z" fill="#FBF7EE"/><path d="M22 27c-4.6-3.1-6.9-5.5-6.9-7.9 0-2 1.5-3.4 3.3-3.4 1.5 0 2.8.8 3.6 2.1.8-1.3 2.1-2.1 3.6-2.1 1.8 0 3.3 1.4 3.3 3.4 0 2.4-2.3 4.8-6.9 7.9Z" fill="#E2604F"/></svg></span>
+    <h2 class="t-lg" data-split>From the people who <span class="squiggle">were there.</span></h2>
+  </header>
 
   <div class="say__rail" id="say">
     <div class="say__track">
@@ -446,8 +461,11 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     </div>
   </div>
 
-  <div class="shell say__foot">
-    <a class="btn btn--ghost" href="day.html" data-magnet>Recap our big day</a>
+  <div class="shell btns btns--center say__foot">
+    <a class="btn" href="day.html" data-magnet>
+      Recap our big day
+      <svg class="btn__arrow" width="15" height="9" viewBox="0 0 15 9" fill="none" aria-hidden="true"><path d="M0 4.5h13M10 1l3.5 3.5L10 8" stroke="currentColor" stroke-width="1.2"/></svg>
+    </a>
   </div>
 </section>
 
@@ -499,6 +517,6 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/atlas.js"></script>
 <script src="assets/js/memories.js"></script>
 <script src="assets/js/safari-bar.js"></script>
-<script src="assets/js/site.js"></script>
+<script src="assets/js/site.js?v=2"></script>
 </body>
 </html>

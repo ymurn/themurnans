@@ -381,6 +381,19 @@ section { position: relative; }
   box-shadow: 0 0 0 1.5px var(--ink);
 }
 .sec-head__body { display: grid; gap: 1.1rem; }
+/* no number beside it (the home page), so the heading takes the whole row */
+.sec-head__body:only-child { grid-column: 1 / -1; }
+
+/* Section heading, Hitched and home: a small flat drawing in the cake's
+   language (gold, cream, blue and coral fills, a 2px ink keyline), then the
+   heading centred, then the intro. The drawings keep black ink in both
+   themes. */
+.hd-head { display: grid; justify-items: center; gap: 1rem; text-align: center; margin-bottom: clamp(2.25rem, 5vw, 3.5rem); }
+.hd-head .lede { margin: 0 auto; max-width: 40ch; text-align: center; text-wrap: balance; }
+.hd-mark { display: block; width: 52px; height: 52px; rotate: var(--t, 0deg); }
+.hd-mark svg { width: 100%; height: 100%; overflow: visible; }
+.hd-mark svg * { stroke: #14110D; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.hd-mark svg [stroke-width="1.6"] { stroke-width: 1.6; }
 
 /* A section head whose intro sits beside the heading rather than under it,
    so a long intro fills the row instead of leaving the right side empty. */
@@ -446,6 +459,8 @@ section { position: relative; }
   opacity: .82;
 }
 .btn--ghost:hover { opacity: 1; border-color: var(--ink); }
+/* Hitched and home: the buttons wear the cake's gold rather than the oxblood */
+body:is([data-page="day"], [data-page="home"]) main .btn:not(.btn--ghost) { --btn-bg: #F0CE84; --btn-fg: #14110D; }
 [data-theme="dusk"] .btn { --btn-bg: var(--gold); --btn-fg: #14110D; box-shadow: 5px 5px 0 var(--ink); }
 [data-theme="dusk"] .btn--ghost { --btn-bg: transparent; --btn-fg: currentColor; }
 
@@ -3334,6 +3349,9 @@ a.yearbtn { display: inline-block; }
 }
 .curtain-seen .curtain { display: none; }
 .curtain.is-up { pointer-events: none; }
+/* Held at its first frame until the logo is in (the script after the curtain
+   in index.html), so a slow first visit never sees the print paint in strips */
+.curtain:not(.is-ready) .curtain__inner * { animation-play-state: paused; }
 
 .curtain__cloth,
 .curtain__lining {
@@ -4234,7 +4252,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      and the photographs for the pill to float over on its way past. It reads
      as an opening line there in any case. */
   .mem__mapcol { display: flex; flex-direction: column; }
-  .mem__hint { order: -1; margin: 0 0 .9rem; }
+  .mem__hint { order: -1; margin: 0 0 .9rem; justify-content: center; text-align: center; }
 }
 
 /* ── 02 The tally ──────────────────────────────────────────────────────── */
@@ -4292,14 +4310,47 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 
 @media (max-width: 860px) {
   .tally__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tally__end { grid-template-columns: 1fr; justify-items: start; }
+  /* one column under a centred heading, so it is centred too */
+  .tally__end { grid-template-columns: 1fr; justify-items: center; }
+  .tally__cal { justify-items: center; }
+  .tally__cta { justify-items: center; text-align: center; }
+  .tally__cta .lede { text-wrap: balance; }
 }
 
 /* ── 03 Said about us ──────────────────────────────────────────────────────
    A rail that scrolls itself. It is a real scroller, so a thumb can push it
    about and the keyboard can reach it; initSay only nudges it along.      */
 
-.say__head { display: grid; gap: .6rem; margin-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+.say__head { margin-bottom: clamp(.5rem, 2vw, 1.25rem); }
+/* the script word in gold: the page's blue goes dim on the oxblood */
+.say .squiggle { color: #F0CE84; }
+
+/* The oxblood arrives as a card inset from the edges with rounded corners,
+   and opens out to the full width as it scrolls in. Only the two real
+   colours ever show: a fade from the paper went through a muddy mauve on
+   the way. The oxblood is a layer behind the band so the strips beside the
+   card are the tally's paper, not the page's. Tied to the scroll, so it runs
+   at the reader's pace and closes again on the way up. Without
+   scroll-driven animation it is the plain band, as before. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .say.band--deep { background: var(--paper-2); isolation: isolate; }
+    .say.band--deep::before {
+      content: "";
+      position: absolute; inset: 0;
+      z-index: -1;
+      background: var(--deep);
+      animation: say-open both;
+      animation-timing-function: cubic-bezier(.3, 0, .2, 1);
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+  }
+}
+@keyframes say-open {
+  from { clip-path: inset(0 var(--gutter) round clamp(22px, 3vw, 40px)); }
+  to   { clip-path: inset(0 0 round 0); }
+}
 .say__rail {
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -4426,6 +4477,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .said:hover .said__pic { rotate: 0deg; box-shadow: 2px 2px 0 var(--off); }
 .said__pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
 .say__foot { margin-top: .75rem; }
+/* gold on the oxblood, with a cream offset since the ink shadow would vanish */
+.say__foot .btn { box-shadow: 5px 5px 0 #F7F0E0; }
+.say__foot .btn:hover { box-shadow: 2px 2px 0 #F7F0E0; }
 
 @media (min-width: 900px) { .say .said { --face: 64px; } }
 @media (max-width: 620px) {
@@ -4474,6 +4528,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__hint { justify-content: flex-start; margin-bottom: 0; }
   .tally__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tally__end { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+  .tally__cta { justify-items: start; text-align: start; }
 }
 
 /* ── A TABLET STOOD UP ───────────────────────────────────────────────────
