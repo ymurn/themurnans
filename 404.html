@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
-<link rel="stylesheet" href="assets/css/lost.css?v=1">
+<link rel="stylesheet" href="assets/css/lost.css?v=2">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
 <script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Microsoft Clarity: visit recordings and heatmaps, on the live site only so local previews stay out of the numbers -->
@@ -107,61 +107,68 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
   </div>
 </section>
 
-<!-- Where else to go: the four ways into the archive, two by two on a phone -->
-<section class="band band--tight lost__ways-band">
-  <div class="shell">
-    <span class="eyebrow lost__label">Or pick up somewhere else</span>
-    <nav class="lost__ways" aria-label="Pages in the archive">
-      <a class="lost__way" href="day.html" style="--tint:var(--coral)">
-        <span class="lost__way-k">Hitched</span>
-        <span class="lost__way-s">Our big day, August 6th, 2022</span>
-      </a>
-      <a class="lost__way" href="honeymoon.html" style="--tint:var(--rose)">
-        <span class="lost__way-k">Honeymoon</span>
-        <span class="lost__way-s">Fifteen days, Sacramento to Seattle</span>
-      </a>
-      <a class="lost__way" href="highlights.html" style="--tint:var(--khaki)">
-        <span class="lost__way-k">Highlights</span>
-        <span class="lost__way-s">David&rsquo;s 40th, a loop through the desert</span>
-      </a>
-      <a class="lost__way" href="story.html" style="--tint:var(--sage-500)">
-        <span class="lost__way-k">The Long Way Round</span>
-        <span class="lost__way-s">How it started, 2020 to 2022</span>
-      </a>
-    </nav>
-  </div>
-</section>
+<!-- After the sign: the ways back in, then one trip from the archive.
+     One column on a phone, side by side from 900px. -->
+<section class="lost__after">
+  <div class="shell lost__after-grid">
 
-<!-- One trip from the archive, dealt fresh on every visit and on every roll.
-     Drawn by assets/js/lost.js from memories.js, the same index the home
-     page map reads. Without the script the section stays hidden. -->
-<section class="band band--paper2 lost__trip-band" hidden>
-  <div class="shell">
-    <div class="lost__trip-head">
-      <span class="eyebrow lost__label">A trip at random</span>
-      <button class="lost__roll" type="button">
-        <span class="lost__die" aria-hidden="true">
-          <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
-            <rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/>
-            <circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/>
-            <circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/>
-            <circle cx="10" cy="10" r="1.6" fill="currentColor"/>
-          </svg>
-        </span>
-        Another one
-      </button>
+    <div class="lost__block">
+      <span class="eyebrow lost__label">Or pick up somewhere else</span>
+      <nav class="lost__ways" aria-label="Pages in the archive">
+        <a class="lost__way" href="day.html" style="--tint:var(--coral)">
+          <span class="lost__dot" aria-hidden="true"></span>
+          <span class="lost__way-text"><span class="lost__way-k">Hitched</span><span class="lost__way-s">Our big day, August 6th, 2022</span></span>
+          <span class="lost__go" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="lost__way" href="honeymoon.html" style="--tint:var(--rose)">
+          <span class="lost__dot" aria-hidden="true"></span>
+          <span class="lost__way-text"><span class="lost__way-k">Honeymoon</span><span class="lost__way-s">Fifteen days, Sacramento to Seattle</span></span>
+          <span class="lost__go" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="lost__way" href="highlights.html" style="--tint:var(--khaki)">
+          <span class="lost__dot" aria-hidden="true"></span>
+          <span class="lost__way-text"><span class="lost__way-k">Highlights</span><span class="lost__way-s">David&rsquo;s 40th, a loop through the desert</span></span>
+          <span class="lost__go" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="lost__way" href="story.html" style="--tint:var(--sage-500)">
+          <span class="lost__dot" aria-hidden="true"></span>
+          <span class="lost__way-text"><span class="lost__way-k">The Long Way Round</span><span class="lost__way-s">How it started, 2020 to 2022</span></span>
+          <span class="lost__go" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      </nav>
     </div>
-    <article class="lost__card" aria-live="polite">
-      <a class="lost__pic" href="index.html">
-        <img src="" alt="" width="1200" height="900" decoding="async">
-      </a>
-      <div class="lost__card-text">
-        <span class="tag lost__when"></span>
-        <h2 class="t-lg lost__where"></h2>
-        <p class="lost__words"></p>
-        <a class="link lost__more" href="index.html">Read about it <span aria-hidden="true">&rarr;</span></a>
-      </div>
-    </article>
+
+    <!-- Dealt fresh on every visit and on every roll by assets/js/lost.js,
+         from memories.js, the index the home page map reads. Without the
+         script it stays hidden. -->
+    <div class="lost__block lost__trip" hidden>
+      <span class="eyebrow lost__label">A trip at random</span>
+      <article class="lost__card" aria-live="polite">
+        <a class="lost__pic" href="index.html">
+          <img src="" alt="" width="1200" height="900" decoding="async">
+        </a>
+        <div class="lost__card-text">
+          <span class="tag lost__when"></span>
+          <h2 class="lost__where"></h2>
+          <p class="lost__words"></p>
+          <div class="lost__foot">
+            <a class="lost__read" href="index.html">Read about it <span aria-hidden="true">&rarr;</span></a>
+            <button class="lost__roll" type="button">
+              <span class="lost__die" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+                  <rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.8"/>
+                  <circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/>
+                  <circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/>
+                  <circle cx="10" cy="10" r="1.6" fill="currentColor"/>
+                </svg>
+              </span>
+              Another one
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
   </div>
 </section>
 
@@ -211,6 +218,6 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/memories.js"></script>
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/site.js"></script>
-<script src="assets/js/lost.js?v=1"></script>
+<script src="assets/js/lost.js?v=2"></script>
 </body>
 </html>

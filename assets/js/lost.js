@@ -37,7 +37,7 @@
 
   /* ── A trip picked at random ───────────────────────────────────────── */
 
-  const band = $('.lost__trip-band');
+  const band = $('.lost__trip');
   const items = ((window.MW_MEMORIES || {}).items || []).filter(i => i.pics && i.pics.length && i.href);
   if (!band || !items.length) return;
 
@@ -62,7 +62,7 @@
     $('.lost__words', card).textContent = item.text;
     pic.href = item.href;
     pic.setAttribute('aria-label', 'Read about ' + item.place);
-    $('.lost__more', card).href = item.href;
+    $('.lost__read', card).href = item.href;
 
     card.classList.remove('is-dealt');
     void card.offsetWidth;

@@ -220,116 +220,128 @@
   .lost__sign.is-rocking { animation: none !important; }
 }
 
-/* ── The ways back in ─────────────────────────────────────────────────── */
+/* ── After the sign ───────────────────────────────────────────────────
+   Quieter than the sign on purpose: hairlines and small type, one column
+   on a phone, so the sign stays the only loud thing on the page. */
 
-.lost__ways-band { padding-top: clamp(1.5rem, 4vw, 2.5rem); }
-.lost__label { display: block; text-align: center; margin-bottom: 1.25rem; }
-
-.lost__ways {
+.lost__after { padding-block: clamp(2.5rem, 7vw, 5rem) clamp(4rem, 9vw, 7rem); }
+.lost__after-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .9rem;
-  max-width: 34rem;
-  margin-inline: auto;
+  gap: 3.25rem;
+  max-width: 27rem;
 }
+.lost__label { display: block; text-align: center; margin-bottom: 1rem; }
+
+/* the ways back in: a list of directions, not a wall of cards */
+.lost__ways { display: grid; border-top: 1px solid var(--line); }
 .lost__way {
-  position: relative;
   display: grid;
-  align-content: start;
-  gap: .3rem;
-  padding: 1rem 1rem 1.05rem;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: .95rem .15rem;
   color: var(--ink);
-  background: var(--paper);
-  border: var(--keyline);
-  border-radius: var(--r-md);
-  box-shadow: 5px 5px 0 var(--tint);
-  transition: translate .35s var(--ease), box-shadow .35s var(--ease);
+  border-bottom: 1px solid var(--line);
 }
-.lost__way:hover { translate: 3px 3px; box-shadow: 2px 2px 0 var(--tint); }
-.lost__way:active { translate: 5px 5px; box-shadow: 0 0 0 var(--tint); }
-.lost__way-k {
-  font-family: var(--display);
-  font-size: 1.22rem;
-  line-height: 1.1;
-  padding-right: 1.1rem;
+/* a dot of the page's own colour, its ink ring printed a hair off */
+.lost__dot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--tint);
 }
-.lost__way-k::after {
-  content: "\2192";
+.lost__dot::after {
+  content: "";
   position: absolute;
-  top: .95rem;
-  right: .9rem;
-  font-family: var(--sans);
-  font-size: .95rem;
-  transition: translate .4s var(--ease);
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  translate: 2px -2px;
 }
-.lost__way:hover .lost__way-k::after { translate: 3px 0; }
-.lost__way-s { font-size: .78rem; line-height: 1.45; color: var(--ink-2); }
+.lost__way-text { display: grid; gap: .1rem; min-width: 0; }
+.lost__way-k { font-family: var(--display); font-size: 1.2rem; line-height: 1.15; }
+.lost__way-s { font-size: .78rem; line-height: 1.4; color: var(--ink-3); }
+.lost__go {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  color: var(--ink-2);
+  transition: background .3s var(--ease-soft), border-color .3s var(--ease-soft), color .3s var(--ease-soft);
+}
+.lost__go svg { transition: translate .4s var(--ease); }
+.lost__way:hover .lost__go { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.lost__way:hover .lost__go svg { translate: 2px 0; }
 
-/* ── A trip picked at random ──────────────────────────────────────────── */
-
-.lost__trip-head {
+/* a trip at random: one postcard, photo on top, its die inside it */
+.lost__card {
+  padding: .6rem .6rem 1.1rem;
+  background: var(--paper-2);
+  border-radius: var(--r-lg);
+}
+.lost__pic {
+  display: block;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--paper-3);
+}
+.lost__pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lost__card-text { display: grid; gap: .45rem; padding: 1rem .55rem 0; }
+.lost__when { color: var(--brass-ink); }
+.lost__where { font-size: 1.5rem; line-height: 1.12; }
+.lost__words { margin: 0; color: var(--ink-2); font-size: .92rem; line-height: 1.6; }
+.lost__foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  max-width: 34rem;
-  margin: 0 auto 1.25rem;
+  margin-top: .6rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--line);
 }
-.lost__trip-head .lost__label { margin: 0; text-align: left; }
+.lost__read {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.lost__read span { display: inline-block; transition: translate .4s var(--ease); }
+.lost__read:hover span { translate: 3px 0; }
 .lost__roll {
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
-  padding: .55rem .9rem .55rem .7rem;
+  gap: .45rem;
+  padding: .45rem .8rem .45rem .6rem;
   font: inherit;
   font-size: .72rem;
   font-weight: 500;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--ink);
-  background: var(--paper);
-  border: 1.5px solid var(--ink);
+  background: transparent;
+  border: 1.5px solid var(--line);
   border-radius: 999px;
   cursor: pointer;
-  transition: translate .3s var(--ease);
+  transition: border-color .3s var(--ease-soft);
 }
-.lost__roll:hover { translate: 0 -2px; }
+.lost__roll:hover { border-color: var(--ink); }
 .lost__die { display: grid; place-items: center; }
 .lost__roll.is-rolling .lost__die { animation: lost-roll .55s cubic-bezier(.34, 1.42, .5, 1); }
 @keyframes lost-roll { from { rotate: -200deg; scale: .7; } }
 
-.lost__card {
-  display: grid;
-  gap: 1.4rem;
-  max-width: 34rem;
-  margin-inline: auto;
-}
-.lost__pic {
-  display: block;
-  aspect-ratio: 4 / 3;
-  border: var(--keyline);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  background: var(--paper-3);
-  rotate: -1.4deg;
-  box-shadow: 7px 7px 0 var(--gold);
-}
-.lost__pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.lost__card-text { display: grid; gap: .6rem; justify-items: start; }
-.lost__when { color: var(--brass-ink); }
-.lost__words { margin: 0; color: var(--ink-2); font-size: 1rem; line-height: 1.62; max-width: 46ch; }
-.lost__more { margin-top: .3rem; font-size: .9rem; font-weight: 500; }
-
 /* each new trip is dealt in like a print landing on the table */
-.lost__card.is-dealt .lost__pic { animation: lost-deal .6s cubic-bezier(.34, 1.4, .64, 1); }
-.lost__card.is-dealt .lost__card-text { animation: lost-rise .6s var(--ease) .08s backwards; }
-@keyframes lost-deal {
-  from { opacity: 0; translate: 0 18px; rotate: 3deg; }
-}
+.lost__card.is-dealt .lost__pic img { animation: lost-deal .5s var(--ease); }
+.lost__card.is-dealt .lost__card-text > :not(.lost__foot) { animation: lost-rise .5s var(--ease) .06s backwards; }
+@keyframes lost-deal { from { opacity: 0; scale: 1.06; } }
 @media (prefers-reduced-motion: reduce) {
-  .lost__card.is-dealt .lost__pic,
-  .lost__card.is-dealt .lost__card-text,
+  .lost__card.is-dealt .lost__pic img,
+  .lost__card.is-dealt .lost__card-text > *,
   .lost__roll.is-rolling .lost__die { animation: none; }
 }
 
@@ -348,16 +360,14 @@
   .lost__lede { text-wrap: pretty; }
   .lost__scene { justify-self: center; max-width: 500px; }
 
-  .lost__label { text-align: left; }
-  .lost__ways { grid-template-columns: repeat(4, 1fr); max-width: none; }
-  .lost__way { padding: 1.2rem 1.2rem 1.3rem; }
-  .lost__way-k { font-size: 1.4rem; }
-
-  .lost__trip-head { max-width: none; }
-  .lost__card {
-    max-width: none;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(2rem, 5vw, 5rem);
+  /* the same two columns as the sign above: the list under the words, the
+     postcard under the sign, so the page keeps one set of edges */
+  .lost__after-grid {
+    max-width: var(--maxw);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(2rem, 6vw, 6rem);
   }
+  .lost__trip { justify-self: center; width: 100%; max-width: 500px; }
+  .lost__label { text-align: left; }
 }
