@@ -39,8 +39,18 @@
     var aw = W - side * 2, ah = H - top - bottom;
     k0 = Math.min(aw / SB.w, ah / SB.h);
     var sw = SB.w * k0, sh = SB.h * k0, ox = (W - sw) / 2;
-    // phones: the group sits a touch below centre; wide screens: centred under the nav
-    var oy = phone ? (H - sh) / 2 + H * .05 : top + (ah - sh) / 2;
+    // phones: the date, the drawing and the caption hung under it are one group,
+    // centred between the nav and the foot of the screen; wide screens: centred under the nav
+    var fsPhone = Math.min(W * .31, H * .26), oy;
+    if (phone) {
+      var gTop = sh * .14 - fsPhone * .42, gBottom = sh + 14 + 66;
+      oy = (64 + H - 16) / 2 - (gTop + gBottom) / 2;
+    } else {
+      oy = top + (ah - sh) / 2;
+    }
+    var cue = stage.querySelector('.hx-cue');
+    if (phone) { cue.style.top = (oy + sh + 14) + 'px'; cue.style.bottom = 'auto'; }
+    else { cue.style.removeProperty('top'); cue.style.removeProperty('bottom'); }
     T0 = { x: ox + (T.x - SB.x) * k0, y: oy + (T.y - SB.y) * k0 };
     // the clear lens is about 100 x 56 artwork px: fly in until it is wider and taller than the screen
     kEnd = Math.max(W / 90, H / 50) * 1.3;
@@ -48,7 +58,7 @@
     // wide screens: it runs the full width of the window, measured, behind the two of them.
     var date = stage.querySelector('.hx-date'), fs, cy;
     if (phone) {
-      fs = Math.min(W * .31, H * .26); cy = oy + sh * .14;
+      fs = fsPhone; cy = oy + sh * .14;
     } else {
       date.style.setProperty('--hx-fs', '100px');
       var n = date.querySelectorAll('.n'), wide = n[n.length - 1].getBoundingClientRect().right - n[0].getBoundingClientRect().left;
@@ -56,7 +66,6 @@
     }
     stage.style.setProperty('--hx-fs', fs + 'px'); date.style.removeProperty('--hx-fs');
     stage.style.setProperty('--hx-cy', cy + 'px');
-    stage.style.setProperty('--hx-eb', (phone ? cy - fs * .42 - 44 : top - 40) + 'px');
   }
   function at(p) {
     var z = inOut(c(p, .05, .64));
@@ -66,7 +75,7 @@
     svg.setAttribute('viewBox', (T.x - sx / k).toFixed(2) + ' ' + (T.y - sy / k).toFixed(2) + ' ' + (W / k).toFixed(2) + ' ' + (H / k).toFixed(2));
     var st = stage.style, note = c(p, .66, .82);
     st.setProperty('--hx-date-o', 1 - c(p, 0, .14));
-    st.setProperty('--hx-cue', 1 - c(p, 0, .04));
+    st.setProperty('--hx-cue', 1 - c(p, 0, .1));
     st.setProperty('--hx-vec', c(p, .07, .13));
     st.setProperty('--hx-part', smooth(c(p, .1, .4)));
     st.setProperty('--hx-figs', 1 - c(p, .17, .3));

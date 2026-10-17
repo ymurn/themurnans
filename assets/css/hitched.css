@@ -26,7 +26,6 @@
 /* ---- the scroll track and its stage ---------------------------------- */
 .hx { position: relative; height: 420vh; }
 .hx-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.hx-eyebrow { position: absolute; z-index: 2; left: 0; right: 0; top: var(--hx-eb, 5.5rem); text-align: center; opacity: var(--hx-date-o, 1); }
 .hx-date { position: absolute; z-index: 0; left: 0; right: 0; top: var(--hx-cy, 42svh); margin: 0; display: flex; justify-content: center; gap: .04em; translate: 0 -50%; scale: calc(1 + (1 - var(--hx-date-o, 1)) * .14); opacity: var(--hx-date-o, 1); font: 400 var(--hx-fs, min(31vw, 26svh))/.8 var(--display); letter-spacing: -.035em; pointer-events: none; }
 .hx-date .n { display: inline-block; }
 .hx-date .n1 { color: var(--hx-t1); rotate: -5deg; }
@@ -79,7 +78,7 @@
 .hx-notewrap::before { background: #E4CBC8; }
 .hx-pin { position: absolute; top: -16px; left: 50%; width: 30px; translate: -50% 0; fill: #F0CE84; stroke: #14110D; stroke-width: 1.3; }
 
-.hx-cue { position: absolute; z-index: 2; left: 0; right: 0; bottom: max(1rem, env(safe-area-inset-bottom)); display: grid; justify-items: center; gap: .4rem; margin: 0; font: 500 .62rem/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--ink-3); opacity: var(--hx-cue, 1); }
+.hx-cue { position: absolute; z-index: 2; left: 0; right: 0; bottom: max(1rem, env(safe-area-inset-bottom)); display: grid; justify-items: center; gap: .55rem; margin: 0; padding: 0 var(--gutter); text-align: center; font: 500 .69rem/1.3 var(--sans); letter-spacing: .3em; line-height: 1.75; text-transform: uppercase; color: var(--ink-3); opacity: var(--hx-cue, 1); }
 .hx-cue svg { width: 12px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; animation: hx-nudge 1.8s var(--ease-soft) infinite; }
 @keyframes hx-nudge { 50% { translate: 0 5px; } }
 
@@ -139,7 +138,8 @@
 .hx:not(.hx-on) { height: auto; }
 .hx:not(.hx-on) .hx-stage { position: relative; height: auto; overflow: visible; padding: 100svh 0 clamp(3rem, 8vw, 5rem); }
 .hx:not(.hx-on) .hx-svg { height: 100svh; bottom: auto; }
-.hx:not(.hx-on) .hx-field, .hx:not(.hx-on) .hx-cue { display: none; }
+.hx:not(.hx-on) .hx-field, .hx:not(.hx-on) .hx-cue svg { display: none; }
+.hx:not(.hx-on) .hx-cue { top: calc(100svh - 3.25rem); bottom: auto; }
 .hx:not(.hx-on) .hx-notewrap { position: relative; left: auto; top: auto; margin: 0 auto; translate: none; rotate: none; opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
