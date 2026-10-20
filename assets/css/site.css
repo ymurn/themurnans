@@ -4395,7 +4395,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 
 .tally__end {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 40rem);
   gap: clamp(1.5rem, 5vw, 4rem);
   align-items: center;
   margin-top: clamp(3rem, 7vw, 5.5rem);
@@ -4409,14 +4409,28 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 /* The pair of buttons takes the column, not just the width of its words, so
    initButtonRows has a width to measure the pair against. */
 .tally__cta .btns { justify-self: stretch; }
+/* A sign-off, not a second hero: the pad a touch smaller, the words a step
+   quieter, and the pair held together in the middle of the page rather
+   than one at each end of it. */
+.tally__end { justify-content: center; }
+.tally__end .cal { width: 224px; }
+.tally__cta .lede { font-size: clamp(1rem, 1.25vw, 1.12rem); }
 
 @media (max-width: 860px) {
   .tally__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   /* one column under a centred heading, so it is centred too */
-  .tally__end { grid-template-columns: 1fr; justify-items: center; }
+  .tally__end { grid-template-columns: 1fr; justify-items: center; gap: 1.75rem; }
   .tally__cal { justify-items: center; }
-  .tally__cta { justify-items: center; text-align: center; }
+  .tally__cta { justify-items: center; text-align: center; gap: .85rem; }
   .tally__cta .lede { text-wrap: balance; }
+  /* on a phone the pad and its stamp take a little under half the screen */
+  .tally__end .cal { width: 184px; margin: .4rem 2rem 1.8rem 0; }
+  .tally__end .cal__stamp { width: 96px; right: -1.9rem; bottom: -1.6rem; }
+  .tally__end .cal__stamp .anniv__big { font-size: 1.9rem; }
+  .tally__end .cal__stamp .anniv__k { font-size: .44rem; }
+  .tally__end .cal__stamp::before { inset: 5px; }
+  /* the pair stays a stack, just not a wall: as wide as the longer one */
+  .tally__cta .btns > .btn { max-width: 19rem; padding-block: .9em; }
 }
 
 /* ── 03 Heard at our wedding ───────────────────────────────────────────────
@@ -4638,7 +4652,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
   .mem__hint { justify-content: flex-start; margin-bottom: 0; }
   .tally__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .tally__end { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+  .tally__end { grid-template-columns: auto minmax(0, 40rem); align-items: center; }
   .tally__cta { justify-items: start; text-align: start; }
 }
 
