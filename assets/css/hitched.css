@@ -28,7 +28,12 @@
    layers the script moves with GPU transforms (no repainting), the vector
    rings are only drawn while the camera is close in, and each frame the
    script writes straight to the few things that move. */
-.hx { position: relative; height: 420vh; }
+.hx { position: relative; height: 420vh; transition: background-color .3s; }
+/* Safari's bar floats over the page, and the page carries on under it: below
+   the pinned stage that is this section. Once the light fills the screen the
+   section takes its colour, so the strip under the bar is light too, not
+   paper (hitched.js adds .hx-lit). */
+.hx.hx-lit { background-color: var(--hx-field); }
 /* The stage is the tall viewport, the one with the phone's toolbar tucked
    away: at 100svh, a strip of the page below showed under the note once
    Safari shrank its bar. The opening picture is still laid out to the

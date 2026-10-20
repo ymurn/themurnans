@@ -146,6 +146,8 @@
     set(note, 'translate', '-50% calc(-50% + ' + ((1 - e) * 70).toFixed(1) + 'px)');
     set(note, 'rotate', ((1 - e) * -7).toFixed(2) + 'deg');
     field.classList.toggle('hx-twinkle', noteO > .5);
+    // the strip under Safari's floating bar shows this section, not the stage
+    sec.classList.toggle('hx-lit', lightO > .5);
   }
 
   function progress() { return c((scrollY - top0) / span, 0, 1); }
