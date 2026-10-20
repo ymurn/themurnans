@@ -28,6 +28,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/map.css">
+<link rel="stylesheet" href="assets/css/trip.css">
+<link rel="stylesheet" href="assets/css/reveal.css">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
 <script>try { var t = localStorage.getItem('murnan-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <!-- Microsoft Clarity: visit recordings and heatmaps, on the live site only so local previews stay out of the numbers -->
@@ -72,10 +74,12 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 
 <main>
 
-<section class="page-head">
+<!-- Six prints of the two of us beside the title, dealt by
+     assets/js/story-head.js from the chapters in assets/js/data.js -->
+<section class="page-head thead">
   <div class="shell">
-    <div class="page-head__row">
-      <div class="stack gap-m" style="max-width:60ch">
+    <div class="thead__grid">
+      <div class="stack gap-m thead__text">
         <span class="eyebrow" data-reveal="fade">Volume One &nbsp;·&nbsp; 2020 to 2022</span>
         <h1 class="t-xl" data-split>The Long Way Round</h1>
         <p class="lede" data-reveal="up" style="--d:120ms">
@@ -85,7 +89,7 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
           <a class="link" href="2025.html">Volume Two</a>, one page for each year.
         </p>
       </div>
-      <img class="mark mark--lg" src="assets/art/Story.svg" alt="" data-reveal="up">
+      <figure class="tgal" id="gallery"></figure>
     </div>
   </div>
 </section>
@@ -193,6 +197,8 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/story-places.js"></script>
 <script src="assets/js/trailmap.js"></script>
 <script src="assets/js/safari-bar.js"></script>
+<script src="assets/js/story-head.js"></script>
+<script src="assets/js/reveal.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

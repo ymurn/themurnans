@@ -1778,17 +1778,18 @@
 
   const MEM_TILT = [-2.2, 1.6, -1.2, 2, -1.7, 1.1];
   const MEM_OFF = ['--gold', '--blue', '--sage-500', '--rose', '--coral', '--khaki'];
-  // A wide screen has the map beside the photographs and the room for five rows
-  // of them; a phone has the map above and would be scrolling all day.
+  // A wide screen has the map beside the photographs, and they are cut to the
+  // map's height there: two rows of two. Ten ran three screens past the map
+  // and left it stuck over an empty column.
   const MEM_DEAL = 6;
-  const MEM_DEAL_WIDE = 10;
+  const MEM_DEAL_WIDE = 4;
   /* Three shapes, and the queries are the ones in site.css that make them,
      so the two never disagree.
 
      UPRIGHT  a tablet stood up: the map across the top, the cards one row to
               swipe, so six is a row rather than a long one.
      SIDEWAYS a phone on its side: two columns, the map sticky beside them.
-     wide     the desktop: two columns and room for ten cards down the right.
+     wide     the desktop: two columns, four cards cut to the map's height.
 
      Where the map keeps its place the pill has nothing to stand in for. */
   const UPRIGHT  = '(min-width: 700px) and (orientation: portrait)';
@@ -2097,7 +2098,7 @@
           </button>`;
       }).join('');
 
-      return `${head}<div class="mem__grid">${cards}</div>`;
+      return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>`;
     };
 
     /* The photographs the open memory is showing, in the order its thumbnails
@@ -2373,19 +2374,69 @@
     return hold;
   }
 
-  /* ── Said about us (home) ─────────────────────────────────────────────── */
+  /* ── Heard at our wedding (home) ───────────────────────────────────────
+     The five faces become tabs over the five quotes. It plays through on
+     its own while the quotes are on screen, and the typing bubble on the
+     speaker's face is the timer: its three dots light in turn, and the
+     next quote comes when the third has had its moment. Picking a name jumps there and carries on from it.           */
 
-  function initSay() {
-    const rail = $('#say');
-    const track = rail && $('.say__track', rail);
-    if (!rail || !track) return;
+  function initHeard() {
+    const host = $('#heard');
+    const row = host && $('.heard__faces', host);
+    if (!row) return;
+    const tabs = $$('.heard__face', row);
+    const quotes = tabs.map(t => document.getElementById(t.getAttribute('aria-controls')));
+    if (!tabs.length || quotes.some(q => !q)) return;
 
-    rail.setAttribute('tabindex', '0');
-    rail.setAttribute('role', 'group');
-    rail.setAttribute('aria-label', 'What friends and family said at the wedding');
-    if (calm) return;                       // a plain swipe rail, and nothing moves
+    let on = 0;
 
-    autoRail(rail, track);
+    row.hidden = false;
+    row.setAttribute('role', 'tablist');
+    row.setAttribute('aria-label', 'Who said it');
+    tabs.forEach((t, i) => {
+      t.setAttribute('role', 'tab');
+      quotes[i].setAttribute('role', 'tabpanel');
+      quotes[i].setAttribute('aria-labelledby', t.id);
+    });
+    host.classList.add('is-live');
+
+    const show = (i, focus) => {
+      on = (i + tabs.length) % tabs.length;
+      tabs.forEach((t, k) => {
+        t.classList.toggle('is-on', k === on);
+        t.setAttribute('aria-selected', String(k === on));
+        t.tabIndex = k === on ? 0 : -1;
+      });
+      quotes.forEach((q, k) => q.classList.toggle('is-on', k === on));
+      if (focus) tabs[on].focus();
+    };
+    // a pick on the face already showing starts its dots again
+    const pick = (i, focus) => {
+      const talk = $('.heard__talk', tabs[(i + tabs.length) % tabs.length]);
+      show(i, focus);
+      if (talk) {
+        const all = [talk, ...talk.children];
+        all.forEach(el => { el.style.animation = 'none'; });
+        void talk.getBoundingClientRect();
+        all.forEach(el => { el.style.animation = ''; });
+      }
+    };
+
+    tabs.forEach((t, i) => t.addEventListener('click', () => pick(i)));
+    row.addEventListener('keydown', e => {
+      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (step) { e.preventDefault(); pick(on + step, true); }
+      else if (e.key === 'Home') { e.preventDefault(); pick(0, true); }
+      else if (e.key === 'End') { e.preventDefault(); pick(tabs.length - 1, true); }
+    });
+
+    if (!calm) {
+      host.classList.add('is-auto', 'is-held');
+      row.addEventListener('animationend', e => { if (e.animationName === 'heard-talk') show(on + 1); });
+      new IntersectionObserver(([e]) => host.classList.toggle('is-held', !e.isIntersecting), { threshold: .5 })
+        .observe($('.heard__box', host));
+    }
+    show(0);
   }
 
   /* ── Since the wedding (home) ──────────────────────────────────────────
@@ -2578,7 +2629,7 @@
     initAnniversary();
     initAtlas();
     initMemoryMap();
-    initSay();
+    initHeard();
     initCounters();
     initPour();
     initCursor();

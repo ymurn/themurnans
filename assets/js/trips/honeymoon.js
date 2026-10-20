@@ -15,7 +15,6 @@ window.MW_TRIP = {
  "kicker": "August 8 to 22, 2022",
  "title": "The Honeymoon",
  "barLabel": "Day",
- "galleryNote": "Six of the fifteen days",
  "facts": [
   { "k": "Days on the road", "v": "15", "s": "Sacramento on August 8, Seattle on August 22." },
   { "k": "States", "v": "3", "s": "California, Oregon and Washington, with the ocean in all three." },

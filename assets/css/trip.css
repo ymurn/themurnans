@@ -55,6 +55,12 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   /* room on the right and underneath for the off-register shadows */
   padding: 0 10px 10px 0;
 }
+/* The wipe clips each print to its own box, and the off-register color sits
+   outside that box, so a plain inset(0) at the end of it cut the color off
+   for good. These reach past the print on the right and underneath, by
+   more than the color is offset. */
+[data-reveal="wipe"].tgal__grid > * { clip-path: inset(-2px -16px 100% -2px); }
+[data-reveal="wipe"].tgal__grid.is-in > * { clip-path: inset(-2px -16px -16px -2px); }
 [data-reveal="wipe"].tgal__grid > *:nth-child(4) { transition-delay: calc(var(--d) + 390ms); }
 [data-reveal="wipe"].tgal__grid > *:nth-child(5) { transition-delay: calc(var(--d) + 520ms); }
 [data-reveal="wipe"].tgal__grid > *:nth-child(6) { transition-delay: calc(var(--d) + 650ms); }
@@ -76,7 +82,6 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1rem;
   font-size: .62rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3);
 }
-.tgal__zoom { color: var(--brass-ink); }
 
 /* 3 ── THE STOPS ───────────────────────────────────────────────────────── */
 

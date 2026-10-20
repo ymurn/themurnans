@@ -19,7 +19,6 @@ window.MW_TRIP = {
  "kicker": "June 4 to 15, 2026",
  "title": "Yinja's 30th",
  "barLabel": "Stop",
- "galleryNote": "Six from the eleven days",
 
  "facts": [
   { "k": "Days on the road", "v": "11", "s": "Fresno on June 4, Fresno again on June 14." },

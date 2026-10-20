@@ -19,7 +19,6 @@ window.MW_TRIP = {
  "kicker": "April 16 to 28, 2025",
  "title": "David's 40th",
  "barLabel": "Stop",
- "galleryNote": "Six from the two weeks",
 
  "facts": [
   { "k": "Days on the road", "v": "13", "s": "Las Vegas on April 16, Las Vegas again on April 28." },

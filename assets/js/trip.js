@@ -77,11 +77,7 @@
                 tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || T.title)}"
                 style="--tilt:${TILT[i % TILT.length]}deg;--off:var(${WASH[i % WASH.length]});--d:${80 + i * 90}ms">
           <img src="${esc(pic(p))}" alt="${esc(p.cap || T.title)}"${p.pos ? ` style="object-position:${esc(p.pos)}"` : ''} loading="eager" decoding="async">
-        </figure>`).join('')}</div>
-      <figcaption class="tgal__cap" data-reveal="fade" style="--d:560ms">
-        <span>${esc(T.galleryNote || 'A few from the trip')}</span>
-        <span class="tgal__zoom">Press one to see it big</span>
-      </figcaption>`;
+        </figure>`).join('')}</div>`;
   }
 
   /* ── The facts ─────────────────────────────────────────────────────── */

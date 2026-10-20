@@ -1,0 +1,151 @@
+/* ==========================================================================
+   THE MURNANS · the first reveal on the trip and timeline pages
+   Switched on by assets/js/reveal.js. Nothing here applies without it:
+   every rule hangs off html[data-intro], which only that script writes.
+
+   One motion language. A fast start easing into a long, quiet landing
+   (--rv-out), an ease in and out for anything that travels (--rv-move), a
+   near-critically damped spring for things settling into place
+   (--rv-settle). Nothing bounces. The photographs are the subject; their
+   tilt and their off-register color resolve last.
+   ========================================================================== */
+
+html[data-intro] {
+  --rv-out: cubic-bezier(.16, 1, .3, 1);
+  --rv-move: cubic-bezier(.65, 0, .35, 1);
+  /* a spring with about two percent of overshoot, sampled */
+  --rv-settle: linear(0, .013 1%, .05 2.2%, .2 5.2%, .5 10.2%, .7 14.5%, .845 18.8%, .932 23.1%, .983 27.6%, 1.012 33%, 1.02 39%, 1.016 47%, 1.006 60%, 1.001 80%, 1);
+}
+
+/* The head's usual reveal stands down: the words and pictures are simply
+   there, and only the option's own pieces move. */
+html[data-intro] .page-head [data-reveal] { opacity: 1; transform: none; }
+html[data-intro] .page-head [data-reveal="wipe"] > * { clip-path: none; }
+html[data-intro] .page-head .wi { transform: none; transition: none; }
+html[data-intro] .page-head :is(.eyebrow, .lede, .thead__back, .ydeck)[data-reveal] { transition: none; }
+html[data-intro-kind="trip"] .tgal__grid { position: relative; }
+html[data-intro-kind="trip"]:not(.intro-go) .tgal__pic { opacity: 0; }
+@keyframes rv-rise { from { opacity: 0; translate: 0 16px; scale: .985; } }
+
+/* ── The title's words come out of a soft blur, one after another ─────── */
+.rv-w { display: inline-block; }
+html[data-intro]:not(.intro-go) .rv-w { opacity: 0; }
+html.intro-go[data-intro] .rv-w { animation: rv-sharpen 1s calc(var(--rv-base, .05s) + var(--k, 0) * .08s) backwards var(--rv-out); }
+@keyframes rv-sharpen { from { opacity: 0; filter: blur(12px); translate: 0 .18em; } }
+
+/* the color behind a print, printed a beat after the print: shared */
+@keyframes rv-print { from { box-shadow: 0 0 0 var(--off, var(--gold)); } }
+
+/* ══ YEAR PAGES ══════════════════════════════════════════════════════════ */
+
+/* the words a screen reader is given while the page shows the wheels */
+.rv-said { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* odometer: the year rolls round, the right-hand wheel furthest, and
+   settles on the number */
+/* Each wheel is as wide as the digit it stops on, so the year sets exactly
+   as it does without the roll; the digits passing through are centred on it
+   and only cut off top and bottom. */
+.rv-odo { position: relative; display: inline-block; height: 1.04em; margin-block: -.09em; line-height: 1.04; vertical-align: top; clip-path: inset(0 -40%); }
+.rv-odo__w { visibility: hidden; }
+.rv-odo__strip { position: absolute; left: 50%; top: 0; display: block; translate: -50% calc(var(--n) * -1.04em); text-align: center; }
+.rv-odo__strip > span { display: block; height: 1.04em; }
+html.intro-go[data-intro="odometer"] .rv-odo__strip {
+  animation: rv-roll calc(.9s + var(--k) * .18s) calc(.1s + var(--k) * .08s) backwards;
+  animation-timing-function: var(--rv-settle);
+}
+@keyframes rv-roll { from { translate: -50% 0; } }
+
+/* and the card on the right: it arrives face down, then turns over once the
+   year has stopped. The turn is two halves on the one clock, so the back
+   can go at the exact moment the card is edge on. The back is drawn the
+   right way round on the mirrored side of the card. */
+.rv-back {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; place-items: center;
+  background: #F7F0E0;
+  opacity: 0; pointer-events: none;
+}
+.rv-back__face { display: grid; justify-items: center; gap: .55rem; scale: -1 1; }
+.rv-back__face img { width: clamp(56px, 18%, 96px); height: auto; border-radius: 50%; border: 2px solid #14110D; }
+.rv-back__from { font-family: var(--hand, "Caveat", cursive); font-size: clamp(1.25rem, 2.6vw, 1.9rem); line-height: 1; color: #14110D; }
+.rv-back__yr { font-size: .62rem; font-weight: 500; letter-spacing: .24em; color: #6B6153; }
+html[data-intro="odometer"]:not(.intro-go) .ycover { opacity: 0; }
+html.intro-go[data-intro="odometer"] .ycover { animation: rv-rise .9s .15s backwards var(--rv-out); }
+html.intro-go[data-intro="odometer"] .ycover__frame { animation: rv-turn 1s 1.2s backwards, rv-print .7s 2.05s backwards var(--rv-out); }
+html.intro-go[data-intro="odometer"] .rv-back { animation: rv-backface 1s 1.2s backwards linear; }
+@keyframes rv-turn {
+  /* in on an ease in, out on the long landing, so it never overshoots */
+  0%   { transform: perspective(1400px) rotateY(180deg); animation-timing-function: cubic-bezier(.55, 0, .9, .5); }
+  42%  { transform: perspective(1400px) rotateY(90deg); animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+  100% { transform: perspective(1400px) rotateY(0deg); }
+}
+@keyframes rv-backface { 0%, 41.9% { opacity: 1; } 42%, 100% { opacity: 0; } }
+
+/* ══ TRIP PAGES ══════════════════════════════════════════════════════════ */
+
+/* HONEYMOON · camera ─ an instant camera beside the title takes them, two
+   at a flash; each print slides out of the slot, flies to its place and
+   develops there */
+html[data-intro="camera"] .tgal { position: relative; }
+.rv-cam { position: absolute; z-index: 5; aspect-ratio: 132 / 100; rotate: -5deg; pointer-events: none; }
+.rv-cam svg { display: block; width: 100%; height: 100%; max-width: none; overflow: visible; }
+.rv-cam svg :is(rect, path, circle) { stroke: #14110D; stroke-width: 2.6; stroke-linejoin: round; }
+.rv-cam__off { fill: var(--blue); stroke: none !important; }
+.rv-cam__body, .rv-cam__hump { fill: #F7F0E0; }
+.rv-cam__loop, .rv-cam__finder, .rv-cam__slot, .rv-cam__lens { fill: #14110D; }
+.rv-cam__band { fill: #E2604F; }
+.rv-cam__flash { fill: #F0CE84; }
+.rv-cam__flashlines { fill: none; stroke-width: 1.6 !important; stroke: #14110D8C !important; }
+.rv-cam__ring { fill: #3A3631; stroke-width: 1.4 !important; }
+.rv-cam__glass { fill: #5E9BB4; stroke: #F7F0E0 !important; stroke-width: 1.6 !important; }
+.rv-cam__button { fill: #E2604F; stroke-width: 2.2 !important; }
+.rv-cam__star { fill: #F0CE84; stroke-width: 3.4 !important; }
+.rv-cam__pop { position: absolute; left: 76%; top: 32%; width: 230%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, #FFFFFF 0, #FFFFFFC4 16%, #FFFFFF3D 38%, #FFFFFF00 66%); opacity: 0; }
+.rv-cam.is-snap .rv-cam__pop { animation: rv-popflash .42s ease-out; }
+.rv-cam.is-snap svg { animation: rv-recoil .22s ease-out; }
+@keyframes rv-popflash { from { opacity: 1; scale: .35; } to { opacity: 0; scale: 1.25; } }
+@keyframes rv-recoil { 40% { translate: 0 2px; scale: .985; } }
+html.intro-go[data-intro="camera"] .rv-cam { animation: rv-rise .8s .05s backwards var(--rv-out); }
+.rv-cam.is-gone { animation: rv-camout .6s forwards var(--rv-move) !important; }
+@keyframes rv-camout { to { opacity: 0; translate: 0 14px; } }
+html.intro-go[data-intro="camera"] .tgal__pic {
+  animation: rv-eject .9s var(--at, .7s) backwards;
+}
+html.intro-go[data-intro="camera"] .tgal__pic img { animation: rv-develop 1.5s calc(var(--at, .7s) + .5s) backwards var(--rv-out); }
+@keyframes rv-eject {
+  /* out of the slot: it starts inside the camera and slides down below it */
+  0%   { opacity: 0; translate: var(--px) var(--py0); scale: var(--s); rotate: 0deg; box-shadow: 0 0 0 var(--off, var(--gold)); z-index: 4; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+  1%   { opacity: 1; }
+  32%  { translate: var(--px) var(--py1); scale: var(--s); rotate: -5deg; animation-timing-function: linear; }
+  40%  { translate: var(--px) var(--py1); scale: var(--s); rotate: -5deg; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+  /* and off to its place */
+  90%  { box-shadow: 0 0 0 var(--off, var(--gold)); }
+  100% { z-index: 4; }
+}
+@keyframes rv-develop { from { filter: brightness(1.9) saturate(0) contrast(.5) sepia(.25); } }
+
+/* LONG WAY ROUND · arc ─ the path is drawn by reveal.js with the Web
+   Animations API, each print's arc being its own. The stack shows first;
+   the color comes as each one lands. */
+html[data-intro="arc"] .tgal__pic { z-index: var(--z, 1); }
+html.intro-go[data-intro="arc"] .tgal__grid { animation: rv-stack .55s .05s backwards var(--rv-out); }
+html.intro-go[data-intro="arc"] .tgal__pic { animation: rv-print .7s calc(1.45s + var(--k, 0) * .085s) backwards var(--rv-out); }
+@keyframes rv-stack { from { opacity: 0; translate: 0 14px; } }
+
+
+/* ══ HIGHLIGHTS · booth ═════════════════════════════════════════════════ */
+
+/* the frames are moved by reveal.js; the color is printed as each lands */
+html[data-intro="booth"] .tgal__pic { z-index: 2; }
+html.intro-go[data-intro="booth"] .tgal__pic { animation: rv-print .6s var(--pk, 1.8s) backwards var(--rv-out); }
+
+/* the photo-booth strips the frames sit on */
+.rv-strip {
+  position: absolute; z-index: 1;
+  border: 1.5px solid color-mix(in srgb, #14110D 22%, transparent);
+  border-radius: 4px;
+  background: #FBF7EE;
+  box-shadow: 0 10px 26px #14110D26, 0 2px 6px #14110D1F;
+  pointer-events: none;
+}

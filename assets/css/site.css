@@ -3993,6 +3993,12 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
    panel drops under the map and rides a little way up onto it, so a phone
    sees the pictures land rather than a second screen of nothing.          */
 
+/* Each home heading gets its own script color: green here (David's
+   favorite), the page's blue on the tally, wine on the speeches. An alpine
+   green, cool and bright like pine; in dusk the same hue lifted, not a mint. */
+.memories .squiggle { color: #1F7A5A; }
+[data-theme="dusk"] .memories .squiggle { color: #3DAF84; }
+
 .mem { position: relative; display: grid; gap: clamp(1.25rem, 3vw, 2.25rem); }
 /* overflow-x: hidden on <body> turns it into a scroll container, and a sticky
    child of a scroll container that never scrolls never sticks. "clip" clips
@@ -4307,6 +4313,50 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__hint { order: -1; margin: 0 0 .9rem; justify-content: center; text-align: center; }
 }
 
+/* A desktop: the photographs are cut to the map's height. Ten cards down the
+   right ran three screens past a map that stopped at one, and the map sat
+   stuck over an empty column all the way down. Now the deal is four, two by
+   two, and the photographs take whatever height the map leaves them, so the
+   two columns end together at any width. The photo is taken out of the flow
+   so it never pushes the row taller than the map. */
+@media (min-width: 1000px) and (orientation: landscape) {
+  /* the map takes three fifths: a taller map is taller photographs, and at
+     an even split they came out twice as wide as they were high */
+  .mem { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .mem__panel { align-self: stretch; }
+  .mem__panel:has(> .mem__grid:is([data-n="3"], [data-n="4"])) { grid-template-rows: auto minmax(0, 1fr); }
+  .mem__grid:is([data-n="3"], [data-n="4"]) { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); }
+  .mem__grid:is([data-n="3"], [data-n="4"]) > * { grid-column: span 2; }
+  .mem__grid:is([data-n="3"], [data-n="4"]) .mem__card { grid-template-rows: minmax(0, 1fr) auto; }
+  .mem__grid:is([data-n="3"], [data-n="4"]) .mem__shot { aspect-ratio: auto; min-height: 7rem; }
+  .mem__grid:is([data-n="3"], [data-n="4"]) .mem__shot img { position: absolute; inset: 0; }
+  /* three: two on top and the third centred under them, the same size */
+  .mem__grid[data-n="3"] > :last-child { grid-column: 2 / span 2; }
+  /* A state with one or two keeps the same card, never a stretched one: one
+     row, at the 4:3 the cards are everywhere else. */
+  .mem__grid:is([data-n="1"], [data-n="2"]) > :last-child:nth-child(odd) { grid-column: auto; }
+
+  /* An open memory fits beside the map in one screen. Its thumbnails were a
+     full-width row of squares, two of them half the card wide, which pushed
+     the words and the link off the bottom. Now they are a narrow column
+     beside the lead photograph, and the lead takes whatever height the map
+     leaves, never less than enough to read it by. */
+  .mem__panel:has(> .mem__open) { grid-template-rows: minmax(0, 1fr); }
+  .mem__open {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(14rem, 1fr) auto auto auto;
+    align-content: stretch;
+  }
+  .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
+  .mem__open > .mem__lead { grid-row: 2; }
+  .mem__open > .mem__shots { grid-row: 2; grid-column: 2; }
+  .mem__lead { aspect-ratio: auto; min-height: 0; }
+  .mem__lead img { position: absolute; inset: 0; }
+  .mem__shots { flex-direction: column; align-self: center; padding: .3rem; gap: .3rem; }
+  .mem__thumb { flex: none; width: 3.1rem; }
+}
+
 /* ── 02 The tally ──────────────────────────────────────────────────────── */
 
 .tally__cards {
@@ -4369,174 +4419,183 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .tally__cta .lede { text-wrap: balance; }
 }
 
-/* ── 03 Said about us ──────────────────────────────────────────────────────
-   A rail that scrolls itself. It is a real scroller, so a thumb can push it
-   about and the keyboard can reach it; initSay only nudges it along.      */
+/* ── 03 Heard at our wedding ───────────────────────────────────────────────
+   One quote at a time, set in the hero's serif on the page's paper, and
+   the five faces underneath as the way to pick. The wine comes in as
+   the accent: the script word, the opening quote, the role and the timer.
+   Type takes --wine, which lightens in dusk to stay readable on the teal;
+   fills with cream type on them keep the deep wine in both themes.       */
 
-.say__head { margin-bottom: clamp(.5rem, 2vw, 1.25rem); }
-/* the script word in gold: the page's blue goes dim on the oxblood */
-.say .squiggle { color: #F0CE84; }
+.heard .squiggle { color: var(--wine); }
 
-/* The oxblood arrives as a card inset from the edges with rounded corners,
-   and opens out to the full width as it scrolls in. Only the two real
-   colours ever show: a fade from the paper went through a muddy mauve on
-   the way. The oxblood is a layer behind the band so the strips beside the
-   card are the tally's paper, not the page's. Tied to the scroll, so it runs
-   at the reader's pace and closes again on the way up. Without
-   scroll-driven animation it is the plain band, as before. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .say.band--deep { background: var(--paper-2); isolation: isolate; }
-    .say.band--deep::before {
-      content: "";
-      position: absolute; inset: 0;
-      z-index: -1;
-      background: var(--deep);
-      animation: say-open both;
-      animation-timing-function: cubic-bezier(.3, 0, .2, 1);
-      animation-timeline: view();
-      animation-range: entry 0% entry 90%;
-    }
-  }
-}
-@keyframes say-open {
-  from { clip-path: inset(0 var(--gutter) round clamp(22px, 3vw, 40px)); }
-  to   { clip-path: inset(0 0 round 0); }
-}
-.say__rail {
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-}
-.say__rail::-webkit-scrollbar { display: none; }
-/* room above for the pulled-out quote marks and the tilts */
-.say__track { display: flex; gap: clamp(1.1rem, 2.2vw, 1.7rem); width: max-content; padding: 2.5rem var(--gutter) 1.5rem; }
-
-/* This band is the oxblood in dawn and in dusk, so everything on it is
-   pinned rather than themed, the way the postmark and the calendar sticker
-   are: one wine for the paper, cream for the line, and one accent a card
-   printed off register behind it.
-
-   --keyline is no use here. It is declared on :root as "2px solid
-   var(--ink)", so it resolves against root's ink and inherits already
-   resolved: overriding --ink on .band--deep cannot reach back into it. In
-   dawn that left a near-black line on the oxblood, which is what made these
-   read as unfinished beside the speeches on day.html. */
-.said {
-  flex: none;
-  width: clamp(232px, 68vw, 340px);
+.heard__box {
   display: grid;
-  /* the face grows with the card: 48px is right on a phone and too shy of
-     the bubble above it on a desktop */
-  --face: 48px;
-  grid-template-columns: var(--face) minmax(0, 1fr);
-  grid-template-areas: "bubble bubble" "pic who";
-  gap: .85rem .7rem;
-  margin: 0;
-  align-content: start;
-  --line-ink: var(--deep-ink);
-  --off: #F0CE84;
+  justify-items: center;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
+  max-width: 44rem;
+  margin: 0 auto;
 }
-.said:nth-child(2) { --off: #5E9BB4; }
-.said:nth-child(3) { --off: #7FA08A; }
-.said:nth-child(4) { --off: #DCC0BE; }
-.said:nth-child(5) { --off: #E2604F; }
-/* Pinned up, not laid out. Nothing on this site sits square: the calendar
-   page, the memory cards, the prints and the signatures all sit a degree or
-   two off and come back to true when you go near them. These were the one
-   set that did not, which is most of why they read as a table of quotes
-   rather than five notes somebody stuck on the wall. */
-.said:nth-child(odd)  { --tilt: -1.5deg; }
-.said:nth-child(even) { --tilt: 1.3deg; }
-.said__bubble {
-  grid-area: bubble;
-  position: relative;
+.heard__quotes { display: grid; gap: 3rem; width: 100%; align-items: center; }
+.heard__q {
   margin: 0;
-  padding: 1rem 1.15rem;
-  border: 2px solid var(--line-ink);
-  /* one sharp corner, on the side the tail comes out of, the shape the
-     speeches on day.html are cut to */
-  border-radius: 18px 18px 18px 5px;
-  /* the same wine as the band behind it, so the bubble and its tail are one
-     color and the line is the only thing drawing the shape */
-  background: var(--deep);
-  color: var(--deep-ink);
-  font-family: var(--hand);
-  font-size: 1.24rem; line-height: 1.34;
-  box-shadow: 5px 5px 0 var(--off);
-  rotate: var(--tilt, 0deg);
-  transition: transform .4s var(--ease), box-shadow .4s var(--ease), rotate .4s var(--ease);
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  text-align: center;
 }
-.said:hover .said__bubble { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--off); rotate: 0deg; }
-/* The opening quote, pulled out of the bubble and set big in the card's own
-   accent, the way the ampersand and the squiggles are set: it says "someone
-   said this" before a word of it is read. */
-.said__bubble::before {
-  content: "\201C";
-  position: absolute;
-  top: -.52em; left: -.06em;
+.heard__q blockquote {
+  margin: 0;
   font-family: var(--display);
-  font-size: 3.4rem; line-height: 1;
-  color: var(--off);
-  rotate: -7deg;
-  pointer-events: none;
-  transition: rotate .5s var(--ease), scale .5s var(--ease);
-  transform-origin: 60% 80%;
+  font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.3rem);
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  text-wrap: balance;
 }
-.said:hover .said__bubble::before { rotate: 2deg; scale: 1.1; }
-.said__bubble::after {                       /* the tail, pointing at the face */
-  content: "";
-  position: absolute;
-  left: 22px; bottom: -9px;
-  width: 14px; height: 14px;
-  background: var(--deep);
-  border-left: 2px solid var(--line-ink);
-  border-bottom: 2px solid var(--line-ink);
-  rotate: -45deg;
+.heard__q blockquote::before { content: "\201C"; color: var(--wine); }
+.heard__q blockquote::after  { content: "\201D"; color: var(--wine); }
+.heard__who {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: .4rem .6rem;
+  font-family: var(--display);
+  font-size: 1.15rem;
 }
-.said__who {
-  grid-area: who;
-  align-self: center;
-  display: grid; gap: .1rem;
-  font-size: .86rem; font-weight: 500;
-}
-/* the role as a pill in the card's own accent, the way day.html sets it */
-.said__who span {
-  justify-self: start;
-  margin-top: .1rem;
-  padding: .3em .7em .24em;
-  border: 1.5px solid var(--line-ink);
+/* who they are, as a wine pill */
+.heard__who span {
+  padding: .42em .9em .36em;
   border-radius: 999px;
-  background: var(--off);
-  color: #14110D;
-  font-size: .56rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  background: #7A2436;
+  color: #F9F2E4;
+  font-family: var(--sans);
+  font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
   white-space: nowrap;
 }
-.said__pic {
-  grid-area: pic;
-  width: var(--face); height: var(--face);
-  overflow: hidden;
-  border: 2px solid var(--line-ink);
-  border-radius: 50%;
-  background: var(--deep);
-  box-shadow: 3px 3px 0 var(--off);
-  rotate: -5deg;
-  transition: rotate .4s var(--ease), box-shadow .4s var(--ease);
-}
-.said:hover .said__pic { rotate: 0deg; box-shadow: 2px 2px 0 var(--off); }
-.said__pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
-.say__foot { margin-top: .75rem; }
-/* gold on the oxblood, with a cream offset since the ink shadow would vanish */
-.say__foot .btn { box-shadow: 5px 5px 0 #F7F0E0; }
-.say__foot .btn:hover { box-shadow: 2px 2px 0 #F7F0E0; }
 
-@media (min-width: 900px) { .say .said { --face: 64px; } }
-@media (max-width: 620px) {
-  .said { width: 78vw; }
-  .said__bubble { font-size: 1.16rem; }
+/* With the script running, the five quotes share one cell, so the box is as
+   tall as the longest and nothing below it moves as they change. */
+.heard.is-live .heard__q {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 .5rem;
+  transition: opacity .3s var(--ease-soft), translate .5s var(--ease), visibility 0s .3s;
+}
+.heard.is-live .heard__q.is-on {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition-delay: .1s, .1s, 0s;
+}
+
+/* The speakers, each face cut to a speech bubble: round, with the one sharp
+   corner the site gives anything said aloud. Pinned up at a tilt, each in
+   full color with its own accent printed off register behind it. The one
+   speaking hops up, straightens and grows a little. */
+.heard__faces {
+  display: flex;
+  justify-content: center;
+  gap: clamp(.8rem, 3.2vw, 1.4rem);
+  padding-top: .5rem;
+}
+.heard__faces[hidden] { display: none; }
+.heard__face {
+  --size: 52px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.heard__pic {
+  display: block;
+  width: var(--size); height: var(--size);
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 50% 50% 50% 14%;
+  background: var(--paper-2);
+  box-shadow: 3px 3px 0 var(--off);
+  rotate: var(--tilt, 0deg);
+  transition: rotate .45s var(--ease), translate .45s var(--ease), scale .45s var(--ease), box-shadow .45s var(--ease);
+}
+.heard__pic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
+.heard__face:hover .heard__pic { rotate: 0deg; translate: 0 -3px; }
+.heard__face.is-on .heard__pic {
+  rotate: 0deg;
+  translate: 0 -6px;
+  scale: 1.14;
+  box-shadow: 4px 4px 0 var(--off);
+  animation: heard-hop .5s var(--ease);
+}
+@keyframes heard-hop {
+  0%   { translate: 0 0; }
+  45%  { translate: 0 -12px; }
+  100% { translate: 0 -6px; }
+}
+.heard__face:focus-visible { outline: 2px solid var(--page-ink); outline-offset: 6px; border-radius: 12px; }
+
+/* The timer: a wine typing bubble pops out at the top corner of the face
+   that is speaking, the way a phone shows someone is typing. Its three dots
+   light in turn, and the next quote comes when the bubble's own 5s run
+   ends (initHeard listens for heard-talk). */
+.heard__face { position: relative; }
+.heard__talk {
+  position: absolute;
+  z-index: 2;
+  top: -17px; right: -20px;
+  display: flex; gap: 4px; align-items: center;
+  padding: 6px 8px;
+  border: 1.5px solid var(--paper);
+  border-radius: 999px 999px 999px 3px;    /* the sharp corner points at the face */
+  background: #7A2436;
+  opacity: 0;
+  scale: 0;
+  transform-origin: 0 100%;
+  pointer-events: none;
+  transition: opacity .2s var(--ease-soft), scale .2s var(--ease-soft);
+}
+.heard__talk i {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #F9F2E4;
+  opacity: .35;
+}
+.heard__face.is-on .heard__talk {
+  opacity: 1;
+  scale: 1;
+  transition: opacity .3s var(--ease) .25s, scale .45s cubic-bezier(.3, 1.6, .5, 1) .25s;
+}
+.heard__face.is-on .heard__talk i { opacity: 1; }
+.heard.is-auto .heard__face.is-on .heard__talk { animation: heard-talk 5s linear both; }
+.heard.is-auto .heard__face.is-on .heard__talk i { animation: heard-dot-1 5s linear both; }
+.heard.is-auto .heard__face.is-on .heard__talk i:nth-child(2) { animation-name: heard-dot-2; }
+.heard.is-auto .heard__face.is-on .heard__talk i:nth-child(3) { animation-name: heard-dot-3; }
+.heard.is-held .heard__talk, .heard.is-held .heard__talk i,
+.heard__box:hover .heard__talk, .heard__box:hover .heard__talk i { animation-play-state: paused; }
+@keyframes heard-talk { to { opacity: 1; } }
+@keyframes heard-dot-1 {
+  0%, 5%     { opacity: .35; translate: 0 0; }
+  8%         { opacity: 1; translate: 0 -2px; }
+  12%, 100%  { opacity: 1; translate: 0 0; }
+}
+@keyframes heard-dot-2 {
+  0%, 36%    { opacity: .35; translate: 0 0; }
+  39%        { opacity: 1; translate: 0 -2px; }
+  43%, 100%  { opacity: 1; translate: 0 0; }
+}
+@keyframes heard-dot-3 {
+  0%, 67%    { opacity: .35; translate: 0 0; }
+  70%        { opacity: 1; translate: 0 -2px; }
+  74%, 100%  { opacity: 1; translate: 0 0; }
+}
+
+.heard__foot { margin-top: clamp(2rem, 5vw, 3rem); }
+
+@media (min-width: 900px) { .heard__face { --size: 66px; } }
+@media (prefers-reduced-motion: reduce) {
+  .heard.is-live .heard__q, .heard__pic { transition: none; }
+  .heard__face.is-on .heard__pic { animation: none; }
+  .heard__talk { transition: none; }
 }
 
 /* ── Pages still being written ─────────────────────────────────────────────
