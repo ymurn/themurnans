@@ -143,6 +143,8 @@ html.intro-go[data-intro="booth"] .tgal__pic { animation: rv-print .6s var(--pk,
 /* the photo-booth strips the frames sit on */
 .rv-strip {
   position: absolute; z-index: 1;
+  /* hidden until reveal.js drops it in, so it never flashes at rest first */
+  opacity: 0;
   border: 1.5px solid color-mix(in srgb, #14110D 22%, transparent);
   border-radius: 4px;
   background: #FBF7EE;
