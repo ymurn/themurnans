@@ -3,7 +3,11 @@
    "card" is the file name in assets/art/cards/ without ".jpg"; every card
    needs two sizes, card-2026.jpg (1400 x 1000) and card-2026-sm.jpg (560 x 400).
    Leave "card" empty ("") until the card exists and a blank one stands in.
-   "off" is the color printed a little off register behind the card. */
+   "off" is the color printed a little off register behind the card.
+   "hidden": true keeps a year that is still being written off every list of
+   years on the site: the cards, the bar, the home page. Its own page still
+   works at 2026.html for anyone given the address, and its trips are on the
+   home page's map. Take the line out to put the year on show. */
 window.MW_YEARS = [
  {
   "year": "2022",
@@ -32,5 +36,13 @@ window.MW_YEARS = [
   "card": "card-2025",
   "off": "coral",
   "alt": "Our 2025 card: the two of us in matching pajamas by the fire, under framed pictures from the year's trips"
+ },
+ {
+  "year": "2026",
+  "title": "Thirty in the redwoods",
+  "card": "",
+  "off": "blue",
+  "alt": "",
+  "hidden": true
  }
 ];

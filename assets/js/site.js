@@ -722,7 +722,7 @@
   }
 
   function loadYearTrips(add) {
-    const years = (window.MW_YEARS || []).map(y => y.year);
+    const years = (window.MW_YEARS || []).filter(y => !y.hidden).map(y => y.year);
     const next = () => {
       const year = years.shift();
       if (!year) return;
@@ -2126,8 +2126,8 @@
             <h3 class="mem__place">${esc(m.place)}</h3>
             <span class="mem__date">${esc(m.date)}</span>
           </div>
-          <p class="mem__text">${esc(m.text)}</p>
-          <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>
+          ${m.text ? `<p class="mem__text">${esc(m.text)}</p>` : ''}
+          ${m.href ? `<a class="mem__go" href="${esc(m.href)}">${esc(m.go || `Read more in ${m.year}`)} &rarr;</a>` : ''}
         </div>`;
     };
 
@@ -2445,8 +2445,9 @@
 
   function initSince() {
     const host = $('#since');
-    const years = window.MW_YEARS;
-    if (!host || !years || !years.length) return;
+    // a year marked "hidden" in years/index.js has no card until it is on show
+    const years = (window.MW_YEARS || []).filter(y => !y.hidden);
+    if (!host || !years.length) return;
     // how many cards there are, so the CSS can lay out a row that divides evenly
     host.dataset.n = years.length;
     host.style.setProperty('--n', years.length);

@@ -6,7 +6,9 @@
    "t" is what to call it when a given state is picked, and a photograph's
    "s" is the state it was taken in, so a trip that crossed a line shows the
    right half of itself under either one. "bare" is a state with nothing
-   filed under it, and the trips that name it all the same. */
+   filed under it, and the trips that name it all the same. A memory from a
+   year that is not on show yet has an empty "href", or a highlight page and
+   the "go" to print on the link to it. */
 window.MW_MEMORIES = {
  "items": [
   {"st":["NY"],"place":"Syracuse, NY","short":"Syracuse","date":"July 31, 2020","year":"2020","href":"story.html#chap-1",
@@ -296,8 +298,47 @@ window.MW_MEMORIES = {
    "pics":[{"u":"assets/continued_trips/2025-12-cincy-clearwater-beach/2025-12-cincy-clearwater-beach-03.jpg","c":"Christmas in Cincinnati","s":"OH"},{"u":"assets/continued_trips/2025-12-cincy-clearwater-beach/2025-12-cincy-clearwater-beach-04.jpg","c":"Our cabana on Clearwater Beach","s":"FL"}]},
   {"st":["FL"],"place":"Big Cypress, the Everglades & Biscayne, FL","short":"Big Cypress","date":"December 30 to 31, 2025","year":"2025","href":"2025.html#december",
    "text":"The next and crisp morning, we entered Everglades National Park heading towards Flamingo!",
-   "pics":[{"u":"assets/continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-02.jpg","c":"The Everglades","s":"FL"},{"u":"assets/continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-06.jpg","c":"Lily pads and sawgrass in the Everglades","s":"FL"}]}
+   "pics":[{"u":"assets/continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-02.jpg","c":"The Everglades","s":"FL"},{"u":"assets/continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-06.jpg","c":"Lily pads and sawgrass in the Everglades","s":"FL"}]},
+  {"st":["FL"],"place":"Key West & the Florida Keys, FL","short":"Key West","date":"January 1, 2026","year":"2026","href":"",
+   "text":"We quickly learned on day 1 at Everglades that we could do everything in twoish days, and as we were there for three days decided to visit Key West!",
+   "pics":[{"u":"assets/continued_trips/2026-01-florida-keys/2026-01-florida-keys-02.jpg","c":"New Year's Day in Key West","s":"FL"},{"u":"assets/continued_trips/2026-01-florida-keys/2026-01-florida-keys-01.jpg","c":"The Southernmost Point, Key West","s":"FL"}]},
+  {"st":["FL"],"place":"The Everglades & Shark Valley, FL","short":"The Everglades","date":"January 2, 2026","year":"2026","href":"",
+   "text":"So, on Friday morning we stopped at Miccosukee Airboat Rides to complete an incredible airboat tour!",
+   "pics":[{"u":"assets/continued_trips/2026-01-everglades/2026-01-everglades-02.jpg","c":"Yinja holds a baby alligator in the Everglades","s":"FL"}]},
+  {"st":["SC","VA"],"place":"Congaree, SC & Humpback Rocks, VA","short":"Congaree","date":"January 3 to 4, 2026","year":"2026","href":"","t":{"VA":"Humpback Rocks"},
+   "text":"After spending the night in Jacksonville, we decided to visit Congaree! Unlike in November, January brought moody Congaree back!",
+   "pics":[{"u":"assets/continued_trips/2026-01-congaree/2026-01-congaree-01.jpg","c":"Congaree in the rain","s":"SC"},{"u":"assets/continued_trips/2026-01-congaree/2026-01-congaree-07.jpg","c":"On top of Humpback Rocks","s":"VA"}]},
+  {"st":["DC"],"place":"Washington, DC","short":"Washington","date":"January 16 to 19, 2026","year":"2026","href":"","t":{"DC":"Washington, DC"},
+   "text":"We went to the DMV for MLK Day weekend! First, David took Yinja to the Udvar-Hazy Center for the first time and we enjoyed seeing all the planes and the space…",
+   "pics":[{"u":"assets/continued_trips/2026-01-dc/2026-01-dc-06.jpg","c":"Lunch at Chercher in Washington, DC","p":"40% 50%","s":"DC"}]},
+  {"st":["NY"],"place":"Yinja's citizenship, Brooklyn, NY","short":"Yinja's citizenship","date":"February 4, 2026","year":"2026","href":"highlights-citizenship.html","go":"Read the highlight",
+   "text":"As of 10:30 am this morning, Yinja officially became both a U.S. citizen and a Murnan. I truly hope all of you feel as proud and excited for him as we do.",
+   "pics":[{"u":"assets/continued_trips/2026-02-citizenship/2026-02-citizenship-01.jpg","c":"Outside the courthouse in Brooklyn, straight after the oath","s":"NY"}]},
+  {"st":["OH"],"place":"Hocking Hills, Columbus & Cincinnati, OH","short":"Hocking Hills","date":"March 28 to 31, 2026","year":"2026","href":"",
+   "text":"First, we stopped in Columbus to go for a glorious run along the Scioto before having dinner at Walter’s for some glorious German food!",
+   "pics":[{"u":"assets/continued_trips/2026-03-columbus-hocking-hills/2026-03-columbus-hocking-hills-06.jpg","c":"At Cedar Falls in Hocking Hills","s":"OH"},{"u":"assets/continued_trips/2026-03-columbus-hocking-hills/2026-03-columbus-hocking-hills-02.jpg","c":"Upper Falls at Old Man's Cave","s":"OH"},{"u":"assets/continued_trips/2026-03-columbus-hocking-hills/2026-03-columbus-hocking-hills-01.jpg","c":"Dinner at Walter's in Columbus","s":"OH"},{"u":"assets/continued_trips/2026-03-columbus-hocking-hills/2026-03-columbus-hocking-hills-07.jpg","c":"Looking out of Rock House","s":"OH"},{"u":"assets/continued_trips/2026-03-columbus-hocking-hills/2026-03-columbus-hocking-hills-10.jpg","c":"The fire pit at the cabin","p":"70% 50%","s":"OH"}]},
+  {"st":["KY","OH"],"place":"Cincinnati, OH & Mammoth Cave, KY","short":"Cincinnati","date":"April 17 to 20, 2026","year":"2026","href":"","t":{"KY":"Mammoth Cave"},
+   "text":"We returned to Cincinnati for David’s birthday! Once there, we joined Eric, Jen, and Sully at the Cincinnati Zoo!",
+   "pics":[{"u":"assets/continued_trips/2026-04-cincy/2026-04-cincy-02.jpg","c":"At the Mammoth Cave visitor center","s":"KY"},{"u":"assets/continued_trips/2026-04-cincy/2026-04-cincy-01.jpg","c":"Meerkats at the Cincinnati Zoo","s":"OH"},{"u":"assets/continued_trips/2026-04-cincy/2026-04-cincy-04.jpg","c":"A pool inside Mammoth Cave","s":"KY"},{"u":"assets/continued_trips/2026-04-cincy/2026-04-cincy-06.jpg","c":"A waterfall inside Mammoth Cave","s":"KY"},{"u":"assets/continued_trips/2026-04-cincy/2026-04-cincy-09.jpg","c":"Wings with family in Cincinnati","s":"OH"}]},
+  {"st":["PA"],"place":"Ricketts Glen, Worlds End & Hersheypark, PA","short":"Ricketts Glen","date":"May 16 to 17, 2026","year":"2026","href":"",
+   "text":"In mid May, we did a weekend trip to do some fun activities in Pennsylvania!",
+   "pics":[{"u":"assets/continued_trips/2026-05-pennsylvania/2026-05-pennsylvania-03.jpg","c":"Under the falls at Ricketts Glen","s":"PA"},{"u":"assets/continued_trips/2026-05-pennsylvania/2026-05-pennsylvania-08.jpg","c":"The view at Worlds End","s":"PA"},{"u":"assets/continued_trips/2026-05-pennsylvania/2026-05-pennsylvania-09.jpg","c":"Hersheypark","s":"PA"}]},
+  {"st":["CA"],"place":"San Diego, Coronado & Encinitas, CA","short":"San Diego","date":"May 21 to 25, 2026","year":"2026","href":"",
+   "text":"We went to San Diego over Memorial Day weekend! It only took a three hour weather delay to get there at 2:30AM but we made it!",
+   "pics":[{"u":"assets/continued_trips/2026-05-san-diego/2026-05-san-diego-01.jpg","c":"At the San Diego Zoo with Jake and Matt","s":"CA"},{"u":"assets/continued_trips/2026-05-san-diego/2026-05-san-diego-04.jpg","c":"On Coronado Beach","s":"CA"},{"u":"assets/continued_trips/2026-05-san-diego/2026-05-san-diego-12.jpg","c":"The Meditation Garden in Encinitas","s":"CA"}]},
+  {"st":["CA"],"place":"Yosemite, Sequoia & Kings Canyon, CA","short":"Yosemite","date":"June 4 to 9, 2026","year":"2026","href":"highlights-yinjas-30th.html","go":"Read the highlight",
+   "text":"For Yinja’s 30th birthday,  we flew to Fresno (by way of SLC to do a California Adventure!",
+   "pics":[{"u":"assets/continued_trips/2026-06-yosemite/2026-06-yosemite-05.jpg","c":"The double rainbow at Vernal Falls, Yosemite","s":"CA"},{"u":"assets/continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-02.jpg","c":"Mist Falls in Kings Canyon","s":"CA"}]},
+  {"st":["CA"],"place":"Sonoma, Lake Tahoe & Napa, CA","short":"Sonoma","date":"June 10 to 15, 2026","year":"2026","href":"highlights-yinjas-30th.html","go":"Read the highlight",
+   "text":"What does one do first when arriving in Santa Rosa? Well, for us, it was to go to Russian River for dinner, and it was such a lovely dinner of pizza and beer.",
+   "pics":[{"u":"assets/continued_trips/2026-06-sonoma/2026-06-sonoma-02.jpg","c":"Muir Woods on Yinja's 30th","s":"CA"},{"u":"assets/continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-02.jpg","c":"At Lake Tahoe that evening","s":"CA"}]},
+  {"st":["MD"],"place":"Baltimore, MD","short":"Baltimore","date":"June 19 to 21, 2026","year":"2026","href":"",
+   "text":"We took a June trip to Baltimore! We ran a bunch along the Inner Harbor, we had brunch at Bunny’s and walked throughout the city, but the star of the trip was Real…",
+   "pics":[{"u":"assets/continued_trips/2026-06-baltimore/2026-06-baltimore-02.jpg","c":"Sherwood Gardens, Baltimore","s":"MD"},{"u":"assets/continued_trips/2026-06-baltimore/2026-06-baltimore-09.jpg","c":"The Inner Harbor, Baltimore","s":"MD"}]},
+  {"st":["VT"],"place":"Camel's Hump & Mount Hunger, VT","short":"Camel's Hump","date":"July 3 to 5, 2026","year":"2026","href":"",
+   "text":"For the 4th, we returned to Vermont! On the 3rd it was rather toasty so we visited Marsh Billings Rockefeller National Historic Park and saw a very historic mansion,…",
+   "pics":[{"u":"assets/continued_trips/2026-07-vermont/2026-07-vermont-07.jpg","c":"On top of Mount Hunger","s":"VT"},{"u":"assets/continued_trips/2026-07-vermont/2026-07-vermont-03.jpg","c":"The view from Mount Hunger","s":"VT"},{"u":"assets/continued_trips/2026-07-vermont/2026-07-vermont-08.jpg","c":"Ridgelines from Camel's Hump","s":"VT"},{"u":"assets/continued_trips/2026-07-vermont/2026-07-vermont-01.jpg","c":"The porch at Marsh-Billings-Rockefeller","s":"VT"},{"u":"assets/continued_trips/2026-07-vermont/2026-07-vermont-09.jpg","c":"A rest on the way down","s":"VT"}]}
  ],
- "by": {"NY":[90,81,73,75,70,66,52,44,24,27,23,12,14,13,5,8,7,18,10,4,0,3,1],"MA":[80,2],"OH":[89,94,69,65,56,62,61,25,47,6,19],"ME":[67,9],"PA":[84,77,55,48,11],"NJ":[15],"DC":[74,60,53,46,16],"CA":[83,50,30,29,28,22,17],"MD":[82,88,58,20,47],"FL":[85,95,94,21],"VT":[87,26],"OR":[31,35,34,33,32],"WA":[59,38,37,39,42,41,43,36,40],"VA":[76,53,49,45],"CA-QC":[72,51],"CO":[54],"IN":[69,56],"NC":[91,93,57],"TN":[71,57],"WV":[78,63],"TX":[86,64],"NM":[64],"AZ":[83,64],"IL":[68],"GA":[92,91,76,78],"SC":[92,78],"RI":[79,80],"UT":[83],"NH":[87]},
+ "by": {"NY":[100,90,81,73,75,70,66,52,44,24,27,23,12,14,13,5,8,7,18,10,4,0,3,1],"MA":[80,2],"OH":[101,102,89,94,69,65,56,62,61,25,47,6,19],"ME":[67,9],"PA":[103,84,77,55,48,11],"NJ":[15],"DC":[99,74,60,53,46,16],"CA":[104,105,106,83,50,30,29,28,22,17],"MD":[107,82,88,58,20,47],"FL":[97,96,85,95,94,21],"VT":[108,87,26],"OR":[31,35,34,33,32],"WA":[59,38,37,39,42,41,43,36,40],"VA":[98,76,53,49,45],"CA-QC":[72,51],"CO":[54],"IN":[69,56],"NC":[91,93,57],"TN":[71,57],"WV":[78,63],"TX":[86,64],"NM":[64],"AZ":[83,64],"IL":[68],"GA":[92,91,76,78],"SC":[98,92,78],"RI":[79,80],"UT":[83],"NH":[87],"KY":[102]},
  "bare": {"DE":[{"n":"Rehoboth Beach","y":"2024","h":"2024.html#december"}],"CT":[{"n":"Mystic","y":"2025","h":"2025.html#february"}]}
 };
