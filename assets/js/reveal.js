@@ -2,7 +2,7 @@
    THE MURNANS · the first reveal on the trip and timeline pages
    Every page with a head of photographs opens with its own reveal:
 
-     year pages   2022.html to 2025.html: the year rolls round like a car's
+     year pages   2022.html to 2026.html: the year rolls round like a car's
                   milometer, and the Christmas card arrives face down and
                   turns over once the year has stopped
      Honeymoon    an instant camera beside the title takes the prints, two
