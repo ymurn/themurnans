@@ -29,7 +29,11 @@
    rings are only drawn while the camera is close in, and each frame the
    script writes straight to the few things that move. */
 .hx { position: relative; height: 420vh; }
-.hx-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; contain: layout paint; }
+/* The stage is the tall viewport, the one with the phone's toolbar tucked
+   away: at 100svh, a strip of the page below showed under the note once
+   Safari shrank its bar. The opening picture is still laid out to the
+   short viewport (hitched.js), so nothing starts under the toolbar. */
+.hx-stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; contain: layout paint; }
 .hx-date { position: absolute; z-index: 0; left: 0; right: 0; top: 42svh; margin: 0; display: flex; justify-content: center; gap: .04em; translate: 0 -50%; font: 400 min(31vw, 26svh)/.8 var(--display); letter-spacing: -.035em; pointer-events: none; will-change: scale, opacity; }
 .hx-date .n { display: inline-block; }
 .hx-date .n1 { color: var(--hx-t1); rotate: -5deg; }
