@@ -666,10 +666,15 @@ body.menu-open .nav__burger span { background: transparent; }
 body.menu-open .nav__burger span::before { transform: translateY(6px) rotate(45deg); }
 body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45deg); }
 
+/* The footer fills one whole screen, so the last scroll never stops with a
+   strip of the section above showing. The links sit at the top, clear of
+   the nav, and the name and credits sit on the bottom edge. */
 .footer {
   background: var(--footer-bg);
   color: var(--footer-ink);
-  padding-block: clamp(3.5rem, 7vw, 6rem) 2.25rem;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column;
+  padding-block: calc(var(--nav-h) + clamp(2.5rem, 6vw, 4.5rem)) 2.25rem;
   --ink: var(--footer-ink);
   --ink-2: var(--footer-ink-2);
   --ink-3: var(--footer-ink-3);
@@ -679,8 +684,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   --art-invert: var(--footer-invert);
 }
 .footer a { color: var(--footer-ink); }
+.footer > .shell { flex: 1; display: flex; flex-direction: column; }
 .footer__top { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2.5rem; align-items: start; }
-.footer__word { font-family: var(--display); font-size: clamp(3rem, 11vw, 9rem); line-height: .95; letter-spacing: -.015em; color: var(--footer-ink); opacity: .96; margin-block: clamp(2.5rem, 6vw, 4.5rem) 1.75rem; }
+.footer__word { font-family: var(--display); font-size: clamp(3rem, 11vw, 9rem); line-height: .95; letter-spacing: -.015em; color: var(--footer-ink); opacity: .96; margin-block: auto 1.75rem; padding-top: clamp(2.5rem, 6vw, 4.5rem); }
 .footer__meta { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; justify-content: space-between; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--footer-ink-3); }
 .footer__cols { display: grid; gap: .55rem; }
 .footer__cols a { color: var(--footer-ink-2); font-size: .82rem; transition: color .3s; }
