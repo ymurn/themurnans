@@ -14,11 +14,11 @@
    - each frame writes straight to the few elements that move, and only
      when a value has changed.
 
-   On a phone held upright a swipe covers less than a screen, so on the
-   full track the flight took three of them. There the track is shorter,
-   about one swipe to the note, and the camera eases after the scroll at a
-   capped speed, so a quick flick still reads as an unhurried flight. A flick
-   that outruns it waits at the end of the track until the note is up. */
+   The camera eases after the scroll at a capped speed, so a quick flick
+   still reads as an unhurried flight, and a scroll that outruns it waits at
+   the end of the track until the note has landed: everyone sees the whole
+   flight. On a phone held upright a swipe covers less than a screen, so
+   there the track is shorter, about one swipe to the note. */
 (function () {
   var sec = document.querySelector('.hx');
   if (!sec) return;
@@ -35,7 +35,7 @@
   var SB = { x: 290, y: 110, w: 2180, h: 2620 };   // the scene, in artwork pixels: shoe to shoe, rays to heels
   var T = { x: 1212, y: 497 };                      // the clear middle of the left ring
   var W, H, Hs, k0, T0, kEnd, top0, span, lastW = -1, lastP = -1, ticking = false, moving = 0;
-  // upright phones: the short track, with the camera at p easing after the scroll
+  // the camera at p, easing after the scroll; upright phones get the short track
   var short = false, p = 0, follow = 0;
   // the short viewport (toolbar showing), for laying out the opening picture
   var probe = document.createElement('div');
@@ -72,7 +72,6 @@
     // toolbar out, which the opening picture is fitted into
     short = stage.clientWidth < 700 && innerHeight > innerWidth;
     sec.classList.toggle('hx-short', short);   // changes the track's height, so before measuring
-    if (!short) hold(false);
     W = stage.clientWidth; H = stage.clientHeight; Hs = Math.min(H, probe.offsetHeight || H);
     // a phone held sideways, even a small one under 700px: wide, but too short
     // for the desktop margins, which left the drawing a dwarf beside the date.
@@ -122,6 +121,7 @@
   // rather than at the flick's. It never moves without a scroll.
   var FLY = 1800, lastT = 0;
   function ease(now) {
+    outrun();   // every frame as well as every scroll, so no scroll slips between them
     var target = progress(), dt = lastT ? Math.min(now - lastT, 50) : 16;
     lastT = now;
     var step = (target - p) * .14, max = dt / FLY;
@@ -132,34 +132,47 @@
     if (p === target) { follow = 0; lastT = 0; } else follow = requestAnimationFrame(ease);
   }
 
-  // A flick that reaches the end of the track before the camera does would
-  // carry the stage away with the flight half flown. So the page waits there,
-  // still, until the note has landed, then scrolls on as normal. Overflow goes on
-  // the root, never the body, which would stop the stage sticking; it also
-  // ends iOS's momentum. A timer lets go regardless, so nobody is ever stuck.
+  // Any scroll that reaches the end of the track before the camera does,
+  // however it gets there (a flick, its momentum, a wheel, a key, the
+  // scrollbar), is put back at the end, and the page waits there, still,
+  // until the note has landed, then scrolls on as normal. Every scroll is
+  // checked, not only the first, so nothing slips past while it waits.
+  // On touch screens overflow goes on the root (never the body, which would
+  // stop the stage sticking) to end iOS's momentum; elsewhere it would take
+  // the scrollbar away and shift the page, so wheel and keys are blocked
+  // instead. A timer lets go if the browser stops drawing altogether.
   var held = false, letGo = 0, LANDED = .84;   // the note has settled by .82 (see at)
+  var touch = matchMedia('(pointer: coarse)').matches;
+  var KEYS = { ' ': 1, PageDown: 1, End: 1, ArrowDown: 1, Spacebar: 1 };
   function block(e) { e.preventDefault(); }
+  function blockKey(e) {
+    var t = e.target;
+    if (KEYS[e.key] && !(t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) e.preventDefault();
+  }
   function hold(on) {
     if (on === held) return;
     held = on;
-    document.documentElement.style.overflow = on ? 'hidden' : '';
-    if (on) {
-      addEventListener('touchmove', block, { passive: false });
-      addEventListener('wheel', block, { passive: false });
-      letGo = setTimeout(function () { hold(false); }, FLY + 1200);
-    } else {
-      removeEventListener('touchmove', block, { passive: false });
-      removeEventListener('wheel', block, { passive: false });
-      clearTimeout(letGo);
-    }
+    if (touch) document.documentElement.style.overflow = on ? 'hidden' : '';
+    var act = on ? addEventListener : removeEventListener;
+    act('touchmove', block, { passive: false });
+    act('wheel', block, { passive: false });
+    act('keydown', blockKey);
+    clearTimeout(letGo);
+    if (on) letGo = setTimeout(function () { hold(false); }, 6000);
   }
   function outrun() {
     var end = top0 + span;
-    if (!short || held || p >= LANDED || scrollY <= end) return;
+    if (p >= LANDED || scrollY <= end + 1) return;
     scrollTo({ top: end, behavior: 'instant' });   // the page's smooth scrolling would crawl back
     hold(true);
     if (!follow) follow = requestAnimationFrame(ease);
   }
+  // a link to somewhere further down the page is a choice to go there: the
+  // camera jumps to the end of the flight rather than holding them back
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href*="#"]');
+    if (a && a.pathname === location.pathname && a.hash.length > 1) { p = 1; hold(false); at(p); }
+  }, true);
 
   function at(p) {
     if (Math.abs(p - lastP) < .0004) return;
@@ -213,7 +226,7 @@
   }
 
   function progress() { return c((scrollY - top0) / span, 0, 1); }
-  function frame() { ticking = false; if (short) { if (!follow) follow = requestAnimationFrame(ease); } else at(progress()); }
+  function frame() { ticking = false; if (!follow) follow = requestAnimationFrame(ease); }
   function draw() { p = progress(); at(p); }
 
   // the cake stacks itself, bottom tier first, when it comes into view
