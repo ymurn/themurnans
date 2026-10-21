@@ -14,10 +14,10 @@
    - each frame writes straight to the few elements that move, and only
      when a value has changed.
 
-   On a phone held upright a swipe covers less than a screen, so scrubbing
-   the flight took three of them. There the first swipe plays it instead:
-   the page holds still for the 2.4s it takes to reach the note, then
-   scrolls on as usual. Back at the very top it plays in reverse. */
+   On a phone held upright a swipe covers less than a screen, so on the
+   full track the flight took three of them. There the track is shorter,
+   about one swipe to the note, and the camera eases after the scroll
+   rather than jumping with it, so a quick flick still reads as a flight. */
 (function () {
   var sec = document.querySelector('.hx');
   if (!sec) return;
@@ -34,8 +34,8 @@
   var SB = { x: 290, y: 110, w: 2180, h: 2620 };   // the scene, in artwork pixels: shoe to shoe, rays to heels
   var T = { x: 1212, y: 497 };                      // the clear middle of the left ring
   var W, H, Hs, k0, T0, kEnd, top0, span, lastW = -1, lastP = -1, ticking = false, moving = 0;
-  // upright phones: the flight plays on its own (auto), from p toward goal
-  var auto = false, p = 0, goal = 0, playing = 0, held = false, PLAY = 2400;
+  // upright phones: the short track, with the camera at p easing after the scroll
+  var short = false, p = 0, follow = 0;
   // the short viewport (toolbar showing), for laying out the opening picture
   var probe = document.createElement('div');
   probe.style.cssText = 'position:absolute;top:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
@@ -69,9 +69,8 @@
     // H is the whole stage (100lvh: steady while a phone's toolbar comes and
     // goes), which the camera and the light fill; Hs is what shows with the
     // toolbar out, which the opening picture is fitted into
-    var wasAuto = auto;
-    auto = stage.clientWidth < 700 && innerHeight > innerWidth;
-    sec.classList.toggle('hx-auto', auto);   // changes the track's height, so before measuring
+    short = stage.clientWidth < 700 && innerHeight > innerWidth;
+    sec.classList.toggle('hx-short', short);   // changes the track's height, so before measuring
     W = stage.clientWidth; H = stage.clientHeight; Hs = Math.min(H, probe.offsetHeight || H);
     var phone = W < 700;
     var top = phone ? Math.max(96, Hs * .13) : Math.max(110, Hs * .14), bottom = phone ? 44 : 60, side = phone ? 10 : 48;
@@ -107,40 +106,17 @@
     // where the flight starts and how long it lasts, in page scroll
     top0 = sec.getBoundingClientRect().top + scrollY; span = sec.offsetHeight - H;
     lastW = W; lastP = -1;
-    // entering auto, or reloaded part way down: start from where the page is
-    if (auto && !wasAuto) { p = goal = scrollY > top0 + 6 ? 1 : 0; }
-    if (!auto && playing) { cancelAnimationFrame(playing); playing = 0; hold(false); }
+    p = progress();
   }
 
-  // Hold the page still while the flight plays, so a hard flick cannot carry
-  // the stage away half way through. Overflow on the root (never the body,
-  // which would stop the stage sticking) also ends iOS's momentum.
-  function block(e) { e.preventDefault(); }
-  function hold(on) {
-    if (on === held) return;
-    held = on;
-    document.documentElement.style.overflow = on ? 'hidden' : '';
-    if (on) addEventListener('touchmove', block, { passive: false });
-    else removeEventListener('touchmove', block, { passive: false });
-  }
-  function play(to) {
-    if (goal === to && playing) return;
-    goal = to;
-    var from = p, t0 = performance.now(), dur = PLAY * Math.abs(to - from);
-    if (to === 1) hold(true);
-    cancelAnimationFrame(playing);
-    (function step(now) {
-      var v = dur ? Math.min(1, (now - t0) / dur) : 1;
-      p = from + (to - from) * v;
-      at(p);
-      if (v < 1) playing = requestAnimationFrame(step);
-      else { playing = 0; hold(false); }
-    })(t0);
-  }
-  // the first swipe down plays the flight; back at the very top, it plays back
-  function steer() {
-    if (scrollY > top0 + 6) { if (goal === 0) play(1); }
-    else if (goal === 1 && !held) play(0);
+  // the camera closes a fifth of the gap each frame, so it trails a flick by a
+  // moment and settles where the finger stops; it never moves on its own
+  function ease() {
+    var target = progress();
+    p += (target - p) * .2;
+    if (Math.abs(target - p) < .0005) p = target;
+    at(p);
+    follow = p === target ? 0 : requestAnimationFrame(ease);
   }
 
   function at(p) {
@@ -195,8 +171,8 @@
   }
 
   function progress() { return c((scrollY - top0) / span, 0, 1); }
-  function frame() { ticking = false; if (auto) steer(); else at(progress()); }
-  function draw() { if (auto) at(p); else at(progress()); }
+  function frame() { ticking = false; if (short) { if (!follow) ease(); } else at(progress()); }
+  function draw() { p = progress(); at(p); }
 
   // the cake stacks itself, bottom tier first, when it comes into view
   var cake = document.querySelector('.cake');

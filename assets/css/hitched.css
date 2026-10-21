@@ -29,10 +29,9 @@
    rings are only drawn while the camera is close in, and each frame the
    script writes straight to the few things that move. */
 .hx { position: relative; height: 420vh; transition: background-color .3s; }
-/* Upright phones: the flight plays by itself on the first swipe (hitched.js
-   adds .hx-auto), so the track only needs room for a short pause on the
-   note before the page moves on. */
-.hx.hx-auto { height: 170vh; height: 170lvh; }
+/* Upright phones: a swipe covers less than a screen there, so the track is
+   shorter, about one swipe to the note (hitched.js adds .hx-short). */
+.hx.hx-short { height: 240vh; height: 240lvh; }
 /* Safari's bar floats over the page, and the page carries on under it: below
    the pinned stage that is this section. Once the light fills the screen the
    section takes its colour, so the strip under the bar is light too, not
