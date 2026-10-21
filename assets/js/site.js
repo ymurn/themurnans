@@ -2591,6 +2591,30 @@
     if (document.fonts) document.fonts.ready.then(fit);
   }
 
+  /* ── The footer credits: one row, or two by two ─────────────────────────
+     Four credits in a row that only just fails to fit wraps three and one,
+     leaving the last credit alone. Whether they fit depends on the words and
+     the face, not just the screen, so where they would be a row it is
+     measured, and they pair up when the row is short. */
+
+  function initCredits() {
+    const meta = $('.footer__meta');
+    if (!meta) return;
+    const fit = () => {
+      meta.classList.remove('is-paired');
+      const cs = getComputedStyle(meta);
+      if (cs.display !== 'flex' || cs.flexDirection !== 'row') return;
+      const kids = [...meta.children];
+      const need = kids.reduce((w, el) => w + el.getBoundingClientRect().width, 0)
+        + (parseFloat(cs.columnGap) || 0) * (kids.length - 1);
+      const room = meta.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      meta.classList.toggle('is-paired', need > room + 1);
+    };
+    fit();
+    addEventListener('resize', fit);
+    if (document.fonts) document.fonts.ready.then(fit);
+  }
+
   /* ── Back to the top, once a long page has been scrolled a way ─────── */
 
   function initToTop() {
@@ -2642,6 +2666,7 @@
     initDrag();
     initRails();
     initButtonRows();
+    initCredits();
     initToTop();
   }
 
