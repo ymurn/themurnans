@@ -686,8 +686,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .footer a { color: var(--footer-ink); }
 .footer > .shell { flex: 1; display: flex; flex-direction: column; }
 .footer__top { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 2.5rem; align-items: start; }
-.footer__word { font-family: var(--display); font-size: clamp(3rem, 11vw, 9rem); line-height: .95; letter-spacing: -.015em; color: var(--footer-ink); opacity: .96; margin-block: auto 1.75rem; padding-top: clamp(2.5rem, 6vw, 4.5rem); }
-.footer__meta { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; justify-content: space-between; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--footer-ink-3); }
+.footer__word { font-family: var(--display); font-size: clamp(3rem, 11vw, 9rem); line-height: .95; letter-spacing: -.015em; color: var(--footer-ink); opacity: .96; margin-block: auto 1.75rem; padding-top: clamp(2.5rem, 6vw, 4.5rem); max-width: 6em; }
+/* 6em holds "The Bear &" and not "the" as well, so the line always breaks
+   after the ampersand and "the Tiger" stays together */
+/* the right padding keeps the last credit out from under the back-to-top button */
+.footer__meta { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; justify-content: space-between; padding-right: 3.5rem; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--footer-ink-3); }
 .footer__cols { display: grid; gap: .55rem; }
 .footer__cols a { color: var(--footer-ink-2); font-size: .82rem; transition: color .3s; }
 .footer__cols a:hover { color: var(--footer-hover); }
@@ -3768,7 +3771,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   .footer__top { grid-template-columns: 1fr; gap: 2rem; }
   /* the three credits go one to a line here: side by side they wrap two and
      one, which leaves the last credit stranded */
-  .footer__meta { flex-direction: column; align-items: flex-start; gap: .8rem; }
+  .footer__meta { flex-direction: column; align-items: flex-start; gap: .8rem; padding-right: 0; }
 }
 
 /* The links stop being a row where the row stops fitting on one line. Laid
@@ -3987,6 +3990,27 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 /* Four columns now that the timelines have their own, but only while the
    footer is still a row: it stacks at 880px, below the rule above. */
 @media (min-width: 881px) { .footer__top { grid-template-columns: 1.25fr 1fr 1fr 1fr; } }
+
+/* Tablets and open foldables held upright. A whole screen of footer on an
+   iPad is mostly empty gold, so here it is only as tall as what it holds,
+   with set gaps in place of the auto margin. The four credits go two by two,
+   since a wrapping row leaves the last one alone. 600px takes in a Galaxy
+   Fold open (690 wide); no phone held upright comes near it. */
+@media (min-width: 600px) and (orientation: portrait) {
+  .footer { min-height: 0; padding-block: calc(var(--nav-h) + 3rem) 2.5rem; }
+  .footer__top { gap: 2.5rem 2rem; }
+  .footer__word { margin-block: 0 1.5rem; padding-top: 4.5rem; }
+  .footer__meta { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 2rem; }
+}
+/* Two by two from 600px either way up: a phone on its side is a wide screen
+   too, and one long column of links there is mostly scrolling. */
+@media (min-width: 600px) and (max-width: 880px) {
+  .footer__top { grid-template-columns: 1fr 1fr; gap: 2.5rem 2rem; }
+  .footer__meta { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 2rem; padding-right: 3.5rem; }
+}
+/* Where the credits would be a row but all four do not fit, initCredits in
+   assets/js/site.js pairs them, so none is left on a line of its own. */
+.footer__meta.is-paired { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 2rem; }
 
 /* ── 01 Memories ─────────────────────────────────────────────────────────
    Map on the left, the photographs it deals on the right. Below 1000px the
