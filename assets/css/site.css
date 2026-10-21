@@ -4342,11 +4342,15 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 @media (max-width: 999px) {
   .mem__panel { min-height: 0; }
   .mem__open { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
-  /* Without the card around them, a strip and a pill hung off the left edge
-     read as stranded under a full-width photograph. The strip centres under
-     it, and the button runs the photograph's width, the way the button at
-     the foot of home does on a phone. */
-  .mem__shots { justify-self: center; }
+  /* Without the card around them, everything hung off the left edge read as
+     stranded under a full-width photograph. The whole memory centres on it
+     instead, and the button runs the photograph's width, the way the button
+     at the foot of home does on a phone. */
+  .mem__open { text-align: center; }
+  .mem__back, .mem__shots { justify-self: center; }
+  .mem__head { justify-items: center; }
+  .mem__place { text-wrap: balance; }
+  .mem__text { text-wrap: pretty; }
   .mem__go { justify-self: stretch; justify-content: center; padding: .8rem 1rem; margin-right: 3px; }
   /* The count goes above the map here, so that nothing sits between the map
      and the photographs for the pill to float over on its way past. It reads
