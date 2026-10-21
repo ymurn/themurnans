@@ -12,7 +12,12 @@
      only thing redrawn (by viewBox) then;
    - layout is measured on load and when the width changes, never per frame;
    - each frame writes straight to the few elements that move, and only
-     when a value has changed. */
+     when a value has changed.
+
+   On a phone held upright a swipe covers less than a screen, so scrubbing
+   the flight took three of them. There the first swipe plays it instead:
+   the page holds still for the 2.4s it takes to reach the note, then
+   scrolls on as usual. Back at the very top it plays in reverse. */
 (function () {
   var sec = document.querySelector('.hx');
   if (!sec) return;
@@ -29,6 +34,8 @@
   var SB = { x: 290, y: 110, w: 2180, h: 2620 };   // the scene, in artwork pixels: shoe to shoe, rays to heels
   var T = { x: 1212, y: 497 };                      // the clear middle of the left ring
   var W, H, Hs, k0, T0, kEnd, top0, span, lastW = -1, lastP = -1, ticking = false, moving = 0;
+  // upright phones: the flight plays on its own (auto), from p toward goal
+  var auto = false, p = 0, goal = 0, playing = 0, held = false, PLAY = 2400;
   // the short viewport (toolbar showing), for laying out the opening picture
   var probe = document.createElement('div');
   probe.style.cssText = 'position:absolute;top:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
@@ -62,6 +69,9 @@
     // H is the whole stage (100lvh: steady while a phone's toolbar comes and
     // goes), which the camera and the light fill; Hs is what shows with the
     // toolbar out, which the opening picture is fitted into
+    var wasAuto = auto;
+    auto = stage.clientWidth < 700 && innerHeight > innerWidth;
+    sec.classList.toggle('hx-auto', auto);   // changes the track's height, so before measuring
     W = stage.clientWidth; H = stage.clientHeight; Hs = Math.min(H, probe.offsetHeight || H);
     var phone = W < 700;
     var top = phone ? Math.max(96, Hs * .13) : Math.max(110, Hs * .14), bottom = phone ? 44 : 60, side = phone ? 10 : 48;
@@ -97,6 +107,40 @@
     // where the flight starts and how long it lasts, in page scroll
     top0 = sec.getBoundingClientRect().top + scrollY; span = sec.offsetHeight - H;
     lastW = W; lastP = -1;
+    // entering auto, or reloaded part way down: start from where the page is
+    if (auto && !wasAuto) { p = goal = scrollY > top0 + 6 ? 1 : 0; }
+    if (!auto && playing) { cancelAnimationFrame(playing); playing = 0; hold(false); }
+  }
+
+  // Hold the page still while the flight plays, so a hard flick cannot carry
+  // the stage away half way through. Overflow on the root (never the body,
+  // which would stop the stage sticking) also ends iOS's momentum.
+  function block(e) { e.preventDefault(); }
+  function hold(on) {
+    if (on === held) return;
+    held = on;
+    document.documentElement.style.overflow = on ? 'hidden' : '';
+    if (on) addEventListener('touchmove', block, { passive: false });
+    else removeEventListener('touchmove', block, { passive: false });
+  }
+  function play(to) {
+    if (goal === to && playing) return;
+    goal = to;
+    var from = p, t0 = performance.now(), dur = PLAY * Math.abs(to - from);
+    if (to === 1) hold(true);
+    cancelAnimationFrame(playing);
+    (function step(now) {
+      var v = dur ? Math.min(1, (now - t0) / dur) : 1;
+      p = from + (to - from) * v;
+      at(p);
+      if (v < 1) playing = requestAnimationFrame(step);
+      else { playing = 0; hold(false); }
+    })(t0);
+  }
+  // the first swipe down plays the flight; back at the very top, it plays back
+  function steer() {
+    if (scrollY > top0 + 6) { if (goal === 0) play(1); }
+    else if (goal === 1 && !held) play(0);
   }
 
   function at(p) {
@@ -151,7 +195,8 @@
   }
 
   function progress() { return c((scrollY - top0) / span, 0, 1); }
-  function frame() { ticking = false; at(progress()); }
+  function frame() { ticking = false; if (auto) steer(); else at(progress()); }
+  function draw() { if (auto) at(p); else at(progress()); }
 
   // the cake stacks itself, bottom tier first, when it comes into view
   var cake = document.querySelector('.cake');
@@ -166,8 +211,8 @@
   // without motion the hero stays a still poster and the note sits under it
   if (reduce) return;
   sec.classList.add('hx-on');
-  layout(); at(progress());
-  if (document.fonts) document.fonts.ready.then(function () { layout(); at(progress()); });
+  layout(); draw();
+  if (document.fonts) document.fonts.ready.then(function () { layout(); draw(); });
   addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
     // the arrow stops nudging while the page moves
@@ -176,7 +221,7 @@
   }, { passive: true });
   // a phone's toolbar changes the height as you scroll: only a new width means a new layout
   addEventListener('resize', function () {
-    if (stage.clientWidth !== lastW || Math.abs(stage.clientHeight - H) > 120) { layout(); at(progress()); }
+    if (stage.clientWidth !== lastW || Math.abs(stage.clientHeight - H) > 120) { layout(); draw(); }
   });
-  addEventListener('load', function () { layout(); at(progress()); });
+  addEventListener('load', function () { layout(); draw(); });
 })();
