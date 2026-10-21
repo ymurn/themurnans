@@ -35,9 +35,9 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2024-03-guadalupe-peak/2024-03-guadalupe-peak-03.jpg", "cap": "The top of Guadalupe Peak" },
     { "src": "continued_trips/2024-03-white-sands/2024-03-white-sands-02.jpg", "cap": "White Sands" },
+    { "src": "continued_trips/2024-03-chiricahua/2024-03-chiricahua-03.jpg", "cap": "Holding up a rock at Chiricahua" },
     { "src": "continued_trips/2024-03-saguaro/2024-03-saguaro-03.jpg", "cap": "Small us, big saguaros" },
-    { "src": "continued_trips/2024-03-big-bend/2024-03-big-bend-01.jpg", "cap": "The hot spring at Big Bend", "pos": "60% 50%" },
-    { "src": "continued_trips/2024-03-chiricahua/2024-03-chiricahua-03.jpg", "cap": "Holding up a rock at Chiricahua" }
+    { "src": "continued_trips/2024-03-big-bend/2024-03-big-bend-01.jpg", "cap": "The hot spring at Big Bend", "pos": "60% 50%" }
    ]
   },
   {
@@ -62,8 +62,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2024-04-beacon/2024-04-beacon-01.jpg", "cap": "The fire tower with Melissa" },
     { "src": "continued_trips/2024-04-dayton/2024-04-dayton-04.jpg", "cap": "Eddie and Regina's wedding" },
-    { "src": "continued_trips/2024-04-cincinnati-family/2024-04-cincinnati-family-06.jpg", "cap": "Reds gear on with the family" },
-    { "src": "continued_trips/2024-04-cincinnati-family/2024-04-cincinnati-family-02.jpg", "cap": "Wings with the family" }
+    { "src": "continued_trips/2024-04-cincinnati-family/2024-04-cincinnati-family-02.jpg", "cap": "Wings with the family" },
+    { "src": "continued_trips/2024-04-cincinnati-family/2024-04-cincinnati-family-06.jpg", "cap": "Reds gear on with the family" }
    ]
   },
   {
@@ -110,8 +110,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2024-06-cincinnati-holiday-world/2024-06-cincinnati-holiday-world-02.jpg", "cap": "Splashin' Safari at Holiday World", "pos": "40% 50%" },
     { "src": "continued_trips/2024-06-cincinnati-holiday-world/2024-06-cincinnati-holiday-world-04.jpg", "cap": "Kings Island from above" },
-    { "src": "continued_trips/2024-06-cincinnati-holiday-world/2024-06-cincinnati-holiday-world-03.jpg", "cap": "An FC Cincinnati match" },
-    { "src": "continued_trips/2024-06-cincinnati-holiday-world/2024-06-cincinnati-holiday-world-07.jpg", "cap": "The monastery in Ferdinand" }
+    { "src": "continued_trips/2024-06-cincinnati-holiday-world/2024-06-cincinnati-holiday-world-07.jpg", "cap": "The monastery in Ferdinand" },
+    { "src": "continued_trips/2024-06-cincinnati-holiday-world/2024-06-cincinnati-holiday-world-03.jpg", "cap": "An FC Cincinnati match" }
    ]
   },
   {
@@ -158,8 +158,8 @@ window.MW_YEAR = {
     { "src": "continued_trips/2024-08-quebec-city/2024-08-quebec-city-01.jpg", "cap": "Montmorency Falls", "pos": "right" },
     { "src": "continued_trips/2024-08-quebec-city/2024-08-quebec-city-06.jpg", "cap": "Château Frontenac at night" },
     { "src": "continued_trips/2024-08-montreal/2024-08-montreal-06.jpg", "cap": "The Chinese Garden, Montreal" },
-    { "src": "continued_trips/2024-08-montreal/2024-08-montreal-04.jpg", "cap": "Cocktails in Montreal" },
-    { "src": "continued_trips/2024-08-montreal/2024-08-montreal-03.jpg", "cap": "Poutine for Yinja" }
+    { "src": "continued_trips/2024-08-montreal/2024-08-montreal-03.jpg", "cap": "Poutine for Yinja" },
+    { "src": "continued_trips/2024-08-montreal/2024-08-montreal-04.jpg", "cap": "Cocktails in Montreal" }
    ]
   },
   {
@@ -183,8 +183,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2024-10-saratoga-lake-george/2024-10-saratoga-lake-george-03.jpg", "cap": "A geyser at Saratoga Spa State Park" },
     { "src": "continued_trips/2024-10-saratoga-lake-george/2024-10-saratoga-lake-george-04.jpg", "cap": "Fall color up north" },
-    { "src": "continued_trips/2024-10-dmv/2024-10-dmv-07.jpg", "cap": "From the top of the Old Post Office tower" },
-    { "src": "continued_trips/2024-10-dmv/2024-10-dmv-02.jpg", "cap": "Catching up with friends in DC" }
+    { "src": "continued_trips/2024-10-dmv/2024-10-dmv-02.jpg", "cap": "Catching up with friends in DC" },
+    { "src": "continued_trips/2024-10-dmv/2024-10-dmv-07.jpg", "cap": "From the top of the Old Post Office tower" }
    ]
   },
   {
@@ -235,8 +235,8 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2024-12-fallingwater-pittsburgh-cincy/2024-12-fallingwater-pittsburgh-cincy-02.jpg", "cap": "Fallingwater" },
-    { "src": "continued_trips/2024-12-congaree/2024-12-congaree-03.jpg", "cap": "Congaree in the rain" },
     { "src": "continued_trips/2024-12-new-river-gorge/2024-12-new-river-gorge-05.jpg", "cap": "The New River Gorge Bridge" },
+    { "src": "continued_trips/2024-12-congaree/2024-12-congaree-03.jpg", "cap": "Congaree in the rain" },
     { "src": "continued_trips/2024-12-charleston/2024-12-charleston-01.jpg", "cap": "The Pineapple Fountain in Charleston", "pos": "60% 50%" },
     { "src": "continued_trips/2024-12-savannah-tybee-island/2024-12-savannah-tybee-island-06.jpg", "cap": "The Tybee Island lighthouse" }
    ]

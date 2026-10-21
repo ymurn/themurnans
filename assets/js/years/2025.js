@@ -73,8 +73,8 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2025-03-beacon/2025-03-beacon-06.jpg", "cap": "Hiking from Cold Spring to Beacon" },
-    { "src": "continued_trips/2025-03-beacon/2025-03-beacon-03.jpg", "cap": "Snow on the far side" },
     { "src": "continued_trips/2025-03-beacon/2025-03-beacon-01.jpg", "cap": "Looking over the Hudson", "pos": "left" },
+    { "src": "continued_trips/2025-03-beacon/2025-03-beacon-03.jpg", "cap": "Snow on the far side" },
     { "src": "continued_trips/2025-03-baltimore/2025-03-baltimore-01.jpg", "cap": "Beers in Baltimore", "pos": "40% 50%" },
     { "src": "continued_trips/2025-03-baltimore/2025-03-baltimore-08.jpg", "cap": "Pinball in Baltimore", "pos": "right" }
    ]
@@ -94,9 +94,9 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2025-04-zion/2025-04-zion-09.jpg", "cap": "Wading the Narrows" },
-    { "src": "continued_trips/2025-04-arches/2025-04-arches-01.jpg", "cap": "Delicate Arch", "pos": "65% 50%" },
-    { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-01.jpg", "cap": "The Grand Canyon" },
     { "src": "continued_trips/2025-04-death-valley/2025-04-death-valley-05.jpg", "cap": "Badwater Basin", "pos": "65% 50%" },
+    { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-01.jpg", "cap": "The Grand Canyon" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-01.jpg", "cap": "Delicate Arch", "pos": "65% 50%" },
     { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-02.jpg", "cap": "Bryce Canyon" }
    ],
    "folders": ["2025-04-canyonlands", "2025-04-capitol-reef"]
@@ -122,10 +122,10 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2025-05-longwood-gardens/2025-05-longwood-gardens-03.jpg", "cap": "The fountains at Longwood" },
+    { "src": "continued_trips/2025-05-tampa/2025-05-tampa-03.jpg", "cap": "Skyline Chili in Lakewood Ranch", "pos": "right" },
     { "src": "continued_trips/2025-05-tampa/2025-05-tampa-06.jpg", "cap": "Flagler College, St. Augustine" },
     { "src": "continued_trips/2025-05-tampa/2025-05-tampa-11.jpg", "cap": "Our cabana on Clearwater Beach" },
-    { "src": "continued_trips/2025-05-tampa/2025-05-tampa-32.jpg", "cap": "Yinja and the alligator", "pos": "60% 50%" },
-    { "src": "continued_trips/2025-05-tampa/2025-05-tampa-03.jpg", "cap": "Skyline Chili in Lakewood Ranch", "pos": "right" }
+    { "src": "continued_trips/2025-05-tampa/2025-05-tampa-32.jpg", "cap": "Yinja and the alligator", "pos": "60% 50%" }
    ]
   },
   {
@@ -164,8 +164,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2025-07-vermont/2025-07-vermont-02.jpg", "cap": "Hiking in Vermont" },
     { "src": "continued_trips/2025-07-vermont/2025-07-vermont-01.jpg", "cap": "Saint-Gaudens National Historical Park" },
-    { "src": "continued_trips/2025-07-vermont/2025-07-vermont-04.jpg", "cap": "Arms up at the top" },
-    { "src": "continued_trips/2025-07-vermont/2025-07-vermont-03.jpg", "cap": "Scrambling up the rocks" }
+    { "src": "continued_trips/2025-07-vermont/2025-07-vermont-03.jpg", "cap": "Scrambling up the rocks" },
+    { "src": "continued_trips/2025-07-vermont/2025-07-vermont-04.jpg", "cap": "Arms up at the top" }
    ]
   },
   {
@@ -181,8 +181,8 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2025-08-baltimore/2025-08-baltimore-05.jpg", "cap": "Baltimore's Washington Monument" },
-    { "src": "continued_trips/2025-08-baltimore/2025-08-baltimore-04.jpg", "cap": "Adam's 40th" },
-    { "src": "continued_trips/2025-08-baltimore/2025-08-baltimore-02.jpg", "cap": "Brunch in Baltimore" }
+    { "src": "continued_trips/2025-08-baltimore/2025-08-baltimore-02.jpg", "cap": "Brunch in Baltimore" },
+    { "src": "continued_trips/2025-08-baltimore/2025-08-baltimore-04.jpg", "cap": "Adam's 40th" }
    ]
   },
   {
@@ -218,8 +218,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2025-10-thacher-park-lake-george/2025-10-thacher-park-lake-george-03.jpg", "cap": "Above Lake George" },
     { "src": "continued_trips/2025-10-thacher-park-lake-george/2025-10-thacher-park-lake-george-02.jpg", "cap": "Under the cliffs at Thacher Park" },
-    { "src": "continued_trips/2025-10-thacher-park-lake-george/2025-10-thacher-park-lake-george-05.jpg", "cap": "A boardwalk through the fall woods" },
-    { "src": "continued_trips/2025-10-thacher-park-lake-george/2025-10-thacher-park-lake-george-07.jpg", "cap": "Lake George in October" }
+    { "src": "continued_trips/2025-10-thacher-park-lake-george/2025-10-thacher-park-lake-george-07.jpg", "cap": "Lake George in October" },
+    { "src": "continued_trips/2025-10-thacher-park-lake-george/2025-10-thacher-park-lake-george-05.jpg", "cap": "A boardwalk through the fall woods" }
    ]
   },
   {
@@ -242,11 +242,11 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-08.jpg", "cap": "Providence Canyon" },
+    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-01.jpg", "cap": "At a brewery in Raleigh with Yao" },
+    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-03.jpg", "cap": "Dinner with family in Georgia" },
     { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-04.jpg", "cap": "The falls at Cloudland Canyon" },
     { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-05.jpg", "cap": "Thanksgiving in Georgia" },
-    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-03.jpg", "cap": "Dinner with family in Georgia" },
-    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-09.jpg", "cap": "An uprooted tree at Congaree" },
-    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-01.jpg", "cap": "At a brewery in Raleigh with Yao" }
+    { "src": "continued_trips/2025-11-georgia-carolinas/2025-11-georgia-carolinas-09.jpg", "cap": "An uprooted tree at Congaree" }
    ]
   },
   {
@@ -279,8 +279,8 @@ window.MW_YEAR = {
     { "src": "continued_trips/2025-12-asheville/2025-12-asheville-05.jpg", "cap": "On the rocks above the valley" },
     { "src": "continued_trips/2025-12-cincy-clearwater-beach/2025-12-cincy-clearwater-beach-03.jpg", "cap": "Christmas in Cincinnati" },
     { "src": "continued_trips/2025-12-cincy-clearwater-beach/2025-12-cincy-clearwater-beach-04.jpg", "cap": "Our cabana on Clearwater Beach" },
-    { "src": "continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-02.jpg", "cap": "The Everglades" },
-    { "src": "continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-06.jpg", "cap": "Lily pads and sawgrass in the Everglades" }
+    { "src": "continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-06.jpg", "cap": "Lily pads and sawgrass in the Everglades" },
+    { "src": "continued_trips/2025-12-everglades-big-cypress/2025-12-everglades-big-cypress-02.jpg", "cap": "The Everglades" }
    ]
   }
  ],
