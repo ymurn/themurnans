@@ -113,7 +113,7 @@ window.MW_TRIP = {
    "photos": [
     { "src": "continued_trips/2022-08-redwoods/2022-08-redwoods-01.jpg", "cap": "Smoky skies on the drive to the coast" },
     { "src": "continued_trips/2022-08-redwoods/2022-08-redwoods-02.jpg", "cap": "The huge trees" },
-    { "src": "continued_trips/2022-08-redwoods/2022-08-redwoods-05.jpg", "cap": "Our first look at the Pacific" },
+    { "src": "continued_trips/2022-08-redwoods/2022-08-redwoods-06.jpg", "cap": "Our first look at the Pacific" },
     { "src": "continued_trips/2022-08-redwoods/2022-08-redwoods-08.jpg", "cap": "Where Redwood Creek meets the ocean" },
     { "src": "continued_trips/2022-08-redwoods/2022-08-redwoods-10.jpg", "cap": "Evening on the bay in Eureka" }
    ]
@@ -148,10 +148,10 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-01.jpg", "cap": "Morning in Newport", "pos": "65% 50%" },
+    { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-15.jpg", "cap": "Near Depoe Bay" },
     { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-05.jpg", "cap": "The lighthouse" },
     { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-06.jpg", "cap": "Devil's Punch Bowl" },
-    { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-14.jpg", "cap": "The coast north of Otter Rock" },
-    { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-15.jpg", "cap": "Near Depoe Bay" }
+    { "src": "continued_trips/2022-08-oregon-coast/2022-08-oregon-coast-14.jpg", "cap": "The coast north of Otter Rock" }
    ]
   },
   {
@@ -168,13 +168,9 @@ window.MW_TRIP = {
    "photos": [
     { "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-01.jpg", "cap": "Multnomah Falls" },
     { "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-04.jpg", "cap": "More falls along the creek" },
+    { "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-07.jpg", "cap": "Mount Hood behind us", "pos": "35% 50%" },
     { "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-05.jpg", "cap": "Dinner in Hood River" },
-    { "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-06.jpg", "cap": "Mount Hood" },
-    {
-     "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-07.jpg",
-     "cap": "Mount Hood behind us",
-     "pos": "35% 50%"
-    }
+    { "src": "continued_trips/2022-08-columbia-gorge-mount-hood/2022-08-columbia-gorge-mount-hood-06.jpg", "cap": "Mount Hood" }
    ]
   },
   {
@@ -259,8 +255,8 @@ window.MW_TRIP = {
    "photos": [
     { "src": "continued_trips/2022-08-olympic/2022-08-olympic-01.jpg", "cap": "Brunch 101, Hoquiam" },
     { "src": "continued_trips/2022-08-olympic/2022-08-olympic-05.jpg", "cap": "The Washington beaches", "pos": "65% 50%" },
-    { "src": "continued_trips/2022-08-olympic/2022-08-olympic-06.jpg", "cap": "Black sand at Rialto Beach" },
     { "src": "continued_trips/2022-08-olympic/2022-08-olympic-09.jpg", "cap": "Lake Crescent on the way to Port Angeles" },
+    { "src": "continued_trips/2022-08-olympic/2022-08-olympic-06.jpg", "cap": "Black sand at Rialto Beach" },
     { "src": "continued_trips/2022-08-olympic/2022-08-olympic-12.jpg", "cap": "Sunset in Port Angeles", "pos": "30% 50%" }
    ]
   },
@@ -329,8 +325,8 @@ window.MW_TRIP = {
     { "src": "continued_trips/2022-08-seattle/2022-08-seattle-11.jpg", "cap": "The ferry to Bainbridge Island", "pos": "40% 50%" },
     { "src": "continued_trips/2022-08-seattle/2022-08-seattle-12.jpg", "cap": "Exploring Bainbridge Island" },
     { "src": "continued_trips/2022-08-seattle/2022-08-seattle-13.jpg", "cap": "Sisters Cider House" },
-    { "src": "continued_trips/2022-08-seattle/2022-08-seattle-15.jpg", "cap": "Fremont Brewing" },
-    { "src": "continued_trips/2022-08-seattle/2022-08-seattle-16.jpg", "cap": "The Fremont Giant" }
+    { "src": "continued_trips/2022-08-seattle/2022-08-seattle-16.jpg", "cap": "The Fremont Giant" },
+    { "src": "continued_trips/2022-08-seattle/2022-08-seattle-15.jpg", "cap": "Fremont Brewing" }
    ]
   },
   {

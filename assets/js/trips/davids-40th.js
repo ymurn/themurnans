@@ -135,8 +135,8 @@ window.MW_TRIP = {
     { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-01.jpg", "cap": "On the rim in the snow" },
     { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-06.jpg", "cap": "Snow and cloud over the canyon" },
     { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-03.jpg", "cap": "Dinner at the El Tovar Steakhouse" },
-    { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-05.jpg", "cap": "Last light on the rim" },
-    { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-07.jpg", "cap": "The canyon at dusk" }
+    { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-07.jpg", "cap": "The canyon at dusk" },
+    { "src": "continued_trips/2025-04-grand-canyon/2025-04-grand-canyon-05.jpg", "cap": "Last light on the rim" }
    ]
   },
   {
@@ -224,9 +224,9 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2025-04-capitol-reef/2025-04-capitol-reef-01.jpg", "cap": "At the park sign" },
+    { "src": "continued_trips/2025-04-capitol-reef/2025-04-capitol-reef-05.jpg", "cap": "Banded white on red" },
     { "src": "continued_trips/2025-04-capitol-reef/2025-04-capitol-reef-03.jpg", "cap": "Out on the slickrock" },
     { "src": "continued_trips/2025-04-capitol-reef/2025-04-capitol-reef-06.jpg", "cap": "The cliffs above the road" },
-    { "src": "continued_trips/2025-04-capitol-reef/2025-04-capitol-reef-05.jpg", "cap": "Banded white on red" },
     { "src": "continued_trips/2025-04-capitol-reef/2025-04-capitol-reef-07.jpg", "cap": "A white cap on red rock" }
    ]
   },
@@ -256,10 +256,10 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-01.jpg", "cap": "At the park sign" },
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-06.jpg", "cap": "The amphitheatre from above" },
     { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-02.jpg", "cap": "On the rim" },
-    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-05.jpg", "cap": "Through the tunnel on the trail" },
     { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-07.jpg", "cap": "Thor's Hammer" },
-    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-06.jpg", "cap": "The amphitheatre from above" }
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-05.jpg", "cap": "Through the tunnel on the trail" }
    ]
   },
   {
@@ -276,8 +276,8 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2025-04-zion/2025-04-zion-15.jpg", "cap": "Above the canyon" },
-    { "src": "continued_trips/2025-04-zion/2025-04-zion-16.jpg", "cap": "On the red rock" },
-    { "src": "continued_trips/2025-04-zion/2025-04-zion-01.jpg", "cap": "Dinner after a long day" }
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-01.jpg", "cap": "Dinner after a long day" },
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-16.jpg", "cap": "On the red rock" }
    ]
   },
   {
@@ -295,10 +295,10 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2025-04-zion/2025-04-zion-02.jpg", "cap": "Waders, boots and a stick" },
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-04.jpg", "cap": "Deep in the Narrows" },
     { "src": "continued_trips/2025-04-zion/2025-04-zion-09.jpg", "cap": "Wading up the river" },
-    { "src": "continued_trips/2025-04-zion/2025-04-zion-14.jpg", "cap": "How tall the gorge gets" },
     { "src": "continued_trips/2025-04-zion/2025-04-zion-11.jpg", "cap": "Under the hanging garden" },
-    { "src": "continued_trips/2025-04-zion/2025-04-zion-04.jpg", "cap": "Deep in the Narrows" }
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-14.jpg", "cap": "How tall the gorge gets" }
    ]
   },
   {
@@ -315,9 +315,9 @@ window.MW_TRIP = {
    "photos": [
     { "src": "continued_trips/2025-04-valley-of-fire-red-rock/2025-04-valley-of-fire-red-rock-01.jpg", "cap": "Red rock at Valley of Fire" },
     { "src": "continued_trips/2025-04-valley-of-fire-red-rock/2025-04-valley-of-fire-red-rock-02.jpg", "cap": "Late light on the sandstone" },
+    { "src": "continued_trips/2025-04-vegas/2025-04-vegas-05.jpg", "cap": "The Strip, the night before the flight home" },
     { "src": "continued_trips/2025-04-valley-of-fire-red-rock/2025-04-valley-of-fire-red-rock-04.jpg", "cap": "Red rock under a white cap" },
-    { "src": "continued_trips/2025-04-valley-of-fire-red-rock/2025-04-valley-of-fire-red-rock-07.jpg", "cap": "The Red Rock escarpment" },
-    { "src": "continued_trips/2025-04-vegas/2025-04-vegas-05.jpg", "cap": "The Strip, the night before the flight home" }
+    { "src": "continued_trips/2025-04-valley-of-fire-red-rock/2025-04-valley-of-fire-red-rock-07.jpg", "cap": "The Red Rock escarpment" }
    ]
   }
  ],

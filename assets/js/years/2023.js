@@ -33,8 +33,8 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2023-01-lancaster/2023-01-lancaster-04.jpg", "cap": "Walking around Lancaster" },
-    { "src": "continued_trips/2023-01-lancaster/2023-01-lancaster-07.jpg", "cap": "A winter hike with Yao" },
-    { "src": "continued_trips/2023-01-lancaster/2023-01-lancaster-06.jpg", "cap": "Downtown Lancaster" }
+    { "src": "continued_trips/2023-01-lancaster/2023-01-lancaster-06.jpg", "cap": "Downtown Lancaster" },
+    { "src": "continued_trips/2023-01-lancaster/2023-01-lancaster-07.jpg", "cap": "A winter hike with Yao" }
    ]
   },
   {
@@ -51,10 +51,10 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-07.jpg", "cap": "Looking out over Shenandoah" },
-    { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-05.jpg", "cap": "Lifting the tree that vanished" },
-    { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-06.jpg", "cap": "On the trail together" },
     { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-03.jpg", "cap": "Resting on a fallen tree" },
-    { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-04.jpg", "cap": "Stretched out on a fallen tree" }
+    { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-04.jpg", "cap": "Stretched out on a fallen tree" },
+    { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-05.jpg", "cap": "Lifting the tree that vanished" },
+    { "src": "continued_trips/2023-02-shenandoah/2023-02-shenandoah-06.jpg", "cap": "On the trail together" }
    ]
   },
   {
@@ -72,9 +72,9 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2023-03-joshua-tree-san-diego/2023-03-joshua-tree-san-diego-07.jpg", "cap": "The top of Ryan Mountain" },
+    { "src": "continued_trips/2023-03-joshua-tree-san-diego/2023-03-joshua-tree-san-diego-02.jpg", "cap": "Arriving at Joshua Tree" },
     { "src": "continued_trips/2023-03-joshua-tree-san-diego/2023-03-joshua-tree-san-diego-10.jpg", "cap": "Forty-Nine Palms Oasis", "pos": "70% 50%" },
     { "src": "continued_trips/2023-03-joshua-tree-san-diego/2023-03-joshua-tree-san-diego-11.jpg", "cap": "The dragon in Borrego Springs" },
-    { "src": "continued_trips/2023-03-joshua-tree-san-diego/2023-03-joshua-tree-san-diego-02.jpg", "cap": "Arriving at Joshua Tree" },
     { "src": "continued_trips/2023-03-joshua-tree-san-diego/2023-03-joshua-tree-san-diego-21.jpg", "cap": "Lunch in Ocean Beach" }
    ]
   },
@@ -94,8 +94,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2023-04-montreal/2023-04-montreal-06.jpg", "cap": "The Ferris wheel at the Old Port" },
     { "src": "continued_trips/2023-04-montreal/2023-04-montreal-07.jpg", "cap": "Inside the Botanical Garden greenhouses" },
-    { "src": "continued_trips/2023-04-montreal/2023-04-montreal-10.jpg", "cap": "Montreal from Mont Royal", "pos": "80% 50%" },
     { "src": "continued_trips/2023-04-montreal/2023-04-montreal-08.jpg", "cap": "The Chinese Garden pagoda" },
+    { "src": "continued_trips/2023-04-montreal/2023-04-montreal-10.jpg", "cap": "Montreal from Mont Royal", "pos": "80% 50%" },
     { "src": "continued_trips/2023-04-montreal/2023-04-montreal-12.jpg", "cap": "Lunch in Montreal" }
    ]
   },
@@ -120,10 +120,10 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2023-05-yao-beacon/2023-05-yao-beacon-06.jpg", "cap": "Up the fire tower with Yao" },
-    { "src": "continued_trips/2023-05-yao-beacon/2023-05-yao-beacon-08.jpg", "cap": "Beers with Yao" },
     { "src": "continued_trips/2023-05-yao-beacon/2023-05-yao-beacon-05.jpg", "cap": "The long hike in Beacon" },
-    { "src": "continued_trips/2023-05-dc/2023-05-dc-05.jpg", "cap": "The Reflecting Pool" },
-    { "src": "continued_trips/2023-05-dc/2023-05-dc-04.jpg", "cap": "Old Town Alexandria" }
+    { "src": "continued_trips/2023-05-yao-beacon/2023-05-yao-beacon-08.jpg", "cap": "Beers with Yao" },
+    { "src": "continued_trips/2023-05-dc/2023-05-dc-04.jpg", "cap": "Old Town Alexandria" },
+    { "src": "continued_trips/2023-05-dc/2023-05-dc-05.jpg", "cap": "The Reflecting Pool" }
    ]
   },
   {
@@ -141,10 +141,10 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2023-06-colorado/2023-06-colorado-05.jpg", "cap": "Snow on the trail in Rocky Mountain" },
+    { "src": "continued_trips/2023-06-colorado/2023-06-colorado-06.jpg", "cap": "A mountain lake in Rocky Mountain" },
     { "src": "continued_trips/2023-06-colorado/2023-06-colorado-09.jpg", "cap": "Black Canyon of the Gunnison", "pos": "right" },
     { "src": "continued_trips/2023-06-colorado/2023-06-colorado-13.jpg", "cap": "Cliff Palace, Mesa Verde", "pos": "30% 50%" },
-    { "src": "continued_trips/2023-06-colorado/2023-06-colorado-17.jpg", "cap": "Great Sand Dunes" },
-    { "src": "continued_trips/2023-06-colorado/2023-06-colorado-06.jpg", "cap": "A mountain lake in Rocky Mountain" }
+    { "src": "continued_trips/2023-06-colorado/2023-06-colorado-17.jpg", "cap": "Great Sand Dunes" }
    ]
   },
   {
@@ -240,10 +240,10 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2023-11-seattle/2023-11-seattle-01.jpg", "cap": "Fall color in Seattle", "pos": "60% 50%" },
-    { "src": "continued_trips/2023-11-seattle/2023-11-seattle-05.jpg", "cap": "The view from Queen Anne", "pos": "right" },
     { "src": "continued_trips/2023-11-seattle/2023-11-seattle-07.jpg", "cap": "A train along Puget Sound" },
-    { "src": "continued_trips/2023-11-dc/2023-11-dc-05.jpg", "cap": "The Washington Monument at night" },
-    { "src": "continued_trips/2023-11-dc/2023-11-dc-03.jpg", "cap": "A walk by the water" }
+    { "src": "continued_trips/2023-11-seattle/2023-11-seattle-05.jpg", "cap": "The view from Queen Anne", "pos": "right" },
+    { "src": "continued_trips/2023-11-dc/2023-11-dc-03.jpg", "cap": "A walk by the water" },
+    { "src": "continued_trips/2023-11-dc/2023-11-dc-05.jpg", "cap": "The Washington Monument at night" }
    ]
   },
   {
@@ -275,8 +275,8 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-01.jpg", "cap": "Cuyahoga Valley National Park" },
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-02.jpg", "cap": "Holding up the Ledges" },
-    { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-11.jpg", "cap": "Winterfest at Kings Island" },
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-06.jpg", "cap": "A husky in Cincinnati", "pos": "30% 50%" },
+    { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-11.jpg", "cap": "Winterfest at Kings Island" },
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-15.jpg", "cap": "Harpers Ferry", "pos": "right" }
    ]
   }

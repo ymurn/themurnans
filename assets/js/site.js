@@ -2034,14 +2034,16 @@
        Cincinnati half of the same week. memories.js carries the name for each
        state on "t" and the state each photograph was taken in on "s". A
        photograph with no "s" could not be placed, on a state line say, and
-       comes after the ones that could, ahead of the ones from elsewhere. */
+       comes after the ones that could. Photographs from the other states
+       stay out: they belong to those states' own memories. */
 
     const titleOf = (m, id) => (id && m.t && m.t[id]) || m.short;
     const inState = (m, id) => (id ? m.pics.filter(p => p.s === id) : []);
     const unplaced = m => m.pics.filter(p => !p.s);
-    const forState = (m, id) => (id
-      ? [...inState(m, id), ...unplaced(m), ...m.pics.filter(p => p.s && p.s !== id)]
-      : m.pics);
+    const forState = (m, id) => {
+      const here = id ? [...inState(m, id), ...unplaced(m)] : [];
+      return here.length ? here : m.pics;
+    };
 
     const dealt = m => {
       const mine = inState(m, on);
@@ -2082,7 +2084,7 @@
 
       const cards = picks.map((i, k) => {
         const { m, shot } = dealt(M.items[i]);
-        const more = m.pics.length - 1;
+        const more = forState(m, id).length - 1;
         const name = titleOf(m, id);
         return `
           <button class="mem__card" type="button" data-open="${i}"
