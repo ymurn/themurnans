@@ -16,8 +16,8 @@
 
    On a phone held upright a swipe covers less than a screen, so on the
    full track the flight took three of them. There the track is shorter,
-   about one swipe to the note, and the camera eases after the scroll
-   rather than jumping with it, so a quick flick still reads as a flight. */
+   about one swipe to the note, and the camera eases after the scroll at a
+   capped speed, so a quick flick still reads as an unhurried flight. */
 (function () {
   var sec = document.querySelector('.hx');
   if (!sec) return;
@@ -72,8 +72,13 @@
     short = stage.clientWidth < 700 && innerHeight > innerWidth;
     sec.classList.toggle('hx-short', short);   // changes the track's height, so before measuring
     W = stage.clientWidth; H = stage.clientHeight; Hs = Math.min(H, probe.offsetHeight || H);
-    var phone = W < 700;
-    var top = phone ? Math.max(96, Hs * .13) : Math.max(110, Hs * .14), bottom = phone ? 44 : 60, side = phone ? 10 : 48;
+    // a phone held sideways, even a small one under 700px: wide, but too short
+    // for the desktop margins, which left the drawing a dwarf beside the date.
+    // It fills the height under the nav, and the caption moves to the corner.
+    var squat = W > Hs && Hs < 520, phone = W < 700 && !squat;
+    sec.classList.toggle('hx-squat', squat);
+    var top = phone ? Math.max(96, Hs * .13) : squat ? 76 : Math.max(110, Hs * .14),
+        bottom = phone ? 44 : squat ? 8 : 60, side = phone ? 10 : 48;
     var aw = W - side * 2, ah = Hs - top - bottom;
     k0 = Math.min(aw / SB.w, ah / SB.h);
     var sw = SB.w * k0, sh = SB.h * k0, ox = (W - sw) / 2;
@@ -109,14 +114,19 @@
     p = progress();
   }
 
-  // the camera closes a fifth of the gap each frame, so it trails a flick by a
-  // moment and settles where the finger stops; it never moves on its own
-  function ease() {
-    var target = progress();
-    p += (target - p) * .2;
+  // The camera closes part of the gap each frame, so it settles where the
+  // finger stops, but never faster than the whole flight in FLY ms: a slow
+  // scroll is followed exactly, and a quick flick plays at a steady pace
+  // rather than at the flick's. It never moves without a scroll.
+  var FLY = 1800, lastT = 0;
+  function ease(now) {
+    var target = progress(), dt = lastT ? Math.min(now - lastT, 50) : 16;
+    lastT = now;
+    var step = (target - p) * .14, max = dt / FLY;
+    p += step > max ? max : step < -max ? -max : step;
     if (Math.abs(target - p) < .0005) p = target;
     at(p);
-    follow = p === target ? 0 : requestAnimationFrame(ease);
+    if (p === target) { follow = 0; lastT = 0; } else follow = requestAnimationFrame(ease);
   }
 
   function at(p) {
@@ -171,7 +181,7 @@
   }
 
   function progress() { return c((scrollY - top0) / span, 0, 1); }
-  function frame() { ticking = false; if (short) { if (!follow) ease(); } else at(progress()); }
+  function frame() { ticking = false; if (short) { if (!follow) follow = requestAnimationFrame(ease); } else at(progress()); }
   function draw() { p = progress(); at(p); }
 
   // the cake stacks itself, bottom tier first, when it comes into view

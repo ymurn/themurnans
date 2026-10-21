@@ -97,6 +97,9 @@
 .hx-cue svg { width: 12px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .hx-on .hx-cue svg { animation: hx-nudge 1.8s var(--ease-soft) infinite; }
 .hx-cue.hx-moving svg { animation: none; }
+/* a phone held sideways: the drawing fills the height, so the caption sits in
+   the corner beside it rather than over the figures (hitched.js adds .hx-squat) */
+.hx-squat .hx-cue { right: auto; justify-items: start; text-align: left; padding-left: max(var(--gutter), env(safe-area-inset-left)); }
 @keyframes hx-nudge { 50% { translate: 0 5px; } }
 
 /* ---- the record: the cake ---------------------------------------------- */
