@@ -17,7 +17,8 @@
    On a phone held upright a swipe covers less than a screen, so on the
    full track the flight took three of them. There the track is shorter,
    about one swipe to the note, and the camera eases after the scroll at a
-   capped speed, so a quick flick still reads as an unhurried flight. */
+   capped speed, so a quick flick still reads as an unhurried flight. A flick
+   that outruns it waits at the end of the track until the note is up. */
 (function () {
   var sec = document.querySelector('.hx');
   if (!sec) return;
@@ -71,6 +72,7 @@
     // toolbar out, which the opening picture is fitted into
     short = stage.clientWidth < 700 && innerHeight > innerWidth;
     sec.classList.toggle('hx-short', short);   // changes the track's height, so before measuring
+    if (!short) hold(false);
     W = stage.clientWidth; H = stage.clientHeight; Hs = Math.min(H, probe.offsetHeight || H);
     // a phone held sideways, even a small one under 700px: wide, but too short
     // for the desktop margins, which left the drawing a dwarf beside the date.
@@ -126,7 +128,37 @@
     p += step > max ? max : step < -max ? -max : step;
     if (Math.abs(target - p) < .0005) p = target;
     at(p);
+    if (p >= LANDED) hold(false);
     if (p === target) { follow = 0; lastT = 0; } else follow = requestAnimationFrame(ease);
+  }
+
+  // A flick that reaches the end of the track before the camera does would
+  // carry the stage away with the flight half flown. So the page waits there,
+  // still, until the note has landed, then scrolls on as normal. Overflow goes on
+  // the root, never the body, which would stop the stage sticking; it also
+  // ends iOS's momentum. A timer lets go regardless, so nobody is ever stuck.
+  var held = false, letGo = 0, LANDED = .84;   // the note has settled by .82 (see at)
+  function block(e) { e.preventDefault(); }
+  function hold(on) {
+    if (on === held) return;
+    held = on;
+    document.documentElement.style.overflow = on ? 'hidden' : '';
+    if (on) {
+      addEventListener('touchmove', block, { passive: false });
+      addEventListener('wheel', block, { passive: false });
+      letGo = setTimeout(function () { hold(false); }, FLY + 1200);
+    } else {
+      removeEventListener('touchmove', block, { passive: false });
+      removeEventListener('wheel', block, { passive: false });
+      clearTimeout(letGo);
+    }
+  }
+  function outrun() {
+    var end = top0 + span;
+    if (!short || held || p >= LANDED || scrollY <= end) return;
+    scrollTo({ top: end, behavior: 'instant' });   // the page's smooth scrolling would crawl back
+    hold(true);
+    if (!follow) follow = requestAnimationFrame(ease);
   }
 
   function at(p) {
@@ -200,6 +232,7 @@
   layout(); draw();
   if (document.fonts) document.fonts.ready.then(function () { layout(); draw(); });
   addEventListener('scroll', function () {
+    outrun();
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
     // the arrow stops nudging while the page moves
     if (!moving) cue.classList.add('hx-moving');
