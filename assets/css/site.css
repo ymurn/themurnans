@@ -4269,6 +4269,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    gold pill the square thumbnails then hung out of. Its own name now, and a
    rounded rectangle cut to what is inside it. */
 .mem__shots {
+  justify-self: start;
+  max-width: 100%;
   display: flex;
   gap: .4rem;
   padding: .4rem;
@@ -4276,8 +4278,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   border-radius: var(--r-sm);
   background: var(--paper-2);
 }
+/* A thumbnail is a size, not a share of the card. Shared out, two of them
+   came to half the card each, near enough the lead photograph twice over.
+   They shrink to fit five across a phone and never grow past 4.5rem. */
 .mem__thumb {
-  flex: 1 1 0;
+  flex: 0 1 auto;
+  width: 4.5rem;
+  min-width: 0;
   aspect-ratio: 1 / 1;
   padding: 0;
   overflow: hidden;
@@ -4379,6 +4386,19 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__lead img { position: absolute; inset: 0; }
   .mem__shots { flex-direction: column; align-self: center; padding: .3rem; gap: .3rem; }
   .mem__thumb { flex: none; width: 3.1rem; }
+}
+
+/* A tablet or an open foldable stood up: the card is a whole screen wide,
+   so the thumbnails go in a column beside the lead photograph, the way they
+   do on a desktop, rather than a row under it pushing the words down. */
+@media (min-width: 600px) and (orientation: portrait) {
+  .mem__open { grid-template-columns: minmax(0, 1fr) auto; }
+  .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
+  .mem__open > .mem__lead { grid-row: 2; }
+  .mem__open > .mem__shots { grid-row: 2; grid-column: 2; }
+  .mem__shots { flex-direction: column; align-self: center; padding: .3rem; gap: .35rem; }
+  .mem__thumb { flex: none; width: clamp(3.6rem, 9vw, 5rem); }
 }
 
 /* ── 02 The tally ──────────────────────────────────────────────────────── */
