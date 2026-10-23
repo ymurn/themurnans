@@ -172,13 +172,13 @@
 .tv__block { position: absolute; z-index: 0; inset: 50px 0 14px; background: #F0CE84; border-radius: 22px; rotate: 1.4deg; translate: 8px 10px; }
 .tv__body { position: relative; z-index: 1; display: grid; gap: 12px; padding: 12px; background: #8DBBCD; border: 2px solid #14110D; border-radius: 22px; }
 .tv .tube { border: 2px solid #14110D; border-radius: 12px; box-shadow: none; transform: none; }
-.tv .tube:hover { transform: none; box-shadow: none; }
+@media (hover: hover) { .tv .tube:hover { transform: none; box-shadow: none; } }
 .tv__panel { display: flex; align-items: center; gap: 10px; padding: 0 4px 2px; }
 .tv__knob { position: relative; width: 22px; height: 22px; border-radius: 50%; background: #F0CE84; border: 2px solid #14110D; rotate: -30deg; transition: rotate .6s var(--ease); }
 .tv__knob::after { content: ""; position: absolute; left: 50%; top: 2px; width: 2px; height: 7px; translate: -50% 0; border-radius: 1px; background: #14110D; }
 .tv__knob--b { background: #E4CBC8; rotate: 60deg; }
-.tv:hover .tv__knob { rotate: 40deg; }
-.tv:hover .tv__knob--b { rotate: -20deg; }
+@media (hover: hover) { .tv:hover .tv__knob { rotate: 40deg; } }
+@media (hover: hover) { .tv:hover .tv__knob--b { rotate: -20deg; } }
 .tv__grille { display: grid; gap: 4px; margin-left: auto; }
 .tv__grille i { display: block; width: 38px; height: 4px; border-radius: 2px; background: #14110D; }
 .tv__feet { position: relative; z-index: 1; display: flex; justify-content: space-between; width: 62%; margin: -2px auto 0; }

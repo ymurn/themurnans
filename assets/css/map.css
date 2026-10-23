@@ -183,8 +183,8 @@ body {
     font-size: .52rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
     transition: background-color .3s var(--ease-soft), color .3s;
   }
-  .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
-  [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  @media (hover: hover) { .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); } }
+  @media (hover: hover) { [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; } }
 
   /* A page that carries the floating window keeps its text clear of it, and
      any spine down the left of that text moves across with it. On a display
@@ -262,9 +262,8 @@ body {
     font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
     transition: background-color .3s var(--ease-soft), color .3s;
   }
-  .routemap__whole:hover, .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
-  [data-theme="dusk"] .routemap__whole:hover,
-  [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  @media (hover: hover) { .routemap__whole:hover, .yearmap__whole:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); } }
+  @media (hover: hover) { [data-theme="dusk"] .routemap__whole:hover, [data-theme="dusk"] .yearmap__whole:hover { background: var(--gold); border-color: var(--gold); color: #14110D; } }
   .routemap__now, .yearmap__now {
     display: flex; align-items: baseline; gap: .65rem;
     flex: 1 1 auto; min-width: 0; max-width: none; min-height: 0;
@@ -299,12 +298,12 @@ body {
     box-shadow: 0 2px 7px -2px rgba(20, 17, 13, .3);
     transition: background-color .3s var(--ease-soft), color .3s, scale .18s var(--ease), opacity .3s;
   }
-  .mapfold__open:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  @media (hover: hover) { .mapfold__open:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); } }
   .mapfold__open:active { scale: .93; }
   .mapfold__open > svg { transition: scale .3s var(--ease); }
-  .mapfold__open:hover > svg { scale: 1.06; }
+  @media (hover: hover) { .mapfold__open:hover > svg { scale: 1.06; } }
   [data-theme="dusk"] .mapfold__open { box-shadow: 0 2px 8px -2px rgba(0, 0, 0, .55); }
-  [data-theme="dusk"] .mapfold__open:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  @media (hover: hover) { [data-theme="dusk"] .mapfold__open:hover { background: var(--gold); border-color: var(--gold); color: #14110D; } }
 
   .mapfold__btn {
     display: inline-flex; align-items: center; gap: .5rem;
@@ -318,9 +317,9 @@ body {
     font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
     transition: background-color .3s var(--ease-soft), color .3s;
   }
-  .mapfold__btn:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
+  @media (hover: hover) { .mapfold__btn:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); } }
   .mapfold__btn:active { scale: .97; }
-  [data-theme="dusk"] .mapfold__btn:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+  @media (hover: hover) { [data-theme="dusk"] .mapfold__btn:hover { background: var(--gold); border-color: var(--gold); color: #14110D; } }
   /* the chevron sits a touch below the cap height of the word beside it */
   .mapfold__chev { margin-top: -1px; transition: rotate .45s var(--ease); }
 
@@ -357,7 +356,7 @@ body {
     background: none;
     color: #EBC97E;
   }
-  .moon.is-min .mapfold__btn:hover, .ymap.is-min .mapfold__btn:hover { background: #ffffff14; color: #EBC97E; }
+  @media (hover: hover) { .moon.is-min .mapfold__btn:hover, .ymap.is-min .mapfold__btn:hover { background: #ffffff14; color: #EBC97E; } }
   .moon.is-min .mapfold__word, .ymap.is-min .mapfold__word {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -395,8 +394,8 @@ body {
   background: var(--paper);
   color: var(--ink);
 }
-.routesheet__close:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); }
-[data-theme="dusk"] .routesheet__close:hover { background: var(--gold); border-color: var(--gold); color: #14110D; }
+@media (hover: hover) { .routesheet__close:hover { background: var(--deep); border-color: var(--deep); color: var(--deep-ink); } }
+@media (hover: hover) { [data-theme="dusk"] .routesheet__close:hover { background: var(--gold); border-color: var(--gold); color: #14110D; } }
 .routesheet__map svg { display: block; height: min(calc(100svh - 12rem), 640px); width: auto; max-width: 100%; overflow: visible; }
 /* The route down the coast is a tall, narrow map, so it is sized by its
    height above. A map of the whole country is not: give it the atlas's own

@@ -1175,14 +1175,35 @@
 
     const img = $('.lightbox__img', box);
     const cap = $('.lightbox__cap', box);
-    let idx = 0, opener = null;
+    let idx = 0, opener = null, turn = 0;
 
-    const show = i => {
+    // Opening sets the photograph at once. Stepping through, the old one
+    // slips away from the direction of travel, and the new one comes in from
+    // it once it is decoded, so a photograph never paints half loaded.
+    const show = (i, dir = 0) => {
       idx = (i + shots.length) % shots.length;
       const s = shots[idx];
-      img.src = s.dataset.src;
-      img.alt = s.dataset.cap || '';
-      cap.textContent = `${s.dataset.cap || ''}  ·  ${idx + 1} / ${shots.length}`;
+      const set = () => {
+        img.src = s.dataset.src;
+        img.alt = s.dataset.cap || '';
+        cap.textContent = `${s.dataset.cap || ''}  ·  ${idx + 1} / ${shots.length}`;
+      };
+      if (!dir || calm || !box.classList.contains('is-open')) { set(); return; }
+      const mine = ++turn;
+      const next = new Image();
+      next.src = s.dataset.src;
+      const ready = Promise.race([next.decode().catch(() => {}), new Promise(r => setTimeout(r, 700))]);
+      const out = img.animate(
+        [{ opacity: 1, translate: img.style.translate || '0 0' }, { opacity: 0, translate: `${-dir * 18}px 0` }],
+        { duration: 150, easing: 'cubic-bezier(.4, 0, 1, 1)', fill: 'forwards' });
+      img.style.translate = '';
+      Promise.all([ready, out.finished.catch(() => {})]).then(() => {
+        if (mine !== turn) return;
+        set();
+        out.cancel();
+        img.animate([{ opacity: 0, translate: `${dir * 18}px 0` }, { opacity: 1, translate: '0 0' }],
+          { duration: 380, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+      });
     };
 
     const open = i => {
@@ -1207,15 +1228,54 @@
     });
 
     $('.lightbox__x', box).addEventListener('click', close);
-    $('.lightbox__nav--prev', box).addEventListener('click', () => show(idx - 1));
-    $('.lightbox__nav--next', box).addEventListener('click', () => show(idx + 1));
+    $('.lightbox__nav--prev', box).addEventListener('click', () => show(idx - 1, -1));
+    $('.lightbox__nav--next', box).addEventListener('click', () => show(idx + 1, 1));
     box.addEventListener('click', e => { if (e.target === box || e.target === img) close(); });
+
+    // On a phone the photograph follows the thumb: sideways to the next one,
+    // down to put it away. Short of the line, it settles back where it was.
+    let t0 = null;
+    box.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) { t0 = null; return; }
+      t0 = { x: e.touches[0].clientX, y: e.touches[0].clientY, axis: '' };
+      img.style.transition = 'none';
+    }, { passive: true });
+    box.addEventListener('touchmove', e => {
+      if (!t0) return;
+      const dx = e.touches[0].clientX - t0.x, dy = e.touches[0].clientY - t0.y;
+      if (!t0.axis && Math.hypot(dx, dy) > 8) t0.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (t0.axis === 'x') img.style.translate = `${dx * .9}px 0`;
+      if (t0.axis === 'y' && dy > 0) { img.style.translate = `0 ${dy * .8}px`; box.style.opacity = String(Math.max(.4, 1 - dy / 500)); }
+      t0.dx = dx; t0.dy = dy;
+    }, { passive: true });
+    const settle = () => {
+      img.style.transition = '';
+      box.style.opacity = '';
+      if (!img.style.translate) return;
+      const from = img.style.translate;
+      img.style.translate = '';
+      img.animate([{ translate: from }, { translate: '0 0' }], { duration: 420, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+    };
+    box.addEventListener('touchend', () => {
+      const t = t0; t0 = null;
+      if (!t || !t.axis) { settle(); return; }
+      if (t.axis === 'x' && Math.abs(t.dx) > 56) { img.style.transition = ''; show(idx + (t.dx < 0 ? 1 : -1), t.dx < 0 ? 1 : -1); return; }
+      if (t.axis === 'y' && t.dy > 90) {
+        // fade from where the thumb left it, then put the photograph back
+        box.style.opacity = '';
+        close();
+        setTimeout(() => { img.style.transition = ''; img.style.translate = ''; }, 520);
+        return;
+      }
+      settle();
+    });
+    box.addEventListener('touchcancel', () => { t0 = null; settle(); });
 
     addEventListener('keydown', e => {
       if (!box.classList.contains('is-open')) return;
       if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') show(idx - 1);
-      if (e.key === 'ArrowRight') show(idx + 1);
+      if (e.key === 'ArrowLeft') show(idx - 1, -1);
+      if (e.key === 'ArrowRight') show(idx + 1, 1);
     });
   }
 
