@@ -33,7 +33,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 }
 .thead__text { min-width: 0; }
 .thead__back { display: inline-flex; align-items: center; gap: .5rem; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
-.thead__back:hover { color: var(--page-ink); }
+@media (hover: hover) { .thead__back:hover { color: var(--page-ink); } }
 
 /* Six prints from the trip, pinned up at their own angles and dealt fresh on
    every visit. They develop from the top as they come in, one after the
@@ -71,8 +71,8 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   box-shadow: 7px 7px 0 var(--off, var(--gold));
   transition: rotate .55s var(--ease), translate .45s var(--ease), box-shadow .45s var(--ease);
 }
-.tgal__pic:hover,
 .tgal__pic:focus-visible { rotate: 0deg; translate: 4px 4px; box-shadow: 4px 4px 0 var(--off, var(--gold)); }
+@media (hover: hover) { .tgal__pic:hover { rotate: 0deg; translate: 4px 4px; box-shadow: 4px 4px 0 var(--off, var(--gold)); } }
 /* the middle column rides low, so the six read as a pinned-up handful rather
    than a grid of six */
 .tgal__pic:nth-child(2),
@@ -176,9 +176,9 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease);
 }
 .hcard__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
-.hcard:hover .hcard__pic,
 .hcard:focus-visible .hcard__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 8px 14px 0 var(--off, var(--blue)); }
-.hcard:hover .hcard__pic img { transform: scale(1.05); }
+@media (hover: hover) { .hcard:hover .hcard__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 8px 14px 0 var(--off, var(--blue)); } }
+@media (hover: hover) { .hcard:hover .hcard__pic img { transform: scale(1.05); } }
 
 /* a highlight still to come: a wash of color and the snapshot doodle */
 .hcard__pic--empty {
@@ -196,15 +196,15 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
     color-mix(in srgb, var(--wash) 10%, var(--paper));
 }
 .hcard__doodle { width: clamp(38px, 22%, 62px); height: auto; opacity: .6; transition: rotate .6s var(--ease), scale .6s var(--ease); }
-.hcard:hover .hcard__doodle { rotate: -8deg; scale: 1.08; }
+@media (hover: hover) { .hcard:hover .hcard__doodle { rotate: -8deg; scale: 1.08; } }
 
 .hcard__k { font-size: .64rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brass-ink); }
 .hcard__title { font-family: var(--display); font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1.12; transition: color .4s; }
-.hcard:hover .hcard__title { color: var(--page-ink); }
+@media (hover: hover) { .hcard:hover .hcard__title { color: var(--page-ink); } }
 .hcard__note { font-size: .92rem; line-height: 1.62; color: var(--ink-3); }
 .hcard__go { display: inline-flex; align-items: center; gap: .6rem; margin-top: .45rem; font-size: .68rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; }
 .hcard__go svg { transition: transform .5s var(--ease); }
-.hcard:hover .hcard__go svg { transform: translateX(6px); }
+@media (hover: hover) { .hcard:hover .hcard__go svg { transform: translateX(6px); } }
 .hcard__tag {
   padding: .3em .85em .24em;
   border: 1.5px solid var(--line);
@@ -212,7 +212,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   color: var(--ink-3);
   font-size: .6rem; letter-spacing: .16em;
 }
-.hcard:hover .hcard__tag { border-color: var(--ink-3); color: var(--ink-2); }
+@media (hover: hover) { .hcard:hover .hcard__tag { border-color: var(--ink-3); color: var(--ink-2); } }
 
 /* ── The way between the highlights ──────────────────────────────────────
    The section every highlight page ends on, above the footer: the whole set
@@ -244,7 +244,7 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 
 .band--deep .hcard__pic { background: #ffffff14; border-width: 1.5px; }
 .band--deep .hcard__note { color: var(--deep-ink-3); }
-.band--deep .hcard:hover .hcard__title { color: var(--brass-2); }
+@media (hover: hover) { .band--deep .hcard:hover .hcard__title { color: var(--brass-2); } }
 
 /* Where you already are: it keeps its card, sits straight, and says so
    instead of offering an arrow to itself. */
@@ -285,8 +285,8 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
     rotate: 0deg;
     box-shadow: none;
   }
-  .hnav .hcard:hover .hcard__pic,
   .hnav .hcard:focus-visible .hcard__pic { translate: none; box-shadow: none; }
+  @media (hover: hover) { .hnav .hcard:hover .hcard__pic { translate: none; box-shadow: none; } }
   .hnav .hcard__k { grid-area: when; }
   .hnav .hcard__title { grid-area: name; font-size: 1.12rem; }
   .hnav .hcard__note { display: none; }
@@ -307,10 +307,10 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   /* Beside the words on a wide screen the arrow slides out of the line and
      that reads as going somewhere. Inside a circle it just leaves the middle.
      So here the circle goes with it and the arrow stays where it was put. */
-  .hnav .hcard:hover .hcard__go,
   .hnav .hcard:focus-visible .hcard__go { translate: 5px 0; border-color: var(--brass-2); }
-  .hnav .hcard:hover .hcard__go svg,
+  @media (hover: hover) { .hnav .hcard:hover .hcard__go { translate: 5px 0; border-color: var(--brass-2); } }
   .hnav .hcard:focus-visible .hcard__go svg { transform: none; }
+  @media (hover: hover) { .hnav .hcard:hover .hcard__go svg { transform: none; } }
   .hnav .hcard__word {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -371,8 +371,8 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 .tgal--one { width: min(100%, 520px); }
 .tgal--one .tgal__grid { grid-template-columns: minmax(0, 1fr); padding: 0 12px 12px 0; }
 .tgal--one .tgal__pic { aspect-ratio: 4 / 3; box-shadow: 10px 10px 0 var(--off, var(--gold)); }
-.tgal--one .tgal__pic:hover,
 .tgal--one .tgal__pic:focus-visible { box-shadow: 5px 5px 0 var(--off, var(--gold)); }
+@media (hover: hover) { .tgal--one .tgal__pic:hover { box-shadow: 5px 5px 0 var(--off, var(--gold)); } }
 
 /* The measure lives on the block, not on the card: "ch" is relative to the
    element's own type size, so a label and a card that both asked for 74ch
@@ -425,9 +425,9 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   box-shadow: 3px 3px 0 #14110D;
   rotate: -9deg;
   text-align: center;
-  transition: rotate .6s cubic-bezier(.34, 1.56, .64, 1), scale .6s cubic-bezier(.34, 1.56, .64, 1);
+  transition: rotate .6s var(--pop), scale .6s var(--pop);
 }
-.letter:hover .letter__stamp { rotate: 4deg; scale: 1.05; }
+@media (hover: hover) { .letter:hover .letter__stamp { rotate: 4deg; scale: 1.05; } }
 .letter__stamp b {
   font-family: var(--hand);
   font-weight: 700;

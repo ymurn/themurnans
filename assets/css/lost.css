@@ -201,9 +201,9 @@
 .lost__sign  { animation: lost-drop 1.15s cubic-bezier(.3, .7, .3, 1) .35s backwards; }
 .lost__fig--bear  { animation: lost-hop .6s var(--ease-soft) 1.05s; }
 .lost__fig--tiger { animation: lost-hop .6s var(--ease-soft) 1.17s; }
-.lost__star--a { animation: lost-star .5s cubic-bezier(.34, 1.56, .64, 1) 1.2s backwards, lost-twinkle 3.2s ease-in-out 2s infinite; }
-.lost__star--b { animation: lost-star .5s cubic-bezier(.34, 1.56, .64, 1) 1.3s backwards, lost-twinkle 3.2s ease-in-out 2.9s infinite; }
-.lost__star--c { animation: lost-star .5s cubic-bezier(.34, 1.56, .64, 1) 1.4s backwards, lost-twinkle 3.2s ease-in-out 3.6s infinite; }
+.lost__star--a { animation: lost-star .5s var(--pop) 1.2s backwards, lost-twinkle 3.2s ease-in-out 2s infinite; }
+.lost__star--b { animation: lost-star .5s var(--pop) 1.3s backwards, lost-twinkle 3.2s ease-in-out 2.9s infinite; }
+.lost__star--c { animation: lost-star .5s var(--pop) 1.4s backwards, lost-twinkle 3.2s ease-in-out 3.6s infinite; }
 .lost__sign.is-rocking { animation: lost-rock 1s cubic-bezier(.3, .7, .3, 1); }
 
 /* the words follow the sign down, one beat behind it */
@@ -273,8 +273,8 @@
   transition: background .3s var(--ease-soft), border-color .3s var(--ease-soft), color .3s var(--ease-soft);
 }
 .lost__go svg { transition: translate .4s var(--ease); }
-.lost__way:hover .lost__go { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.lost__way:hover .lost__go svg { translate: 2px 0; }
+@media (hover: hover) { .lost__way:hover .lost__go { background: var(--ink); border-color: var(--ink); color: var(--paper); } }
+@media (hover: hover) { .lost__way:hover .lost__go svg { translate: 2px 0; } }
 
 /* a trip at random: one postcard, photo on top, its die inside it */
 .lost__card {
@@ -311,7 +311,7 @@
   color: var(--ink);
 }
 .lost__read span { display: inline-block; transition: translate .4s var(--ease); }
-.lost__read:hover span { translate: 3px 0; }
+@media (hover: hover) { .lost__read:hover span { translate: 3px 0; } }
 .lost__roll {
   flex: none;
   display: inline-flex;
@@ -330,7 +330,7 @@
   cursor: pointer;
   transition: border-color .3s var(--ease-soft);
 }
-.lost__roll:hover { border-color: var(--ink); }
+@media (hover: hover) { .lost__roll:hover { border-color: var(--ink); } }
 .lost__die { display: grid; place-items: center; }
 .lost__roll.is-rolling .lost__die { animation: lost-roll .55s cubic-bezier(.34, 1.42, .5, 1); }
 @keyframes lost-roll { from { rotate: -200deg; scale: .7; } }

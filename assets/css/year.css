@@ -41,7 +41,7 @@ body[data-page="year"] { --page: var(--wine-3); --page-ink: var(--wine); }
   rotate: 1.6deg;
   transition: rotate .7s var(--ease);
 }
-.ycover:hover { rotate: 0deg; }
+@media (hover: hover) { .ycover:hover { rotate: 0deg; } }
 .ycover__frame {
   position: relative;
   display: block;
@@ -54,7 +54,7 @@ body[data-page="year"] { --page: var(--wine-3); --page-ink: var(--wine); }
   transition: translate .45s var(--ease), box-shadow .45s var(--ease);
 }
 .ycover__frame[data-shot] { cursor: zoom-in; }
-.ycover__frame:hover { translate: 4px 4px; box-shadow: 8px 8px 0 var(--off, var(--gold)); }
+@media (hover: hover) { .ycover__frame:hover { translate: 4px 4px; box-shadow: 8px 8px 0 var(--off, var(--gold)); } }
 .ycover__frame img { width: 100%; height: 100%; object-fit: cover; }
 .ycover__cap {
   display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
@@ -90,12 +90,12 @@ body[data-page="year"] { --page: var(--wine-3); --page-ink: var(--wine); }
   transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease);
 }
 .ydeck__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
-a.ydeck__card:hover .ydeck__pic,
 a.ydeck__card:focus-visible .ydeck__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 6px 10px 0 var(--off, var(--blue)); }
-a.ydeck__card:hover .ydeck__pic img { transform: scale(1.05); }
+@media (hover: hover) { a.ydeck__card:hover .ydeck__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 6px 10px 0 var(--off, var(--blue)); } }
+@media (hover: hover) { a.ydeck__card:hover .ydeck__pic img { transform: scale(1.05); } }
 .ydeck__year { font-family: var(--display); font-size: 1.2rem; line-height: 1; }
 .ydeck__name { font-size: .74rem; line-height: 1.35; color: var(--ink-3); text-wrap: balance; }
-a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
+@media (hover: hover) { a.ydeck__card:hover .ydeck__year { color: var(--page-ink); } }
 
 /* the card for the page you're on lies flat, with a sticker on it */
 .ydeck__card.is-here .ydeck__pic { rotate: 0deg; }
@@ -120,7 +120,7 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
 .ybar .yearbar__list { flex: none; }
 .ybar .yearbtn { padding-inline: .85em; }
 .yearbtn--empty { color: var(--ink-3); opacity: .45; cursor: default; }
-.yearbtn--empty:hover { color: var(--ink-3); box-shadow: none; }
+@media (hover: hover) { .yearbtn--empty:hover { color: var(--ink-3); box-shadow: none; } }
 
 /* 4 ── TIMELINE ROWS ───────────────────────────────────────────────────── */
 
@@ -210,7 +210,7 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
 }
 .shot--empty::after { display: none; }
 .shot__doodle { width: clamp(30px, 24%, 56px); height: auto; opacity: .62; transition: rotate .6s var(--ease), scale .6s var(--ease); }
-.shot--empty:hover .shot__doodle { rotate: -8deg; scale: 1.08; }
+@media (hover: hover) { .shot--empty:hover .shot__doodle { rotate: -8deg; scale: 1.08; } }
 .shot__hint {
   max-width: 24ch;
   font-size: .62rem; font-weight: 500; line-height: 1.35;
@@ -314,9 +314,9 @@ a.ydeck__card:hover .ydeck__year { color: var(--page-ink); }
   rotate: -2deg;
   transition: rotate .6s var(--ease), translate .45s var(--ease), box-shadow .45s var(--ease);
 }
-a.yclose__card:hover { rotate: 0deg; translate: 4px 4px; box-shadow: 8px 8px 0 var(--off, var(--gold)); }
+@media (hover: hover) { a.yclose__card:hover { rotate: 0deg; translate: 4px 4px; box-shadow: 8px 8px 0 var(--off, var(--gold)); } }
 .yclose__card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
-a.yclose__card:hover img { transform: scale(1.04); }
+@media (hover: hover) { a.yclose__card:hover img { transform: scale(1.04); } }
 
 /* the card that doesn't exist yet: plain stock, colors pinned for the dark band */
 .ycard-blank {
@@ -363,9 +363,9 @@ a.yclose__card:hover img { transform: scale(1.04); }
   transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease);
 }
 .yclose__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
-.yclose__mini:hover .yclose__pic,
 .yclose__mini:focus-visible .yclose__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 7px 12px 0 var(--off, var(--gold)); }
-.yclose__mini:hover .yclose__pic img { transform: scale(1.05); }
+@media (hover: hover) { .yclose__mini:hover .yclose__pic { rotate: 0deg; translate: 0 -6px; box-shadow: 7px 12px 0 var(--off, var(--gold)); } }
+@media (hover: hover) { .yclose__mini:hover .yclose__pic img { transform: scale(1.05); } }
 .yclose__year { font-family: var(--display); font-size: 1.45rem; line-height: 1; }
 .yclose__title { font-size: .78rem; line-height: 1.35; color: var(--ink-3); text-wrap: balance; }
 
