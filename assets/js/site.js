@@ -2187,6 +2187,8 @@
         <g role="group">${ours.filter(r => r.id !== 'DC')
           .map(r => `<path class="memmap__been" data-q="${r.q}" style="--t:${wait(r)}ms" ${pick(r)} d="${r.d}"/>`).join('')}</g>
         ${been.has('DC') ? `<circle class="memmap__dc" cx="${A.dc[0]}" cy="${A.dc[1]}" r="4.2" style="--t:${wait(ours.find(r => r.id === 'DC'))}ms" ${pick({ id: 'DC' })}/>` : ''}
+        <defs><filter id="memglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter></defs>
+        <path class="memmap__glow" d="" filter="url(#memglow)"/>
         <path class="memmap__ring" d=""/>
         <text class="memmap__label" x="${A.canada[0]}" y="${A.canada[1]}" text-anchor="middle" aria-hidden="true">CANADA</text>
         <g transform="translate(${A.home[0]} ${A.home[1]})" aria-hidden="true"><path class="memmap__home" d="${STAR}"/></g>
@@ -2194,6 +2196,7 @@
 
     const svg = $('svg', map);
     const ring = $('.memmap__ring', svg);
+    const glow = $('.memmap__glow', svg);
     let on = null;      // the state showing, or null for the draw from everywhere
     let open = null;    // the memory opened inside the panel
 
@@ -2507,8 +2510,14 @@
       $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
       const r = id && A.regions.find(q => q.id === id);
       ring.setAttribute('d', r && id !== 'DC' ? r.d : '');
-      // the line takes a deeper shade of the state's own color
+      // the edge and the glow take the state's own color
       ring.dataset.q = r ? r.q : '';
+      glow.setAttribute('d', r && id !== 'DC' ? r.d : '');
+      glow.dataset.q = r ? r.q : '';
+      // the glow blooms again for each state picked
+      glow.style.animation = 'none';
+      void glow.getBoundingClientRect();
+      glow.style.removeProperty('animation');
       if (bar) {
         const n = id ? count(id) : M.items.length;
         $('[data-mem="where"]', bar).textContent = id ? nameOf(id) : 'Anywhere';

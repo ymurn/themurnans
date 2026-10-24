@@ -4228,27 +4228,38 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__been[data-q="3"] { fill: var(--quilt-4); }
 @media (hover: hover) { .memmap__been:hover { filter: brightness(1.08) saturate(1.1); } }
 
-/* One state chosen: it keeps its color and lifts off the sheet on a soft
-   shadow, with a fine line at half the ink's strength round it; the rest
-   step back. The full ink line at 2.4px read as a hard cut-out, sharpest of
-   all on a phone. One outline on the map, never thirty-six. */
+/* One state chosen: it keeps its color and glows, the rest step back. No
+   dark line: a halo in its own color, blurred, blooms out as it is picked
+   and settles to a soft glow, with a fine light edge to keep it clear of
+   its neighbours. The halo animates opacity only, so it is cheap to run. */
 .memmap.is-picked.is-printed .memmap__been { opacity: .38; }
-.memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; filter: drop-shadow(0 1.5px 2.5px rgb(20 17 13 / .26)); }
+.memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; }
+.memmap__glow, .memmap__ring { --hue: var(--quilt-1); fill: none; pointer-events: none; opacity: 0; }
+.memmap__glow[data-q="1"], .memmap__ring[data-q="1"] { --hue: var(--quilt-2); }
+.memmap__glow[data-q="2"], .memmap__ring[data-q="2"] { --hue: var(--quilt-3); }
+.memmap__glow[data-q="3"], .memmap__ring[data-q="3"] { --hue: var(--quilt-4); }
+.memmap__glow {
+  stroke: var(--hue);
+  stroke-width: 14px;
+  stroke-linejoin: round;
+}
 .memmap__ring {
-  fill: none;
-  stroke: color-mix(in srgb, var(--quilt-1) 45%, var(--ink));
-  stroke-width: 1.5px;
+  stroke: color-mix(in srgb, var(--hue) 45%, #fff);
+  stroke-width: 1.2px;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  pointer-events: none;
-  opacity: 0;
   transition: opacity .3s var(--ease-soft);
 }
-.memmap.is-picked .memmap__ring { opacity: 1; }
-/* a deeper shade of the picked state's own color, not a gray line over it */
-.memmap__ring[data-q="1"] { stroke: color-mix(in srgb, var(--quilt-2) 45%, var(--ink)); }
-.memmap__ring[data-q="2"] { stroke: color-mix(in srgb, var(--quilt-3) 45%, var(--ink)); }
-.memmap__ring[data-q="3"] { stroke: color-mix(in srgb, var(--quilt-4) 45%, var(--ink)); }
+.memmap.is-picked .memmap__ring { opacity: .9; }
+.memmap.is-picked .memmap__glow { opacity: .55; }
+@media (prefers-reduced-motion: no-preference) {
+  .memmap.is-picked .memmap__glow { animation: memglow 1.6s var(--ease-soft) both; }
+}
+@keyframes memglow {
+  0%   { opacity: 0; }
+  40%  { opacity: .9; }
+  100% { opacity: .55; }
+}
 .memmap__dc {
   fill: var(--coral); stroke: var(--paper); stroke-width: 1.2px;
   vector-effect: non-scaling-stroke; cursor: pointer;
@@ -5276,7 +5287,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 /* On the deep ground the map needs its own paper, not the page's */
 .memsheet__map .memmap__st { fill: #ffffff14; stroke: #ffffff26; }
 .memsheet__map .memmap__been { stroke: var(--deep); }
-.memsheet__map .memmap__ring { stroke: var(--gold); stroke-width: 3px; }
+.memsheet__map .memmap__ring { stroke-width: 1.6px; }
 .memsheet__map .memmap__label { fill: var(--deep-ink-3); }
 .memsheet__map .memmap__home { stroke: var(--deep); }
 .memsheet__foot {
