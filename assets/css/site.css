@@ -4228,10 +4228,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__been[data-q="3"] { fill: var(--quilt-4); }
 @media (hover: hover) { .memmap__been:hover { filter: brightness(1.08) saturate(1.1); } }
 
-/* One state chosen: it keeps its color and glows, the rest step back. No
-   dark line: a halo in its own color, blurred, blooms out as it is picked
-   and settles to a soft glow, with a fine light edge to keep it clear of
-   its neighbours. The halo animates opacity only, so it is cheap to run. */
+/* One state chosen: it keeps its color and glows, the rest step back. The
+   halo, in its own color, sits under the states, so it blooms out round
+   the edge and never blurs the state itself, which stays crisp, with a
+   fine edge in a deep shade of its color. It blooms as it is picked and
+   settles; opacity only, so it is cheap to run. */
 .memmap.is-picked.is-printed .memmap__been { opacity: .38; }
 .memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; }
 .memmap__glow, .memmap__ring { --hue: var(--quilt-1); fill: none; pointer-events: none; opacity: 0; }
@@ -4240,25 +4241,29 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__glow[data-q="3"], .memmap__ring[data-q="3"] { --hue: var(--quilt-4); }
 .memmap__glow {
   stroke: var(--hue);
-  stroke-width: 14px;
+  fill: var(--hue);
+  stroke-width: 22px;
   stroke-linejoin: round;
 }
+/* a defined edge in a deep shade of its own color: between the hard ink
+   line and a pale one that lost the state against its neighbours */
 .memmap__ring {
-  stroke: color-mix(in srgb, var(--hue) 45%, #fff);
-  stroke-width: 1.2px;
+  stroke: color-mix(in srgb, var(--hue) 58%, var(--ink));
+  stroke-width: 1.5px;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
   transition: opacity .3s var(--ease-soft);
 }
-.memmap.is-picked .memmap__ring { opacity: .9; }
-.memmap.is-picked .memmap__glow { opacity: .55; }
+.memmap.is-picked .memmap__ring { opacity: .8; }
+.memmap.is-picked .memmap__glow { opacity: .8; }
+
 @media (prefers-reduced-motion: no-preference) {
   .memmap.is-picked .memmap__glow { animation: memglow 1.6s var(--ease-soft) both; }
 }
 @keyframes memglow {
   0%   { opacity: 0; }
-  40%  { opacity: .9; }
-  100% { opacity: .55; }
+  38%  { opacity: 1; }
+  100% { opacity: .8; }
 }
 .memmap__dc {
   fill: var(--coral); stroke: var(--paper); stroke-width: 1.2px;
@@ -4965,8 +4970,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      went mid-scroll, which read as the map glitching. */
   :root { --memscreen: calc(100svh - var(--nav-h)); }
   .memories.band { padding-bottom: 0; }
+  /* narrower side margins here: every pixel goes to the map and photos */
+  .memories .shell { padding-inline: 1.25rem; }
   .mem {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* the map a little more than half: it is the larger of the two */
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     /* from the top, so no paper sits over it once the bars tuck away: the
        slack falls under it, in its own band's color */
     align-items: center; align-content: start;
@@ -4974,7 +4982,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     /* fills the screen even with Safari's bars tucked away (lvh), so the
        band below never peeks in; grows for an open memory */
     min-height: calc(100lvh - var(--nav-h));
-    padding-block: .75rem;
+    padding-block: .5rem;
     box-sizing: border-box;
     scroll-margin-top: var(--nav-h);
   }
@@ -4984,10 +4992,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .75rem); }
   .mem:has(.mem__open) { align-items: start; }
   /* the screen, less the padding and the count line under the map */
-  .mem__map { width: min(100%, calc((var(--memscreen) - 5rem) * 1000 / 645.6)); margin-inline: auto; }
+  .mem__map { width: min(100%, calc((var(--memscreen) - 3.4rem) * 1000 / 645.6)); margin-inline: auto; }
   /* the whole column, not the map's width: a short screen draws the map
      narrower than the badge, and it was cut off at "so far" */
-  .mem__hint { width: 100%; order: 0; margin-top: .6rem; margin-bottom: 0; text-align: center; justify-content: center; }
+  .mem__hint { width: 100%; order: 0; margin-top: .35rem; margin-bottom: 0; text-align: center; justify-content: center; }
   .mem__bar { display: none; }
 
   .mem__panel {
@@ -5053,9 +5061,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      and the words spanning them widened the photograph's column and opened
      a gap between it and its thumbnails. */
   .mem__open {
-    --leadw: min(calc(100cqw - 7.6rem), calc((var(--memscreen) - 8rem) * 4 / 3));
+    padding: .7rem .75rem .9rem;
+    gap: .55rem;
+    --leadw: min(calc(100cqw - 1.5rem - 4px - var(--thumb) - 1.3rem - 2px), calc((var(--memscreen) - 4.6rem) * 4 / 3));
     --leadh: calc(var(--leadw) * 3 / 4);
-    --thumb: max(2.25rem, min(3.2rem, calc((var(--leadh) - .6rem - 6px - (var(--n, 4) - 1) * .3rem) / var(--n, 4))));
+    --thumb: max(2.25rem, min(2.9rem, calc((var(--memscreen) - 4.6rem) * 3 / 4 * .9 / var(--n, 4))));
     /* the thumbnails' column carries the gap to the photograph (.65rem) */
     grid-template-columns: minmax(0, 1fr) var(--leadw) calc(var(--thumb) + .6rem + 2px + .65rem) minmax(0, 1fr);
     column-gap: 0;
@@ -5064,7 +5074,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
   .mem__open > .mem__lead { grid-row: 2; grid-column: 2; aspect-ratio: auto; width: var(--leadw); height: var(--leadh); }
   .mem__open:not(:has(> .mem__shots)) > .mem__lead {
-    --leadw: min(calc(100cqw - 2.6rem), calc((var(--memscreen) - 8rem) * 4 / 3));
+    --leadw: min(calc(100cqw - 1.5rem - 4px), calc((var(--memscreen) - 4.6rem) * 4 / 3));
     justify-self: center;
   }
   .mem__open > .mem__shots {

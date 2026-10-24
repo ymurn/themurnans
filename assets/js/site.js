@@ -2184,11 +2184,11 @@
     map.innerHTML = `
       <svg class="memmap" viewBox="0 0 ${A.w} ${A.h}" aria-label="Map of the United States and Canada. We have been to ${esc(summary)}. Choose a state for photographs from it.">
         <g aria-hidden="true">${A.regions.map(r => `<path class="memmap__st" d="${r.d}"/>`).join('')}</g>
+        <defs><filter id="memglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+        <path class="memmap__glow" d="" filter="url(#memglow)"/>
         <g role="group">${ours.filter(r => r.id !== 'DC')
           .map(r => `<path class="memmap__been" data-q="${r.q}" style="--t:${wait(r)}ms" ${pick(r)} d="${r.d}"/>`).join('')}</g>
         ${been.has('DC') ? `<circle class="memmap__dc" cx="${A.dc[0]}" cy="${A.dc[1]}" r="4.2" style="--t:${wait(ours.find(r => r.id === 'DC'))}ms" ${pick({ id: 'DC' })}/>` : ''}
-        <defs><filter id="memglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter></defs>
-        <path class="memmap__glow" d="" filter="url(#memglow)"/>
         <path class="memmap__ring" d=""/>
         <text class="memmap__label" x="${A.canada[0]}" y="${A.canada[1]}" text-anchor="middle" aria-hidden="true">CANADA</text>
         <g transform="translate(${A.home[0]} ${A.home[1]})" aria-hidden="true"><path class="memmap__home" d="${STAR}"/></g>
