@@ -227,7 +227,10 @@ window.MW = {
    "photos": [
     "21122501.jpg",
     "21122502.jpg",
-    "21122503.jpg"
+    "cliftyfalls01.jpg",
+    "21122504.jpg",
+    "cliftyfalls02.jpg",
+    "granvillepub01.jpg"
    ],
    "year": "2021",
    "short": "Cincinnati"

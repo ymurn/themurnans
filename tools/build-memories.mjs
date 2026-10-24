@@ -149,7 +149,9 @@ const slugOf = src => {
 const stopsOf = pics => {
   const out = [];
   const seen = new Set();
-  pics.forEach(p => (PLACES[slugOf(p.src) || ''] || []).forEach(s => {
+  // a photograph pinned to a named place in PIC_ST is a stop of its own
+  const pinned = p => { const pin = pinOf(p.src); return pin && pin[1] ? [{ n: pin[1], st: pin[0] }] : []; };
+  pics.forEach(p => [...(PLACES[slugOf(p.src) || ''] || []), ...pinned(p)].forEach(s => {
     const key = `${s.n}|${s.st}`;
     if (seen.has(key)) return;
     seen.add(key);
@@ -232,18 +234,40 @@ function titlesByState(place, short, all, stops) {
    rather than under the wrong one.
 
    PIC_ST is for the few a caption cannot place ("The snowstorm"). Each was
-   read off the GPS in the original, by hand, and "" means on a state line. */
+   read off the GPS in the original, by hand, and "" means on a state line.
+   A pair also names the place, for the memory's title when that state is
+   picked: a Cincinnati trip filed under Kentucky is called Covington there.
+   The Mammoth Cave pair are volume one photographs, whose originals have no
+   GPS, so they were placed by their capture date and what they show; the
+   Clifty Falls one is read off the GPS in Wedding/Wedding Assets/Our Story
+   Photos Original/211225-Cincinnati/IMG_6379.JPG, and the two waterfalls
+   and the Granville Pub off their originals in the Photos library. */
 const PIC_ST = {
   '2022-12-cincy-07.jpg': 'OH',              // The snowstorm: Harrison, Ohio
   '2023-09-family-trip-06.jpg': 'TN',        // The waterfall hike: above Gatlinburg
   '2023-09-family-trip-10.jpg': 'NC',        // The highest point on the Parkway
   '2025-02-rhode-island-03.jpg': 'RI',       // The White Horse Tavern: Newport
-  '2023-08-cincy-08.jpg': '',                // Beers with family: Covington, over the river
+  '2023-08-cincy-08.jpg': ['KY', 'Covington'],  // Anniversary dinner at Wunderbar: MainStrasse, Covington
+  '2024-11-richmond-atlanta-charlottesville-03.jpg': 'GA', // Dinner with the cousins: Canton, Georgia
+  '2024-11-richmond-atlanta-charlottesville-06.jpg': 'GA', // Chasing waterfalls: the North Georgia mountains
+  '202205cincy02.jpg': ['KY', 'Mammoth Cave'],  // The selfie in the cave: May 30, 2022
+  '202205cincy03.jpg': ['KY', 'Mammoth Cave'],  // Inside the cave: May 30, 2022
+  '21122504.jpg': ['IN', 'Clifty Falls'],       // The selfie by the creek: Clifty Falls State Park, Christmas Day 2021
+  'cliftyfalls01.jpg': ['IN', 'Clifty Falls'],  // A waterfall in the park: the same afternoon
+  'cliftyfalls02.jpg': ['IN', 'Clifty Falls'],  // The stepped falls: the same afternoon
+  'granvillepub01.jpg': ['KY', 'Louisville'],   // Dinner at the Granville Pub, Old Louisville: that evening
+};
+// [state, place or undefined], or undefined for a photograph not in PIC_ST
+const pinOf = src => {
+  const pin = PIC_ST[path.basename(src)];
+  return pin === undefined ? undefined : [].concat(pin);
 };
 const hay = s => String(s).toLowerCase();
 function stateOfPic(pic, said) {
-  const file = path.basename(pic.src);
-  if (PIC_ST[file] !== undefined) return PIC_ST[file];
+  const pin = pinOf(pic.src);
+  if (pin) return pin[0];
+  // volume one: a photograph with no pin is from the chapter's own place
+  if (pic.home) return pic.home;
   const stops = (PLACES[slugOf(pic.src) || ''] || [])
     .map(s => ({ n: s.n, st: s.st === 'QC' ? 'CA-QC' : s.st }));
   if (pic.cap) {
@@ -381,7 +405,7 @@ const push = m => {
   const loose = m.pics.filter(p => !p.st);
   m.st = all.filter(c => loose.length || m.pics.some(p => p.st === c));
   if (all.length > 1) {
-    loose.filter(p => PIC_ST[path.basename(p.src)] === undefined && statesFromPlace(p.cap || '').length < 2)
+    loose.filter(p => pinOf(p.src) === undefined && statesFromPlace(p.cap || '').length < 2)
       .forEach(p => unsure.push({ m, p }));
   }
   all.filter(c => !m.st.includes(c)).forEach(c => {
@@ -395,8 +419,13 @@ const push = m => {
 };
 
 /* Volume one: the chapters before the wedding. Their photographs sit loose in
-   assets/photos/, so the state can only come from the chapter's own place.  */
+   assets/photos/, with no folder or GPS stop to go by, so each is taken to be
+   from the chapter's own place, when that names one state, unless PIC_ST
+   pins it somewhere else: the May 2022 Cincinnati chapter's Mammoth Cave
+   photographs are in Kentucky.                                              */
 MW.timeline.forEach((c, i) => {
+  const own = statesFromPlace(c.place);
+  const home = own.length === 1 ? own[0] : '';
   push({
     place: c.place,
     short: c.short || String(c.place).split(/[,&]/)[0].trim(),
@@ -404,7 +433,7 @@ MW.timeline.forEach((c, i) => {
     year: c.year,
     text: blurb(c.text),
     href: `story.html#chap-${i + 1}`,
-    pics: (c.photos || []).map(p => ({ src: `photos/${p}` })),
+    pics: (c.photos || []).map(p => ({ src: `photos/${p}`, home })),
   });
 });
 

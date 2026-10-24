@@ -91,6 +91,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2024-05-acadia/2024-05-acadia-01.jpg", "cap": "Cadillac Mountain" },
     { "src": "continued_trips/2024-05-portland-maine/2024-05-portland-maine-01.jpg", "cap": "Portland Head Light", "pos": "65% 50%" },
     { "src": "continued_trips/2024-05-portland-maine/2024-05-portland-maine-03.jpg", "cap": "Top down in Maine", "pos": "right" },
+    { "src": "continued_trips/2024-05-bar-harbor-vermont/2024-05-bar-harbor-vermont-06.jpg", "cap": "Heady Topper at The Alchemist, Stowe" },
     { "src": "continued_trips/2024-05-chicago/2024-05-chicago-01.jpg", "cap": "High above Chicago" },
     { "src": "continued_trips/2024-05-chicago/2024-05-chicago-02.jpg", "cap": "Deep dish in Chicago" }
    ]
@@ -210,6 +211,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2024-11-lake-george-adirondacks/2024-11-lake-george-adirondacks-05.jpg", "cap": "Ausable Chasm" },
     { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-03.jpg", "cap": "Dinner with the cousins" },
     { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-06.jpg", "cap": "Chasing waterfalls" },
+    { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-08.jpg", "cap": "Rainbow Falls in North Carolina" },
     { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-09.jpg", "cap": "Luray Caverns" }
    ]
   },
@@ -235,11 +237,13 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2024-12-fallingwater-pittsburgh-cincy/2024-12-fallingwater-pittsburgh-cincy-02.jpg", "cap": "Fallingwater" },
+    { "src": "continued_trips/2024-12-fallingwater-pittsburgh-cincy/2024-12-fallingwater-pittsburgh-cincy-05.jpg", "cap": "Christmas Eve with family in Cincinnati" },
     { "src": "continued_trips/2024-12-new-river-gorge/2024-12-new-river-gorge-05.jpg", "cap": "The New River Gorge Bridge" },
-    { "src": "continued_trips/2024-12-congaree/2024-12-congaree-03.jpg", "cap": "Congaree in the rain" },
     { "src": "continued_trips/2024-12-charleston/2024-12-charleston-01.jpg", "cap": "The Pineapple Fountain in Charleston", "pos": "60% 50%" },
-    { "src": "continued_trips/2024-12-savannah-tybee-island/2024-12-savannah-tybee-island-06.jpg", "cap": "The Tybee Island lighthouse" }
-   ]
+    { "src": "continued_trips/2024-12-savannah-tybee-island/2024-12-savannah-tybee-island-06.jpg", "cap": "The Tybee Island lighthouse" },
+    { "src": "continued_trips/2024-12-winchester-rehoboth-beach/2024-12-winchester-rehoboth-beach-03.jpg", "cap": "New Year's Day at Fenwick Island" }
+   ],
+   "folders": ["2024-12-congaree"]
   }
  ],
 
