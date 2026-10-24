@@ -887,24 +887,32 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--bear  .fig__card { right: calc(100% + .9rem); transform-origin: 100% 30%; }
 .fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: calc(100% + .9rem); transform-origin: 0 30%; }
 @media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: translateX(var(--nudge, 0px)) rotate(var(--tilt)); } }
-/* the tail, toward the drawing */
+/* A small notch on the side facing him, at the height of his head, like
+   the speech bubbles. What ties the card to him is the print: while he is
+   hovered, his drawing takes the same off-register color the card has (his
+   blue, his tiger gold), so the two read as one printed pair. */
 .fig__card::after {
   content: "";
   position: absolute;
-  top: 1.6rem;
-  width: 14px; height: 14px;
+  top: 1.35rem;
+  width: 13px; height: 13px;
   background: var(--paper);
   border: var(--keyline);
   border-width: 2px 2px 0 0;
+  border-radius: 0 3px 0 0;
   rotate: 45deg;
 }
-.fig--bear  .fig__card::after { right: -9px; }
-.fig--tiger .fig__card::after { left: -9px; rotate: -135deg; }
+.fig--bear  .fig__card::after { right: -8.5px; }
+.fig--tiger .fig__card::after { left: -8.5px; rotate: -135deg; }
+.fig--bear  .fig__card.is-flip::after { right: auto; left: -8.5px; rotate: -135deg; }
+.fig--tiger .fig__card.is-flip::after { left: auto; right: -8.5px; rotate: 45deg; }
+.fig--bear  { --echo: var(--blue); }
+.fig--tiger { --echo: var(--gold); }
+.fig__out { transition: filter .45s var(--ease); }
+@media (hover: hover) { .fig:hover .fig__out { filter: drop-shadow(4px 4px 0 color-mix(in srgb, var(--echo) 70%, transparent)); } }
 /* No room behind him: initChatter puts it in front, tail and all. */
 .fig--bear  .fig__card.is-flip { right: auto; left: calc(100% + .9rem); transform-origin: 0 30%; }
 .fig--tiger .fig__card.is-flip { left: auto; right: calc(100% + .9rem); transform-origin: 100% 30%; }
-.fig--bear  .fig__card.is-flip::after { right: auto; left: -9px; rotate: -135deg; }
-.fig--tiger .fig__card.is-flip::after { left: auto; right: -9px; rotate: 45deg; }
 /* in front of him it lands where his signature is, so the signature steps out */
 @media (hover: hover) { .fig:hover:has(.fig__card.is-flip) .fig__name { opacity: 0; transform: none; } }
 /* the name, on a chip of the same color; dark type, so it reads at dusk too */
@@ -4482,6 +4490,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__place { margin: 0; font-family: var(--display); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.15; }
 .mem__date { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
 .mem__text { margin: 0; font-size: .92rem; line-height: 1.6; color: var(--ink-2); }
+/* a place David wrote nothing about has the photographs and the link only */
+.mem__text:empty { display: none; }
 .mem__go {
   justify-self: start;
   display: inline-flex; align-items: center; gap: .45rem;
