@@ -4178,7 +4178,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
    fallback for anything that does not know clip. */
 body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 
-.mem__mapcol { position: relative; z-index: 1; container: memmap / inline-size; }
+.mem__mapcol { position: relative; z-index: 1; }
 /* Under the map the section ends sooner, and the tally after it starts
    sooner: each band's own 10rem on a desktop, one on top of the other, left
    the map followed by a screen of nothing. */
@@ -4272,7 +4272,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 }
 .memmap__label { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .5em; fill: var(--ink-3); pointer-events: none; }
 
-.mem__hint { display: flex; margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
+/* centred under the map, at every size */
+.mem__hint { display: flex; justify-content: center; margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
 /* How far the count of places has got, as a badge rather than a loose line:
    the number on a gold chip, the district and the province after it, and a
    still dot on "so far", since the count is still going. Set down at a tilt,
@@ -4302,17 +4303,6 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__badge-n b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: 0; line-height: .8; }
 .mem__badge-plus { padding-right: .35rem; }
 .mem__badge-plus[hidden] { display: none; }
-/* A map drawn wide enough (a desktop, a tablet stood up) holds the count as
-   its key, in the one empty corner it has: the Pacific and Mexico, bottom
-   left, clear of land for 42% of the width across the bottom 15%. Narrower
-   maps keep it as the caption under them; there the corner is too small to
-   read it in. Measured on the map's own column, not the window. */
-@container memmap (min-width: 38rem) {
-  /* the map's own left edge: stood up on a tablet the map is narrower than
-     its column (--map-max) and centred in it */
-  .mem__hint { position: absolute; left: calc((100cqw - min(100cqw, var(--map-max, 100cqw))) / 2 + .25rem); bottom: .4rem; margin: 0; pointer-events: none; }
-  .mem__badge > * { padding: .4rem .6rem; }
-}
 .mem__badge-now {
   color: var(--ink-3);
   font-size: .58rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
@@ -4953,7 +4943,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   /* The count is the map's caption here, the way it is on a desktop. Over
      the map it sat tight on the top edge with the slack all underneath; the
      pill it makes room for on a phone stood up is not used sideways. */
-  .mem__hint { order: 0; margin-top: .6rem; margin-bottom: 0; text-align: left; justify-content: flex-start; }
+  .mem__hint { order: 0; margin-top: .6rem; margin-bottom: 0; text-align: center; justify-content: center; }
   .mem__bar { display: none; }
 
   .mem__panel {
