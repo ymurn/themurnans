@@ -437,6 +437,122 @@ MW.timeline.forEach((c, i) => {
   });
 });
 
+/* ── A road trip, a place at a time ───────────────────────────────────────
+   A trip through several parks was one card under three states, so a pick of
+   Arizona opened on Texas, and most of what it saw never showed at all. The
+   trips listed in tools/photo-places.json come apart instead: one memory per
+   place, with that place's photographs from the pool, the year page's own
+   picks (and their captions) first. The list gives each photograph its place,
+   its day and its trip, read by hand off the GPS in its original (so no
+   coordinates are kept). PLACE gives each place its full name and state, and
+   the words that find what David wrote about it, word for word as ever.
+   Where he wrote nothing about a place it carries no words at all: the
+   trip's opening, about somewhere else, would say something untrue of it. */
+const PHOTO_PLACE = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools/photo-places.json'), 'utf8'));
+const PLACE = {
+  'Las Vegas': ['Las Vegas, NV', 'NV'],
+  'Death Valley': ['Death Valley National Park, CA', 'CA', /death valley|furnace creek/i],
+  'Grand Canyon': ['Grand Canyon National Park, AZ', 'AZ', /grand canyon|el tovar/i],
+  'Zion': ['Zion National Park, UT', 'UT', /zion|narrows/i],
+  'Bryce Canyon': ['Bryce Canyon National Park, UT', 'UT', /bryce/i],
+  'Capitol Reef': ['Capitol Reef National Park, UT', 'UT', /capitol reef/i],
+  'Canyonlands': ['Canyonlands National Park, UT', 'UT', /canyonlands/i],
+  'Arches': ['Arches National Park, UT', 'UT', /arches|delicate arch/i],
+  'Valley of Fire': ['Valley of Fire State Park, NV', 'NV', /valley of fire/i],
+  'Red Rock Canyon': ['Red Rock Canyon, NV', 'NV', /red rock/i],
+  'White Sands': ['White Sands National Park, NM', 'NM', /white sands/i],
+  'Carlsbad Caverns': ['Carlsbad Caverns National Park, NM', 'NM', /carlsbad/i],
+  'Guadalupe Peak': ['Guadalupe Peak, Guadalupe Mountains National Park, TX', 'TX', /guadalupe/i],
+  'Marfa': ['Marfa, TX', 'TX', /marfa/i],
+  'Fort Davis': ['Fort Davis, TX', 'TX', /fort davis|mcdonald/i],
+  'Big Bend': ['Big Bend National Park, TX', 'TX', /big bend|hot spring/i],
+  'El Paso': ['El Paso, TX', 'TX', /el paso/i],
+  'Saguaro': ['Saguaro National Park, AZ', 'AZ', /saguaro/i],
+  'Chiricahua': ['Chiricahua National Park, AZ', 'AZ', /chiricahua/i],
+  'Organ Pipe': ['Organ Pipe Cactus National Monument, AZ', 'AZ', /organ pipe/i],
+  'Austin': ['Austin, TX', 'TX', /austin|franklin/i],
+  'New Braunfels': ['New Braunfels, TX', 'TX', /new braunfels|schlitterbahn/i],
+  'San Antonio': ['San Antonio, TX', 'TX', /san antonio|mission/i],
+  'Denver': ['Denver, CO', 'CO', /denver/i],
+  'Rocky Mountain': ['Rocky Mountain National Park, CO', 'CO', /rocky mountain/i],
+  'Black Canyon': ['Black Canyon of the Gunnison National Park, CO', 'CO', /black canyon|gunnison/i],
+  'Petrified Forest': ['Petrified Forest National Park, AZ', 'AZ', /petrified/i],
+  'Mesa Verde': ['Mesa Verde National Park, CO', 'CO', /mesa verde|cliff palace/i],
+  'Great Sand Dunes': ['Great Sand Dunes National Park, CO', 'CO', /sand dunes/i],
+  'Joshua Tree': ['Joshua Tree National Park, CA', 'CA', /joshua tree|cholla/i],
+  'Anza-Borrego': ['Anza-Borrego Desert State Park, CA', 'CA', /anza|borrego/i],
+  'San Diego': ['San Diego, CA', 'CA', /san diego|la jolla/i],
+  'Raleigh': ['Raleigh, NC', 'NC', /raleigh/i],
+  'Great Smoky Mountains': ['Great Smoky Mountains National Park, TN', 'TN', /smok/i],
+  'Blue Ridge Parkway': ['Blue Ridge Parkway, NC', 'NC', /blue ridge/i],
+  'Cuyahoga Valley': ['Cuyahoga Valley National Park, OH', 'OH', /cuyahoga|brandywine|ledges/i],
+  'Cleveland': ['Cleveland, OH', 'OH', /cleveland/i],
+  'Shenandoah': ['Shenandoah National Park, VA', 'VA', /shenandoah|skyline drive|hawksbill/i],
+  'Great Falls': ['Great Falls, VA', 'VA', /great falls/i],
+  'Acadia': ['Acadia National Park & Bar Harbor, ME', 'ME', /acadia|cadillac|bar harbor/i],
+  'Portland': ['Portland, ME', 'ME', /portland/i],
+  'Boothbay Harbor': ['Boothbay Harbor, ME', 'ME', /boothbay/i],
+  'Western Maine': ['Western Maine', 'ME', /western maine/i],
+  'Stowe': ['Stowe, VT', 'VT', /stowe|vermont/i],
+  'New River Gorge': ['New River Gorge National Park, WV', 'WV', /new river|gorge|bridge/i],
+  'Congaree': ['Congaree National Park, SC', 'SC', /congaree/i],
+  'Charleston': ['Charleston, SC', 'SC', /charleston/i],
+  'Savannah & Tybee Island': ['Savannah & Tybee Island, GA', 'GA', /savannah|tybee/i],
+  'Winchester': ['Winchester, VA', 'VA', /winchester/i],
+  'Rehoboth Beach & Fenwick Island': ['Rehoboth Beach & Fenwick Island, DE', 'DE', /rehoboth|fenwick|dogfish/i],
+  'Providence Canyon': ['Providence Canyon State Park, GA', 'GA', /providence canyon/i],
+  'Northern Virginia': ['Northern Virginia', 'VA', /virginia/i],
+  'The Everglades': ['Everglades National Park, FL', 'FL', /everglades|flamingo/i],
+  'Big Cypress': ['Big Cypress National Preserve, FL', 'FL', /big cypress/i],
+};
+const sentences = text => [].concat(text).join(' ').split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+// "March 8, 2024", "March 8 to 9, 2024", "December 31, 2024 to January 1, 2025"
+function daysSpan(days) {
+  const d = [...new Set(days)].sort().map(s => s.split('-').map(Number));
+  const [a, b] = [d[0], d[d.length - 1]];
+  const on = x => `${MONTHS[x[1] - 1]} ${x[2]}`;
+  if (a.join() === b.join()) return `${on(a)}, ${a[0]}`;
+  if (a[0] !== b[0]) return `${on(a)}, ${a[0]} to ${on(b)}, ${b[0]}`;
+  if (a[1] !== b[1]) return `${on(a)} to ${on(b)}, ${a[0]}`;
+  return `${on(a)} to ${b[2]}, ${a[0]}`;
+}
+function byPlace(t, m, year, picks) {
+  const key = `${year}-${String(m.month).padStart(2, '0')}|${t.place}`;
+  const mine = Object.entries(PHOTO_PLACE).filter(([, v]) => v[2] === key);
+  if (!mine.length) return false;
+  const groups = new Map();
+  mine.forEach(([web, [name, day]]) => {
+    if (!PLACE[name]) throw new Error(`no full name for ${name} in PLACE`);
+    if (!groups.has(name)) groups.set(name, { name, webs: [], days: [] });
+    const g = groups.get(name);
+    g.webs.push(`continued_trips/${web}`);
+    g.days.push(day);
+  });
+  // the year page's own photographs for this trip, with their captions and crops
+  const own = new Map((m.photos || []).filter(p => p.src).map(p => [p.src, p]));
+  const said = sentences(t.text);
+  groups.forEach(g => {
+    const [place, st, words] = PLACE[g.name];
+    const firstOwn = g.webs.filter(w => own.has(w));
+    const rest = g.webs.filter(w => !own.has(w)).sort();
+    const pics = [...firstOwn, ...rest].slice(0, 6).map(src => {
+      const p = own.get(src) || {};
+      return { src, cap: p.cap, pos: p.pos, home: st };
+    });
+    const about = words ? said.filter(s => words.test(s)) : [];
+    push({
+      place,
+      short: g.name,
+      date: daysSpan(g.days),
+      year,
+      text: about.length ? blurb(about.join(' ')) : '',
+      href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
+      pics,
+    });
+  });
+  return true;
+}
+
 /* Volume two: the year pages. The honeymoon runs a day at a time, the rest of
    the year a trip at a time. */
 YEARS.forEach(({ year }) => {
@@ -463,6 +579,7 @@ YEARS.forEach(({ year }) => {
     const split = splitPhotos(m);
     (m.trips || []).forEach((t, k) => {
       const pics = split[k] || [];
+      if (byPlace(t, m, year, pics)) return;
       push({
         place: t.place,
         short: String(t.place).split(/[,:&]| to /)[0].trim(),

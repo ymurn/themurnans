@@ -102,7 +102,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-02.jpg", "cap": "Bryce Canyon" },
     { "src": "continued_trips/2025-04-valley-of-fire-red-rock/2025-04-valley-of-fire-red-rock-02.jpg", "cap": "Valley of Fire, Nevada" }
    ],
-   "folders": ["2025-04-canyonlands", "2025-04-capitol-reef"]
+   "folders": ["2025-04-canyonlands", "2025-04-capitol-reef", "2025-04-vegas"]
   },
   {
    "month": 5,

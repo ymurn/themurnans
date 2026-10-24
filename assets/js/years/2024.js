@@ -35,10 +35,11 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2024-03-guadalupe-peak/2024-03-guadalupe-peak-03.jpg", "cap": "The top of Guadalupe Peak" },
     { "src": "continued_trips/2024-03-white-sands/2024-03-white-sands-02.jpg", "cap": "White Sands" },
-    { "src": "continued_trips/2024-03-chiricahua/2024-03-chiricahua-03.jpg", "cap": "Holding up a rock at Chiricahua" },
+    { "src": "continued_trips/2024-03-chiricahua/2024-03-chiricahua-03.jpg", "cap": "Holding up a rock at Chiricahua National Park" },
     { "src": "continued_trips/2024-03-saguaro/2024-03-saguaro-03.jpg", "cap": "Small us, big saguaros" },
     { "src": "continued_trips/2024-03-big-bend/2024-03-big-bend-01.jpg", "cap": "The hot spring at Big Bend", "pos": "60% 50%" }
-   ]
+   ],
+   "folders": ["2024-03-carlsbad-caverns", "2024-03-organ-pipe", "2024-03-marfa-fort-davis", "2024-03-finale-el-paso"]
   },
   {
    "month": 4,
