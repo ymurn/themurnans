@@ -572,6 +572,11 @@
         hide = setTimeout(hush, 4200);
       });
     });
+
+    // A tap anywhere else, or Escape, closes what was said.
+    const hushAll = () => $$('.fig').forEach(f => f.dispatchEvent(new Event('fig:hush')));
+    document.addEventListener('pointerdown', e => { if (!e.target.closest('.fig')) hushAll(); }, { passive: true });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hushAll(); });
   }
 
   /* ── The memory machine ────────────────────────────────────────────── */
