@@ -4971,18 +4971,19 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      glitching; sized with the bars showing (svh), which on a phone on its
      side take a third of the height, the map and the cards came out tiny. */
   :root { --memscreen: calc(var(--screen-h, 100lvh) - var(--nav-h)); }
-  /* room under it before the next band, which shows once an open memory
-     makes the section taller than the screen */
-  .memories.band { padding-bottom: clamp(1.75rem, 7vh, 2.75rem); }
+  /* Spacing here is on the 8px grid (4px for the tightest). Room under it
+     before the next band, which shows once an open memory makes the section
+     taller than the screen: 24px, plus the section's own 8px, is 32. */
+  .memories.band { padding-bottom: 1.5rem; }
   /* narrower side margins here: every pixel goes to the map and photos */
-  .memories .shell { padding-inline: 1.25rem; }
+  .memories .shell { padding-inline: 1rem; }
   .mem {
     /* the map a little more than half: it is the larger of the two */
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     /* from the top, so no paper sits over it once the bars tuck away: the
        slack falls under it, in its own band's color */
     align-items: center; align-content: start;
-    gap: clamp(1rem, 3vw, 1.75rem);
+    gap: 1.5rem;
     /* fills the screen even with Safari's bars tucked away (lvh), so the
        band below never peeks in; grows for an open memory */
     min-height: var(--memscreen);
@@ -4993,24 +4994,24 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   /* stuck at the top only beside an open memory, the one thing here taller
      than the screen; the rest of the time it scrolls with the page */
   .mem__mapcol { position: relative; }
-  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .75rem); }
+  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .5rem); }
   .mem:has(.mem__open) { align-items: start; }
   /* the screen, less the padding and the count line under the map */
   .mem__map { width: min(100%, calc((var(--memscreen) - 3.4rem) * 1000 / 645.6)); margin-inline: auto; }
   /* the whole column, not the map's width: a short screen draws the map
      narrower than the badge, and it was cut off at "so far" */
-  .mem__hint { width: 100%; order: 0; margin-top: .35rem; margin-bottom: 0; text-align: center; justify-content: center; }
+  .mem__hint { width: 100%; order: 0; margin-top: .5rem; margin-bottom: 0; text-align: center; justify-content: center; }
   .mem__bar { display: none; }
 
   .mem__panel {
-    z-index: auto; margin-top: 0; padding: 0; min-height: 0; gap: .6rem;
+    z-index: auto; margin-top: 0; padding: 0; min-height: 0; gap: .5rem;
     border: 0; border-radius: 0; background: none; box-shadow: none;
     container: mempanel / inline-size;
   }
   .mem__panel::before { content: none; }
   /* "Surprise me" is its die alone here: with its words it left no room for
      the state's name and count on one line ("North Carolina", on an SE). */
-  .mem__roll { padding: .45rem; border-radius: 50%; }
+  .mem__roll { padding: .5rem; border-radius: 50%; }
   .mem__roll-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .mem__title { flex-wrap: nowrap; min-width: 0; font-size: clamp(1.2rem, 2.6vw, 1.5rem); }
   .mem__count { white-space: nowrap; }
@@ -5019,13 +5020,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      printed off register, which the scroll would otherwise cut. */
   .mem__grid {
     display: flex;
-    gap: .9rem;
+    gap: 1rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     overscroll-behavior-x: contain;
-    margin-inline: -.4rem calc(-1 * var(--gutter));
-    padding: .4rem var(--gutter) .8rem .4rem;
-    scroll-padding-inline-start: .4rem;
+    margin-inline: -.5rem calc(-1 * var(--gutter));
+    padding: .5rem var(--gutter) 1rem .5rem;
+    scroll-padding-inline-start: .5rem;
     scrollbar-width: none;
   }
   .mem__grid::-webkit-scrollbar { display: none; }
@@ -5035,12 +5036,12 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      heading, the gaps and a two-line label, at 4:3. Under 20rem of column
      (an SE on its side), one and a half. */
   .mem__grid > * {
-    --fit: calc((var(--memscreen) - 1.5rem - 2.75rem - .6rem - 1.2rem - 4.9rem) * 4 / 3);
-    flex: 0 0 min(var(--fit), calc((100% + 1.25rem - 2 * .9rem) / 2.5));
+    --fit: calc((var(--memscreen) - 1rem - 2.75rem - .5rem - 1.5rem - 4.9rem) * 4 / 3);
+    flex: 0 0 min(var(--fit), calc((100% + 1rem - 2 * 1rem) / 2.5));
     scroll-snap-align: start;
   }
   @container mempanel (max-width: 20rem) {
-    .mem__grid > * { flex-basis: min(var(--fit), calc((100% + 1.25rem - .9rem) / 1.5)); }
+    .mem__grid > * { flex-basis: min(var(--fit), calc((100% + 1rem - 1rem) / 1.5)); }
   }
   /* Every card in the row the same height, the tallest label's: the color
      under the label runs to the foot of each. Names longer than two lines
@@ -5058,20 +5059,20 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      height from that, and each thumbnail's side from that height shared
      between them. Sized from each other, the column and the thumbnails
      settled differently in Safari and broke apart on a pinch to zoom. The
-     width left for the photograph takes off the card's padding (2.2rem),
-     the column (4.1rem at most), the gap (.85rem) and the keylines. */
+     width left for the photograph takes off the card's padding (1.5rem),
+     the column (3.5rem at most), the gap (.5rem) and the keylines. */
   /* The pair sits in the middle two of four columns, the outer two taking
      the slack equally: with two columns sized to their content, the name
      and the words spanning them widened the photograph's column and opened
      a gap between it and its thumbnails. */
   .mem__open {
-    padding: .7rem .75rem .9rem;
-    gap: .55rem;
-    --leadw: min(calc(100cqw - 1.5rem - 4px - var(--thumb) - 1.3rem - 2px), calc((var(--memscreen) - 4.6rem) * 4 / 3));
+    padding: .75rem .75rem 1rem;
+    gap: .5rem;
+    --leadw: min(calc(100cqw - 1.5rem - 4px - var(--thumb) - 1rem - 2px), calc((var(--memscreen) - 4.6rem) * 4 / 3));
     --leadh: calc(var(--leadw) * 3 / 4);
-    --thumb: max(2.25rem, min(2.9rem, calc((var(--memscreen) - 4.6rem) * 3 / 4 * .9 / var(--n, 4))));
+    --thumb: max(2.25rem, min(3rem, calc((var(--memscreen) - 4.6rem) * 3 / 4 * .9 / var(--n, 4))));
     /* the thumbnails' column carries the gap to the photograph (.65rem) */
-    grid-template-columns: minmax(0, 1fr) var(--leadw) calc(var(--thumb) + .6rem + 2px + .65rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) var(--leadw) calc(var(--thumb) + .5rem + 2px + .5rem) minmax(0, 1fr);
     column-gap: 0;
   }
   .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
@@ -5088,8 +5089,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     display: flex; flex-direction: column; align-items: center;
     box-sizing: border-box;
     overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
-    width: calc(var(--thumb) + .6rem + 2px); height: var(--leadh);
-    padding: .3rem; gap: .3rem;
+    width: calc(var(--thumb) + .5rem + 2px); height: var(--leadh);
+    padding: .25rem; gap: .25rem;
   }
   .mem__open > .mem__shots::-webkit-scrollbar { display: none; }
   .mem__open .mem__thumb { flex: none; width: var(--thumb); height: var(--thumb); aspect-ratio: auto; min-height: 0; }
