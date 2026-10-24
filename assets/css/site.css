@@ -890,6 +890,13 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 .fig--bear  .fig__card::after { right: -9px; }
 .fig--tiger .fig__card::after { left: -9px; rotate: -135deg; }
+/* No room behind him: initChatter puts it in front, tail and all. */
+.fig--bear  .fig__card.is-flip { right: auto; left: 93%; transform-origin: 0 30%; }
+.fig--tiger .fig__card.is-flip { left: auto; right: 93%; transform-origin: 100% 30%; }
+.fig--bear  .fig__card.is-flip::after { right: auto; left: -9px; rotate: -135deg; }
+.fig--tiger .fig__card.is-flip::after { left: auto; right: -9px; rotate: 45deg; }
+/* in front of him it lands where his signature is, so the signature steps out */
+@media (hover: hover) { .fig:hover:has(.fig__card.is-flip) .fig__name { opacity: 0; transform: none; } }
 /* the name, on a chip of the same color; dark type, so it reads at dusk too */
 .fig__card .tag {
   display: inline-flex; align-items: center;
@@ -1077,7 +1084,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 
 /* Speech bubbles on the two characters */
 /* Speech bubble. On wide screens it takes the same outer slot as the info
-   card (and the card steps aside); on narrow screens it sits above the head. */
+   card (and the card steps aside); on narrow screens it sits above the head.
+   Both live inside the drawing's layer, so they travel with it as the hero
+   scrolls away. --sx is set by initChatter as it opens: where the bubble
+   would run off the screen it slides back on, and its tail slides the other
+   way so it still points at the head. */
 .fig__say {
   position: absolute;
   top: 6%;
@@ -1092,7 +1103,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   color: var(--ink);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px) scale(.95);
+  transform: translateX(var(--sx, 0px)) translateY(8px) scale(.95);
   transition: opacity .35s var(--ease), transform .45s var(--ease), visibility .35s;
   z-index: 6;
 }
@@ -1108,7 +1119,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 .fig--bear  .fig__say::after { right: -6px; box-shadow: inset -1px 1px 0 var(--line); }
 .fig--tiger .fig__say::after { left: -6px;  box-shadow: inset 1px -1px 0 var(--line); }
-.fig__say.is-said { opacity: 1; visibility: visible; transform: none; }
+.fig__say.is-said { opacity: 1; visibility: visible; transform: translateX(var(--sx, 0px)); }
 .fig.is-talking .fig__card { opacity: 0 !important; }
 
 @media (max-width: 860px) {
@@ -1117,15 +1128,15 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
     top: auto; bottom: calc(100% + .6rem);
     width: min(62vw, 260px);
     text-align: center;
-    transform: translateX(-50%) translateY(8px) scale(.95);
+    transform: translateX(calc(-50% + var(--sx, 0px))) translateY(8px) scale(.95);
     border-radius: 14px;
   }
   .fig--bear .fig__say, .fig--tiger .fig__say { left: 50%; right: auto; text-align: center; border-radius: 14px; }
-  .fig__say.is-said { transform: translateX(-50%); }
+  .fig__say.is-said { transform: translateX(calc(-50% + var(--sx, 0px))); }
   /* no room beside the figures at this width */
   .fig__name { display: none; }
-  .fig__say::after { bottom: -6px; left: 50%; margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
-  .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: 50%; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+  .fig__say::after { bottom: -6px; left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+  .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); right: auto; box-shadow: inset -1px -1px 0 var(--line); }
 }
 
 /* "Poke me" waits until both of them are in color, then shows quietly

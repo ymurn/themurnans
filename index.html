@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=35">
+<link rel="stylesheet" href="assets/css/site.css?v=37">
 <link rel="stylesheet" href="assets/css/home-motion.css?v=2">
 <link rel="stylesheet" href="assets/css/motion.css?v=3">
 <!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
@@ -144,14 +144,15 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
             <img class="fig__fill" src="assets/art/David-fill.webp" alt="" width="520" height="1001">
           </div>
           <span class="fig__line" aria-hidden="true"></span>
+          <!-- inside the layer, so they travel with the drawing as the hero scrolls away -->
+          <p class="fig__say" aria-live="polite"></p>
+          <div class="fig__card">
+            <span class="tag">The Bear</span>
+            <p>Cincy-made. Brooklyn denizen by way of Silver Spring. Gay beer drinker, gamer, urbanist and subway rider, with a fear of heights he keeps testing on fire towers.</p>
+          </div>
         </div>
         <img class="fig__name" src="assets/art/David-Script.png" alt="" aria-hidden="true">
-        <p class="fig__say" aria-live="polite"></p>
         <span class="fig__poke">Poke me</span>
-        <div class="fig__card">
-          <span class="tag">The Bear</span>
-          <p>Cincy-made. Brooklyn denizen by way of Silver Spring. Gay beer drinker, gamer, urbanist and subway rider, with a fear of heights he keeps testing on fire towers.</p>
-        </div>
       </div>
 
       <div class="stage__center">
@@ -166,14 +167,15 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
             <img class="fig__fill" src="assets/art/Yinjia-fill.webp" alt="" width="520" height="1001">
           </div>
           <span class="fig__line" aria-hidden="true"></span>
+          <!-- inside the layer, so they travel with the drawing as the hero scrolls away -->
+          <p class="fig__say" aria-live="polite"></p>
+          <div class="fig__card">
+            <span class="tag">The Tiger</span>
+            <p>First wine tasting on the North Fork. First bonfire in Salem. First ballgame at Citi Field. Since then: all five Utah parks in one trip, and the top of the fire tower David won't climb. A fast study.</p>
+          </div>
         </div>
         <img class="fig__name" src="assets/art/Yinja-Script.png" alt="" aria-hidden="true">
-        <p class="fig__say" aria-live="polite"></p>
         <span class="fig__poke">Poke me</span>
-        <div class="fig__card">
-          <span class="tag">The Tiger</span>
-          <p>First wine tasting on the North Fork. First bonfire in Salem. First ballgame at Citi Field. Since then: all five Utah parks in one trip, and the top of the fire tower David won't climb. A fast study.</p>
-        </div>
       </div>
     </div>
 
@@ -548,6 +550,6 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/home-motion.js?v=2"></script>
 <script src="assets/js/motion.js?v=2"></script>
-<script src="assets/js/site.js?v=16"></script>
+<script src="assets/js/site.js?v=18"></script>
 </body>
 </html>

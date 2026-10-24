@@ -462,17 +462,54 @@
       // not room beside it, it slides in toward the drawing just enough.
       const card = $('.fig__card', fig);
       if (card) fig.addEventListener('pointerenter', () => {
+        // It goes behind him, by his back. Where the screen runs out there (a
+        // narrow window, or the drawings drifting apart as the hero scrolls
+        // away) it goes in front of him instead, and only where neither side
+        // has room does it slide in over the drawing. Paused while it
+        // measures, so a card still easing back from the last hover is not
+        // read part way.
+        card.style.transition = 'none';
         card.style.removeProperty('--nudge');
-        const b = card.getBoundingClientRect(), w = card.offsetWidth, pad = 16;
-        // measured from the side it hangs off, since it is still scaled down
-        const left = fig.dataset.who === 'bear' ? b.right - w : b.left;
-        const shift = left < pad ? pad - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
+        const pad = 20, w = card.offsetWidth;
+        const overhang = () => {
+          const b = card.getBoundingClientRect();
+          // read from the side it hangs off, the one its scale-in leaves put
+          const fromRight = (fig.dataset.who === 'bear') !== card.classList.contains('is-flip');
+          const left = fromRight ? b.right - w : b.left;
+          return left < pad ? pad - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
+        };
+        card.classList.remove('is-flip');
+        let shift = overhang();
+        if (shift) {
+          card.classList.add('is-flip');
+          const flipped = overhang();
+          if (Math.abs(flipped) < Math.abs(shift)) shift = flipped;
+          else card.classList.remove('is-flip');
+        }
         if (shift) card.style.setProperty('--nudge', `${Math.round(shift)}px`);
+        void card.offsetWidth;
+        card.style.removeProperty('transition');
       });
+
+      // A bubble has to be all on the screen: measured from its centre, which
+      // its scale-in leaves where it is, and slid back on by the overhang.
+      // The slide is paused while it measures, or a bubble already open would
+      // be read part way back from its last line's slide.
+      const fit = () => {
+        say.style.transition = 'none';
+        say.style.removeProperty('--sx');
+        const b = say.getBoundingClientRect(), w = say.offsetWidth, pad = 12;
+        const cx = b.left + b.width / 2, left = cx - w / 2, right = cx + w / 2;
+        const sx = left < pad ? pad - left : right > innerWidth - pad ? innerWidth - pad - right : 0;
+        if (sx) say.style.setProperty('--sx', `${Math.round(sx)}px`);
+        void say.offsetWidth;
+        say.style.removeProperty('transition');
+      };
 
       fig.addEventListener('click', () => {
         say.textContent = lines[i % lines.length];
         i++;
+        fit();
         say.classList.add('is-said');
         fig.classList.add('is-talking', 'was-poked');
         // found it: the two stop hopping for attention
