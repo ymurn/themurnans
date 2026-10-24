@@ -4933,57 +4933,58 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 
 /* The map sideways: a phone on its side, and anything under a desktop's
    width that is wider than it is tall (an iPhone SE at 667 by 375, an open
-   Duo at 890 by 626). Stacked, the map alone was taller than the screen;
-   in the old two columns, six cards two across ran three rows down a screen
-   with room for one, past a small map over an empty half. Now the section is
-   one screen. The map is as big as the screen under the bar allows, and the
-   cards are a single row beside it at the map's height, two to the column.
-   The next one shows in the margin to say the row goes on, and a swipe
-   brings it in. Matches SIDEWAYS in assets/js/site.js. */
+   Duo at 890 by 626). The map and the cards are one screen: exactly the
+   height under the bar, so the band after it never shows beside them, and
+   everything in it is sized from that height. The map is as big as it
+   allows; each card's photograph is a true 4:3, as tall as the row allows,
+   but never so wide that two whole cards do not fit, with the next one
+   showing in the margin to say the row goes on. Earlier the cards stretched
+   to fill the row, which cut a lone card (Delaware) to a thin strip.
+   Matches SIDEWAYS in assets/js/site.js. */
 @media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
-  .mem { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; gap: clamp(1rem, 3vw, 1.75rem); }
-  /* The map's top edge lines up with the state's name across the way, and
-     it stays put beside an open memory, the one thing here taller than the
-     screen. */
-  .mem__mapcol { align-self: start; position: sticky; top: calc(var(--nav-h) + .75rem); }
-  /* never taller than the screen under the bar, less the count line under it */
-  .mem__map { width: min(100%, calc((100svh - var(--nav-h) - 4.5rem) * 1000 / 645.6)); margin-inline: auto; }
+  /* the screen under the bar, with the browser's bars showing */
+  :root { --memscreen: calc(100svh - var(--nav-h)); }
+  .memories.band { padding-bottom: 0; }
+  .mem {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center; align-content: center;
+    gap: clamp(1rem, 3vw, 1.75rem);
+    /* fills the screen even once the bars have tucked away (lvh), so the
+       band below never peeks in; grows for an open memory */
+    min-height: calc(100lvh - var(--nav-h));
+    padding-block: .75rem;
+    box-sizing: border-box;
+    scroll-margin-top: var(--nav-h);
+  }
+  /* centred beside the cards, and stuck at the top beside an open memory,
+     the one thing here taller than the screen */
+  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .75rem); }
+  .mem:has(.mem__open) { align-items: start; }
+  /* the screen, less the padding and the count line under the map */
+  .mem__map { width: min(100%, calc((var(--memscreen) - 5rem) * 1000 / 645.6)); margin-inline: auto; }
   /* the whole column, not the map's width: a short screen draws the map
      narrower than the badge, and it was cut off at "so far" */
-  .mem__hint { width: 100%; }
-  /* The count is the map's caption here, the way it is on a desktop. Over
-     the map it sat tight on the top edge with the slack all underneath; the
-     pill it makes room for on a phone stood up is not used sideways. */
-  .mem__hint { order: 0; margin-top: .6rem; margin-bottom: 0; text-align: center; justify-content: center; }
+  .mem__hint { width: 100%; order: 0; margin-top: .6rem; margin-bottom: 0; text-align: center; justify-content: center; }
   .mem__bar { display: none; }
 
   .mem__panel {
-    z-index: auto; margin-top: 0; padding: 0; min-height: 0; gap: .75rem;
+    z-index: auto; margin-top: 0; padding: 0; min-height: 0; gap: .6rem;
     border: 0; border-radius: 0; background: none; box-shadow: none;
+    container: mempanel / inline-size;
   }
   .mem__panel::before { content: none; }
   /* "Surprise me" is its die alone here: with its words it left no room for
      the state's name and count on one line ("North Carolina", on an SE). */
   .mem__roll { padding: .45rem; border-radius: 50%; }
   .mem__roll-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .mem__title { flex-wrap: nowrap; min-width: 0; }
-  .mem__title { font-size: clamp(1.2rem, 2.6vw, 1.5rem); }
+  .mem__title { flex-wrap: nowrap; min-width: 0; font-size: clamp(1.2rem, 2.6vw, 1.5rem); }
   .mem__count { white-space: nowrap; }
-  /* The cards take the screen under the bar, up to a height where they would
-     start to stand taller than they are wide, so the photographs are as big
-     as the screen allows and never cut to a map shorter than it. */
-  .mem__panel:has(> .mem__grid) {
-    container: mempanel / inline-size;
-    grid-template-rows: auto minmax(0, 1fr);
-    min-height: min(calc(100svh - var(--nav-h) - 2rem), 22rem);
-  }
   /* The row runs out into the right margin, so the card after the two shows
      there. The room inside it on every side is for the tilt and the color
      printed off register, which the scroll would otherwise cut. */
   .mem__grid {
     display: flex;
     gap: .9rem;
-    min-height: 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     overscroll-behavior-x: contain;
@@ -4993,20 +4994,24 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     scrollbar-width: none;
   }
   .mem__grid::-webkit-scrollbar { display: none; }
-  .mem__grid > * { flex: 0 0 calc((100% - .9rem) / 2); scroll-snap-align: start; }
-  .mem__grid[data-n="1"] > * { flex-basis: 100%; }
-  /* A column too narrow for two (an iPhone SE on its side) shows one and the
-     start of the next, rather than two slivers with their names wrapped. */
-  @container mempanel (max-width: 20rem) {
-    .mem__grid > * { flex-basis: 80%; }
+  /* Its width from the height the row has: the screen, less the padding,
+     the heading, the gaps and the label under the photograph, at 4:3. Never
+     wider than half the column, so two whole cards show; under 20rem of
+     column (an SE on its side) one, with the start of the next. */
+  .mem__grid > * {
+    --fit: calc((var(--memscreen) - 1.5rem - 2.75rem - .6rem - 1.2rem - 3.7rem) * 4 / 3);
+    flex: 0 0 min(var(--fit), calc((100cqw - .9rem) / 2));
+    scroll-snap-align: start;
   }
-  .mem__card { grid-template-rows: minmax(0, 1fr) auto; }
-  .mem__shot { aspect-ratio: auto; min-height: 0; }
-  .mem__shot img { position: absolute; inset: 0; }
+  @container mempanel (max-width: 20rem) {
+    .mem__grid > * { flex-basis: min(var(--fit), 80cqw); }
+  }
+  .mem__card { grid-template-rows: auto auto; align-self: start; }
+  .mem__shot { aspect-ratio: 4 / 3; }
 
   .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
   /* the photograph and the way back fit on the first screen; the words follow */
-  .mem__lead { max-height: calc(100svh - var(--nav-h) - 7rem); }
+  .mem__lead { max-height: calc(var(--memscreen) - 7rem); }
   .mem__thumb { width: 3rem; }
 }
 
