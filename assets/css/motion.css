@@ -167,10 +167,11 @@
   }
 
   /* ── Page to page ──────────────────────────────────────────────────────
-     The bar holds still while the page changes under it. Not while the
-     theme turns over: then the bar is part of the circle. */
-  html:not([data-motion="off"]) .nav { view-transition-name: site-nav; }
-  html.theme-swap .nav { view-transition-name: none; }
+     No view-transition-name on the nav, though it would hold the bar still
+     while the page fades under it: a named element is a backdrop root, so
+     the frosted ::before stops seeing the page and the heading behind the
+     bar shows through it sharp instead of blurred. The fade in site.css
+     carries the bar with the page, which reads the same. */
 }
 
 @property --mo-y { syntax: '<length>'; inherits: true; initial-value: 0px; }
