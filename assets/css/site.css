@@ -760,6 +760,15 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .stage { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: clamp(.5rem, 3vw, 3rem); margin-top: clamp(.5rem, 1.5vh, 1.5rem); }
 
 .fig { position: relative; justify-self: center; cursor: pointer; transition: transform .7s var(--ease); }
+/* Where the cards show, the two stand close in to the ampersand, a set gap
+   either side, rather than centred in their halves: centred, the gap to the
+   "&" opened up with the window, and the room the cards need, behind each of
+   them, went to the middle instead. */
+@media (min-width: 861px) {
+  .stage { gap: clamp(1.25rem, 3.2vw, 3.25rem); }
+  .fig--bear  { justify-self: end; }
+  .fig--tiger { justify-self: start; }
+}
 @media (hover: hover) { .fig:hover { transform: translateY(-10px); } }
 /* Color sits BEHIND the line art, so the ink stays crisp on top of it. */
 /* Sized by height so the pair always fits the viewport, whatever its shape. */

@@ -462,15 +462,19 @@
       // not room beside it, it slides in toward the drawing just enough.
       const card = $('.fig__card', fig);
       if (card) fig.addEventListener('pointerenter', () => {
-        // It goes behind him, by his back. Where the screen runs out there (a
-        // narrow window, or the drawings drifting apart as the hero scrolls
-        // away) it goes in front of him instead, and only where neither side
-        // has room does it slide in over the drawing. Paused while it
+        // It goes behind him, by his back. Where the screen runs a little
+        // short there it narrows to fit; where it runs out (a narrow window,
+        // or the drawings drifting apart as the hero scrolls away) it goes in
+        // front of him instead, and only where neither side has room does it
+        // slide in over the drawing. Paused while it
         // measures, so a card still easing back from the last hover is not
         // read part way.
         card.style.transition = 'none';
         card.style.removeProperty('--nudge');
-        const pad = 20, w = card.offsetWidth;
+        card.style.removeProperty('width');
+        // the margin covers its tilt and the drawing's lean toward the pointer,
+        // which is still settling as this measures
+        const pad = 32, w = card.offsetWidth;
         const overhang = () => {
           const b = card.getBoundingClientRect();
           // read from the side it hangs off, the one its scale-in leaves put
@@ -480,6 +484,11 @@
         };
         card.classList.remove('is-flip');
         let shift = overhang();
+        // a little short of room behind him: it narrows to fit there first
+        if (shift && w - Math.abs(shift) >= 168) {
+          card.style.width = `${Math.floor(w - Math.abs(shift))}px`;
+          shift = 0;
+        }
         if (shift) {
           card.classList.add('is-flip');
           const flipped = overhang();
