@@ -4970,7 +4970,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      grew and shrank as the bars came and went, which read as the map
      glitching; sized with the bars showing (svh), which on a phone on its
      side take a third of the height, the map and the cards came out tiny. */
-  :root { --memscreen: calc(100lvh - var(--nav-h)); }
+  :root { --memscreen: calc(var(--screen-h, 100lvh) - var(--nav-h)); }
   .memories.band { padding-bottom: 0; }
   /* narrower side margins here: every pixel goes to the map and photos */
   .memories .shell { padding-inline: 1.25rem; }
@@ -4983,7 +4983,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     gap: clamp(1rem, 3vw, 1.75rem);
     /* fills the screen even with Safari's bars tucked away (lvh), so the
        band below never peeks in; grows for an open memory */
-    min-height: calc(100lvh - var(--nav-h));
+    min-height: var(--memscreen);
     padding-block: .5rem;
     box-sizing: border-box;
     scroll-margin-top: var(--nav-h);
@@ -5034,11 +5034,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      (an SE on its side), one and a half. */
   .mem__grid > * {
     --fit: calc((var(--memscreen) - 1.5rem - 2.75rem - .6rem - 1.2rem - 4.9rem) * 4 / 3);
-    flex: 0 0 min(var(--fit), calc((100cqw + 1.25rem - 2 * .9rem) / 2.5));
+    flex: 0 0 min(var(--fit), calc((100% + 1.25rem - 2 * .9rem) / 2.5));
     scroll-snap-align: start;
   }
   @container mempanel (max-width: 20rem) {
-    .mem__grid > * { flex-basis: min(var(--fit), calc((100cqw + 1.25rem - .9rem) / 1.5)); }
+    .mem__grid > * { flex-basis: min(var(--fit), calc((100% + 1.25rem - .9rem) / 1.5)); }
   }
   /* Every card in the row the same height, the tallest label's: the color
      under the label runs to the foot of each. Names longer than two lines
