@@ -2470,10 +2470,23 @@
        the third one here. */
     let roll = [];
 
-    // Under a picked state the memory is called what its card is called
-    // there: the Louisville half of a Cincinnati chapter, under Kentucky, is
-    // "Louisville, Kentucky", not "Cincinnati, Ohio".
-    const heading = m => (on && m.t && m.t[on] ? `${m.t[on]}, ${nameOf(on)}` : m.place);
+    // Under a picked state a memory that crossed a state line is headed with
+    // what its card is called there, and the state: "Mystic, CT" and
+    // "Louisville, KY", not the whole trip's line ("Mystic,
+    // Newport, Providence & Cape Cod", "Cincinnati, Ohio"). The state is left
+    // off a name that already has it ("Washington, DC"). A memory of one
+    // state keeps its full place line, which is the card's name in full.
+    // A place line that spells its state out ("Cincinnati, Ohio", from the
+    // chapters before the wedding) is shown with the code, as all the rest
+    // are ("Boston, MA"). Only the heading: the chapter itself is unchanged.
+    const SPELT = new RegExp(`, (${A.regions.filter(r => !r.id.includes('-') && r.id !== 'DC').map(r => r.name).join('|')})$`);
+    const coded = place => place.replace(SPELT, (_, n) => `, ${(A.regions.find(r => r.name === n) || {}).id || n}`);
+    const heading = m => {
+      if (!on || m.st.length < 2) return coded(m.place);
+      // the state's code, as the place lines have it ("Boston, MA")
+      const t = titleOf(m, on), code = on.replace(/^CA-/, '');
+      return new RegExp(`\\b${code}\\b`).test(t) || t.includes(nameOf(on)) ? t : `${t}, ${code}`;
+    };
 
     /* An open memory's two ways on: another memory leads, since that is what
        people come to the map for; leaving for the year page is the quieter
