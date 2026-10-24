@@ -887,25 +887,26 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--bear  .fig__card { right: calc(100% + .9rem); transform-origin: 100% 30%; }
 .fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: calc(100% + .9rem); transform-origin: 0 30%; }
 @media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: translateX(var(--nudge, 0px)) rotate(var(--tilt)); } }
-/* A small notch on the side facing him, at the height of his head, like
-   the speech bubbles. What ties the card to him is the print: while he is
-   hovered, his drawing takes the same off-register color the card has (his
-   blue, his tiger gold), so the two read as one printed pair. */
-.fig__card::after {
-  content: "";
+/* The tail: a short comic speech tail in the drawing's own ink, toward him.
+   Its base sits over the card's outline, and the paper fill hides that
+   stretch of it, so the card and the tail are one shape. Drawn for the
+   bear, whose card is on his left; mirrored for the tiger, and for a card
+   flipped in front. What ties the card to him is also the print: while he
+   is hovered, his drawing takes the card's off-register color (his blue,
+   his tiger gold), so the two read as one printed pair. */
+.fig__tail {
   position: absolute;
-  top: 1.35rem;
-  width: 13px; height: 13px;
-  background: var(--paper);
-  border: var(--keyline);
-  border-width: 2px 2px 0 0;
-  border-radius: 0 3px 0 0;
-  rotate: 45deg;
+  top: .55rem;
+  left: calc(100% - 2px);
+  width: 40px; height: 30px;
+  overflow: visible;
+  pointer-events: none;
 }
-.fig--bear  .fig__card::after { right: -8.5px; }
-.fig--tiger .fig__card::after { left: -8.5px; rotate: -135deg; }
-.fig--bear  .fig__card.is-flip::after { right: auto; left: -8.5px; rotate: -135deg; }
-.fig--tiger .fig__card.is-flip::after { left: auto; right: -8.5px; rotate: 45deg; }
+.fig__tail-fill { fill: var(--paper); }
+.fig__tail-ink { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fig--tiger .fig__tail,
+.fig--bear .fig__card.is-flip .fig__tail { left: auto; right: calc(100% - 2px); scale: -1 1; }
+.fig--tiger .fig__card.is-flip .fig__tail { right: auto; left: calc(100% - 2px); scale: 1 1; }
 .fig--bear  { --echo: var(--blue); }
 .fig--tiger { --echo: var(--gold); }
 .fig__out { transition: filter .45s var(--ease); }
