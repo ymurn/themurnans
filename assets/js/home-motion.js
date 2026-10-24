@@ -7,8 +7,6 @@
      the ticker     runs with the scroll: faster on a flick, backwards on the
                     way up, a lean in the direction of travel, then back to
                     its own pace
-     photographs    tilt under the pointer and catch a highlight; a finger
-                    presses one into the page
      the tally      is set as milometer wheels before site.js can count it
 
    Every loop here runs only while something is moving and stops itself
@@ -51,7 +49,6 @@
   const boot = () => {
     initLean();
     initTicker();
-    initPrints();
   };
 
   /* ── The drawings lean towards the pointer ────────────────────────────
@@ -138,70 +135,6 @@
       band.addEventListener('pointerenter', () => { holdTo = 0; });
       band.addEventListener('pointerleave', () => { holdTo = 1; });
     }
-  }
-
-  /* ── Photographs that catch the light ─────────────────────────────────
-     The cards are dealt and redealt by site.js, so this listens on the
-     panel rather than on any one card. On a mouse the card leans up to five
-     degrees towards the pointer and a highlight follows it across the print;
-     a finger presses the card and the highlight sits where it touched. */
-  function initPrints() {
-    const panel = $('#mem-panel');
-    if (!panel) return;
-    let card = null, rx = 0, ry = 0, tx = 0, ty = 0, raf = 0;
-
-    const write = () => {
-      rx = lerp(rx, tx, .14); ry = lerp(ry, ty, .14);
-      const still = Math.abs(rx - tx) < .01 && Math.abs(ry - ty) < .01;
-      if (still) { rx = tx; ry = ty; }
-      if (card) card.style.transform = rx || ry ? `perspective(800px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)` : '';
-      raf = still ? 0 : requestAnimationFrame(write);
-    };
-    const go = () => { if (!raf) raf = requestAnimationFrame(write); };
-    const light = (c, e) => {
-      const r = c.getBoundingClientRect();
-      const px = clamp((e.clientX - r.left) / r.width, 0, 1), py = clamp((e.clientY - r.top) / r.height, 0, 1);
-      c.style.setProperty('--gx', `${(px * 100).toFixed(1)}%`);
-      c.style.setProperty('--gy', `${(py * 100).toFixed(1)}%`);
-      return [px, py];
-    };
-    const letGo = () => {
-      if (!card) return;
-      card.style.removeProperty('--go');
-      card.classList.remove('hm-press');
-      tx = 0; ty = 0;
-      const c = card;
-      go();
-      // hand the card back once it has settled level
-      setTimeout(() => { if (card === c && !tx && !ty) { c.style.transform = ''; card = null; } }, 600);
-    };
-
-    panel.addEventListener('pointermove', e => {
-      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
-      const c = e.target.closest('.mem__card');
-      if (c !== card) { letGo(); card = c; }
-      if (!c) return;
-      const [px, py] = light(c, e);
-      c.style.setProperty('--go', '1');
-      ty = (px - .5) * 10;
-      tx = (.5 - py) * 8;
-      go();
-    }, { passive: true });
-    panel.addEventListener('pointerleave', letGo);
-
-    panel.addEventListener('pointerdown', e => {
-      if (e.pointerType !== 'touch') return;
-      const c = e.target.closest('.mem__card');
-      if (!c) return;
-      if (c !== card) letGo();
-      card = c;
-      light(c, e);
-      c.style.setProperty('--go', '.8');
-      c.classList.add('hm-press');
-    }, { passive: true });
-    ['pointerup', 'pointercancel'].forEach(t => panel.addEventListener(t, e => { if (e.pointerType === 'touch') letGo(); }, { passive: true }));
-    // a press that turns into a scroll is not a press
-    panel.addEventListener('touchmove', () => { if (card && card.classList.contains('hm-press')) letGo(); }, { passive: true });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

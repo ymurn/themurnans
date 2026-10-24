@@ -2,8 +2,9 @@
    THE MURNANS · home page motion (index.html only)
    The page answers the reader: the hero parts in depth as it is scrolled
    away, the drawings lean towards the pointer, the ticker runs with the
-   scroll, the photographs tilt under a finger or a cursor and catch the
-   light, and the tally rolls round like the year pages' milometer.
+   scroll, and the tally rolls round like the year pages' milometer. The
+   photographs' lean and the drifting section marks are site-wide now, in
+   assets/css/motion.css.
 
    One motion language with the rest of the site: expo-out landings, no
    bounce, the photographs as the subject. Everything here moves transform
@@ -40,36 +41,12 @@
     html:not([data-motion="off"]) .stage__amp  { animation-name: hm-amp; }
     html:not([data-motion="off"]) .fig--bear  .fig__layer { animation-name: hm-bear; }
     html:not([data-motion="off"]) .fig--tiger .fig__layer { animation-name: hm-tiger; }
-
-    /* the section marks drift past a little slower than the page, and turn a
-       few degrees on the way, as if pinned to a board a step behind */
-    html:not([data-motion="off"]) .hd-mark {
-      animation: hm-mark linear both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 100%;
-    }
   }
 
   /* ── 3. The ticker, once the script has it ─────────────────────────────── */
   html:not([data-motion="off"]) .ticker.hm-live .ticker__row { animation: none; will-change: transform; }
 
-  /* ── 4. Photographs that catch the light ──────────────────────────────────
-     The card leans towards the pointer (the script writes the transform),
-     and a soft highlight sits where the light would fall across the print. */
-  html:not([data-motion="off"]) .mem__card {
-    transition: rotate .4s var(--ease), translate .4s var(--ease), scale .5s var(--ease);
-  }
-  html:not([data-motion="off"]) .mem__shot::after {
-    content: "";
-    position: absolute; inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgb(255 255 255 / .34), rgb(255 255 255 / 0) 58%);
-    opacity: var(--go, 0);
-    transition: opacity .45s var(--ease-soft);
-  }
-  /* a finger on a photograph presses it into the page */
-  html:not([data-motion="off"]) .mem__card.hm-press { scale: .975; transition-duration: .4s, .4s, .18s; }
+  /* ── 4. Photographs that catch the light: now site-wide, in motion.css ── */
 
   /* ── 5. The tally rolls round ─────────────────────────────────────────────
      Each figure is a set of wheels. The right-hand wheel turns furthest, as
@@ -110,7 +87,3 @@
 @keyframes hm-amp    { to { scale: 1.6; opacity: 0; } }
 @keyframes hm-bear   { to { translate: -9vw 7vh; rotate: -4deg; scale: .94; } }
 @keyframes hm-tiger  { to { translate: 9vw 7vh;  rotate: 4deg;  scale: .94; } }
-@keyframes hm-mark {
-  from { translate: 0 22px;  rotate: calc(var(--t, 0deg) - 7deg); }
-  to   { translate: 0 -22px; rotate: calc(var(--t, 0deg) + 7deg); }
-}

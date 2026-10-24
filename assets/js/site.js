@@ -1177,6 +1177,71 @@
     const cap = $('.lightbox__cap', box);
     let idx = 0, opener = null, turn = 0;
 
+    /* The zoom. With motion on, the photograph grows out of the print that
+       was tapped and goes back into it when it is put away: the print's own
+       crop opens out to the whole picture on the way up and closes in again
+       on the way down. A print that has scrolled away is brought back on
+       screen first, under the dark, so the photograph has somewhere to land.
+       assets/css/motion.css styles the window for it (lightbox--zoom). */
+    const zoom = !calm && document.documentElement.classList.contains('mo') && !!img.animate;
+    if (zoom) box.classList.add('lightbox--zoom');
+    const ZOOM_UP = 'cubic-bezier(.2, .9, .1, 1)', ZOOM_DOWN = 'cubic-bezier(.4, 0, .1, 1)';
+    const printOf = i => shots[i] && ($('img', shots[i]) || shots[i]);
+    const onScreen = el => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+    };
+    // in the clear, not just on screen: a print half under the sticky map
+    // band would take the photograph and then cut it off as it lands
+    const inClear = el => {
+      if (!onScreen(el)) return false;
+      const r = el.getBoundingClientRect(), frame = el.closest('[data-shot]') || el;
+      box.style.pointerEvents = 'none';
+      const ok = [[.5, .5], [.1, .1], [.9, .1], [.1, .9], [.9, .9]].every(([a, b]) => {
+        const x = r.left + r.width * a, y = r.top + r.height * b;
+        const hit = x >= 0 && y >= 0 && x <= innerWidth && y <= innerHeight && document.elementFromPoint(x, y);
+        return hit && frame.contains(hit);
+      });
+      box.style.pointerEvents = '';
+      return ok;
+    };
+    // Bring a print into the clear: across, inside a row that scrolls, then
+    // down, to the middle of what the sticky bars and the map band leave.
+    const bringBack = el => {
+      const frame = el.closest('[data-shot]') || el;
+      frame.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' });
+      box.style.pointerEvents = 'none';
+      let top = 0;
+      for (; top < innerHeight * .6; top += 8) {
+        let hit = document.elementFromPoint(innerWidth / 2, top), stuck = false;
+        for (; hit && hit !== document.body; hit = hit.parentElement) {
+          const p = getComputedStyle(hit).position;
+          if (p === 'fixed' || p === 'sticky') { stuck = true; break; }
+        }
+        if (!stuck) break;
+      }
+      box.style.pointerEvents = '';
+      const r = frame.getBoundingClientRect();
+      scrollTo({ top: scrollY + (r.top + r.height / 2) - (top + innerHeight) / 2, behavior: 'instant' });
+    };
+    // the print's box as a transform and a clip on the big photograph at rest
+    const asPrint = (th, F) => {
+      const T = th.getBoundingClientRect();
+      const s = Math.max(T.width / F.width, T.height / F.height);
+      const vw = T.width / s, vh = T.height / s;
+      const pos = getComputedStyle(th).objectPosition.split(' ').map(v => v.endsWith('%') ? parseFloat(v) / 100 : .5);
+      const ox = (F.width - vw) * (pos[0] ?? .5), oy = (F.height - vh) * (pos[1] ?? .5);
+      const cx = F.left + F.width / 2, cy = F.top + F.height / 2;
+      const tx = T.left - cx - s * (F.left + ox - cx), ty = T.top - cy - s * (F.top + oy - cy);
+      const r = (parseFloat(getComputedStyle(th.closest('[data-shot]') || th).borderTopLeftRadius) || 0) / s;
+      return {
+        transform: `translate(${tx}px, ${ty}px) scale(${s})`,
+        clipPath: `inset(${oy}px ${F.width - vw - ox}px ${F.height - vh - oy}px ${ox}px round ${r}px)`,
+      };
+    };
+    const FULL = { transform: 'translate(0px, 0px) scale(1)', clipPath: 'inset(-120px -120px -120px -120px round 2px)' };
+    let flight = null;
+
     // Opening sets the photograph at once. Stepping through, the old one
     // slips away from the direction of travel, and the new one comes in from
     // it once it is decoded, so a photograph never paints half loaded.
@@ -1207,17 +1272,68 @@
     };
 
     const open = i => {
+      if (flight) { flight.cancel(); flight = null; }
       opener = document.activeElement;
       show(i);
+      const th = zoom && printOf(idx);
+      const fly = th && onScreen(th);
+      img.style.visibility = fly ? 'hidden' : '';
       box.classList.add('is-open');
       document.body.style.overflow = 'hidden';
-      $('.lightbox__x', box).focus();
+      $('.lightbox__x', box).focus({ preventScroll: true });
+      if (zoom && !fly) img.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: ZOOM_UP });
+      if (!fly) return;
+      // the same file the print shows, so it is usually ready at once
+      const ready = img.complete && img.naturalWidth ? Promise.resolve()
+        : Promise.race([img.decode().catch(() => {}), new Promise(r => setTimeout(r, 300))]);
+      ready.then(() => {
+        img.style.visibility = '';
+        if (!img.naturalWidth || !box.classList.contains('is-open')) return;
+        const from = asPrint(th, img.getBoundingClientRect());
+        th.style.visibility = 'hidden';
+        const up = flight = img.animate([from, FULL], { duration: 560, easing: ZOOM_UP });
+        up.finished.catch(() => {}).then(() => { th.style.visibility = ''; if (flight === up) flight = null; });
+      });
     };
 
-    const close = () => {
-      box.classList.remove('is-open');
+    const close = (drag = null) => {
+      if (!box.classList.contains('is-open')) return;
       document.body.style.overflow = '';
-      if (opener) opener.focus();
+      if (opener) opener.focus({ preventScroll: true });
+      // the photograph goes the moment it has landed, not when the window
+      // finishes hiding half a second later
+      const shut = () => {
+        if (zoom) img.style.visibility = 'hidden';
+        box.classList.remove('is-open', 'is-leaving', 'is-dragging');
+        box.style.removeProperty('--lb-a');
+        img.style.transform = '';
+      };
+      if (!zoom) { shut(); return; }
+      if (flight) flight.cancel();
+      box.classList.remove('is-dragging');
+      const th = printOf(idx);
+      // put the page back where this photograph lives, out of sight
+      if (th && !inClear(th)) bringBack(th);
+      const at = drag ? { transform: `translate(${drag.x}px, ${drag.y}px) scale(${drag.k})`, clipPath: FULL.clipPath } : FULL;
+      img.style.transform = '';
+      box.classList.add('is-leaving');
+      if (!th || !inClear(th)) {
+        // nowhere to land (a print folded away): it fades where it is
+        const fade = flight = img.animate([{ ...at, opacity: 1 }, { ...at, opacity: 0 }], { duration: 260, easing: 'ease-out', fill: 'forwards' });
+        fade.finished.then(() => { if (flight !== fade) return; shut(); fade.cancel(); flight = null; }, () => {});
+        return;
+      }
+      const F = img.getBoundingClientRect();
+      const to = asPrint(th, F);
+      th.style.visibility = 'hidden';
+      const down = flight = img.animate([at, to], { duration: drag ? 460 : 500, easing: ZOOM_DOWN, fill: 'forwards' });
+      down.finished.then(() => {
+        th.style.visibility = '';
+        if (flight !== down) return;
+        shut();
+        down.cancel();
+        flight = null;
+      }, () => { th.style.visibility = ''; });
     };
 
     shots.forEach((s, i) => {
@@ -1227,10 +1343,13 @@
       });
     });
 
-    $('.lightbox__x', box).addEventListener('click', close);
+    $('.lightbox__x', box).addEventListener('click', () => close());
     $('.lightbox__nav--prev', box).addEventListener('click', () => show(idx - 1, -1));
     $('.lightbox__nav--next', box).addEventListener('click', () => show(idx + 1, 1));
     box.addEventListener('click', e => { if (e.target === box || e.target === img) close(); });
+    const vert = (dy) => zoom
+      ? { k: Math.max(.72, 1 - dy / 900) }
+      : null;
 
     // On a phone the photograph follows the thumb: sideways to the next one,
     // down to put it away. Short of the line, it settles back where it was.
@@ -1245,12 +1364,24 @@
       const dx = e.touches[0].clientX - t0.x, dy = e.touches[0].clientY - t0.y;
       if (!t0.axis && Math.hypot(dx, dy) > 8) t0.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
       if (t0.axis === 'x') img.style.translate = `${dx * .9}px 0`;
-      if (t0.axis === 'y' && dy > 0) { img.style.translate = `0 ${dy * .8}px`; box.style.opacity = String(Math.max(.4, 1 - dy / 500)); }
+      if (t0.axis === 'y' && dy > 0 && zoom) {
+        // the photograph comes away under the thumb, shrinking as it goes
+        box.classList.add('is-dragging');
+        img.style.transform = `translate(${dx * .9}px, ${dy * .9}px) scale(${vert(dy).k})`;
+        box.style.setProperty('--lb-a', String(Math.max(.25, 1 - dy / 420)));
+      } else if (t0.axis === 'y' && dy > 0) { img.style.translate = `0 ${dy * .8}px`; box.style.opacity = String(Math.max(.4, 1 - dy / 500)); }
       t0.dx = dx; t0.dy = dy;
     }, { passive: true });
     const settle = () => {
       img.style.transition = '';
       box.style.opacity = '';
+      if (zoom && img.style.transform) {
+        const from = img.style.transform;
+        img.style.transform = '';
+        box.classList.remove('is-dragging');
+        box.style.removeProperty('--lb-a');
+        img.animate([{ transform: from }, { transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+      }
       if (!img.style.translate) return;
       const from = img.style.translate;
       img.style.translate = '';
@@ -1260,6 +1391,12 @@
       const t = t0; t0 = null;
       if (!t || !t.axis) { settle(); return; }
       if (t.axis === 'x' && Math.abs(t.dx) > 56) { img.style.transition = ''; show(idx + (t.dx < 0 ? 1 : -1), t.dx < 0 ? 1 : -1); return; }
+      if (t.axis === 'y' && t.dy > 90 && zoom) {
+        // from where the thumb let go, straight back into its print
+        img.style.transition = '';
+        close({ x: t.dx * .9, y: t.dy * .9, k: vert(t.dy).k });
+        return;
+      }
       if (t.axis === 'y' && t.dy > 90) {
         // fade from where the thumb left it, then put the photograph back
         box.style.opacity = '';
@@ -1355,16 +1492,42 @@
       body.scrollTop = 0;
     };
 
-    const open = i => {
+    /* With motion on, the window grows out of the card that was tapped and
+       shrinks back into it: one uniform scale from the card's middle, so the
+       words never stretch on the way. The rail is held still while it is
+       open, so the card is still there to go back to. */
+    const card = $('.quote__card', box);
+    const zoom = !calm && document.documentElement.classList.contains('mo') && !!card.animate;
+    if (zoom) box.classList.add('quote--zoom');
+    let from = null, flight = null;
+    const toCard = el => {
+      const a = el.getBoundingClientRect(), b = card.getBoundingClientRect();
+      const s = Math.min(a.width / b.width, a.height / b.height);
+      return `translate(${a.left + a.width / 2 - (b.left + b.width / 2)}px, ${a.top + a.height / 2 - (b.top + b.height / 2)}px) scale(${s})`;
+    };
+
+    const open = (i, el = null) => {
       opener = document.activeElement;
       show(i);
       box.classList.add('is-open');
       document.body.style.overflow = 'hidden';
       if (rest) rest(1e9);                       // the rail waits where it is
-      $('.quote__x', box).focus();               // visible in this same frame
+      $('.quote__x', box).focus({ preventScroll: true });   // visible in this same frame
+      if (flight) { flight.cancel(); flight = null; }
+      from = zoom && el && el.getClientRects().length ? el : null;
+      if (from) {
+        flight = card.animate([{ transform: toCard(from), opacity: 0, offset: 0 }, { opacity: 1, offset: .35 }, { transform: 'none', opacity: 1 }],
+          { duration: 560, easing: 'cubic-bezier(.2, .9, .1, 1)' });
+      }
     };
 
     const close = () => {
+      if (zoom && from && from.getClientRects().length) {
+        if (flight) flight.cancel();
+        // held at the card until the window has faded, then let go
+        flight = card.animate([{ transform: 'none', opacity: 1 }, { transform: toCard(from), opacity: 0 }],
+          { duration: 360, easing: 'cubic-bezier(.4, 0, .2, 1)', fill: 'forwards' });
+      }
       box.classList.remove('is-open');
       document.body.style.overflow = '';
       if (rest) rest(600);
@@ -1383,7 +1546,7 @@
       const i = items.findIndex(it => $('.talk__full', it).id === id);
       if (i < 0) return;
       e.preventDefault();
-      open(i);
+      open(i, card);
     });
 
     $('.quote__x', box).addEventListener('click', close);
