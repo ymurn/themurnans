@@ -544,7 +544,16 @@
         say.style.removeProperty('transition');
       };
 
+      // One of them talks at a time: poking one hushes the other.
+      const hush = () => {
+        clearTimeout(hide);
+        say.classList.remove('is-said');
+        fig.classList.remove('is-talking');
+      };
+      fig.addEventListener('fig:hush', hush);
+
       fig.addEventListener('click', () => {
+        $$('.fig').forEach(o => { if (o !== fig) o.dispatchEvent(new Event('fig:hush')); });
         say.textContent = lines[i % lines.length];
         i++;
         fit();
@@ -560,10 +569,7 @@
           celebrateFrom(say, 10);
         }
         clearTimeout(hide);
-        hide = setTimeout(() => {
-          say.classList.remove('is-said');
-          fig.classList.remove('is-talking');
-        }, 4200);
+        hide = setTimeout(hush, 4200);
       });
     });
   }
