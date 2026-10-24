@@ -2407,7 +2407,7 @@
       const head = `
         <div class="mem__headrow">
           <h3 class="mem__title">${id ? esc(nameOf(id)) : 'Anywhere'}${id ? `<span class="mem__count">${tally}</span>` : ''}</h3>
-          <button class="mem__roll" type="button" data-roll><span class="mem__die" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg></span>Surprise me</button>
+          <button class="mem__roll" type="button" data-roll aria-label="Surprise me: memories from another state"><span class="mem__die" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg></span><span class="mem__roll-t">Surprise me</span></button>
         </div>`;
 
       if (!picks.length) {
@@ -2535,6 +2535,20 @@
     });
     addEventListener('scroll', watch, { passive: true });
     addEventListener('resize', watch);
+
+    /* Turning the phone changes the layout the cards were dealt for: a grid
+       of six with a pager upright, one swipe row of all of them sideways,
+       four on a desktop. Deal again for the new one, from the first set,
+       rather than leave six cards and a pager squeezed into a row. */
+    const layoutOf = () => `${wide()}|${inRow()}`;
+    let layout = layoutOf();
+    addEventListener('resize', perFrame(() => {
+      const now = layoutOf();
+      if (now === layout) return;
+      layout = now;
+      page = 0;
+      if (open === null) paint();
+    }));
 
     /* ── The print ─────────────────────────────────────────────────────────
        The first time the map comes into view the states print themselves in,

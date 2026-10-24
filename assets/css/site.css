@@ -4962,6 +4962,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     border: 0; border-radius: 0; background: none; box-shadow: none;
   }
   .mem__panel::before { content: none; }
+  /* "Surprise me" is its die alone here: with its words it left no room for
+     the state's name and count on one line ("North Carolina", on an SE). */
+  .mem__roll { padding: .45rem; border-radius: 50%; }
+  .mem__roll-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .mem__title { flex-wrap: nowrap; min-width: 0; }
+  .mem__title { font-size: clamp(1.2rem, 2.6vw, 1.5rem); }
+  .mem__count { white-space: nowrap; }
   /* The cards take the screen under the bar, up to a height where they would
      start to stand taller than they are wide, so the photographs are as big
      as the screen allows and never cut to a map shorter than it. */
