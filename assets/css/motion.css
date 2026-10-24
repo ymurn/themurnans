@@ -57,6 +57,10 @@
     transition: visibility 0s .5s;
   }
   html.mo .lightbox.lightbox--zoom.is-open { transition: visibility 0s; }
+  /* shut, it lets taps through at once, though it takes half a second more
+     to hide: the photograph is back in its print by then, and a tap on the
+     page straight after should land on the page */
+  html.mo :is(.lightbox--zoom, .quote--zoom):not(.is-open) { pointer-events: none; }
   html.mo .lightbox--zoom::before {
     content: "";
     position: absolute; inset: 0; z-index: -1;

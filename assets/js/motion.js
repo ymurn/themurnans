@@ -142,14 +142,16 @@
       : null;
     if (io) wait.forEach(s => io.observe(s));
     // Belt and braces, as the site's own reveals do: a slow sweep picks up
-    // anything an observer misses, so no photograph can stay hidden.
+    // anything an observer misses, so no photograph can stay hidden. Slow
+    // on purpose: every pass measures each waiting photograph, and the
+    // observer has normally taken it long before.
     const sweep = setInterval(() => {
       if (!pending.size) { clearInterval(sweep); return; }
       const h = innerHeight;
       [...pending].map(s => [s, s.getBoundingClientRect()])
         .filter(([, r]) => r.top < h && r.bottom > 0 && r.left < innerWidth && r.right > 0)
         .forEach(([s]) => take(s));
-    }, 700);
+    }, io ? 2000 : 500);
   }
 
   /* ── Prints lean towards the pointer and catch the light ──────────────
