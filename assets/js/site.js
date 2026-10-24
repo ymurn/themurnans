@@ -2011,12 +2011,14 @@
 
      UPRIGHT  a tablet stood up: the map across the top, the cards one row to
               swipe, so six is a row rather than a long one.
-     SIDEWAYS a phone on its side: two columns, the map sticky beside them.
+     SIDEWAYS a phone on its side, or anything under a desktop's width that
+              is wider than tall: two columns, the map beside one row of
+              cards, two to the column.
      wide     the desktop: two columns, four cards cut to the map's height.
 
      Where the map keeps its place the pill has nothing to stand in for. */
   const UPRIGHT  = '(min-width: 700px) and (orientation: portrait)';
-  const SIDEWAYS = '(min-width: 700px) and (max-height: 520px) and (orientation: landscape)';
+  const SIDEWAYS = '(min-width: 600px) and (max-width: 999px) and (orientation: landscape)';
   const wide = () => innerWidth >= 1000 && !matchMedia(UPRIGHT).matches;
   const beside = () => wide() || matchMedia(SIDEWAYS).matches;
   /* The pill stands in for a map that has scrolled away, which only ever
@@ -2024,9 +2026,9 @@
      upright on a tablet the map and one row of cards are a single screen,
      and on a desktop the map is in the other column: on all three there is
      nothing for it to stand in for, and a control that answers a question
-     nobody asked is a control that can only be in the way. Matches the rule
-     that hides it in site.css. */
-  const phone = () => innerWidth < 700;
+     nobody asked is a control that can only be in the way. Matches the rules
+     that hide it in site.css: a phone on its side under 700 is sideways. */
+  const phone = () => innerWidth < 700 && !matchMedia(SIDEWAYS).matches;
 
   function shuffled(list) {
     const a = list.slice();

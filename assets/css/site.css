@@ -4762,25 +4762,78 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 }
 .soon__line { margin: 0; font-size: clamp(1rem, 1.5vw, 1.1rem); line-height: 1.65; color: var(--ink-2); }
 
-/* A phone on its side is wide and very short: stacking the map and the sheet
-   there would be two screens of scrolling for one choice, so it takes the two
-   columns, with the map given less of the width than a desktop gives it. */
+/* A phone on its side is wide and very short: the tally's cards go four
+   across rather than two by two. */
 @media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
-  .mem { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; }
-  /* Six cards two across is three rows, and three rows on a screen this
-     short is a long scroll past a map that has gone. It stays, the way it
-     does on a desktop, and the pill never has to stand in for it. */
-  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .6rem); }
-  .mem__panel {
-    z-index: auto; margin-top: 0; padding: 0; min-height: 0;
-    border: 0; border-radius: 0; background: none; box-shadow: none;
-  }
-  .mem__panel::before { content: none; }
-  .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
-  .mem__hint { justify-content: flex-start; margin-bottom: 0; }
   .tally__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tally__end { grid-template-columns: auto minmax(0, 40rem); align-items: center; }
   .tally__cta { justify-items: start; text-align: start; }
+}
+
+/* The map sideways: a phone on its side, and anything under a desktop's
+   width that is wider than it is tall (an iPhone SE at 667 by 375, an open
+   Duo at 890 by 626). Stacked, the map alone was taller than the screen;
+   in the old two columns, six cards two across ran three rows down a screen
+   with room for one, past a small map over an empty half. Now the section is
+   one screen. The map is as big as the screen under the bar allows, and the
+   cards are a single row beside it at the map's height, two to the column.
+   The next one shows in the margin to say the row goes on, and a swipe
+   brings it in. Matches SIDEWAYS in assets/js/site.js. */
+@media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
+  .mem { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; gap: clamp(1rem, 3vw, 1.75rem); }
+  /* Centred beside the cards, and stuck at the top beside an open memory,
+     the one thing here taller than the screen. */
+  .mem__mapcol { align-self: center; position: sticky; top: calc(var(--nav-h) + .75rem); }
+  .mem:has(.mem__open) .mem__mapcol { align-self: start; }
+  /* never taller than the screen under the bar, less the count line over it */
+  .mem__map { width: min(100%, calc((100svh - var(--nav-h) - 4.5rem) * 1000 / 645.6)); margin-inline: auto; }
+  .mem__hint { margin: 0 0 .6rem; }
+  .mem__bar { display: none; }
+
+  .mem__panel {
+    z-index: auto; margin-top: 0; padding: 0; min-height: 0; gap: .75rem;
+    border: 0; border-radius: 0; background: none; box-shadow: none;
+  }
+  .mem__panel::before { content: none; }
+  /* The cards take the screen under the bar, up to a height where they would
+     start to stand taller than they are wide, so the photographs are as big
+     as the screen allows and never cut to a map shorter than it. */
+  .mem__panel:has(> .mem__grid) {
+    container: mempanel / inline-size;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: min(calc(100svh - var(--nav-h) - 2rem), 22rem);
+  }
+  /* The row runs out into the right margin, so the card after the two shows
+     there. The room inside it on every side is for the tilt and the color
+     printed off register, which the scroll would otherwise cut. */
+  .mem__grid {
+    display: flex;
+    gap: .9rem;
+    min-height: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    margin-inline: -.4rem calc(-1 * var(--gutter));
+    padding: .4rem var(--gutter) .8rem .4rem;
+    scroll-padding-inline-start: .4rem;
+    scrollbar-width: none;
+  }
+  .mem__grid::-webkit-scrollbar { display: none; }
+  .mem__grid > * { flex: 0 0 calc((100% - .9rem) / 2); scroll-snap-align: start; }
+  .mem__grid[data-n="1"] > * { flex-basis: 100%; }
+  /* A column too narrow for two (an iPhone SE on its side) shows one and the
+     start of the next, rather than two slivers with their names wrapped. */
+  @container mempanel (max-width: 20rem) {
+    .mem__grid > * { flex-basis: 80%; }
+  }
+  .mem__card { grid-template-rows: minmax(0, 1fr) auto; }
+  .mem__shot { aspect-ratio: auto; min-height: 0; }
+  .mem__shot img { position: absolute; inset: 0; }
+
+  .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
+  /* the photograph and the way back fit on the first screen; the words follow */
+  .mem__lead { max-height: calc(100svh - var(--nav-h) - 7rem); }
+  .mem__thumb { width: 3rem; }
 }
 
 /* ── A TABLET STOOD UP ───────────────────────────────────────────────────
