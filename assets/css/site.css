@@ -4942,16 +4942,19 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    to fill the row, which cut a lone card (Delaware) to a thin strip.
    Matches SIDEWAYS in assets/js/site.js. */
 @media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
-  /* the screen under the bar, with the browser's bars showing */
-  :root { --memscreen: calc(100svh - var(--nav-h)); }
+  /* The screen under the bar as it is now (dvh): Safari tucks its own bars
+     away as the page scrolls, and sized to the screen with them showing
+     (svh) the section sat low in a taller box, small, with empty paper over
+     it. It resizes once when the bars come or go. */
+  :root { --memscreen: calc(100dvh - var(--nav-h)); }
   .memories.band { padding-bottom: 0; }
   .mem {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center; align-content: center;
     gap: clamp(1rem, 3vw, 1.75rem);
-    /* fills the screen even once the bars have tucked away (lvh), so the
-       band below never peeks in; grows for an open memory */
-    min-height: calc(100lvh - var(--nav-h));
+    /* fills the screen, so the band below never peeks in; grows for an
+       open memory */
+    min-height: var(--memscreen);
     padding-block: .75rem;
     box-sizing: border-box;
     scroll-margin-top: var(--nav-h);
@@ -4999,20 +5002,43 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      wider than half the column, so two whole cards show; under 20rem of
      column (an SE on its side) one, with the start of the next. */
   .mem__grid > * {
-    --fit: calc((var(--memscreen) - 1.5rem - 2.75rem - .6rem - 1.2rem - 3.7rem) * 4 / 3);
+    /* the label is budgeted at two lines, and held to two below */
+    --fit: calc((var(--memscreen) - 1.5rem - 2.75rem - .6rem - 1.2rem - 4.9rem) * 4 / 3);
     flex: 0 0 min(var(--fit), calc((100cqw - .9rem) / 2));
     scroll-snap-align: start;
   }
   @container mempanel (max-width: 20rem) {
     .mem__grid > * { flex-basis: min(var(--fit), 80cqw); }
   }
-  .mem__card { grid-template-rows: auto auto; align-self: start; }
+  /* Every card in the row the same height, the tallest label's: the color
+     under the label runs to the foot of each. Names longer than two lines
+     ("Crater Lake National Park" in a narrow card) end in an ellipsis. */
+  .mem__card { grid-template-rows: auto 1fr; align-self: stretch; }
   .mem__shot { aspect-ratio: 4 / 3; }
+  .mem__where { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
   .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
-  /* the photograph and the way back fit on the first screen; the words follow */
-  .mem__lead { max-height: calc(var(--memscreen) - 7rem); }
-  .mem__thumb { width: 3rem; }
+  /* An open memory: its thumbnails in one column to the right of the
+     photograph, as on a desktop, so the photograph, the way back and the
+     place's name fit on the first screen; the words follow. The column is
+     the photograph's height, shared evenly, so they are all one size. */
+  /* the photograph and its column as one pair, centred in the card */
+  .mem__open { grid-template-columns: auto auto; justify-content: center; }
+  .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
+  /* 4:3, as big as the screen allows: its width from the height there is */
+  .mem__open > .mem__lead { grid-row: 2; aspect-ratio: 4 / 3; width: min(calc(100cqw - 2.2rem - 4.6rem), calc((var(--memscreen) - 8rem) * 4 / 3)); }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead { width: min(calc(100cqw - 2.2rem), calc((var(--memscreen) - 8rem) * 4 / 3)); justify-self: center; }
+  .mem__open > .mem__shots {
+    grid-row: 2; grid-column: 2;
+    display: grid;
+    grid-template-rows: repeat(var(--n, 4), minmax(0, 1fr));
+    /* the photograph alone sets the row's height; the column takes it */
+    height: 0; min-height: 100%; box-sizing: border-box;
+    align-self: stretch; justify-self: start;
+    padding: .3rem; gap: .3rem;
+  }
+  .mem__open .mem__thumb { width: auto; height: 100%; max-height: 3.2rem; min-height: 0; aspect-ratio: 1; justify-self: center; align-self: center; }
 }
 
 /* ── A TABLET STOOD UP ───────────────────────────────────────────────────

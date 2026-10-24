@@ -2478,7 +2478,7 @@
             <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
             <span class="mem__cap"${pics[0].c ? '' : ' hidden'}>${esc(pics[0].c || '')}</span>
           </span>
-          ${pics.length > 1 ? `<div class="mem__shots">${pics.map((p, k) => `
+          ${pics.length > 1 ? `<div class="mem__shots" style="--n:${pics.length}">${pics.map((p, k) => `
             <button class="mem__thumb${k ? '' : ' is-on'}" type="button" data-shot="${k}" aria-label="Photograph ${k + 1} of ${pics.length}">
               <img src="${esc(p.u)}" alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
             </button>`).join('')}</div>` : ''}
