@@ -4228,14 +4228,16 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__been[data-q="3"] { fill: var(--quilt-4); }
 @media (hover: hover) { .memmap__been:hover { filter: brightness(1.08) saturate(1.1); } }
 
-/* One state chosen: it keeps its color and takes the ink line, the rest
-   step back. One outline on the map, never thirty-six. */
+/* One state chosen: it keeps its color and lifts off the sheet on a soft
+   shadow, with a fine line at half the ink's strength round it; the rest
+   step back. The full ink line at 2.4px read as a hard cut-out, sharpest of
+   all on a phone. One outline on the map, never thirty-six. */
 .memmap.is-picked.is-printed .memmap__been { opacity: .38; }
-.memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; }
+.memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; filter: drop-shadow(0 1.5px 2.5px rgb(20 17 13 / .26)); }
 .memmap__ring {
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.4px;
+  stroke: color-mix(in srgb, var(--quilt-1) 45%, var(--ink));
+  stroke-width: 1.5px;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
@@ -4243,6 +4245,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   transition: opacity .3s var(--ease-soft);
 }
 .memmap.is-picked .memmap__ring { opacity: 1; }
+/* a deeper shade of the picked state's own color, not a gray line over it */
+.memmap__ring[data-q="1"] { stroke: color-mix(in srgb, var(--quilt-2) 45%, var(--ink)); }
+.memmap__ring[data-q="2"] { stroke: color-mix(in srgb, var(--quilt-3) 45%, var(--ink)); }
+.memmap__ring[data-q="3"] { stroke: color-mix(in srgb, var(--quilt-4) 45%, var(--ink)); }
 .memmap__dc {
   fill: var(--coral); stroke: var(--paper); stroke-width: 1.2px;
   vector-effect: non-scaling-stroke; cursor: pointer;
@@ -4942,26 +4948,29 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    to fill the row, which cut a lone card (Delaware) to a thin strip.
    Matches SIDEWAYS in assets/js/site.js. */
 @media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
-  /* The screen under the bar as it is now (dvh): Safari tucks its own bars
-     away as the page scrolls, and sized to the screen with them showing
-     (svh) the section sat low in a taller box, small, with empty paper over
-     it. It resizes once when the bars come or go. */
-  :root { --memscreen: calc(100dvh - var(--nav-h)); }
+  /* The screen under the bar with Safari's own bars showing (svh), which
+     never changes while the page scrolls. Sized to the screen as it is now
+     (dvh), everything here grew and shrank each time Safari's bars came and
+     went mid-scroll, which read as the map glitching. */
+  :root { --memscreen: calc(100svh - var(--nav-h)); }
   .memories.band { padding-bottom: 0; }
   .mem {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center; align-content: center;
+    /* from the top, so no paper sits over it once the bars tuck away: the
+       slack falls under it, in its own band's color */
+    align-items: center; align-content: start;
     gap: clamp(1rem, 3vw, 1.75rem);
-    /* fills the screen, so the band below never peeks in; grows for an
-       open memory */
-    min-height: var(--memscreen);
+    /* fills the screen even with Safari's bars tucked away (lvh), so the
+       band below never peeks in; grows for an open memory */
+    min-height: calc(100lvh - var(--nav-h));
     padding-block: .75rem;
     box-sizing: border-box;
     scroll-margin-top: var(--nav-h);
   }
-  /* centred beside the cards, and stuck at the top beside an open memory,
-     the one thing here taller than the screen */
-  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .75rem); }
+  /* stuck at the top only beside an open memory, the one thing here taller
+     than the screen; the rest of the time it scrolls with the page */
+  .mem__mapcol { position: relative; }
+  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .75rem); }
   .mem:has(.mem__open) { align-items: start; }
   /* the screen, less the padding and the count line under the map */
   .mem__map { width: min(100%, calc((var(--memscreen) - 5rem) * 1000 / 645.6)); margin-inline: auto; }
@@ -5028,23 +5037,29 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      settled differently in Safari and broke apart on a pinch to zoom. The
      width left for the photograph takes off the card's padding (2.2rem),
      the column (4.1rem at most), the gap (.85rem) and the keylines. */
+  /* The pair sits in the middle two of four columns, the outer two taking
+     the slack equally: with two columns sized to their content, the name
+     and the words spanning them widened the photograph's column and opened
+     a gap between it and its thumbnails. */
   .mem__open {
     --leadw: min(calc(100cqw - 7.6rem), calc((var(--memscreen) - 8rem) * 4 / 3));
     --leadh: calc(var(--leadw) * 3 / 4);
-    grid-template-columns: auto auto; justify-content: center;
+    --thumb: max(2.25rem, min(3.2rem, calc((var(--leadh) - .6rem - 6px - (var(--n, 4) - 1) * .3rem) / var(--n, 4))));
+    /* the thumbnails' column carries the gap to the photograph (.65rem) */
+    grid-template-columns: minmax(0, 1fr) var(--leadw) calc(var(--thumb) + .6rem + 2px + .65rem) minmax(0, 1fr);
+    column-gap: 0;
   }
   .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
   .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
-  .mem__open > .mem__lead { grid-row: 2; aspect-ratio: auto; width: var(--leadw); height: var(--leadh); }
+  .mem__open > .mem__lead { grid-row: 2; grid-column: 2; aspect-ratio: auto; width: var(--leadw); height: var(--leadh); }
   .mem__open:not(:has(> .mem__shots)) > .mem__lead {
     --leadw: min(calc(100cqw - 2.6rem), calc((var(--memscreen) - 8rem) * 4 / 3));
     justify-self: center;
   }
   .mem__open > .mem__shots {
-    /* shared out, but never under 36px, a size a thumb can tap: a column
-       short of room for all of them scrolls, still one column */
-    --thumb: max(2.25rem, min(3.2rem, calc((var(--leadh) - .6rem - 6px - (var(--n, 4) - 1) * .3rem) / var(--n, 4))));
-    grid-row: 2; grid-column: 2;
+    /* --thumb, set on the card: shared out, but never under 36px, a size a
+       thumb can tap; a column short of room for all of them scrolls */
+    grid-row: 2; grid-column: 3; justify-self: end;
     display: flex; flex-direction: column; align-items: center;
     box-sizing: border-box;
     overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;

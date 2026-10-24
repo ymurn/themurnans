@@ -2472,7 +2472,7 @@
       const pics = roll = forState(m, on).slice(0, 5);
       const back = on ? nameOf(on) : 'the pile';
       return `
-        <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]})">
+        <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]});--n:${Math.max(1, pics.length)}">
           <button class="mem__back" type="button" data-back>&larr; Back to ${esc(back)}</button>
           <span class="mem__lead">
             <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
@@ -2507,6 +2507,8 @@
       $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
       const r = id && A.regions.find(q => q.id === id);
       ring.setAttribute('d', r && id !== 'DC' ? r.d : '');
+      // the line takes a deeper shade of the state's own color
+      ring.dataset.q = r ? r.q : '';
       if (bar) {
         const n = id ? count(id) : M.items.length;
         $('[data-mem="where"]', bar).textContent = id ? nameOf(id) : 'Anywhere';
