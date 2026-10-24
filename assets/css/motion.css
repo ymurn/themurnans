@@ -1,0 +1,183 @@
+/* ==========================================================================
+   THE MURNANS · the motion system, every page
+   The things a visitor touches, and how they answer: a press that gives
+   under the finger and springs back, a pill that glides along the jump-to
+   bar, photographs that wait for their pixels and then settle into the
+   frame, prints that lean towards the pointer and catch the light, a story
+   that unrolls when you ask for the rest of it, a heading that drifts a
+   step behind the page, and a page head that parts as it is scrolled away.
+
+   One language with assets/js/reveal.js and the home page: expo-out
+   landings, small overshoots only on things that are pressed or popped,
+   transform and opacity for anything that moves every frame. Nothing here
+   keeps a layer alive once it has landed.
+
+   Loads last, after the page's own stylesheets, so the transition lists
+   written out again here (with scale added) are the ones that win.
+   ?motion=off on the address turns the whole system off, for comparing.
+   The script half is assets/js/motion.js.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── Pressed ───────────────────────────────────────────────────────────
+     In fast (80ms), out on a small spring. motion.js registers a touch
+     listener, which is what lets iOS Safari show :active at all. */
+  html.mo .yearbtn { transition: color .35s, background-color .45s var(--ease-soft), box-shadow .35s, scale .5s var(--pop); }
+  html.mo .yearbtn:active { scale: .92; transition: scale .08s ease-out; }
+
+  html.mo .totop { transition: opacity .35s var(--ease-soft), visibility .35s, translate .55s var(--ease), rotate .55s var(--ease), box-shadow .3s var(--ease), scale .5s var(--pop); }
+  html.mo .totop:active { scale: .9; transition: scale .08s ease-out, box-shadow .08s; box-shadow: 1px 1px 0 var(--gold); }
+
+  html.mo .nav__burger { transition: scale .5s var(--pop); }
+  html.mo .nav__burger:active { scale: .86; transition: scale .08s ease-out; }
+
+  html.mo .theme-toggle { transition: scale .5s var(--pop); }
+  html.mo .theme-toggle:active { scale: .95; transition: scale .1s ease-out; }
+
+  html.mo :is(.lightbox__x, .lightbox__nav) { transition: background-color .35s, transform .5s var(--ease), scale .45s var(--pop); }
+  html.mo :is(.lightbox__x, .lightbox__nav):active { scale: .88; transition: scale .08s ease-out; }
+
+  html.mo .shot:not(.shot--empty) { transition: scale .55s var(--pop); }
+  html.mo .tgal__pic { transition: rotate .55s var(--ease), translate .45s var(--ease), box-shadow .45s var(--ease), scale .55s var(--pop); }
+  html.mo :is(.hcard__pic, .ydeck__pic) { transition: rotate .5s var(--ease), translate .5s var(--ease), box-shadow .5s var(--ease), scale .55s var(--pop); }
+  html.mo .mem__card { transition: rotate .4s var(--ease), translate .4s var(--ease), scale .55s var(--pop); }
+  html.mo :is(.shot:not(.shot--empty), .mem__card):active,
+  html.mo :is(.hcard:not(.hcard--here), a.ydeck__card):active :is(.hcard__pic, .ydeck__pic) { scale: .965; transition: scale .12s ease-out; }
+
+  /* ── The photograph comes out of the page ─────────────────────────────
+     With the zoom on (site.js adds lightbox--zoom), the window itself is
+     never faded: its dark ground is a layer of its own, so the photograph
+     can fly out of its frame at full strength while the room dims around
+     it, and fly back into the frame when it is put away. */
+  html.mo .lightbox.lightbox--zoom {
+    opacity: 1;
+    background: none;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+    transition: visibility 0s .5s;
+  }
+  html.mo .lightbox.lightbox--zoom.is-open { transition: visibility 0s; }
+  /* shut, it lets taps through at once, though it takes half a second more
+     to hide: the photograph is back in its print by then, and a tap on the
+     page straight after should land on the page */
+  html.mo :is(.lightbox--zoom, .quote--zoom):not(.is-open) { pointer-events: none; }
+  html.mo .lightbox--zoom::before {
+    content: "";
+    position: absolute; inset: 0; z-index: -1;
+    background: color-mix(in srgb, var(--deep) 95%, transparent);
+    opacity: 0;
+    transition: opacity .45s var(--ease-soft);
+  }
+  html.mo .lightbox--zoom.is-open::before { opacity: var(--lb-a, 1); }
+  html.mo .lightbox--zoom.is-open.is-leaving::before { opacity: 0; transition-duration: .42s; }
+  html.mo .lightbox--zoom.is-dragging::before { transition: none; }
+  html.mo .lightbox--zoom .lightbox__img { transform: none; transition: none; }
+  html.mo .lightbox--zoom .lightbox__cap { opacity: 0; transition: opacity .2s var(--ease-soft); }
+  html.mo .lightbox--zoom :is(.lightbox__x, .lightbox__nav) { opacity: 0; transition: opacity .2s var(--ease-soft), background-color .35s, transform .5s var(--ease), scale .45s var(--pop); }
+  html.mo .lightbox--zoom.is-open .lightbox__cap { opacity: 1; transition: opacity .4s var(--ease-soft) .2s; }
+  html.mo .lightbox--zoom.is-open :is(.lightbox__x, .lightbox__nav) { opacity: 1; transition: opacity .4s var(--ease-soft) .2s, background-color .35s, transform .5s var(--ease), scale .45s var(--pop); }
+  html.mo .lightbox--zoom.is-open :is(.lightbox__x, .lightbox__nav):active { scale: .88; transition: scale .08s ease-out; }
+  html.mo .lightbox--zoom.is-leaving :is(.lightbox__cap, .lightbox__x, .lightbox__nav) { opacity: 0; transition: opacity .14s; }
+
+  /* the speech window on Hitched grows out of its card the same way
+     (site.js initTalk); its own small rise would fight the zoom */
+  html.mo .quote.quote--zoom .quote__card { transform: none; transition: none; }
+  html.mo .quote__nav:active, html.mo .quote__x:active { scale: .9; transition: scale .08s ease-out; }
+  html.mo :is(.quote__nav, .quote__x) { transition: background-color .35s, transform .5s var(--ease), scale .45s var(--pop); }
+
+  /* ── The theme switch ──────────────────────────────────────────────────
+     Held down, the knob stretches towards the side it is about to go to;
+     let go, it travels and comes back to round. */
+  html.mo .theme-toggle__knob { transition: transform .6s var(--ease), background-color .5s, width .32s var(--ease); }
+  html.mo .theme-toggle:active .theme-toggle__knob { width: 31px; }
+  html.mo[data-theme="dusk"] .theme-toggle:active .theme-toggle__knob { transform: translateX(21px); }
+
+  /* ── The pill on the jump-to bar ──────────────────────────────────────
+     One pill per list, moved by motion.js, so the highlight glides from
+     chip to chip instead of jumping. The chips keep their own colors. */
+  html.mo .yearbar__list.mo-inked { position: relative; isolation: isolate; }
+  html.mo .mo-inked .yearbtn.is-on,
+  html.mo[data-theme="dusk"] .mo-inked .yearbtn.is-on { background: transparent; }
+  .mo-ink {
+    position: absolute; left: 0; top: 0; z-index: -1;
+    height: 0;
+    border-radius: 999px;
+    background: var(--deep);
+    pointer-events: none;
+    opacity: 0; scale: .7;
+    transition: opacity .25s var(--ease-soft), scale .45s var(--pop);
+  }
+  [data-theme="dusk"] .mo-ink { background: var(--gold); }
+  .mo-ink.mo-ink--on { opacity: 1; scale: 1; }
+
+  /* ── Photographs settle into their frames ─────────────────────────────
+     Held back until the pixels are in, so no frame ever fills from the top
+     down, then a fade with a slow settle from a touch large. */
+  html.mo .shot.mo-wait img { opacity: 0; scale: 1.07; }
+  html.mo .shot.mo-in img {
+    transition: transform 1.1s var(--ease), filter .6s,
+                opacity .7s var(--ease-soft) var(--mo-d, 0ms), scale 1.3s var(--ease) var(--mo-d, 0ms);
+  }
+
+  /* ── Prints that catch the light (mouse and trackpad) ─────────────────── */
+  html.mo :is(.hcard__pic, .ydeck__pic) { position: relative; }
+  .mo-glare {
+    position: absolute; inset: 0; z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgb(255 255 255 / .32), rgb(255 255 255 / 0) 60%);
+    opacity: var(--go, 0);
+    transition: opacity .5s var(--ease-soft);
+  }
+
+  /* ── "Keep reading" ────────────────────────────────────────────────────
+     A cut paragraph fades out on its last line, so it reads as more to
+     come rather than a mistake. Opened, the story unrolls: a soft edge runs
+     down the words that were hidden, ahead of the reader. */
+  @media (max-width: 620px) {
+    html.mo .fold.is-folded .fold__lede.mo-cut {
+      -webkit-mask-image: linear-gradient(#000 calc(100% - 1.9em), rgb(0 0 0 / .12));
+              mask-image: linear-gradient(#000 calc(100% - 1.9em), rgb(0 0 0 / .12));
+    }
+  }
+  html.mo .fold.mo-unroll { transition: --mo-y .95s cubic-bezier(.33, .7, .2, 1); }
+  html.mo .fold.mo-unroll :is(.fold__lede, .fold__more) {
+    -webkit-mask-image: linear-gradient(#000 calc(var(--mo-y) - var(--mo-top, 0px)), transparent calc(var(--mo-y) - var(--mo-top, 0px) + 3em));
+            mask-image: linear-gradient(#000 calc(var(--mo-y) - var(--mo-top, 0px)), transparent calc(var(--mo-y) - var(--mo-top, 0px) + 3em));
+  }
+
+  /* ── Scroll-linked, on the browser's own timeline ─────────────────────── */
+  @supports (animation-timeline: view()) {
+    /* the page head parts as it leaves: the words lift away quicker than
+       the photographs, which are the reason for the page */
+    html:not([data-motion="off"]) .page-head { view-timeline: --head block; }
+    html:not([data-motion="off"]) .page-head :is(.thead__text, .yhead__text, .tgal) {
+      animation: mo-head-text linear both;
+      animation-timeline: --head;
+      animation-range: exit 0% exit 100%;
+    }
+    html:not([data-motion="off"]) .page-head .tgal { animation-name: mo-head-pics; }
+
+    /* the section marks drift past a little slower than the page, and turn
+       a few degrees on the way, as if pinned to a board a step behind */
+    html:not([data-motion="off"]) .hd-mark {
+      animation: mo-mark linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+
+  /* ── Page to page ──────────────────────────────────────────────────────
+     The bar holds still while the page changes under it. Not while the
+     theme turns over: then the bar is part of the circle. */
+  html:not([data-motion="off"]) .nav { view-transition-name: site-nav; }
+  html.theme-swap .nav { view-transition-name: none; }
+}
+
+@property --mo-y { syntax: '<length>'; inherits: true; initial-value: 0px; }
+
+@keyframes mo-head-text { to { translate: 0 -12vh; opacity: .15; } }
+@keyframes mo-head-pics { to { translate: 0 -4vh; } }
+@keyframes mo-mark {
+  from { translate: 0 22px;  rotate: calc(var(--t, 0deg) - 7deg); }
+  to   { translate: 0 -22px; rotate: calc(var(--t, 0deg) + 7deg); }
+}
