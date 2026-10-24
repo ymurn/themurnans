@@ -91,8 +91,10 @@ const KNOWN = {
   'fall creek falls': 'TN', 'watkins glen': 'NY', 'letchworth': 'NY',
 };
 
-/* Towns with a namesake stay off that list: Newport is in Rhode Island and on
-   the Oregon coast, and we have photographs of both.
+/* Newport is Newport, Rhode Island: the two of them live in New York and
+   David is from Cincinnati, so it is the one they mean. The one exception
+   is the honeymoon's morning on the Oregon coast, and that line says OR
+   ("Newport to Depoe Bay, OR"), so a line naming Oregon keeps it there.
 
    Things a place name says that are not where it happened: Cincinnati Night
    was a night out in New York. */
@@ -136,6 +138,8 @@ function statesFromPlace(place) {
       re.lastIndex = a + 1;
     }
   }
+  // Newport, unless the line puts it in Oregon
+  if (/(^|[^a-z])newport([^a-z]|$)/.test(rest) && !out.has('OR')) out.add('RI');
   return [...out];
 }
 
