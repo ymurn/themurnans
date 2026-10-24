@@ -48,6 +48,8 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2025-02-rhode-island/2025-02-rhode-island-05.jpg", "cap": "Nauset Light on Cape Cod" },
+    { "src": "continued_trips/2025-02-mystic/2025-02-mystic-01.jpg", "cap": "Sea lions at Mystic Aquarium" },
+    { "src": "continued_trips/2025-02-mystic/2025-02-mystic-02.jpg", "cap": "African penguins at Mystic" },
     { "src": "continued_trips/2025-02-rhode-island/2025-02-rhode-island-01.jpg", "cap": "On the rocks in Newport" },
     { "src": "continued_trips/2025-02-rhode-island/2025-02-rhode-island-03.jpg", "cap": "Beef Wellington at the White Horse Tavern" },
     { "src": "continued_trips/2025-02-rhode-island/2025-02-rhode-island-07.jpg", "cap": "Provincetown" }
