@@ -2551,24 +2551,6 @@
        of six with a pager upright, one swipe row of all of them sideways,
        four on a desktop. Deal again for the new one, from the first set,
        rather than leave six cards and a pager squeezed into a row. */
-    /* The screen's height, measured rather than read off a viewport unit:
-       on a phone on its side Safari's units disagreed with the screen, and
-       the map and cards came out sized for one a third shorter. The tallest
-       height seen at this width is the screen with Safari's bars tucked
-       away, so it only ever grows, once, and never jitters as they come and
-       go. A new width (the phone turned) starts again. */
-    let screenW = 0, screenH = 0;
-    const measureScreen = () => {
-      const w = innerWidth, h = Math.round(visualViewport ? visualViewport.height * visualViewport.scale : innerHeight);
-      const tall = Math.max(h, innerHeight);
-      if (w !== screenW) { screenW = w; screenH = 0; }
-      if (tall > screenH) {
-        screenH = tall;
-        document.documentElement.style.setProperty('--screen-h', `${screenH}px`);
-      }
-    };
-    measureScreen();
-    addEventListener('resize', measureScreen);
     // ?vp on the address shows what the phone reports, to check by eye
     if (/[?&]vp\b/.test(location.search)) {
       const tag = document.createElement('div');
@@ -2577,7 +2559,7 @@
       const probe = u => { const d = document.createElement('div'); d.style.cssText = `position:absolute;visibility:hidden;height:100${u}`; document.body.appendChild(d); const v = d.offsetHeight; d.remove(); return v; };
       const show = () => {
         const g = $('#mem-panel .mem__card'), m = $('.mem__map');
-        tag.textContent = `inner ${innerWidth}x${innerHeight}  vv ${visualViewport ? Math.round(visualViewport.height) : '-'}\nsvh ${probe('svh')} lvh ${probe('lvh')} dvh ${probe('dvh')}  used ${screenH}\nmap ${m ? Math.round(m.getBoundingClientRect().width) : '-'}  card ${g ? Math.round(g.getBoundingClientRect().width) : '-'}  dpr ${devicePixelRatio}`;
+        tag.textContent = `inner ${innerWidth}x${innerHeight}  vv ${visualViewport ? Math.round(visualViewport.height) : '-'}\nsvh ${probe('svh')} lvh ${probe('lvh')} dvh ${probe('dvh')}\nmap ${m ? Math.round(m.getBoundingClientRect().width) : '-'}  card ${g ? Math.round(g.getBoundingClientRect().width) : '-'}  dpr ${devicePixelRatio}`;
       };
       show(); addEventListener('resize', show); addEventListener('scroll', perFrame(show), { passive: true });
     }

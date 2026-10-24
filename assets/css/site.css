@@ -4969,8 +4969,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      while it scrolls. Sized to the screen as it is now (dvh), everything
      grew and shrank as the bars came and went, which read as the map
      glitching; sized with the bars showing (svh), which on a phone on its
-     side take a third of the height, the map and the cards came out tiny. */
-  :root { --memscreen: calc(var(--screen-h, 100lvh) - var(--nav-h)); }
+     side take a third of the height, the map and the cards came out tiny.
+     Never measured in script either: measured on load with the bars
+     showing, then again once they tucked away, the section shrank as the
+     page loaded and grew back mid-scroll. lvh is fixed from the start. */
+  :root { --memscreen: calc(100lvh - var(--nav-h)); }
   /* Spacing here is on the 8px grid (4px for the tightest). Room under it
      before the next band, which shows once an open memory makes the section
      taller than the screen: 24px, plus the section's own 8px, is 32. */
