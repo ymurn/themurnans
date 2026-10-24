@@ -452,11 +452,11 @@
 
   /* The comic tail reaches from the card to just behind his head, above the
      ring, whatever the card's width or side. Where the heads are, as
-     fractions of the drawings: the back of David's head 38% across, his face
+     fractions of the drawings: the back of David's head 41% across, at the tail's height,, his face
      88%; Yinja faces the other way, 63% and 12%. Measured in the drawing's
      own box, so its lean and drift do not matter. The tail scales evenly,
      never stretched, within the sizes it was drawn to look right at. */
-  const HEADS = { bear: { back: .38, face: .88 }, tiger: { back: .63, face: .12 } };
+  const HEADS = { bear: { back: .41, face: .88 }, tiger: { back: .63, face: .12 } };
   function reachTail(fig, card, nudge) {
     const tail = $('.fig__tail', card), layer = $('.fig__layer', fig);
     if (!tail || !layer) return;
@@ -467,7 +467,8 @@
     const left = card.offsetLeft + (nudge || 0);
     const edge = onRight ? left + w : left;
     const x = (flip ? head.face : head.back) * W;
-    const reach = onRight ? x - 6 - edge : edge - (x + 6);
+    // a breath of space between its tip and his hair
+    const reach = onRight ? x - 14 - edge : edge - (x + 14);
     const len = Math.round(Math.max(40, Math.min(96, reach + 2)));
     tail.style.width = `${len}px`;
     tail.style.height = `${Math.round(len * 30 / 64)}px`;
