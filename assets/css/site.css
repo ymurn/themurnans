@@ -4289,6 +4289,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__open {
   position: relative;
   display: grid;
+  /* The column is the card's width and never more. Left to size itself, it
+     grew to the strip's five full-size thumbnails (about 400px), so on a
+     393px phone the whole memory ran off the right edge instead of the
+     thumbnails shrinking to fit, as they are meant to. */
+  grid-template-columns: minmax(0, 1fr);
   gap: .85rem;
   padding: clamp(.85rem, 2vw, 1.1rem);
   border: var(--keyline);
@@ -4492,6 +4497,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   transition: transform .4s var(--ease), box-shadow .4s var(--ease), rotate .4s var(--ease);
 }
 .tally__card:nth-child(even) { rotate: .7deg; }
+/* Cards side by side share their rows, so whatever wraps in one, the icon,
+   the figure, the label and the note each start on the same line as their
+   neighbour's. Stretched on its own, a card with less to say spread the
+   spare height between its rows and dropped its figure below the others. */
+@supports (grid-template-rows: subgrid) {
+  .tally__card { grid-row: span 4; grid-template-rows: subgrid; }
+}
 @media (hover: hover) { .tally__card:hover { rotate: 0deg; transform: translateY(-5px); box-shadow: 9px 9px 0 var(--fill, var(--gold)); } }
 .tally__mark { display: block; width: clamp(42px, 6vw, 56px); margin-bottom: .35rem; }
 .tally__mark svg { display: block; width: 100%; height: auto; }
