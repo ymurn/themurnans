@@ -5020,25 +5020,42 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
   /* An open memory: its thumbnails in one column to the right of the
      photograph, as on a desktop, so the photograph, the way back and the
-     place's name fit on the first screen; the words follow. The column is
-     the photograph's height, shared evenly, so they are all one size. */
-  /* the photograph and its column as one pair, centred in the card */
-  .mem__open { grid-template-columns: auto auto; justify-content: center; }
+     place's name fit on the first screen; the words follow. Every size here
+     is worked out from the screen and the panel's width, never from the
+     content: the photograph's width (4:3, as big as the screen allows), its
+     height from that, and each thumbnail's side from that height shared
+     between them. Sized from each other, the column and the thumbnails
+     settled differently in Safari and broke apart on a pinch to zoom. The
+     width left for the photograph takes off the card's padding (2.2rem),
+     the column (4.1rem at most), the gap (.85rem) and the keylines. */
+  .mem__open {
+    --leadw: min(calc(100cqw - 7.6rem), calc((var(--memscreen) - 8rem) * 4 / 3));
+    --leadh: calc(var(--leadw) * 3 / 4);
+    grid-template-columns: auto auto; justify-content: center;
+  }
   .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
   .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
-  /* 4:3, as big as the screen allows: its width from the height there is */
-  .mem__open > .mem__lead { grid-row: 2; aspect-ratio: 4 / 3; width: min(calc(100cqw - 2.2rem - 4.6rem), calc((var(--memscreen) - 8rem) * 4 / 3)); }
-  .mem__open:not(:has(> .mem__shots)) > .mem__lead { width: min(calc(100cqw - 2.2rem), calc((var(--memscreen) - 8rem) * 4 / 3)); justify-self: center; }
+  .mem__open > .mem__lead { grid-row: 2; aspect-ratio: auto; width: var(--leadw); height: var(--leadh); }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead {
+    --leadw: min(calc(100cqw - 2.6rem), calc((var(--memscreen) - 8rem) * 4 / 3));
+    justify-self: center;
+  }
   .mem__open > .mem__shots {
+    /* shared out, but never under 36px, a size a thumb can tap: a column
+       short of room for all of them scrolls, still one column */
+    --thumb: max(2.25rem, min(3.2rem, calc((var(--leadh) - .6rem - 6px - (var(--n, 4) - 1) * .3rem) / var(--n, 4))));
     grid-row: 2; grid-column: 2;
-    display: grid;
-    grid-template-rows: repeat(var(--n, 4), minmax(0, 1fr));
-    /* the photograph alone sets the row's height; the column takes it */
-    height: 0; min-height: 100%; box-sizing: border-box;
-    align-self: stretch; justify-self: start;
+    display: flex; flex-direction: column; align-items: center;
+    box-sizing: border-box;
+    overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+    width: calc(var(--thumb) + .6rem + 2px); height: var(--leadh);
     padding: .3rem; gap: .3rem;
   }
-  .mem__open .mem__thumb { width: auto; height: 100%; max-height: 3.2rem; min-height: 0; aspect-ratio: 1; justify-self: center; align-self: center; }
+  .mem__open > .mem__shots::-webkit-scrollbar { display: none; }
+  .mem__open .mem__thumb { flex: none; width: var(--thumb); height: var(--thumb); aspect-ratio: auto; min-height: 0; }
+  /* centred in the column when they fit, from the top when it scrolls */
+  .mem__open .mem__thumb:first-child { margin-top: auto; }
+  .mem__open .mem__thumb:last-child { margin-bottom: auto; }
 }
 
 /* ── A TABLET STOOD UP ───────────────────────────────────────────────────
