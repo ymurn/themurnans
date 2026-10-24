@@ -2357,19 +2357,21 @@
 
     /* ── The panel ─────────────────────────────────────────────────────── */
 
-    /* A picked state is shuffled once, when it is picked, so "Show all"
+    /* A picked state is shuffled once, when it is picked, so "Show more"
        turns up the rest of the same deal rather than a new one, and coming
        back from an open memory finds the cards where they were. A swipe row
        (a phone on its side, a tablet stood up) holds all of them; a grid
-       deals six, or four on a desktop, with the rest one tap away. */
+       deals six, or four on a desktop, and "Show more" adds the same again,
+       never New York's twenty-three at once. "Show fewer" goes back to the
+       first deal. */
     let deck = null;    // the picked state's memories, in the order dealt
-    let full = false;   // all of them showing
+    let added = 0;      // deals added by "Show more"
     const limit = () => (wide() ? MEM_DEAL_WIDE : MEM_DEAL);
     const inRow = () => matchMedia(UPRIGHT).matches || matchMedia(SIDEWAYS).matches;
     const cardsFor = id => {
       if (!id) return shuffled(M.items.map((_, i) => i)).slice(0, limit());
       if (!deck) deck = shuffled(M.by[id] || []);
-      return full || inRow() ? deck : deck.slice(0, limit());
+      return inRow() ? deck : deck.slice(0, limit() * (1 + added));
     };
 
     /* ── One memory, the state someone picked ──────────────────────────
@@ -2444,10 +2446,18 @@
           </button>`;
       }).join('');
 
-      // more than the grid deals: the rest are one tap away, and back again
-      const more = id && !inRow() && deck && deck.length > limit()
-        ? `<button class="mem__more${full ? ' is-open' : ''}" type="button" data-more aria-expanded="${full}">${full ? 'Show fewer' : `Show all ${deck.length} memories`}<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1.6 1.9 6 6.1l4.4-4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
-        : '';
+      // more than the grid deals: the next deal is one tap away, and the
+      // first one back again
+      const CHEV = '<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1.6 1.9 6 6.1l4.4-4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      let more = '';
+      if (id && !inRow() && deck && deck.length > limit()) {
+        const left = deck.length - picks.length;
+        const next = Math.min(limit(), left);
+        more = `<div class="mem__morerow">
+          ${left ? `<button class="mem__more" type="button" data-more="+">Show ${next} more<span class="mem__left">${left} left</span>${CHEV}</button>` : ''}
+          ${added ? `<button class="mem__more mem__more--less" type="button" data-more="-">Show fewer${CHEV}</button>` : ''}
+        </div>`;
+      }
       return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>${more}`;
     };
 
@@ -2491,7 +2501,7 @@
       on = id;
       open = null;
       deck = null;
-      full = false;
+      added = 0;
       host.classList.toggle('is-picked', !!id);
       svg.classList.toggle('is-picked', !!id);
       $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
@@ -2626,7 +2636,15 @@
       const card = e.target.closest('[data-open]');
       if (card) { repaint(() => { open = +card.dataset.open; }); return; }
       if (e.target.closest('[data-roll]')) { rollTo(); return; }
-      if (e.target.closest('[data-more]')) { repaint(() => { full = !full; }); return; }
+      const more = e.target.closest('[data-more]');
+      if (more) {
+        const back = more.dataset.more === '-';
+        repaint(() => { added = back ? 0 : added + 1; });
+        // back to the first deal: bring the cards' heading into view, since
+        // the button just went up the page with the cards it took away
+        if (back) $('.mem__headrow', panel)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        return;
+      }
       if (e.target.closest('[data-back]')) { repaint(() => { open = null; }); return; }
       if (e.target.closest('[data-all]')) { pin(); show(null); release(nudge()); return; }
 

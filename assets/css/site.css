@@ -4376,10 +4376,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 /* an odd one out takes the whole row rather than sitting on its own */
 .mem__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-/* "Show all 8 memories" / "Show fewer": quiet, under the grid, centred on
-   it. The chevron turns over once it is open. */
+/* "Show 6 more" (and how many are left) and "Show fewer": quiet, under the
+   grid, centred on it. The chevron points the way the cards will go. */
+.mem__morerow { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; }
 .mem__more {
-  justify-self: center;
   display: inline-flex; align-items: center; gap: .5rem;
   margin-top: .35rem;
   padding: .55rem 1.05rem;
@@ -4392,7 +4392,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   transition: background-color .25s var(--ease);
 }
 .mem__more svg { transition: rotate .35s var(--ease); }
-.mem__more.is-open svg { rotate: 180deg; }
+.mem__more--less svg { rotate: 180deg; }
+/* the way back is the quieter of the two: a text button beside it */
+.mem__more--less { border-color: transparent; padding-inline: .55rem; color: var(--ink-2); }
+@media (hover: hover) { .mem__more--less:hover { background: none; color: var(--ink); } }
+.mem__morerow { align-items: center; gap: .2rem .3rem; }
+.mem__left { color: var(--ink-3); font-weight: 400; }
+.mem__left::before { content: "·"; margin-inline: .45rem; }
 @media (hover: hover) { .mem__more:hover { background: var(--paper-2); } }
 .mem__more:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
