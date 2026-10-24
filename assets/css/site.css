@@ -4178,7 +4178,12 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
    fallback for anything that does not know clip. */
 body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 
-.mem__mapcol { position: relative; z-index: 1; }
+.mem__mapcol { position: relative; z-index: 1; container: memmap / inline-size; }
+/* Under the map the section ends sooner, and the tally after it starts
+   sooner: each band's own 10rem on a desktop, one on top of the other, left
+   the map followed by a screen of nothing. */
+.memories.band { padding-bottom: clamp(2rem, 4vw, 3.5rem); }
+.memories.band + .band { padding-top: clamp(3.5rem, 7vw, 6rem); }
 @media (min-width: 1000px) {
   .mem { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); align-items: start; }
   /* The column of photographs is the taller of the two, so the map follows it
@@ -4297,6 +4302,17 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__badge-n b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: 0; line-height: .8; }
 .mem__badge-plus { padding-right: .35rem; }
 .mem__badge-plus[hidden] { display: none; }
+/* A map drawn wide enough (a desktop, a tablet stood up) holds the count as
+   its key, in the one empty corner it has: the Pacific and Mexico, bottom
+   left, clear of land for 42% of the width across the bottom 15%. Narrower
+   maps keep it as the caption under them; there the corner is too small to
+   read it in. Measured on the map's own column, not the window. */
+@container memmap (min-width: 38rem) {
+  /* the map's own left edge: stood up on a tablet the map is narrower than
+     its column (--map-max) and centred in it */
+  .mem__hint { position: absolute; left: calc((100cqw - min(100cqw, var(--map-max, 100cqw))) / 2 + .25rem); bottom: .4rem; margin: 0; pointer-events: none; }
+  .mem__badge > * { padding: .4rem .6rem; }
+}
 .mem__badge-now {
   color: var(--ink-3);
   font-size: .58rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
@@ -4358,6 +4374,26 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.7rem, 1.6vw, 1rem); }
 /* an odd one out takes the whole row rather than sitting on its own */
 .mem__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* "Show all 8 memories" / "Show fewer": quiet, under the grid, centred on
+   it. The chevron turns over once it is open. */
+.mem__more {
+  justify-self: center;
+  display: inline-flex; align-items: center; gap: .5rem;
+  margin-top: .35rem;
+  padding: .55rem 1.05rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font: inherit; font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color .25s var(--ease);
+}
+.mem__more svg { transition: rotate .35s var(--ease); }
+.mem__more.is-open svg { rotate: 180deg; }
+@media (hover: hover) { .mem__more:hover { background: var(--paper-2); } }
+.mem__more:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
 .mem__card {
   position: relative;
@@ -4540,11 +4576,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__place { text-wrap: balance; }
   .mem__text { text-wrap: pretty; }
   .mem__go { justify-self: stretch; justify-content: center; padding: .8rem 1rem; margin-right: 3px; }
-  /* The count goes above the map here, so that nothing sits between the map
-     and the photographs for the pill to float over on its way past. It reads
-     as an opening line there in any case. */
+  /* The count is the map's caption, just under it: over the map it sat on
+     the map's top edge like a label for something else. */
   .mem__mapcol { display: flex; flex-direction: column; }
-  .mem__hint { order: -1; margin: 0 0 .9rem; justify-content: center; text-align: center; }
+  .mem__hint { margin: .7rem 0 0; justify-content: center; text-align: center; }
 }
 
 /* A desktop: the photographs are cut to the map's height. Ten cards down the
@@ -4976,8 +5011,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    Landscape is handled above and does not reach this. */
 @media (min-width: 700px) and (orientation: portrait) {
   .mem { grid-template-columns: minmax(0, 1fr); }
-  .mem__mapcol { position: static; }
-  .mem__map { width: 100%; max-width: 620px; margin-inline: auto; }
+  /* not sticky here, but still the box its key is set in */
+  .mem__mapcol { position: relative; --map-max: 620px; }
+  .mem__map { width: 100%; max-width: var(--map-max); margin-inline: auto; }
 
   .mem__grid {
     display: flex;
@@ -5052,7 +5088,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   font-weight: 500; font-size: .84rem; line-height: 1.15;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.mem__now span { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--deep-ink-3); }
+/* the count is one line, always: "139 memories" broke after the number */
+.mem__now span { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--deep-ink-3); white-space: nowrap; }
 /* A rotated bordered square puts its visual weight below its own box, which
    is what had the chevron sitting low in the circle. An svg centers exactly. */
 .mem__chev {

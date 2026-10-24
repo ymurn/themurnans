@@ -2357,9 +2357,19 @@
 
     /* ── The panel ─────────────────────────────────────────────────────── */
 
+    /* A picked state is shuffled once, when it is picked, so "Show all"
+       turns up the rest of the same deal rather than a new one, and coming
+       back from an open memory finds the cards where they were. A swipe row
+       (a phone on its side, a tablet stood up) holds all of them; a grid
+       deals six, or four on a desktop, with the rest one tap away. */
+    let deck = null;    // the picked state's memories, in the order dealt
+    let full = false;   // all of them showing
+    const limit = () => (wide() ? MEM_DEAL_WIDE : MEM_DEAL);
+    const inRow = () => matchMedia(UPRIGHT).matches || matchMedia(SIDEWAYS).matches;
     const cardsFor = id => {
-      const list = id ? (M.by[id] || []) : M.items.map((_, i) => i);
-      return shuffled(list).slice(0, wide() ? MEM_DEAL_WIDE : MEM_DEAL);
+      if (!id) return shuffled(M.items.map((_, i) => i)).slice(0, limit());
+      if (!deck) deck = shuffled(M.by[id] || []);
+      return full || inRow() ? deck : deck.slice(0, limit());
     };
 
     /* ── One memory, the state someone picked ──────────────────────────
@@ -2434,7 +2444,11 @@
           </button>`;
       }).join('');
 
-      return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>`;
+      // more than the grid deals: the rest are one tap away, and back again
+      const more = id && !inRow() && deck && deck.length > limit()
+        ? `<button class="mem__more${full ? ' is-open' : ''}" type="button" data-more aria-expanded="${full}">${full ? 'Show fewer' : `Show all ${deck.length} memories`}<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1.6 1.9 6 6.1l4.4-4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
+        : '';
+      return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>${more}`;
     };
 
     /* The photographs the open memory is showing, in the order its thumbnails
@@ -2476,6 +2490,8 @@
     const show = id => {
       on = id;
       open = null;
+      deck = null;
+      full = false;
       host.classList.toggle('is-picked', !!id);
       svg.classList.toggle('is-picked', !!id);
       $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
@@ -2610,6 +2626,7 @@
       const card = e.target.closest('[data-open]');
       if (card) { repaint(() => { open = +card.dataset.open; }); return; }
       if (e.target.closest('[data-roll]')) { rollTo(); return; }
+      if (e.target.closest('[data-more]')) { repaint(() => { full = !full; }); return; }
       if (e.target.closest('[data-back]')) { repaint(() => { open = null; }); return; }
       if (e.target.closest('[data-all]')) { pin(); show(null); release(nudge()); return; }
 

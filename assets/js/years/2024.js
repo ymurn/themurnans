@@ -12,7 +12,7 @@ window.MW_YEAR = {
  "from": 1,
 
  "facts": [
-  { "k": "National parks", "v": "8", "s": "White Sands, Saguaro, Carlsbad Caverns, Guadalupe Mountains, Big Bend, Acadia, New River Gorge and Congaree." },
+  { "k": "National parks", "v": "9", "s": "White Sands, Chiricahua, Saguaro, Carlsbad Caverns, Guadalupe Mountains, Big Bend, Acadia, New River Gorge and Congaree." },
   { "k": "Months with a trip", "v": "9 of 12", "s": "Nothing until March, then barely a pause." },
   { "k": "Canceled flights", "v": "2", "s": "Both on the way home from Quebec." },
   { "k": "Buc-ee's stops", "v": "3", "s": "The brisket sandwich, every time." }
