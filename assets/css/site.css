@@ -4552,19 +4552,40 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__text { margin: 0; font-size: .92rem; line-height: 1.6; color: var(--ink-2); }
 /* a place David wrote nothing about has the photographs and the link only */
 .mem__text:empty { display: none; }
-.mem__go {
-  justify-self: start;
-  display: inline-flex; align-items: center; gap: .45rem;
-  padding: .5rem .95rem;
+/* Over David's words when they are his opening for the whole trip, not
+   about this place: says so, so nothing is put in his mouth. */
+.mem__from { font-size: .66rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); text-wrap: balance; }
+.mem__from + .mem__text { margin-top: -.25rem; }
+/* The two ways on from an open memory: another memory leads, as the gold
+   button; the year page is a quiet link under it. */
+.mem__acts { display: grid; justify-items: start; gap: .5rem; }
+.mem__next {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1rem;
   border: var(--keyline);
   border-radius: 999px;
   background: var(--gold);
   color: #14110D;
-  font-size: .82rem; font-weight: 500;
+  font: inherit; font-size: .82rem; font-weight: 500;
+  cursor: pointer;
   box-shadow: 3px 3px 0 var(--ink);
   transition: transform .25s var(--ease), box-shadow .25s var(--ease);
 }
-@media (hover: hover) { .mem__go:hover { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); } }
+.mem__next svg { flex: none; }
+@media (hover: hover) { .mem__next:hover { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); } }
+.mem__next:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.mem__go {
+  display: inline-flex; align-items: center; gap: .25rem;
+  padding: .25rem 0;
+  color: var(--ink-2);
+  font-size: .82rem; font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  transition: color .25s var(--ease), text-decoration-color .25s var(--ease);
+}
+@media (hover: hover) { .mem__go:hover { color: var(--ink); text-decoration-color: currentColor; } }
 
 /* Nothing filed under this one yet, said plainly rather than left blank */
 .mem__none {
@@ -4596,7 +4617,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__head { justify-items: center; }
   .mem__place { text-wrap: balance; }
   .mem__text { text-wrap: pretty; }
-  .mem__go { justify-self: stretch; justify-content: center; padding: .8rem 1rem; margin-right: 3px; }
+  .mem__acts { justify-items: stretch; }
+  .mem__next { justify-content: center; padding: .75rem 1rem; margin-right: 3px; }
+  .mem__go { justify-self: center; }
   /* The count is the map's caption, just under it: over the map it sat on
      the map's top edge like a label for something else. */
   .mem__mapcol { display: flex; flex-direction: column; }

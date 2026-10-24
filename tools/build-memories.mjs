@@ -446,8 +446,9 @@ MW.timeline.forEach((c, i) => {
    its day and its trip, read by hand off the GPS in its original (so no
    coordinates are kept). PLACE gives each place its full name and state, and
    the words that find what David wrote about it, word for word as ever.
-   Where he wrote nothing about a place it carries no words at all: the
-   trip's opening, about somewhere else, would say something untrue of it. */
+   Where he wrote nothing about a place it carries the trip's own opening,
+   marked "tr" with the trip's name, so the panel can say it is about the
+   whole trip and not about this place. */
 const PHOTO_PLACE = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools/photo-places.json'), 'utf8'));
 const PLACE = {
   'Las Vegas': ['Las Vegas, NV', 'NV'],
@@ -545,7 +546,8 @@ function byPlace(t, m, year, picks) {
       short: g.name,
       date: daysSpan(g.days),
       year,
-      text: about.length ? blurb(about.join(' ')) : '',
+      text: about.length ? blurb(about.join(' ')) : blurb(t.text),
+      tr: about.length ? undefined : t.place,
       href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
       pics,
     });
@@ -615,7 +617,8 @@ const body = items.map(m => {
   // there is nothing to say.
   const pics = m.pics.map(p => `{"u":${j(url(p.src))}${p.cap ? `,"c":${j(p.cap)}` : ''}${p.pos ? `,"p":${j(p.pos)}` : ''}${p.st ? `,"s":${j(p.st)}` : ''}}`);
   const t = Object.keys(m.t).length ? `"t":${j(m.t)},` : '';
-  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   "text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
+  const tr = m.tr ? `"tr":${j(m.tr)},` : '';
+  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   ${tr}"text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
 }).join(',\n');
 
 const out = `/* Every trip on the site, filed under the state it happened in, so the map on

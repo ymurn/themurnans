@@ -2470,6 +2470,16 @@
        the third one here. */
     let roll = [];
 
+    // Under a picked state the memory is called what its card is called
+    // there: the Louisville half of a Cincinnati chapter, under Kentucky, is
+    // "Louisville, Kentucky", not "Cincinnati, Ohio".
+    const heading = m => (on && m.t && m.t[on] ? `${m.t[on]}, ${nameOf(on)}` : m.place);
+
+    /* An open memory's two ways on: another memory leads, since that is what
+       people come to the map for; leaving for the year page is the quieter
+       link. With only the one button, people who were shown the site
+       followed it and found themselves on a timeline they had not asked
+       for. */
     const opened = i => {
       const m = M.items[i];
       const pics = roll = forState(m, on).slice(0, 5);
@@ -2486,16 +2496,46 @@
               <img src="${esc(p.u)}" alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
             </button>`).join('')}</div>` : ''}
           <div class="mem__head">
-            <h3 class="mem__place">${esc(m.place)}</h3>
+            <h3 class="mem__place">${esc(heading(m))}</h3>
             <span class="mem__date">${esc(m.date)}</span>
           </div>
+          ${m.tr ? `<span class="mem__from">From the trip: ${esc(m.tr)}</span>` : ''}
           <p class="mem__text">${esc(m.text)}</p>
-          <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>
+          <div class="mem__acts">
+            <button class="mem__next" type="button" data-next><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>Pull another memory</button>
+            <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>
+          </div>
         </div>`;
     };
 
     const paint = () => {
       panel.innerHTML = open === null ? grid(on, cardsFor(on)) : opened(open);
+    };
+
+    /* "Pull another memory": the next one in the same state, in the order
+       its cards were dealt, round to the first again after the last.
+       From the pile, any other. A state with only the one has nothing else
+       to give, so it pulls a memory from another state instead. */
+    const pullAnother = () => {
+      const pick = list => list[Math.floor(Math.random() * list.length)];
+      if (!on) {
+        const all = M.items.map((_, i) => i).filter(i => i !== open);
+        repaint(() => { open = pick(all); });
+        return;
+      }
+      const here = deck || M.by[on] || [];
+      if (here.length > 1) {
+        const k = here.indexOf(open);
+        repaint(() => { open = here[(k + 1) % here.length]; });
+        return;
+      }
+      const filed = Object.keys(M.by).filter(id => id !== on);
+      if (!filed.length) return;
+      pin();
+      show(pick(filed));
+      open = pick(M.by[on]);
+      paint();
+      release(nudge());
     };
 
     /* ── Choosing ──────────────────────────────────────────────────────── */
@@ -2674,6 +2714,7 @@
       const card = e.target.closest('[data-open]');
       if (card) { repaint(() => { open = +card.dataset.open; }); return; }
       if (e.target.closest('[data-roll]')) { rollTo(); return; }
+      if (e.target.closest('[data-next]')) { pullAnother(); return; }
       if (e.target.closest('[data-more]')) {
         repaint(() => { page = (page + 1) * limit() >= deck.length ? 0 : page + 1; });
         // the new set starts at the top of the grid: bring it into view
