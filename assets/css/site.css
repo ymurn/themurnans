@@ -4376,12 +4376,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 /* an odd one out takes the whole row rather than sitting on its own */
 .mem__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-/* "Show 6 more" (and how many are left) and "Show fewer": quiet, under the
-   grid, centred on it. The chevron points the way the cards will go. */
-.mem__morerow { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; }
+/* "1–6 of 23" and "Show 6 others": quiet, under the grid, on one line. */
+.mem__morerow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .4rem .9rem; margin-top: .35rem; }
+.mem__range { font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .mem__more {
   display: inline-flex; align-items: center; gap: .5rem;
-  margin-top: .35rem;
   padding: .55rem 1.05rem;
   border: 1.5px solid var(--ink);
   border-radius: 999px;
@@ -4391,15 +4390,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   cursor: pointer;
   transition: background-color .25s var(--ease);
 }
-.mem__more svg { transition: rotate .35s var(--ease); }
-.mem__more--less svg { rotate: 180deg; }
-/* the way back is the quieter of the two: a text button beside it */
-.mem__more--less { border-color: transparent; padding-inline: .55rem; color: var(--ink-2); }
-@media (hover: hover) { .mem__more--less:hover { background: none; color: var(--ink); } }
-.mem__morerow { align-items: center; gap: .2rem .3rem; }
-.mem__left { color: var(--ink-3); font-weight: 400; }
-.mem__left::before { content: "·"; margin-inline: .45rem; }
-@media (hover: hover) { .mem__more:hover { background: var(--paper-2); } }
+.mem__more svg { transition: translate .35s var(--ease); }
+@media (hover: hover) { .mem__more:hover { background: var(--paper-2); } .mem__more:hover svg { translate: 2px 0; } }
 .mem__more:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
 .mem__card {

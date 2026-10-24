@@ -2361,17 +2361,17 @@
        turns up the rest of the same deal rather than a new one, and coming
        back from an open memory finds the cards where they were. A swipe row
        (a phone on its side, a tablet stood up) holds all of them; a grid
-       deals six, or four on a desktop, and "Show more" adds the same again,
-       never New York's twenty-three at once. "Show fewer" goes back to the
-       first deal. */
+       deals six, or four on a desktop, and "Show 6 others" swaps in the
+       next six, round to the first again after the last: never New York's
+       twenty-three at once, and the section never changes height. */
     let deck = null;    // the picked state's memories, in the order dealt
-    let added = 0;      // deals added by "Show more"
+    let page = 0;       // which deal of them is showing
     const limit = () => (wide() ? MEM_DEAL_WIDE : MEM_DEAL);
     const inRow = () => matchMedia(UPRIGHT).matches || matchMedia(SIDEWAYS).matches;
     const cardsFor = id => {
       if (!id) return shuffled(M.items.map((_, i) => i)).slice(0, limit());
       if (!deck) deck = shuffled(M.by[id] || []);
-      return inRow() ? deck : deck.slice(0, limit() * (1 + added));
+      return inRow() ? deck : deck.slice(page * limit(), (page + 1) * limit());
     };
 
     /* ── One memory, the state someone picked ──────────────────────────
@@ -2446,16 +2446,16 @@
           </button>`;
       }).join('');
 
-      // more than the grid deals: the next deal is one tap away, and the
-      // first one back again
-      const CHEV = '<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1.6 1.9 6 6.1l4.4-4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      // more than the grid deals: the next deal is one tap away, and which
+      // of them is showing ("7–12 of 23")
       let more = '';
       if (id && !inRow() && deck && deck.length > limit()) {
-        const left = deck.length - picks.length;
-        const next = Math.min(limit(), left);
+        const from = page * limit() + 1, to = from + picks.length - 1;
+        const last = (page + 1) * limit() >= deck.length;
+        const next = last ? Math.min(limit(), deck.length) : Math.min(limit(), deck.length - to);
         more = `<div class="mem__morerow">
-          ${left ? `<button class="mem__more" type="button" data-more="+">Show ${next} more<span class="mem__left">${left} left</span>${CHEV}</button>` : ''}
-          ${added ? `<button class="mem__more mem__more--less" type="button" data-more="-">Show fewer${CHEV}</button>` : ''}
+          <span class="mem__range" aria-live="polite">${from}–${to} of ${deck.length}</span>
+          <button class="mem__more" type="button" data-more>${last ? `Back to the first ${next}` : `Show ${next} others`}<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="${last ? 'M13 8a5 5 0 1 1-1.5-3.6M13 2.5v2.9h-2.9' : 'M3 8h9.5M8.5 4l4 4-4 4'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>`;
       }
       return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>${more}`;
@@ -2501,7 +2501,7 @@
       on = id;
       open = null;
       deck = null;
-      added = 0;
+      page = 0;
       host.classList.toggle('is-picked', !!id);
       svg.classList.toggle('is-picked', !!id);
       $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
@@ -2636,13 +2636,11 @@
       const card = e.target.closest('[data-open]');
       if (card) { repaint(() => { open = +card.dataset.open; }); return; }
       if (e.target.closest('[data-roll]')) { rollTo(); return; }
-      const more = e.target.closest('[data-more]');
-      if (more) {
-        const back = more.dataset.more === '-';
-        repaint(() => { added = back ? 0 : added + 1; });
-        // back to the first deal: bring the cards' heading into view, since
-        // the button just went up the page with the cards it took away
-        if (back) $('.mem__headrow', panel)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      if (e.target.closest('[data-more]')) {
+        repaint(() => { page = (page + 1) * limit() >= deck.length ? 0 : page + 1; });
+        // the new set starts at the top of the grid: bring it into view
+        $('.mem__headrow', panel)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        $('.mem__more', panel)?.focus({ preventScroll: true });
         return;
       }
       if (e.target.closest('[data-back]')) { repaint(() => { open = null; }); return; }
