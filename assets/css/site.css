@@ -4971,7 +4971,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      glitching; sized with the bars showing (svh), which on a phone on its
      side take a third of the height, the map and the cards came out tiny. */
   :root { --memscreen: calc(var(--screen-h, 100lvh) - var(--nav-h)); }
-  .memories.band { padding-bottom: 0; }
+  /* room under it before the next band, which shows once an open memory
+     makes the section taller than the screen */
+  .memories.band { padding-bottom: clamp(1.75rem, 7vh, 2.75rem); }
   /* narrower side margins here: every pixel goes to the map and photos */
   .memories .shell { padding-inline: 1.25rem; }
   .mem {
