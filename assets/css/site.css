@@ -4781,13 +4781,17 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    brings it in. Matches SIDEWAYS in assets/js/site.js. */
 @media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
   .mem { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; gap: clamp(1rem, 3vw, 1.75rem); }
-  /* Centred beside the cards, and stuck at the top beside an open memory,
-     the one thing here taller than the screen. */
-  .mem__mapcol { align-self: center; position: sticky; top: calc(var(--nav-h) + .75rem); }
-  .mem:has(.mem__open) .mem__mapcol { align-self: start; }
-  /* never taller than the screen under the bar, less the count line over it */
-  .mem__map { width: min(100%, calc((100svh - var(--nav-h) - 4.5rem) * 1000 / 645.6)); margin-inline: auto; }
-  .mem__hint { margin: 0 0 .6rem; }
+  /* The map's top edge lines up with the state's name across the way, and
+     it stays put beside an open memory, the one thing here taller than the
+     screen. */
+  .mem__mapcol { align-self: start; position: sticky; top: calc(var(--nav-h) + .75rem); }
+  /* never taller than the screen under the bar, less the count line under it */
+  .mem__map,
+  .mem__hint { width: min(100%, calc((100svh - var(--nav-h) - 4.5rem) * 1000 / 645.6)); margin-inline: auto; }
+  /* The count is the map's caption here, the way it is on a desktop. Over
+     the map it sat tight on the top edge with the slack all underneath; the
+     pill it makes room for on a phone stood up is not used sideways. */
+  .mem__hint { order: 0; margin-top: .6rem; margin-bottom: 0; text-align: left; justify-content: flex-start; }
   .mem__bar { display: none; }
 
   .mem__panel {
