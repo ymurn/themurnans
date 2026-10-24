@@ -4303,6 +4303,17 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__badge-n b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: 0; line-height: .8; }
 .mem__badge-plus { padding-right: .35rem; }
 .mem__badge-plus[hidden] { display: none; }
+/* Where its line is short of room for it (a phone on its side, the narrowest
+   phones), the badge tightens rather than being cut off: measured on the
+   line it sits on, not the screen. */
+.mem__hint { container: memhint / inline-size; }
+@container memhint (max-width: 19.5rem) {
+  .mem__badge { font-size: .68rem; }
+  .mem__badge > * { padding: .38rem .5rem; gap: .3rem; }
+  .mem__badge-n { font-size: .56rem; letter-spacing: .12em; }
+  .mem__badge-n b { font-size: 1.02rem; }
+  .mem__badge-now { font-size: .54rem; letter-spacing: .12em; }
+}
 .mem__badge-now {
   color: var(--ink-3);
   font-size: .58rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
@@ -4938,8 +4949,10 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
      screen. */
   .mem__mapcol { align-self: start; position: sticky; top: calc(var(--nav-h) + .75rem); }
   /* never taller than the screen under the bar, less the count line under it */
-  .mem__map,
-  .mem__hint { width: min(100%, calc((100svh - var(--nav-h) - 4.5rem) * 1000 / 645.6)); margin-inline: auto; }
+  .mem__map { width: min(100%, calc((100svh - var(--nav-h) - 4.5rem) * 1000 / 645.6)); margin-inline: auto; }
+  /* the whole column, not the map's width: a short screen draws the map
+     narrower than the badge, and it was cut off at "so far" */
+  .mem__hint { width: 100%; }
   /* The count is the map's caption here, the way it is on a desktop. Over
      the map it sat tight on the top edge with the slack all underneath; the
      pill it makes room for on a phone stood up is not used sideways. */
