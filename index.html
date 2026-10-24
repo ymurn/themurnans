@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=31">
+<link rel="stylesheet" href="assets/css/site.css?v=35">
 <link rel="stylesheet" href="assets/css/home-motion.css?v=2">
 <link rel="stylesheet" href="assets/css/motion.css?v=3">
 <!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
@@ -223,7 +223,15 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     <div class="mem" id="mem" data-reveal="up">
       <div class="mem__mapcol">
         <div class="mem__map"></div>
-        <p class="mem__hint"><span data-atlas="summary">35 states, DC and Québec</span> so far.</p>
+        <!-- Where the count of places stands: a badge, filled in by initMemoryMap
+             from VISITED so it stays true. -->
+        <p class="mem__hint">
+          <span class="mem__badge">
+            <span class="mem__badge-n"><b data-atlas="states">35</b> states</span>
+            <span class="mem__badge-plus">+ <span data-atlas="extra">DC and Québec</span></span>
+            <span class="mem__badge-now">so far</span>
+          </span>
+        </p>
       </div>
       <!-- Once the map has scrolled past, this takes its place: what is showing,
            a way to shuffle it, and the map one tap away. Phones only, and
@@ -540,6 +548,6 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/home-motion.js?v=2"></script>
 <script src="assets/js/motion.js?v=2"></script>
-<script src="assets/js/site.js?v=14"></script>
+<script src="assets/js/site.js?v=16"></script>
 </body>
 </html>

@@ -341,6 +341,8 @@
       if (word) word.textContent = p >= 100 ? 'Cheers' : p === 0 ? 'Pour' : 'More';
       range.setAttribute('aria-valuetext', `${p}% poured`);
       stage.classList.toggle('is-pouring', p > 1 && p < 99);
+      // Once both are in color, they say they can be poked, and that stays.
+      if (p >= 100) stage.classList.add('was-full');
     };
 
     set(0);
@@ -456,11 +458,26 @@
       let i = Math.floor(Math.random() * lines.length);
       let hide = null;
 
+      // The card beside the drawing has to stay on the screen: where there is
+      // not room beside it, it slides in toward the drawing just enough.
+      const card = $('.fig__card', fig);
+      if (card) fig.addEventListener('pointerenter', () => {
+        card.style.removeProperty('--nudge');
+        const b = card.getBoundingClientRect(), w = card.offsetWidth, pad = 16;
+        // measured from the side it hangs off, since it is still scaled down
+        const left = fig.dataset.who === 'bear' ? b.right - w : b.left;
+        const shift = left < pad ? pad - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
+        if (shift) card.style.setProperty('--nudge', `${Math.round(shift)}px`);
+      });
+
       fig.addEventListener('click', () => {
         say.textContent = lines[i % lines.length];
         i++;
         say.classList.add('is-said');
-        fig.classList.add('is-talking');
+        fig.classList.add('is-talking', 'was-poked');
+        // found it: the two stop hopping for attention
+        const stage = fig.closest('.stage');
+        if (stage) stage.classList.add('was-poked');
         if (!calm) {
           fig.classList.remove('is-bouncing');
           void fig.offsetWidth;              // restart the animation
@@ -2057,6 +2074,12 @@
     const extra = [...(been.has('DC') ? ['DC'] : []), ...ours.filter(r => r.id.startsWith('CA-')).map(r => r.name)];
     const summary = `${states.length} states${extra.length ? `, ${extra.slice(0, -1).join(', ')}${extra.length > 1 ? ' and ' : ''}${extra[extra.length - 1]}` : ''}`;
     $$('[data-atlas="summary"]').forEach(el => { el.textContent = summary; });
+    // the badge over the map takes it in parts: the number, then the rest
+    $$('[data-atlas="states"]').forEach(el => { el.textContent = states.length; });
+    $$('[data-atlas="extra"]').forEach(el => {
+      el.textContent = extra.length > 1 ? `${extra.slice(0, -1).join(', ')} and ${extra[extra.length - 1]}` : extra.join('');
+      el.parentElement.hidden = !extra.length;
+    });
 
     const count = id => (M.by[id] || []).length;
     const label = id => {

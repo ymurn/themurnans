@@ -849,24 +849,59 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--tiger .fig__name { right: calc(76% - var(--name-w) * .16); }
 @media (hover: hover) { .fig:hover .fig__name { opacity: .9; transform: translateY(-4px); } }
 
+/* Who they are, on hover. A card in the house print: paper, an ink keyline,
+   each one's own color printed off register behind it (his blue, his tiger
+   gold), set down at a slight tilt, with a tail toward the drawing it
+   belongs to. It lands on the house spring rather than fading up. */
 .fig__card {
+  --off: var(--blue);
+  --tilt: -1.6deg;
   position: absolute;
   top: 8%;
-  width: max(210px, 15vw);
-  padding: 1rem 1.15rem;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 0 0 1px var(--line), var(--shadow-sm);
-  border-radius: 2px;
+  width: clamp(220px, 16vw, 268px);
+  padding: 1rem 1.2rem 1.15rem;
+  background: var(--paper);
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  box-shadow: 7px 7px 0 var(--off);
+  text-align: left;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .5s var(--ease), transform .5s var(--ease);
+  /* --nudge is set on hover by initChatter when the screen is too narrow
+     to hold the card beside the drawing: it slides in just enough to fit */
+  transform: translateX(var(--nudge, 0px)) translateY(12px) rotate(0deg) scale(.94);
+  transition: opacity .35s var(--ease), transform .6s var(--pop);
   pointer-events: none;
+  z-index: 5;
 }
-.fig--bear  .fig__card { right: 84%; text-align: right; }
-.fig--tiger .fig__card { left: 84%; }
-@media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: none; } }
-.fig__card p { font-size: .78rem; line-height: 1.5; color: var(--ink-2); margin: .35rem 0 0; }
+/* Its edge sits just over the drawing's outer edge, clear of the body. */
+.fig--bear  .fig__card { right: 93%; transform-origin: 100% 30%; }
+.fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: 93%; transform-origin: 0 30%; }
+@media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: translateX(var(--nudge, 0px)) rotate(var(--tilt)); } }
+/* the tail, toward the drawing */
+.fig__card::after {
+  content: "";
+  position: absolute;
+  top: 1.6rem;
+  width: 14px; height: 14px;
+  background: var(--paper);
+  border: var(--keyline);
+  border-width: 2px 2px 0 0;
+  rotate: 45deg;
+}
+.fig--bear  .fig__card::after { right: -9px; }
+.fig--tiger .fig__card::after { left: -9px; rotate: -135deg; }
+/* the name, on a chip of the same color; dark type, so it reads at dusk too */
+.fig__card .tag {
+  display: inline-flex; align-items: center;
+  padding: .28rem .7rem;
+  border: 1.5px solid #14110D;
+  border-radius: 999px;
+  background: var(--off);
+  color: #14110D;
+  font-size: .62rem;
+  letter-spacing: .2em;
+}
+.fig__card p { font-size: .86rem; line-height: 1.55; color: var(--ink-2); margin: .65rem 0 0; text-wrap: pretty; }
 
 .stage__center { display: grid; place-items: center; gap: 1rem; align-self: center; }
 .stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease); }
@@ -1093,20 +1128,38 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: 50%; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
 }
 
+/* "Poke me" waits until both of them are in color, then shows quietly
+   under each, in the same small caps as before, and the two hop a beat
+   apart a few times over, so the invitation is seen on a phone as well as
+   under a pointer. Poking either one ends the hopping; a poked one's line
+   goes. */
 .fig__poke {
   position: absolute;
-  left: 50%; bottom: -2.6rem;
-  transform: translateX(-50%);
+  left: 50%; bottom: -2.2rem;
   font-size: .6rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--ink-3);
-  opacity: 0;
-  transition: opacity .4s var(--ease);
-  pointer-events: none;
   white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%) translateY(6px);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
 }
-@media (hover: hover) { .fig:hover .fig__poke { opacity: .85; } }
+.stage.was-full .fig__poke { opacity: .85; transform: translateX(-50%); }
+.fig--tiger .fig__poke { transition-delay: .12s; }
+.fig.was-poked .fig__poke { opacity: 0; transition-delay: 0s; }
+@media (prefers-reduced-motion: no-preference) {
+  .stage.was-full:not(.was-poked) .fig:not(:hover):not(.is-bouncing) { animation: fig-nudge 3.4s var(--ease) .9s 3; }
+  .stage.was-full:not(.was-poked) .fig--tiger:not(:hover):not(.is-bouncing) { animation-delay: 1.15s; }
+}
+/* two hops, the second smaller, then a long rest */
+@keyframes fig-nudge {
+  0%, 30%, 100% { transform: none; animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  9%  { transform: translateY(-16px); animation-timing-function: cubic-bezier(.5, 0, .75, 0); }
+  18% { transform: translateY(0); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  24% { transform: translateY(-6px); animation-timing-function: cubic-bezier(.5, 0, .75, 0); }
+}
 .fig.is-bouncing { animation: fig-bounce .7s var(--ease); }
 @keyframes fig-bounce {
   0%, 100% { transform: translateY(-10px) rotate(0deg); }
@@ -4179,9 +4232,46 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 }
 .memmap__label { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .5em; fill: var(--ink-3); pointer-events: none; }
 
-/* A sentence, not a label: letterspaced capitals took half again the width
-   for no more meaning, and this only ever has to sit quietly under the map. */
-.mem__hint { margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
+.mem__hint { display: flex; margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
+/* How far the count of places has got, as a badge rather than a loose line:
+   the number on a gold chip, the district and the province after it, and a
+   still dot on "so far", since the count is still going. Set down at a tilt,
+   with the off-register color behind it, like the stickers. Dark type on
+   the gold so it reads at dusk. */
+.mem__badge {
+  display: inline-flex; align-items: stretch;
+  max-width: 100%;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 3px 3px 0 var(--blue);
+  rotate: -1.2deg;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: .74rem;
+  line-height: 1;
+  color: var(--ink-2);
+}
+.mem__badge > * { display: inline-flex; align-items: center; gap: .4rem; padding: .42rem .7rem; }
+.mem__badge-n {
+  background: var(--gold);
+  border-right: 1.5px solid var(--ink);
+  color: #14110D;
+  font-size: .62rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+}
+.mem__badge-n b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: 0; line-height: .8; }
+.mem__badge-plus { padding-right: .35rem; }
+.mem__badge-plus[hidden] { display: none; }
+.mem__badge-now {
+  color: var(--ink-3);
+  font-size: .58rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+}
+.mem__badge-now::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sage-500);
+}
 /* The one action in the panel: it rolls the map to a state we have written up */
 .mem__roll {
   flex: none;
