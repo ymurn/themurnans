@@ -4964,11 +4964,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    to fill the row, which cut a lone card (Delaware) to a thin strip.
    Matches SIDEWAYS in assets/js/site.js. */
 @media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
-  /* The screen under the bar with Safari's own bars showing (svh), which
-     never changes while the page scrolls. Sized to the screen as it is now
-     (dvh), everything here grew and shrank each time Safari's bars came and
-     went mid-scroll, which read as the map glitching. */
-  :root { --memscreen: calc(100svh - var(--nav-h)); }
+  /* The screen under the bar with Safari's own bars tucked away (lvh),
+     which is how it is once the page is scrolled to here, and never changes
+     while it scrolls. Sized to the screen as it is now (dvh), everything
+     grew and shrank as the bars came and went, which read as the map
+     glitching; sized with the bars showing (svh), which on a phone on its
+     side take a third of the height, the map and the cards came out tiny. */
+  :root { --memscreen: calc(100lvh - var(--nav-h)); }
   .memories.band { padding-bottom: 0; }
   /* narrower side margins here: every pixel goes to the map and photos */
   .memories .shell { padding-inline: 1.25rem; }
@@ -5025,18 +5027,18 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     scrollbar-width: none;
   }
   .mem__grid::-webkit-scrollbar { display: none; }
-  /* Its width from the height the row has: the screen, less the padding,
-     the heading, the gaps and the label under the photograph, at 4:3. Never
-     wider than half the column, so two whole cards show; under 20rem of
-     column (an SE on its side) one, with the start of the next. */
+  /* Two and a half cards across the row as it shows (the column and the
+     margin it runs into), so the half says the row goes on. Never taller
+     than the screen has room for: the screen, less the padding, the
+     heading, the gaps and a two-line label, at 4:3. Under 20rem of column
+     (an SE on its side), one and a half. */
   .mem__grid > * {
-    /* the label is budgeted at two lines, and held to two below */
     --fit: calc((var(--memscreen) - 1.5rem - 2.75rem - .6rem - 1.2rem - 4.9rem) * 4 / 3);
-    flex: 0 0 min(var(--fit), calc((100cqw - .9rem) / 2));
+    flex: 0 0 min(var(--fit), calc((100cqw + 1.25rem - 2 * .9rem) / 2.5));
     scroll-snap-align: start;
   }
   @container mempanel (max-width: 20rem) {
-    .mem__grid > * { flex-basis: min(var(--fit), 80cqw); }
+    .mem__grid > * { flex-basis: min(var(--fit), calc((100cqw + 1.25rem - .9rem) / 1.5)); }
   }
   /* Every card in the row the same height, the tallest label's: the color
      under the label runs to the foot of each. Names longer than two lines
