@@ -882,9 +882,10 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   pointer-events: none;
   z-index: 5;
 }
-/* Its edge sits just over the drawing's outer edge, clear of the body. */
-.fig--bear  .fig__card { right: 93%; transform-origin: 100% 30%; }
-.fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: 93%; transform-origin: 0 30%; }
+/* It stands a small gap clear of the drawing, so the ring each of them
+   holds behind his back stays in sight; the tail bridges the gap. */
+.fig--bear  .fig__card { right: calc(100% + .9rem); transform-origin: 100% 30%; }
+.fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: calc(100% + .9rem); transform-origin: 0 30%; }
 @media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: translateX(var(--nudge, 0px)) rotate(var(--tilt)); } }
 /* the tail, toward the drawing */
 .fig__card::after {
@@ -900,8 +901,8 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--bear  .fig__card::after { right: -9px; }
 .fig--tiger .fig__card::after { left: -9px; rotate: -135deg; }
 /* No room behind him: initChatter puts it in front, tail and all. */
-.fig--bear  .fig__card.is-flip { right: auto; left: 93%; transform-origin: 0 30%; }
-.fig--tiger .fig__card.is-flip { left: auto; right: 93%; transform-origin: 100% 30%; }
+.fig--bear  .fig__card.is-flip { right: auto; left: calc(100% + .9rem); transform-origin: 0 30%; }
+.fig--tiger .fig__card.is-flip { left: auto; right: calc(100% + .9rem); transform-origin: 100% 30%; }
 .fig--bear  .fig__card.is-flip::after { right: auto; left: -9px; rotate: -135deg; }
 .fig--tiger .fig__card.is-flip::after { left: auto; right: -9px; rotate: 45deg; }
 /* in front of him it lands where his signature is, so the signature steps out */
@@ -918,6 +919,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   letter-spacing: .2em;
 }
 .fig__card p { font-size: .86rem; line-height: 1.55; color: var(--ink-2); margin: .65rem 0 0; text-wrap: pretty; }
+/* narrowed to fit a narrow window: initChatter sets it */
+.fig__card.is-narrow { padding: .85rem .95rem 1rem; }
+.fig__card.is-narrow p { font-size: .78rem; line-height: 1.5; }
 
 .stage__center { display: grid; place-items: center; gap: 1rem; align-self: center; }
 .stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease); }

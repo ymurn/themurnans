@@ -472,9 +472,10 @@
         card.style.transition = 'none';
         card.style.removeProperty('--nudge');
         card.style.removeProperty('width');
+        card.classList.remove('is-narrow');
         // the margin covers its tilt and the drawing's lean toward the pointer,
         // which is still settling as this measures
-        const pad = 32, w = card.offsetWidth;
+        const pad = 24, w = card.offsetWidth;
         const overhang = () => {
           const b = card.getBoundingClientRect();
           // read from the side it hangs off, the one its scale-in leaves put
@@ -485,8 +486,11 @@
         card.classList.remove('is-flip');
         let shift = overhang();
         // a little short of room behind him: it narrows to fit there first
-        if (shift && w - Math.abs(shift) >= 168) {
-          card.style.width = `${Math.floor(w - Math.abs(shift))}px`;
+        if (shift && w - Math.abs(shift) >= 150) {
+          const fits = Math.floor(w - Math.abs(shift));
+          card.style.width = `${fits}px`;
+          // set a size smaller, so the lines stay a readable length
+          card.classList.toggle('is-narrow', fits < 196);
           shift = 0;
         }
         if (shift) {
