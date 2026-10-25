@@ -928,7 +928,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig__card.is-narrow p { font-size: .78rem; line-height: 1.5; }
 
 .stage__center { display: grid; place-items: center; gap: 1rem; align-self: center; }
-.stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease); }
+.stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease), opacity .35s var(--ease); }
+/* while one of them talks across it, the "&" steps back behind the words */
+.stage:has(.fig.is-talking) .stage__amp { opacity: .18; }
 @media (hover: hover) { .stage:hover .stage__amp { transform: scale(1.08); } }
 
 /* the pour control */
@@ -1204,6 +1206,56 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .fig__say.is-said { transform: translateX(calc(-50% + var(--sx, 0px))); }
   .fig__say::after { bottom: -6px; left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
   .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+}
+/* Side by side with the title (a phone on its side, a wide screen), what
+   he says opens beside his head toward the other one, the two of them
+   talking across the "&" like a strip: above his head it ran up under the
+   bar on a short screen, and on his far side it sat on the title.
+   initChatter sets its width to the room between them, and its height so
+   the point of it is level with his mouth, clear of his face. */
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) {
+  .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
+    top: 4%; bottom: auto;
+    width: 220px;
+    transform: translateX(var(--sx, 0px)) translateY(8px) scale(.95);
+  }
+  .fig__say.is-said { transform: translateX(var(--sx, 0px)); }
+  .fig--bear  .fig__say { left: 92%; right: auto; text-align: left; }
+  .fig--tiger .fig__say { right: 92%; left: auto; text-align: right; }
+  /* Round all the way, with a small curved tail that flows out of the
+     straight of its side, below the corner, toward his mouth: both edges
+     leave the side along it, so the line turns out of the bubble rather
+     than kinking, and the tip is rounded. The bubble and its tail are one shape: the outline
+     and the shadow are drawn round the two of them together (a filter on
+     the bubble, which sees the tail as part of it), so there is no join for
+     a seam to show at, at dawn or dusk. The line is the hairline laid on
+     the paper, opaque, so where the four passes of it meet at the corners
+     it does not darken. */
+  .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
+    --say-line: color-mix(in srgb, var(--ink) 16%, var(--paper));
+    --say-drop: color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 16px;
+    box-shadow: none;
+    filter: drop-shadow(1px 0 0 var(--say-line)) drop-shadow(-1px 0 0 var(--say-line))
+            drop-shadow(0 1px 0 var(--say-line)) drop-shadow(0 -1px 0 var(--say-line))
+            drop-shadow(0 8px 18px var(--say-drop));
+  }
+  [data-theme="dusk"] .fig__say { --say-line: color-mix(in srgb, var(--ink) 18%, var(--paper)); --say-drop: #0008; }
+  .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after {
+    top: 20px; bottom: auto; margin-left: 0;
+    width: 16px; height: 20px;
+    background: var(--paper);
+    box-shadow: none;
+    transform: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 20'%3E%3Cpath d='M16 0C16 3.6 12.4 6.6 1.6 7.8Q0 8 .5 8.9 7.2 11 16 14.6 16 17 16 20Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 20'%3E%3Cpath d='M16 0C16 3.6 12.4 6.6 1.6 7.8Q0 8 .5 8.9 7.2 11 16 14.6 16 17 16 20Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  }
+  .fig--bear  .fig__say::after { left: -15px; right: auto; }
+  .fig--tiger .fig__say::after { right: -15px; left: auto; scale: -1 1; }
+}
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
+  .fig__say { padding: .6rem .8rem; font-size: 1.1rem; }
+  .fig__say.is-tight { padding: .5rem .6rem; font-size: .95rem; }
 }
 
 /* "Poke me!" waits until both of them are in color, then appears beside
