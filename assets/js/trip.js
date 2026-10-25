@@ -34,6 +34,8 @@
 
   const stops = T.stops || [];
   const pic = p => 'assets/' + p.src;
+  // the small copy where the spot is small (assets/js/pics.js)
+  const picAt = (u, guess) => window.MW_PIC ? MW_PIC.src(u, guess) : `src="${esc(u)}"`;
 
   /* ── The head: a few photographs from the trip ─────────────────────────
      Four prints, pinned up at their own angles. They are dealt fresh on
@@ -88,7 +90,7 @@
         <figure class="shot tgal__pic" data-shot data-src="${esc(pic(p))}" data-cap="${esc(p.cap || T.title)}"
                 tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || T.title)}"
                 style="--tilt:${TILT[i % TILT.length]}deg;--off:var(${WASH[i % WASH.length]});--d:${80 + i * 90}ms">
-          <img src="${esc(pic(p))}" alt="${esc(p.cap || T.title)}"${p.pos ? ` style="object-position:${esc(p.pos)}"` : ''} loading="eager" fetchpriority="high" decoding="async">
+          <img ${picAt(pic(p), '(max-width: 699px) 48vw, 320px')} alt="${esc(p.cap || T.title)}"${p.pos ? ` style="object-position:${esc(p.pos)}"` : ''} loading="eager" fetchpriority="high" decoding="async">
         </figure>`).join('')}</div>`;
   }
 
@@ -155,7 +157,7 @@
     return `<div class="strip strip--yr" data-n="${list.length}" data-reveal="wipe" style="--d:150ms">${list.map(p => {
       const cap = p.cap ? `${p.cap} · ${label}` : label;
       const pos = p.pos ? ` style="object-position:${esc(p.pos)}"` : '';
-      return `<figure class="shot" data-shot data-src="${esc(pic(p))}" data-cap="${esc(cap)}" tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || label)}"><img src="${esc(pic(p))}" alt="${esc(p.cap || label)}"${pos} loading="${eager ? 'eager' : 'lazy'}" decoding="async"></figure>`;
+      return `<figure class="shot" data-shot data-src="${esc(pic(p))}" data-cap="${esc(cap)}" tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || label)}"><img ${picAt(pic(p))} alt="${esc(p.cap || label)}"${pos} loading="${eager ? 'eager' : 'lazy'}" decoding="async"></figure>`;
     }).join('')}</div>`;
   }
 
@@ -323,6 +325,7 @@
   renderBar();
   renderBody();
   renderClosing();
+  if (window.MW_PIC) MW_PIC.fit();
   initMap();
   track();
 })();

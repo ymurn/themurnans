@@ -71,7 +71,7 @@ window.MW_HLNAV = function highlightsNav(host, opts) {
     const on = h.href.toLowerCase() === here;
     const inner = `
         <span class="hcard__pic" style="--off:var(${h.off});--tilt:${on ? 0 : h.tilt}deg">
-          <img src="assets/${esc(h.pic)}" alt="" loading="lazy" decoding="async">
+          <img ${window.MW_PIC ? MW_PIC.src(`assets/${h.pic}`, '(max-width: 699px) 80px, 420px') : `src="assets/${esc(h.pic)}"`} alt="" loading="lazy" decoding="async">
         </span>
         <span class="hcard__k">${esc(h.when)}</span>
         <span class="hcard__title">${esc(h.label)}</span>
@@ -103,5 +103,5 @@ window.MW_HLNAV = function highlightsNav(host, opts) {
    marks the one this belongs in and the section fills itself. The trip pages
    go through assets/js/trip.js instead, which owns #closing there. */
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-hlnav]').forEach(el => window.MW_HLNAV(el));
+  document.querySelectorAll('[data-hlnav]').forEach(el => { window.MW_HLNAV(el); if (window.MW_PIC) MW_PIC.fit(el); });
 });

@@ -922,7 +922,7 @@
       const pos = photo.pos ? ` style="object-position:${esc(photo.pos)}"` : '';
 
       card.innerHTML = `
-        <div class="memory__pic"><img src="${esc(photo.url)}" alt="${esc(c.place)}, ${esc(c.date)}"${pos} decoding="async"></div>
+        <div class="memory__pic"><img ${picAt(photo.url, '(max-width: 699px) 90vw, 420px')} alt="${esc(c.place)}, ${esc(c.date)}"${pos} decoding="async"></div>
         <div class="memory__body">
           <span class="memory__date">${esc(c.date)}</span>
           <h3 class="memory__place">${esc(c.place)}</h3>
@@ -931,6 +931,7 @@
         </div>`;
       // the postmark on a dressed card names this memory, not the sticker
       card.dataset.stamp = `${stampName(c)} · ${c.year}`;
+      fitPics(card);
       if (look) card.dataset.look = look;
       else delete card.dataset.look;
       stickers.forEach(st => st.setAttribute('aria-pressed', String(st.dataset.look === look)));
@@ -1027,7 +1028,7 @@
           ${c.photos.length ? `<div class="strip" data-n="${c.photos.length}" data-reveal="wipe" style="--d:150ms">${
             c.photos.map((p, k) => `
               <figure class="shot" data-shot data-src="assets/photos/${p}" data-cap="${esc(c.place)} · ${esc(c.date)}" tabindex="0" role="button" aria-label="Enlarge photograph ${k + 1} from ${esc(c.place)}">
-                <img src="assets/photos/${p}" alt="${esc(c.place)}, ${esc(c.date)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
+                <img ${picAt(`assets/photos/${p}`)} alt="${esc(c.place)}, ${esc(c.date)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
               </figure>`).join('')
           }</div>` : ''}
         </div>
@@ -1139,7 +1140,7 @@
       <article class="table-card" data-reveal="up" style="--d:${i * 70}ms" data-tilt>
         <div class="table-card__pic${r.photo ? '' : ' table-card__pic--empty'}">
           ${r.photo
-            ? `<img src="assets/photos/${r.photo}" alt="${esc(r.name)}" loading="lazy" decoding="async">`
+            ? `<img ${picAt(`assets/photos/${r.photo}`)} alt="${esc(r.name)}" loading="lazy" decoding="async">`
             : `<svg viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                  <path d="M38,38 H82 L77,96 H43 Z"/><path d="M35,38 H85"/><path d="M41,96 H79"/>
                  <path d="M82,48 h9a8,8 0 0 1 8,8v10a8,8 0 0 1 -8,8h-6"/>
@@ -1790,7 +1791,7 @@
     host.classList.add('is-swapping');      // the first stack is laid down, not gathered
     host.innerHTML = pick().map(s => `
       <figure class="snap"${loose ? ' data-drag' : ''}>
-        <img src="${photo(s)}" alt="David and Yinja" loading="lazy" decoding="async" draggable="false">
+        <img ${picAt(photo(s), '(max-width: 699px) 40vw, 260px')} alt="David and Yinja" loading="lazy" decoding="async" draggable="false">
         <figcaption class="snap__cap">
           <span class="snap__where">${esc(where(s))}</span>
           <span class="snap__when">${esc(when(s))}</span>
@@ -1830,7 +1831,7 @@
         const s = next[i % next.length];
         const img = $('img', el);
         img.loading = 'eager';                 // on screen by now, so no reason to wait
-        img.src = photo(s);
+        picTo(img, photo(s));
         $('.snap__where', el).textContent = where(s);
         $('.snap__when', el).textContent = when(s);
       });
@@ -1842,7 +1843,8 @@
       const ready = Promise.race([
         Promise.all(next.map(s => {
           const im = new Image();
-          im.src = photo(s);
+          im.sizes = $('img', prints[0]).sizes;   // the copy the print will show
+          picTo(im, photo(s));
           return im.decode().catch(() => {});
         })),
         new Promise(r => setTimeout(r, 1200)),
@@ -1945,6 +1947,11 @@
     return String(s ?? '').replace(/[&<>"']/g, c =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
+
+  // the small copy where the spot is small (assets/js/pics.js)
+  function picAt(u, guess) { return window.MW_PIC ? MW_PIC.src(u, guess) : `src="${esc(u)}"`; }
+  function picTo(img, u) { if (window.MW_PIC) MW_PIC.set(img, u); else img.src = u; }
+  function fitPics(root) { if (window.MW_PIC) MW_PIC.fit(root); }
 
   /* ── Anniversary: computed live so it never goes stale ────────────── */
 
@@ -2452,7 +2459,7 @@
           <button class="mem__card" type="button" data-open="${i}"
                   style="--tilt:${MEM_TILT[k % MEM_TILT.length]}deg;--off:var(${MEM_OFF[k % MEM_OFF.length]})">
             <span class="mem__shot">
-              <img src="${esc(shot.u)}" alt="${esc(name)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
+              <img ${picAt(shot.u, '(max-width: 699px) 45vw, 300px')} alt="${esc(name)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
               ${more > 0 ? `<span class="mem__n">+${more}</span>` : ''}
             </span>
             <span class="mem__label">
@@ -2514,12 +2521,12 @@
         <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]});--n:${Math.max(1, pics.length)}">
           <button class="mem__back" type="button" data-back>&larr; Back to ${esc(back)}</button>
           <span class="mem__lead">
-            <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
+            <img ${picAt(pics[0].u)} alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
             <span class="mem__cap"${pics[0].c ? '' : ' hidden'}>${esc(pics[0].c || '')}</span>
           </span>
           ${pics.length > 1 ? `<div class="mem__shots" style="--n:${pics.length}">${pics.map((p, k) => `
             <button class="mem__thumb${k ? '' : ' is-on'}" type="button" data-shot="${k}" aria-label="Photograph ${k + 1} of ${pics.length}">
-              <img src="${esc(p.u)}" alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
+              <img ${picAt(p.u, '(max-width: 699px) 20vw, 120px')} alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
             </button>`).join('')}</div>` : ''}
           <div class="mem__head">
             <h3 class="mem__place">${esc(heading(m))}</h3>
@@ -2536,6 +2543,7 @@
 
     const paint = () => {
       panel.innerHTML = open === null ? grid(on, cardsFor(on)) : opened(open);
+      fitPics(panel);
     };
 
     /* "Pull another memory": the next one in the same state, in the order
@@ -2760,7 +2768,7 @@
         lead.style.animation = 'none';
         void lead.offsetWidth;
         lead.style.animation = '';
-        lead.src = p.u;
+        picTo(lead, p.u);
         lead.style.objectPosition = p.p || '';
         // the caption comes and goes with the photograph it belongs to
         cap.textContent = p.c || '';
@@ -3123,6 +3131,7 @@
     initSnaps();
     initSince();
     initFolds();
+    fitPics(document);
     watchReveals();
     initAnniversary();
     initAtlas();

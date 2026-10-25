@@ -163,7 +163,7 @@
         const url = 'assets/' + (p.src.includes('/') ? p.src : `photos/${Y.year}/${p.src}`);
         const cap = p.cap ? `${p.cap} · ${label}` : label;
         const pos = p.pos ? ` style="object-position:${esc(p.pos)}"` : '';
-        return `<figure class="shot" data-shot data-src="${esc(url)}" data-cap="${esc(cap)}" tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || label)}"><img src="${esc(url)}" alt="${esc(p.cap || label)}"${pos} loading="${eager ? 'eager' : 'lazy'}" decoding="async"></figure>`;
+        return `<figure class="shot" data-shot data-src="${esc(url)}" data-cap="${esc(cap)}" tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || label)}"><img ${window.MW_PIC ? MW_PIC.src(url) : `src="${esc(url)}"`} alt="${esc(p.cap || label)}"${pos} loading="${eager ? 'eager' : 'lazy'}" decoding="async"></figure>`;
       }
       return `<figure class="shot shot--empty" role="img" aria-label="Photo to come: ${esc(p.cap)}" style="--wash:var(${WASH[k % WASH.length]})">${DOODLE}<figcaption class="shot__hint">${esc(p.cap)}</figcaption></figure>`;
     }).join('')}</div>`;
@@ -802,6 +802,7 @@
   renderBar();
   renderBody();
   renderClosing();
+  if (window.MW_PIC) MW_PIC.fit();
   if (Y.honeymoon && Y.honeymoon.route) initRouteMap(Y.honeymoon);
   initYearMap();
   track();

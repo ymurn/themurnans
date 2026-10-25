@@ -55,7 +55,8 @@
       <figure class="shot tgal__pic" data-shot data-src="assets/photos/${esc(p)}" data-cap="${esc(cap)}"
               tabindex="0" role="button" aria-label="Enlarge: ${esc(cap)}"
               style="--tilt:${TILT[i]}deg;--off:var(${WASH[i]});--d:${80 + i * 90}ms">
-        <img src="assets/photos/${esc(p)}" alt="${esc(c.place)}, ${esc(c.date)}" loading="eager" fetchpriority="high" decoding="async">
+        <img ${window.MW_PIC ? MW_PIC.src(`assets/photos/${p}`, '(max-width: 699px) 30vw, 200px') : `src="assets/photos/${esc(p)}"`} alt="${esc(c.place)}, ${esc(c.date)}" loading="eager" fetchpriority="high" decoding="async">
       </figure>`;
     }).join('')}</div>`;
+  if (window.MW_PIC) MW_PIC.fit(host);
 })();
