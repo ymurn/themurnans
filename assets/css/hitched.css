@@ -152,10 +152,24 @@
   .tier__arrow { display: block; position: absolute; top: 30%; width: 54px; height: 28px; fill: none; stroke: var(--ink-2); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .tier__note--l .tier__arrow { right: -60px; }
   .tier__note--r .tier__arrow { left: -60px; scale: -1 1; }
+  /* Once the cake has stacked, the notes are written in one at a time,
+     reading down it: each comes up out of a soft blur, like ink taking,
+     and then its arrow is drawn from the note to its tier, a pen stroke.
+     (On a phone the notes are inside the tiers and drop with them.) */
   .cake.hx-armed:not(.go) .tier__note { opacity: 0; }
-  .cake.go .tier__note { animation: hx-fadein .5s var(--ease) both; animation-delay: calc(1s + var(--i) * 90ms); }
+  .cake.hx-armed:not(.go) .tier__arrow path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .cake.go .tier__note {
+    --at: calc(1.15s + (3 - var(--i)) * 300ms);
+    animation: hx-write .8s cubic-bezier(.16, 1, .3, 1) var(--at) both;
+  }
+  /* the line first, then the head that finishes it: one path, the two were
+     drawn at once, and a half-drawn line already wore its arrowhead */
+  .cake.go .tier__arrow path { stroke-dasharray: 1; }
+  .cake.go .tier__line { animation: hx-ink .5s cubic-bezier(.65, 0, .35, 1) calc(var(--at) + .35s) both; }
+  .cake.go .tier__head { animation: hx-ink .22s cubic-bezier(.33, 1, .68, 1) calc(var(--at) + .82s) both; }
 }
-@keyframes hx-fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hx-write { from { opacity: 0; filter: blur(4px); transform: translateY(6px); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes hx-ink { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* ---- the rest of the page, in the same hand -------------------------------
    Every section opens the same way: a small flat drawing in the cake's
