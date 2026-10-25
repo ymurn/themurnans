@@ -83,10 +83,12 @@
      jump the page makes for them, to a month or a memory, leaves it where
      it is. Near the top of the page, with the menu open, or with something
      in the bar focused, it stays. It takes a deliberate 8px either way, so a
-     thumb resting on the glass does not set it flickering. The sliding is
-     in site.css, on --nav-out. */
+     thumb resting on the glass does not set it flickering. Never on the
+     home page: that is where people find their way round, so the bar stays
+     to hand there. The sliding is in site.css, on --nav-out. */
   const NAV_PHONE = matchMedia('(max-width: 699px), (orientation: landscape) and (max-height: 520px)');
   function hideOnScroll(nav) {
+    if (document.body.dataset.page === 'home') return;
     const root = document.documentElement;
     const real = () => root.style.setProperty('--nav-real', `${nav.offsetHeight}px`);
     real();
