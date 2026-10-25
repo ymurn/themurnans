@@ -1222,8 +1222,10 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .fig__say.is-said { transform: translateX(var(--sx, 0px)); }
   .fig--bear  .fig__say { left: 92%; right: auto; text-align: left; }
   .fig--tiger .fig__say { right: 92%; left: auto; text-align: right; }
-  /* Round all the way, with a small curved tail that flows out of its side
-     toward his mouth. The bubble and its tail are one shape: the outline
+  /* Round all the way, with a small curved tail that flows out of the
+     straight of its side, below the corner, toward his mouth: both edges
+     leave the side along it, so the line turns out of the bubble rather
+     than kinking, and the tip is rounded. The bubble and its tail are one shape: the outline
      and the shadow are drawn round the two of them together (a filter on
      the bubble, which sees the tail as part of it), so there is no join for
      a seam to show at, at dawn or dusk. The line is the hairline laid on
@@ -1240,16 +1242,16 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   }
   [data-theme="dusk"] .fig__say { --say-line: color-mix(in srgb, var(--ink) 18%, var(--paper)); --say-drop: #0008; }
   .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after {
-    top: 14px; bottom: auto; margin-left: 0;
-    width: 15px; height: 16px;
+    top: 20px; bottom: auto; margin-left: 0;
+    width: 16px; height: 20px;
     background: var(--paper);
     box-shadow: none;
     transform: none;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M14 1C9.5 3.2 4.8 4.4 0 4.6 4.2 7.2 8.6 10.8 14 15Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M14 1C9.5 3.2 4.8 4.4 0 4.6 4.2 7.2 8.6 10.8 14 15Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 20'%3E%3Cpath d='M16 0C16 3.6 12.4 6.6 1.6 7.8Q0 8 .5 8.9 7.2 11 16 14.6 16 17 16 20Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 20'%3E%3Cpath d='M16 0C16 3.6 12.4 6.6 1.6 7.8Q0 8 .5 8.9 7.2 11 16 14.6 16 17 16 20Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
   }
-  .fig--bear  .fig__say::after { left: -13px; right: auto; }
-  .fig--tiger .fig__say::after { right: -13px; left: auto; scale: -1 1; }
+  .fig--bear  .fig__say::after { left: -15px; right: auto; }
+  .fig--tiger .fig__say::after { right: -15px; left: auto; scale: -1 1; }
 }
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
   .fig__say { padding: .6rem .8rem; font-size: 1.1rem; }

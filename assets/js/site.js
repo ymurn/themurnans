@@ -650,7 +650,8 @@
           say.style.width = `${Math.round(Math.max(104, Math.min(260, room)))}px`;
           // a narrow room: the same words, a size smaller, so the lines stay a readable length
           say.classList.toggle('is-tight', room < 150);
-          say.style.top = `${Math.round(head.mouth * layer.offsetHeight - 24)}px`;
+          // the tail's tip is 28px down the bubble: set it level with his mouth
+          say.style.top = `${Math.round(head.mouth * layer.offsetHeight - 28)}px`;
         }
         const b = say.getBoundingClientRect(), w = say.offsetWidth, pad = 12;
         const cx = b.left + b.width / 2, left = cx - w / 2, right = cx + w / 2;
