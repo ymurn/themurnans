@@ -3248,27 +3248,34 @@
     if (document.fonts) document.fonts.ready.then(fit);
   }
 
-  /* ── The footer credits: one row, or two by two ─────────────────────────
-     Four credits in a row that only just fails to fit wraps three and one,
-     leaving the last credit alone. Whether they fit depends on the words and
-     the face, not just the screen, so where they would be a row it is
-     measured, and they pair up when the row is short. */
+  /* ── The footer credits: one row, two by two, or one to a line ────────
+     Laid out by the length of the words, measured, not by the screen: a
+     row where all four fit on one line; two by two where each fits whole
+     in its column (the columns as wide as their longest credit, sharing
+     what is left); one to a line where even that would break one. A credit
+     is never left wrapping onto a second line beside one that does not,
+     which put their lines out of step. */
 
   function initCredits() {
     const meta = $('.footer__meta');
     if (!meta) return;
+    const ROW_GAP = 40, PAIR_GAP = 32;          // the gaps each layout keeps
+    const range = document.createRange();
     const fit = () => {
-      meta.classList.remove('is-paired');
-      const cs = getComputedStyle(meta);
-      if (cs.display !== 'flex' || cs.flexDirection !== 'row') return;
+      meta.classList.remove('is-row', 'is-paired', 'is-stacked');
       const kids = [...meta.children];
-      const need = kids.reduce((w, el) => w + el.getBoundingClientRect().width, 0)
-        + (parseFloat(cs.columnGap) || 0) * (kids.length - 1);
+      kids.forEach(k => { k.style.whiteSpace = 'nowrap'; });
+      // each credit's own width on one line, whatever box it sits in now
+      const w = kids.map(k => { range.selectNodeContents(k); return Math.ceil(range.getBoundingClientRect().width); });
+      kids.forEach(k => { k.style.whiteSpace = ''; });
+      const cs = getComputedStyle(meta);
       const room = meta.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      meta.classList.toggle('is-paired', need > room + 1);
+      const row = w.reduce((a, b) => a + b, 0) + ROW_GAP * (w.length - 1);
+      const pair = Math.max(...w.filter((_, i) => i % 2 === 0)) + Math.max(...w.filter((_, i) => i % 2 === 1)) + PAIR_GAP;
+      meta.classList.add(row <= room ? 'is-row' : pair <= room ? 'is-paired' : 'is-stacked');
     };
     fit();
-    addEventListener('resize', fit);
+    addEventListener('resize', perFrame(fit));
     if (document.fonts) document.fonts.ready.then(fit);
   }
 
