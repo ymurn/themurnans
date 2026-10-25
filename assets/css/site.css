@@ -1230,7 +1230,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   pointer-events: none;
 }
 .fig__poke svg { flex: none; width: 1.05em; height: .74em; margin-bottom: .1em; }
-.fig--bear  .fig__poke { left: 78%; color: var(--blue-deep); rotate: -6deg; transform-origin: 0 100%; }
+/* the "p" carries more space on its left than the "!" on its right, so the
+   bear's arrow sits closer to match the tiger's by eye */
+.fig--bear  .fig__poke { left: 78%; gap: 0; color: var(--blue-deep); rotate: -6deg; transform-origin: 0 100%; }
 .fig--tiger .fig__poke { right: 78%; color: var(--brass-ink); rotate: 6deg; transform-origin: 100% 100%; flex-direction: row-reverse; }
 .fig--tiger .fig__poke svg { scale: -1 1; }
 /* a phone: the two of them stand close, so the notes go without arrows */
