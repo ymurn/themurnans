@@ -736,7 +736,8 @@
           celebrateFrom(say, 10);
         }
         clearTimeout(hide);
-        hide = setTimeout(hush, 4200);
+        // long enough to read the line, short enough not to hang about
+        hide = setTimeout(hush, 3000);
       });
     });
 
