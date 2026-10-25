@@ -22,9 +22,9 @@ window.MW_TRIP = {
 
  "facts": [
   { "k": "Days on the road", "v": "11", "s": "Fresno on June 4, Fresno again on June 14." },
-  { "k": "National parks", "v": "3", "s": "Kings Canyon, Sequoia and Yosemite, in the first five days." },
-  { "k": "The birthday", "v": "30", "s": "Yinja turned 30 on June 10, in the redwoods at Muir Woods." },
-  { "k": "States", "v": "2", "s": "California, with a run east into Nevada for cheap gas." }
+  { "k": "National parks", "v": "3", "s": "Kings Canyon, Sequoia, Yosemite." },
+  { "k": "The birthday", "v": "30", "s": "Yinja turned 30 on June 10, at Muir Woods." },
+  { "k": "States", "v": "2", "s": "California, and Nevada for cheap gas." }
  ],
 
  "siblings": {

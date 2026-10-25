@@ -22,9 +22,9 @@ window.MW_TRIP = {
 
  "facts": [
   { "k": "Days on the road", "v": "13", "s": "Las Vegas on April 16, Las Vegas again on April 28." },
-  { "k": "National parks", "v": "7", "s": "Death Valley, the Grand Canyon, and all five of Utah's." },
-  { "k": "The birthday", "v": "40", "s": "David turned 40 at the Grand Canyon, which had snow on it." },
-  { "k": "States", "v": "4", "s": "California, Nevada, Arizona and Utah, in one loop." }
+  { "k": "National parks", "v": "7", "s": "Death Valley, Grand Canyon and Utah’s five." },
+  { "k": "The birthday", "v": "40", "s": "David turned 40 at a snowy Grand Canyon." },
+  { "k": "States", "v": "4", "s": "All in one loop." }
  ],
 
  "siblings": {
