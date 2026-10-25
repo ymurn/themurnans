@@ -4340,9 +4340,13 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   .footer__top { grid-template-columns: 1fr 1fr; gap: 2.5rem 2rem; }
   .footer__meta { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 2rem; padding-right: 3.5rem; }
 }
-/* Where the credits would be a row but all four do not fit, initCredits in
-   assets/js/site.js pairs them, so none is left on a line of its own. */
-.footer__meta.is-paired { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 2rem; }
+/* initCredits in assets/js/site.js measures the four credits and sets
+   them out by their length: a row, two by two, or one to a line. In a row
+   or a pair a credit is never let wrap, so their lines stay level. */
+.footer__meta.is-row { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: baseline; justify-content: space-between; gap: 1.25rem 2.5rem; }
+.footer__meta.is-paired { display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(max-content, 1fr); gap: .9rem 2rem; }
+.footer__meta.is-stacked { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; }
+.footer__meta:is(.is-row, .is-paired) > * { white-space: nowrap; }
 
 /* ── 01 Memories ─────────────────────────────────────────────────────────
    Map on the left, the photographs it deals on the right. Below 1000px the
