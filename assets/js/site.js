@@ -1199,8 +1199,8 @@
         </div>
         <div class="chap__body">
           <h2 class="chap__place" data-reveal="up">The honeymoon, and every year since.</h2>
-          <p class="chap__text" data-reveal="up" style="--d:90ms">Volume One stops the week before the wedding, because that is where the old
-          site stopped. Volume Two picks up two days after it, with the honeymoon from Sacramento to Seattle,
+          <p class="chap__text" data-reveal="up" style="--d:90ms">This page stops the week before the wedding, because that is where the old
+          site stopped. The year pages pick up two days after it, with the honeymoon from Sacramento to Seattle,
           then a page for every year since.</p>
           <div data-reveal="up" style="--d:150ms"><a class="btn btn--ghost" href="2022.html" data-magnet>Start with the honeymoon</a></div>
         </div>
@@ -1279,10 +1279,10 @@
       groupOf: el => (el && el.dataset.chap != null ? Number(el.dataset.chap) : -1),
       caption: (i, said, n) => items[i]
         ? { k: when(i), title: said || items[i].short }
-        : { k: 'Volume One', title: `${n} places` },
+        : { k: '2020 to 2022', title: `${n} places` },
       aria: 'Map of the chapters before the wedding',
-      whole: 'Whole volume',
-      sheet: { k: 'Volume One', title: 'Everywhere, before the wedding' },
+      whole: 'Whole timeline',
+      sheet: { k: '2020 to 2022', title: 'Everywhere, before the wedding' },
       event: 'story:chapter'
     });
   }
