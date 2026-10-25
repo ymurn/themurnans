@@ -249,7 +249,14 @@ window.MW_TRIP = {
     "So, while we were adventuring in Utah we noticed one of the tires was deflating slowly. We even added air in Moab! But it was the morning after Capitol Reef that we decided to visit a mechanic to check for and patch the leak. Thankfully they were able to patch it and we were on our way!",
     "Utah Route 12 is quite the drive, it rises into the mountains and meanders west through and down the Grand Staircase into Escalante! There were so many amazing views on this drive and had we had more time would have stopped at a trailhead to go hiking within Grand Staircase - Escalante National Monument. Descending the “staircase” was truly magical, and once in Escalante we stopped for some amazing burgers at Nemo’s before continuing to our next National Park, but as always that’s another post."
    ],
-   "photos": []
+   "photos": [
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-08.jpg", "cap": "Up into the mountains on Route 12" },
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-09.jpg", "cap": "Into Grand Staircase-Escalante" },
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-10.jpg", "cap": "Down the staircase" },
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-11.jpg", "cap": "Red rock on the way to Escalante" },
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-12.jpg", "cap": "Through Red Canyon" },
+    { "src": "continued_trips/2025-04-bryce-canyon/2025-04-bryce-canyon-13.jpg", "cap": "Nearly there" }
+   ]
   },
   {
    "k": "Stop 11",
