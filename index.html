@@ -26,8 +26,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=81">
-<link rel="stylesheet" href="assets/css/home-motion.css?v=2">
+<link rel="stylesheet" href="assets/css/site.css?v=82">
+<link rel="stylesheet" href="assets/css/home-motion.css?v=3">
 <link rel="stylesheet" href="assets/css/motion.css?v=3">
 <!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
 <script>try { if (sessionStorage.getItem('murnan-seen') === '1' && !/[?&]intro\b/.test(location.search)) document.documentElement.classList.add('curtain-seen'); } catch (e) {}</script>
@@ -126,71 +126,77 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
   <div class="hero__wash" aria-hidden="true"></div>
   <div class="shell hero__inner">
 
-    <p class="eyebrow" data-reveal="fade">Astoria, New York &nbsp;·&nbsp; Est. 2020</p>
+    <!-- The words and the two of them: one column, or side by side on a
+         wide screen (the split in site.css) -->
+    <div class="hero__words">
+      <p class="eyebrow" data-reveal="fade">Astoria, New York &nbsp;·&nbsp; Est. 2020</p>
 
-    <h1 class="t-mega hero__title" data-split>The Bear <span class="amp">&amp;</span> the Tiger</h1>
+      <h1 class="t-mega hero__title" data-split>The Bear <span class="amp">&amp;</span> the Tiger</h1>
 
-    <div class="hero__sub">
-      <p class="lede" data-reveal="up" style="--d:120ms">
-        David and Yinja Murnan. An engineer and a designer, one very long list of breweries,
-        and a habit of driving four hours for a waterfall.
-      </p>
-    </div>
-
-    <!-- The stage: outline art that colors itself in -->
-    <div class="stage">
-      <div class="fig fig--bear" data-who="bear" role="button" tabindex="0" aria-label="Poke David, he has opinions">
-        <div class="fig__layer">
-          <img class="fig__ghost" src="assets/art/David-fill.webp" alt="" aria-hidden="true" width="520" height="1001">
-          <img class="fig__out" src="assets/art/David-Outline.webp" alt="Line illustration of David" width="520" height="1001">
-          <div class="fig__fillwrap" aria-hidden="true">
-            <img class="fig__fill" src="assets/art/David-fill.webp" alt="" width="520" height="1001">
-          </div>
-          <span class="fig__line" aria-hidden="true"></span>
-          <!-- inside the layer, so they travel with the drawing as the hero scrolls away -->
-          <p class="fig__say" aria-live="polite"></p>
-          <div class="fig__card">
-            <svg class="fig__tail" viewBox="0 0 64 30" width="64" height="30" preserveAspectRatio="none" aria-hidden="true"><path class="fig__tail-fill" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26Z"/><path class="fig__tail-ink" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26"/></svg>
-            <span class="tag">The Bear</span>
-            <p>Cincy-made. Brooklyn denizen by way of Silver Spring. Gay beer drinker, gamer, urbanist and subway rider, with a fear of heights he keeps testing on fire towers.</p>
-          </div>
-        </div>
-        <img class="fig__name" src="assets/art/David-Script.png" alt="" aria-hidden="true">
-        <span class="fig__poke">Poke me</span>
-      </div>
-
-      <div class="stage__center">
-        <span class="stage__amp" aria-hidden="true">&amp;</span>
-      </div>
-
-      <div class="fig fig--tiger" data-who="tiger" role="button" tabindex="0" aria-label="Poke Yinja, he has opinions too">
-        <div class="fig__layer">
-          <img class="fig__ghost" src="assets/art/Yinjia-fill.webp" alt="" aria-hidden="true" width="520" height="1001">
-          <img class="fig__out" src="assets/art/Yinjia-Outline.webp" alt="Line illustration of Yinja" width="520" height="1001">
-          <div class="fig__fillwrap" aria-hidden="true">
-            <img class="fig__fill" src="assets/art/Yinjia-fill.webp" alt="" width="520" height="1001">
-          </div>
-          <span class="fig__line" aria-hidden="true"></span>
-          <!-- inside the layer, so they travel with the drawing as the hero scrolls away -->
-          <p class="fig__say" aria-live="polite"></p>
-          <div class="fig__card">
-            <svg class="fig__tail" viewBox="0 0 64 30" width="64" height="30" preserveAspectRatio="none" aria-hidden="true"><path class="fig__tail-fill" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26Z"/><path class="fig__tail-ink" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26"/></svg>
-            <span class="tag">The Tiger</span>
-            <p>First wine tasting on the North Fork. First bonfire in Salem. First ballgame at Citi Field. Since then: all five Utah parks in one trip, and the top of the fire tower David won't climb. A fast study.</p>
-          </div>
-        </div>
-        <img class="fig__name" src="assets/art/Yinja-Script.png" alt="" aria-hidden="true">
-        <span class="fig__poke">Poke me</span>
+      <div class="hero__sub">
+        <p class="lede" data-reveal="up" style="--d:120ms">
+          David and Yinja Murnan. An engineer and a designer, one very long list of breweries,
+          and a habit of driving four hours for a waterfall.
+        </p>
       </div>
     </div>
 
-    <div class="pour">
-      <div class="pour__track">
-        <span class="pour__rail" aria-hidden="true"></span>
-        <input class="pour__range" type="range" min="0" max="100" value="0" step="1"
-               aria-label="Pour color into the illustrations">
+    <div class="hero__show">
+      <!-- The stage: outline art that colors itself in -->
+      <div class="stage">
+        <div class="fig fig--bear" data-who="bear" role="button" tabindex="0" aria-label="Poke David, he has opinions">
+          <div class="fig__layer">
+            <img class="fig__ghost" src="assets/art/David-fill.webp" alt="" aria-hidden="true" width="520" height="1001">
+            <img class="fig__out" src="assets/art/David-Outline.webp" alt="Line illustration of David" width="520" height="1001">
+            <div class="fig__fillwrap" aria-hidden="true">
+              <img class="fig__fill" src="assets/art/David-fill.webp" alt="" width="520" height="1001">
+            </div>
+            <span class="fig__line" aria-hidden="true"></span>
+            <!-- inside the layer, so they travel with the drawing as the hero scrolls away -->
+            <p class="fig__say" aria-live="polite"></p>
+            <div class="fig__card">
+              <svg class="fig__tail" viewBox="0 0 64 30" width="64" height="30" preserveAspectRatio="none" aria-hidden="true"><path class="fig__tail-fill" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26Z"/><path class="fig__tail-ink" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26"/></svg>
+              <span class="tag">The Bear</span>
+              <p>Cincy-made. Brooklyn denizen by way of Silver Spring. Gay beer drinker, gamer, urbanist and subway rider, with a fear of heights he keeps testing on fire towers.</p>
+            </div>
+          </div>
+          <img class="fig__name" src="assets/art/David-Script.png" alt="" aria-hidden="true">
+          <span class="fig__poke">Poke me</span>
+        </div>
+
+        <div class="stage__center">
+          <span class="stage__amp" aria-hidden="true">&amp;</span>
+        </div>
+
+        <div class="fig fig--tiger" data-who="tiger" role="button" tabindex="0" aria-label="Poke Yinja, he has opinions too">
+          <div class="fig__layer">
+            <img class="fig__ghost" src="assets/art/Yinjia-fill.webp" alt="" aria-hidden="true" width="520" height="1001">
+            <img class="fig__out" src="assets/art/Yinjia-Outline.webp" alt="Line illustration of Yinja" width="520" height="1001">
+            <div class="fig__fillwrap" aria-hidden="true">
+              <img class="fig__fill" src="assets/art/Yinjia-fill.webp" alt="" width="520" height="1001">
+            </div>
+            <span class="fig__line" aria-hidden="true"></span>
+            <!-- inside the layer, so they travel with the drawing as the hero scrolls away -->
+            <p class="fig__say" aria-live="polite"></p>
+            <div class="fig__card">
+              <svg class="fig__tail" viewBox="0 0 64 30" width="64" height="30" preserveAspectRatio="none" aria-hidden="true"><path class="fig__tail-fill" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26Z"/><path class="fig__tail-ink" d="M0 5C21 6.5 43 6.5 63 2 45 11 24 20 0 26"/></svg>
+              <span class="tag">The Tiger</span>
+              <p>First wine tasting on the North Fork. First bonfire in Salem. First ballgame at Citi Field. Since then: all five Utah parks in one trip, and the top of the fire tower David won't climb. A fast study.</p>
+            </div>
+          </div>
+          <img class="fig__name" src="assets/art/Yinja-Script.png" alt="" aria-hidden="true">
+          <span class="fig__poke">Poke me</span>
+        </div>
       </div>
-      <p class="pour__label"><span class="pour__word">Pour</span> <span class="pour__val">0%</span></p>
+
+      <div class="pour">
+        <div class="pour__track">
+          <span class="pour__rail" aria-hidden="true"></span>
+          <input class="pour__range" type="range" min="0" max="100" value="0" step="1"
+                 aria-label="Pour color into the illustrations">
+        </div>
+        <p class="pour__label"><span class="pour__word">Pour</span> <span class="pour__val">0%</span></p>
+      </div>
     </div>
 
   </div>
@@ -559,7 +565,7 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/home-motion.js?v=2"></script>
 <script src="assets/js/motion.js?v=2"></script>
-<script src="assets/js/site.js?v=53"></script>
+<script src="assets/js/site.js?v=54"></script>
 <i id="built" hidden></i>
 </body>
 </html>

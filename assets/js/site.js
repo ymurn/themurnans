@@ -513,12 +513,17 @@
         // the margin covers its tilt and the drawing's lean toward the pointer,
         // which is still settling as this measures
         const pad = 24, w = card.offsetWidth;
+        // side by side with the title (a wide screen), the cards stay in the
+        // drawings' column rather than open over the words
+        const show = fig.closest('.hero__show');
+        const lo = show && getComputedStyle(show).display !== 'contents'
+          ? Math.max(pad, show.getBoundingClientRect().left) : pad;
         const overhang = () => {
           const b = card.getBoundingClientRect();
           // read from the side it hangs off, the one its scale-in leaves put
           const fromRight = (fig.dataset.who === 'bear') !== card.classList.contains('is-flip');
           const left = fromRight ? b.right - w : b.left;
-          return left < pad ? pad - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
+          return left < lo ? lo - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
         };
         card.classList.remove('is-flip');
         let shift = overhang();

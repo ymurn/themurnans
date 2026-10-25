@@ -751,6 +751,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 [data-theme="dusk"] .hero__wash { opacity: .3; }
 
 .hero__inner { position: relative; z-index: 2; display: grid; gap: clamp(1.1rem, 2.4vh, 2.25rem); }
+/* the words and the drawings: invisible to the layout while it is one
+   column, the two columns of the split below */
+.hero__words, .hero__show { display: contents; }
 .hero__title { position: relative; }
 .hero__sub { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; align-items: baseline; justify-content: space-between; }
 /* wider than the 46ch default so the bio sets on two lines, balanced so neither is a runt */
@@ -887,6 +890,10 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--bear  .fig__card { right: calc(100% + .9rem); transform-origin: 100% 30%; }
 .fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: calc(100% + .9rem); transform-origin: 0 30%; }
 @media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: translateX(var(--nudge, 0px)) rotate(var(--tilt)); } }
+/* an open card goes over the "&" and the other drawing: where it has to open
+   in front of him (beside the title on a wide screen), the "&", which is
+   drawn later and lifts on the same hover, came out on top of its words */
+@media (hover: hover) { .fig:hover { z-index: 4; } }
 /* The tail: a comic speech tail in the drawing's own ink, reaching to just
    behind his head.
    Its base sits over the card's outline, and the paper fill hides that
@@ -940,6 +947,39 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 
 /* the pour control */
 .pour { display: grid; gap: .5rem; justify-items: center; margin-top: clamp(.75rem, 2vh, 1.75rem); }
+
+/* A screen wider than it is tall, the words on the left and the two of them
+   on the right. Stacked, the title was sized by the width and the drawings by
+   the height, so on a wide, short window the title filled the screen and the
+   drawings fell off the bottom of it. Side by side, each is sized by its own
+   column and the screen's height, and the pair stays in proportion. */
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) {
+  .hero__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); column-gap: 4rem; align-items: center; }
+  .hero__words { display: grid; gap: 1.5rem; container: herowords / inline-size; }
+  .hero__show  { display: grid; container: heroshow / inline-size; }
+  /* "& the Tiger" is about five of its own heights wide */
+  .hero__title.t-mega { font-size: min(19cqi, 17vh, 11.5rem); }
+  .hero__sub .lede { max-width: 46ch; }
+  /* two drawings about half as wide as they are tall, the "&" and the gaps
+     between them: as tall as fits across the column, and the screen */
+  .hero__show { --stage-room: 12rem; }
+  .hero__show .fig__layer { height: min(58vh, calc((100cqi - var(--stage-room)) / 1.04), 520px); }
+  .hero__show .pour { margin-top: 1.5rem; }
+  .hero__show .pour__track { width: min(440px, 100%); }
+}
+/* the same on a phone on its side: the "&" and the gaps beside it are
+   smaller there, and the screen is short, so the air around the words is
+   taken from the height */
+@media (min-width: 640px) and (max-width: 860px) and (min-aspect-ratio: 4/3) {
+  .hero__inner { column-gap: 2rem; }
+  .hero__show { --stage-room: 7rem; }
+}
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
+  .hero { padding-top: calc(var(--nav-h) + 1rem); padding-bottom: 1rem; }
+  .hero__words { gap: 1rem; }
+  .hero__sub .lede { max-width: none; font-size: .875rem; }
+  .hero__show .pour { margin-top: .5rem; }
+}
 .pour__label { display: flex; align-items: center; gap: .8rem; font-size: .66rem; letter-spacing: .26em; text-transform: uppercase; color: var(--ink-3); }
 .pour__val { font-family: var(--display); font-size: .95rem; letter-spacing: -.01em; color: var(--brass-ink); min-width: 3.2ch; text-align: right; }
 
@@ -4084,8 +4124,9 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
    to 495px: the first is cut off at the top, the last runs under the credits,
    and the whole thing scrolls. It is set by the height here instead. This one
    takes every phone on its side, narrow ones included, since the menu is the
-   same five links whatever the width. */
-@media (orientation: landscape) and (max-height: 520px) {
+   same five links whatever the width. Only where there is a menu: on a
+   short desktop window the row of links took the menu's size. */
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 1020px) {
   .nav__links {
     justify-content: center;
     gap: clamp(.3rem, 1.6vh, .8rem);
@@ -4313,8 +4354,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__hint { display: flex; justify-content: center; margin: 1rem 0 0; font-size: .86rem; color: var(--ink-3); }
 /* How far the count of places has got, as a departure board: the number on
    flip tiles, what it counts beside it, and the rest in a line under that.
-   The tiles are ink at dawn and paper at dusk, the one pair that holds at
-   both. When the map prints its states the wheels roll up from 00 to the
+   The tiles are a shade of the paper with ink digits, so the number reads
+   without a black block sitting heavier than the map above it. When the map prints its states the wheels roll up from 00 to the
    count, the right-hand wheel round once more, the way a counter does, and
    settle with the states (initMemoryMap). Read out as one sentence: the
    tiles are hidden from screen readers and the number is said in words. */
@@ -4333,22 +4374,21 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   width: var(--tile-w); height: var(--tile-h);
   overflow: hidden;
   border-radius: 4px;
-  background: var(--ink);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 40%, transparent);
+  background: var(--paper-3);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
 }
 /* the split across the middle of each tile, where a flap would fold */
 .mem__tile::after {
   content: ""; position: absolute; z-index: 1; left: 0; right: 0; top: 50%;
   height: 1.5px; margin-top: -.75px;
   background: var(--paper);
-  opacity: .9;
 }
 .mem__wheel { display: grid; translate: 0 calc(var(--n, 0) * var(--tile-h) * -1); }
 .mem__wheel > b {
   display: grid; place-items: center;
   height: var(--tile-h);
   font-family: var(--display); font-weight: 400; font-size: var(--digit); letter-spacing: 0;
-  color: var(--paper);
+  color: var(--ink);
 }
 .mem__board.is-waiting .mem__wheel { translate: 0 0; }
 .mem__board.is-rolling .mem__wheel {
