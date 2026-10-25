@@ -1220,11 +1220,27 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
     transform: translateX(var(--sx, 0px)) translateY(8px) scale(.95);
   }
   .fig__say.is-said { transform: translateX(var(--sx, 0px)); }
-  .fig--bear  .fig__say { left: 92%; right: auto; text-align: left;  border-radius: 14px 14px 14px 4px; }
-  .fig--tiger .fig__say { right: 92%; left: auto; text-align: right; border-radius: 14px 14px 4px 14px; }
-  .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after { top: 18px; bottom: auto; margin-left: 0; }
-  .fig--bear  .fig__say::after { left: -6px; right: auto; box-shadow: inset 1px -1px 0 var(--line); }
-  .fig--tiger .fig__say::after { right: -6px; left: auto; box-shadow: inset -1px 1px 0 var(--line); }
+  .fig--bear  .fig__say { left: 92%; right: auto; text-align: left; }
+  .fig--tiger .fig__say { right: 92%; left: auto; text-align: right; }
+  /* round all the way, and a small curved tail that flows out of its side
+     toward his mouth, cut from the paper itself so there is no seam: a
+     turned square read as a lumpy diamond stuck on, beside a squared-off
+     corner that was meant for a tail underneath */
+  .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say { border-radius: 16px; }
+  .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after {
+    top: 14px; bottom: auto; margin-left: 0;
+    width: 14px; height: 16px;
+    background: var(--paper);
+    box-shadow: none;
+    transform: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M14 1C9.5 3.2 4.8 4.4 0 4.6 4.2 7.2 8.6 10.8 14 15Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M14 1C9.5 3.2 4.8 4.4 0 4.6 4.2 7.2 8.6 10.8 14 15Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  }
+  /* the bubble's hairline carried round the tail, on all but the side it
+     grows from (a filter, since the tail is a cut-out shape, not a box) */
+  .fig__say::after { filter: drop-shadow(-1px 0 0 var(--line)) drop-shadow(0 -1px 0 var(--line)) drop-shadow(0 1px 0 var(--line)); }
+  .fig--bear  .fig__say::after { left: -13px; right: auto; }
+  .fig--tiger .fig__say::after { right: -13px; left: auto; scale: -1 1; }
 }
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
   .fig__say { padding: .6rem .8rem; font-size: 1.1rem; }
