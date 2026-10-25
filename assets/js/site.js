@@ -3282,6 +3282,41 @@
     if (document.fonts) document.fonts.ready.then(fit);
   }
 
+  /* ── The facts: one size for a row, from its longest value ──────────── */
+
+  function initFacts() {
+    const rows = $$('.facts');
+    if (!rows.length) return;
+    const MAX = 48, MIN = 20, range = document.createRange();
+    const fit = () => rows.forEach(row => {
+      const vals = $$('.fact__v', row);
+      if (!vals.length) return;
+      row.classList.remove('is-fit');
+      row.style.setProperty('--fact-v', `${MAX}px`);
+      row.classList.add('is-fit');
+      // each value's width on one line at the largest size, against the
+      // room in its own card; the counters change the text, so measure the
+      // value it lands on, which is what the card shows in the end
+      let k = 1;
+      vals.forEach(v => {
+        const count = v.querySelector('[data-count]');
+        const was = count && count.textContent;
+        if (count) count.textContent = count.dataset.count + (count.dataset.suffix || '');
+        range.selectNodeContents(v);
+        const need = range.getBoundingClientRect().width;
+        if (count) count.textContent = was;
+        const room = v.parentElement.clientWidth
+          - parseFloat(getComputedStyle(v.parentElement).paddingLeft)
+          - parseFloat(getComputedStyle(v.parentElement).paddingRight);
+        if (need > room) k = Math.min(k, room / need);
+      });
+      row.style.setProperty('--fact-v', `${Math.max(MIN, Math.floor(MAX * k * 0.98))}px`);
+    });
+    fit();
+    addEventListener('resize', perFrame(fit));
+    if (document.fonts) document.fonts.ready.then(fit);
+  }
+
   /* ── Back to the top, once a long page has been scrolled a way ─────── */
 
   function initToTop() {
@@ -3335,6 +3370,7 @@
     initRails();
     initButtonRows();
     initCredits();
+    initFacts();
     initToTop();
   }
 

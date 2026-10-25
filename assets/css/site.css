@@ -2849,6 +2849,19 @@ a.yearbtn { display: inline-block; }
 .band--deep .fact { background: transparent; border-color: var(--deep-ink); }
 .fact__k { font-size: .66rem; letter-spacing: .24em; text-transform: uppercase; color: var(--brass-ink); }
 .fact__v { font-family: var(--display); font-size: clamp(1.3rem, 2.1vw, 1.75rem); line-height: 1.16; }
+/* The value is the point of its card, so it is set as display type, large.
+   One size for the whole row, set by initFacts in site.js from the longest
+   value there, so every one sits on one line in its card and the row reads
+   as a set: up to 48px, and "12 of 12" or "In-N-Out" bring the row down
+   together where the cards are narrow. Gloock has the one weight, so the
+   number is kept to 48px rather than made thinner. */
+.facts.is-fit .fact__v {
+  font-size: var(--fact-v);
+  line-height: .95;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  margin-block: .1rem .15rem;
+}
 .fact__s { font-size: .8rem; color: var(--ink-3); }
 
 /* Thanks: four snapshot cards, each with a picture of who it thanks. They
@@ -4335,15 +4348,18 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 /* Two by two rather than a wrapping row: four across only just fits the
    column, and the width it wants depends on the gutter, so a row would
    leave the last year on its own somewhere. */
+/* Before "I Do" is a pill too, on its own line over the years: it is the
+   timeline before the year pages, and as a pill it reads as one of them */
+.footer__pill { justify-self: start; margin-top: .3rem; }
 .footer__years { display: grid; grid-template-columns: repeat(2, max-content); gap: .4rem; margin-top: .3rem; }
-.footer__years a {
+.footer__pill, .footer__years a {
   padding: .2rem .6rem;
   border: 1px solid var(--footer-line);
   border-radius: 999px;
   font-size: .76rem; letter-spacing: .06em;
   transition: background .3s, border-color .3s, color .3s;
 }
-@media (hover: hover) { .footer__years a:hover { background: var(--footer-hover); border-color: var(--footer-hover); color: var(--footer-bg); } }
+@media (hover: hover) { :is(.footer__pill, .footer__years a):hover { background: var(--footer-hover); border-color: var(--footer-hover); color: var(--footer-bg); } }
 /* Four columns now that the timelines have their own, but only while the
    footer is still a row: it stacks at 880px, below the rule above. */
 @media (min-width: 881px) { .footer__top { grid-template-columns: 1.25fr 1fr 1fr 1fr; } }
