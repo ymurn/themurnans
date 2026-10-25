@@ -736,8 +736,10 @@
           celebrateFrom(say, 10);
         }
         clearTimeout(hide);
-        // long enough to read the line, short enough not to hang about
-        hide = setTimeout(hush, 3000);
+        // as long as the line takes to read and no longer: a beat to find it,
+        // and a glance a word, from 1.4s for "Go Reds." to 2.6s for the longest
+        const words = say.textContent.trim().split(/\s+/).length;
+        hide = setTimeout(hush, Math.min(2600, Math.max(1400, 800 + 150 * words)));
       });
     });
 
