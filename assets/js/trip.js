@@ -291,7 +291,7 @@
     chips.forEach(b => b.addEventListener('click', () => {
       const target = $(`#${id(Number(b.dataset.i))}`);
       if (!target) return;
-      const top = target.getBoundingClientRect().top + scrollY - (bar ? bar.offsetHeight : 0) - 64;
+      const top = target.getBoundingClientRect().top + scrollY - (bar ? bar.offsetHeight : 0) - 64 + (window.MW_NAV ? MW_NAV.gone() : 0);
       scrollTo({ top, behavior: calm ? 'auto' : 'smooth' });
     }));
   }

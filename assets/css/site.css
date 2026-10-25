@@ -560,9 +560,24 @@ body:is([data-page="day"], [data-page="home"]) main .btn:not(.btn--ghost) { --bt
   background: linear-gradient(90deg, var(--blue), var(--sage-500) 28%, var(--gold) 52%, var(--coral) 76%, var(--wine));
 }
 
+/* On a phone the bar slides away on the way down a page and comes back on
+   the way up (initNav). One number says how far it has gone, 0 to 1, and
+   it is the thing animated, so the bar and every band that sticks under it
+   move as one: they hang from --nav-top, the height of bar still showing.
+   The bar moves by its top, not by a transform, which would make it the
+   frame for the full-screen menu inside it. */
+@property --nav-out { syntax: '<number>'; inherits: true; initial-value: 0; }
+:root {
+  --nav-out: 0;
+  --nav-top: calc(var(--nav-h) * (1 - var(--nav-out)));
+  transition: --nav-out .34s var(--ease-soft);
+}
+html.nav-away { --nav-out: 1; }
+@media (prefers-reduced-motion: reduce) { :root { transition: none; } }
+
 .nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: calc(var(--nav-out) * -1 * (var(--nav-real, 64px) + 4px)); left: 0; right: 0;
   z-index: 80;
   display: flex;
   align-items: center;
@@ -771,6 +786,13 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .stage { gap: clamp(1.25rem, 3.2vw, 3.25rem); }
   .fig--bear  { justify-self: end; }
   .fig--tiger { justify-self: start; }
+}
+/* Stacked under the title (an iPad stood up, a squarer desktop), far
+   enough apart that what one says fits between them in three or four
+   lines: close in, a long line ran to seven. Side by side with the title
+   they are sized to their column instead. */
+@media (min-width: 861px) and (max-aspect-ratio: 4/3) {
+  .stage { gap: clamp(3rem, 8vw, 6rem); }
 }
 @media (hover: hover) { .fig:hover { transform: translateY(-10px); } }
 /* Color sits BEHIND the line art, so the ink stays crisp on top of it. */
@@ -1221,8 +1243,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
    talking across the "&" like a strip: above his head it ran up under the
    bar on a short screen, and on his far side it sat on the title.
    initChatter sets its width to the room between them, and its height so
-   the point of it is level with his mouth, clear of his face. */
-@media (min-width: 640px) and (min-aspect-ratio: 4/3) {
+   the point of it is level with his mouth, clear of his face. The same
+   on any screen wider than a phone held upright (an iPad stood up, a
+   desktop with the two of them stacked under the title): on his far side
+   the words came out of the back of his head. */
+@media (min-width: 861px), (min-width: 640px) and (min-aspect-ratio: 4/3) {
   .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
     top: 4%; bottom: auto;
     width: max-content; max-width: 220px;
@@ -2485,7 +2510,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .page-head__row { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
 
 .yearbar {
-  position: sticky; top: var(--nav-h); z-index: 60;
+  position: sticky; top: var(--nav-top); z-index: 60;
   display: flex; align-items: center; gap: 1.5rem;
   padding: .85rem var(--gutter);
   background: color-mix(in srgb, var(--paper) 88%, transparent);
@@ -2523,7 +2548,7 @@ a.yearbtn { display: inline-block; }
 .chap + .chap { border-top: 1px solid var(--line-2); }
 .chap__aside { position: relative; }
 /* The spine runs down the aside's left edge, so content has to clear it. */
-.chap__sticky { position: sticky; top: calc(var(--nav-h) + 4.75rem); display: grid; gap: .55rem; padding-left: var(--rail); }
+.chap__sticky { position: sticky; top: calc(var(--nav-top) + 4.75rem); display: grid; gap: .55rem; padding-left: var(--rail); }
 /* The aside's left edge sits exactly on the spine, so center the dot on it. */
 .chap__dot { position: absolute; left: -4.5px; top: .55rem; width: 9px; height: 9px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 1px var(--ink-3); transition: background-color .5s, box-shadow .5s, transform .5s var(--ease); }
 .chap.is-in .chap__dot { background: var(--wine); box-shadow: inset 0 0 0 1px var(--wine), 0 0 0 5px color-mix(in srgb, var(--wine) 14%, transparent); transform: scale(1.1); }
@@ -3021,6 +3046,29 @@ a.yearbtn { display: inline-block; }
 .vows__slot:last-child .vow { grid-template-columns: minmax(0, 1fr) clamp(112px, 11.5vw, 158px); }
 .vows__slot:last-child .vow__pic  { grid-column: 2; grid-row: 1; }
 .vows__slot:last-child .vow__body { grid-column: 1; grid-row: 1; }
+/* The letter wraps round the photo: beside it at the top, then the card's
+   full width under it. In a column of its own the photo left a strip of
+   empty card the height of the letter, and squeezed the letter into a tall
+   narrow column beside it. The card and the letter flow as blocks so the
+   lines can run past the photo; the gaps the grid kept are margins now. */
+@media (min-width: 621px) {
+  .vow, .vows__slot:last-child .vow { display: flow-root; }
+  .vow__pic {
+    float: left;
+    width: clamp(112px, 11.5vw, 158px);
+    margin: calc(-1 * clamp(2.9rem, 5vw, 4rem)) clamp(1.1rem, 2.2vw, 1.9rem) .75rem 0;
+  }
+  .vows__slot:last-child .vow__pic {
+    float: right;
+    margin-left: clamp(1.1rem, 2.2vw, 1.9rem); margin-right: 0;
+  }
+  /* and no align-content: on a block it makes a box of its own, which keeps
+     clear of the photo instead of flowing round it */
+  .vow__body { display: block; align-content: normal; }
+  .vow__to { display: inline-block; }
+  .vow__text { margin-top: .85rem; }
+  .vow__sign { display: block; margin: -.4rem -.4rem -1.1rem auto; }
+}
 
 /* the sticker between the two cards: colors pinned, like the curtain's ampersand */
 .vows__stamp {
@@ -4185,7 +4233,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   body[data-page="story"] .chap { grid-template-columns: 140px minmax(0, 1fr); padding-left: 0; }
   body[data-page="story"] .chap__sticky {
     position: sticky;
-    top: calc(var(--nav-h) + 3.25rem);
+    top: calc(var(--nav-top) + 3.25rem);
     display: grid;
     align-items: start;
     gap: .35rem;
@@ -4331,7 +4379,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); align-items: start; }
   /* The column of photographs is the taller of the two, so the map follows it
      down rather than leaving a hole under itself. */
-  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + 1.5rem); }
+  .mem__mapcol { position: sticky; top: calc(var(--nav-top) + 1.5rem); }
 }
 /* The box holds its proportions whether or not the map is in it: on a phone
    the svg moves into the pop-up and back, and a collapsing box would jump
@@ -5173,7 +5221,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   /* stuck at the top only beside an open memory, the one thing here taller
      than the screen; the rest of the time it scrolls with the page */
   .mem__mapcol { position: relative; }
-  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .5rem); }
+  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-top) + .5rem); }
   .mem:has(.mem__open) { align-items: start; }
   /* the screen, less the padding and the count line under the map */
   .mem__map { width: min(100%, calc((var(--memscreen) - 3.4rem) * 1000 / 645.6)); margin-inline: auto; }
@@ -5287,8 +5335,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    Landscape is handled above and does not reach this. */
 @media (min-width: 700px) and (orientation: portrait) {
   .mem { grid-template-columns: minmax(0, 1fr); }
-  /* not sticky here, but still the box its key is set in */
-  .mem__mapcol { position: relative; --map-max: 620px; }
+  /* not sticky here, but still the box its key is set in; and without the
+     offset the sticky one hangs by, which on its own shifts a relative box:
+     it pushed the map and the count down over the cards, on top of their
+     back button */
+  .mem__mapcol { position: relative; top: auto; --map-max: 620px; }
   .mem__map { width: 100%; max-width: var(--map-max); margin-inline: auto; }
 
   .mem__grid {
@@ -5323,7 +5374,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__bar {
   position: fixed;
   z-index: 70;
-  top: calc(var(--nav-h) + 10px);
+  top: calc(var(--nav-top) + 10px);
   left: 50%;
   display: flex;
   align-items: center;
@@ -5434,7 +5485,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     opacity .14s linear .28s;
 }
 .memsheet.is-open .memsheet__card {
-  top: calc(var(--nav-h) + 10px);
+  top: calc(var(--nav-top) + 10px);
   left: calc((100% - var(--tw, 320px)) / 2);
   width: var(--tw, 320px);
   height: var(--th, 320px);
@@ -5503,3 +5554,14 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memsheet__note { font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--deep-ink-3); text-align: right; }
 
 @media (min-width: 1000px) { .memsheet { display: none; } }
+
+/* ── Where a photo is cropped ────────────────────────────────────────────
+   A photo cut to its frame is cut from a quarter of the way down, not the
+   middle: in nearly every one the faces are in its top third, and a
+   portrait photo in a landscape frame, cut from the middle, kept their
+   shirts and lost their heads. Landscape photos in landscape frames barely
+   move. A photo given a crop of its own ("pos" in its trip's file) keeps it.
+   Last in the file, so it wins over each frame's own rule. */
+:is(.shot, .snap, .memory__pic, .mem__shot, .mem__lead, .mem__thumb, .table-card__pic,
+    .credit__pic, .since__pic, .lost__pic, .hcard__pic, .ycover__frame, .ydeck__pic,
+    .yclose__card, .yclose__pic) img { object-position: 50% 25%; }
