@@ -180,7 +180,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2023-08-cincy/2023-08-cincy-01.jpg", "cap": "Holiday World, in Santa Claus, Indiana" },
     { "src": "continued_trips/2023-08-cincy/2023-08-cincy-02.jpg", "cap": "The water park at Holiday World" },
     { "src": "continued_trips/2023-08-cincy/2023-08-cincy-04.jpg", "cap": "FC Cincinnati game day" },
-    { "src": "continued_trips/2023-08-cincy/2023-08-cincy-08.jpg", "cap": "Beers with family and a live band" }
+    { "src": "continued_trips/2023-08-cincy/2023-08-cincy-08.jpg", "cap": "Anniversary dinner at Wunderbar in Covington" }
    ]
   },
   {
@@ -277,6 +277,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-02.jpg", "cap": "Holding up the Ledges" },
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-06.jpg", "cap": "A husky in Cincinnati", "pos": "30% 50%" },
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-11.jpg", "cap": "Winterfest at Kings Island" },
+    { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-16.jpg", "cap": "The Blowing Rock" },
     { "src": "continued_trips/2023-12-cincy-cleveland/2023-12-cincy-cleveland-15.jpg", "cap": "Harpers Ferry", "pos": "right" }
    ]
   }

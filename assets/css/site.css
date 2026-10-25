@@ -751,6 +751,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 [data-theme="dusk"] .hero__wash { opacity: .3; }
 
 .hero__inner { position: relative; z-index: 2; display: grid; gap: clamp(1.1rem, 2.4vh, 2.25rem); }
+/* the words and the drawings: invisible to the layout while it is one
+   column, the two columns of the split below */
+.hero__words, .hero__show { display: contents; }
 .hero__title { position: relative; }
 .hero__sub { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; align-items: baseline; justify-content: space-between; }
 /* wider than the 46ch default so the bio sets on two lines, balanced so neither is a runt */
@@ -760,10 +763,22 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .stage { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: clamp(.5rem, 3vw, 3rem); margin-top: clamp(.5rem, 1.5vh, 1.5rem); }
 
 .fig { position: relative; justify-self: center; cursor: pointer; transition: transform .7s var(--ease); }
+/* Where the cards show, the two stand close in to the ampersand, a set gap
+   either side, rather than centred in their halves: centred, the gap to the
+   "&" opened up with the window, and the room the cards need, behind each of
+   them, went to the middle instead. */
+@media (min-width: 861px) {
+  .stage { gap: clamp(1.25rem, 3.2vw, 3.25rem); }
+  .fig--bear  { justify-self: end; }
+  .fig--tiger { justify-self: start; }
+}
 @media (hover: hover) { .fig:hover { transform: translateY(-10px); } }
 /* Color sits BEHIND the line art, so the ink stays crisp on top of it. */
 /* Sized by height so the pair always fits the viewport, whatever its shape. */
-.fig__layer { position: relative; isolation: isolate; height: min(clamp(190px, 40vh, 470px), 44vw); }
+/* the drawings' height, set once on the stage so the hint beside their feet
+   can be sized from it too */
+.stage { --fig-h: min(clamp(190px, 40vh, 470px), 44vw); }
+.fig__layer { position: relative; isolation: isolate; height: var(--fig-h); }
 /* The ink stays black in both themes , it is the artist's line, not a UI color. */
 .fig__out {
   position: relative;
@@ -830,43 +845,87 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 .stage.is-pouring .fig__line { opacity: .85; }
 
-.fig__name {
-  --name-w: clamp(90px, 9vw, 130px);
-  position: absolute;
-  /* the script PNG has empty space under the letters; this sets the baseline at the feet */
-  bottom: calc(5% - var(--name-w) * .05);
-  width: var(--name-w);
-  filter: invert(var(--art-invert));
-  opacity: .0;
-  transition: opacity .5s var(--ease), transform .6s var(--ease);
-  pointer-events: none;
-}
-/* beside the feet, facing each other across the ampersand, so the script never
-   sits on the drawing or under the bio card on the outer side. The drawings end
-   around 72% of their image width at the feet, so 76% leaves a small gap; the
-   multipliers cancel the empty margin at the side of each script PNG. */
-.fig--bear  .fig__name { left: calc(76% - var(--name-w) * .137); }
-.fig--tiger .fig__name { right: calc(76% - var(--name-w) * .16); }
-@media (hover: hover) { .fig:hover .fig__name { opacity: .9; transform: translateY(-4px); } }
-
+/* Who they are, on hover. A card in the house print: paper, an ink keyline,
+   each one's own color printed off register behind it (his blue, his tiger
+   gold), set down at a slight tilt, with a tail toward the drawing it
+   belongs to. It lands on the house spring rather than fading up. */
 .fig__card {
+  --off: var(--blue);
+  --tilt: -1.6deg;
   position: absolute;
   top: 8%;
-  width: max(210px, 15vw);
-  padding: 1rem 1.15rem;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 0 0 1px var(--line), var(--shadow-sm);
-  border-radius: 2px;
+  width: clamp(220px, 16vw, 268px);
+  padding: 1rem 1.2rem 1.15rem;
+  background: var(--paper);
+  border: var(--keyline);
+  border-radius: var(--r-md);
+  box-shadow: 7px 7px 0 var(--off);
+  text-align: left;
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .5s var(--ease), transform .5s var(--ease);
+  /* --nudge is set on hover by initChatter when the screen is too narrow
+     to hold the card beside the drawing: it slides in just enough to fit */
+  transform: translateX(var(--nudge, 0px)) translateY(12px) rotate(0deg) scale(.94);
+  transition: opacity .35s var(--ease), transform .6s var(--pop);
+  pointer-events: none;
+  z-index: 5;
+}
+/* It stands a small gap clear of the drawing, so the ring each of them
+   holds behind his back stays in sight; the tail bridges the gap. */
+.fig--bear  .fig__card { right: calc(100% + .9rem); transform-origin: 100% 30%; }
+.fig--tiger .fig__card { --off: var(--gold); --tilt: 1.4deg; left: calc(100% + .9rem); transform-origin: 0 30%; }
+@media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: translateX(var(--nudge, 0px)) rotate(var(--tilt)); } }
+/* an open card goes over the "&" and the other drawing: where it has to open
+   in front of him (beside the title on a wide screen), the "&", which is
+   drawn later and lifts on the same hover, came out on top of its words */
+@media (hover: hover) { .fig:hover { z-index: 4; } }
+/* The tail: a comic speech tail in the drawing's own ink, reaching to just
+   behind his head.
+   Its base sits over the card's outline, and the paper fill hides that
+   stretch of it, so the card and the tail are one shape. Drawn for the
+   bear, whose card is on his left; mirrored for the tiger, and for a card
+   flipped in front. What ties the card to him is also the print: while he
+   is hovered, his drawing takes the card's off-register color (his blue,
+   his tiger gold), so the two read as one printed pair. */
+.fig__tail {
+  position: absolute;
+  top: .5rem;
+  left: calc(100% - 2px);
+  /* initChatter sizes it on hover to reach just behind his head */
+  width: 64px; height: 30px;
+  overflow: visible;
   pointer-events: none;
 }
-.fig--bear  .fig__card { right: 84%; text-align: right; }
-.fig--tiger .fig__card { left: 84%; }
-@media (hover: hover) { .fig:hover .fig__card { opacity: 1; transform: none; } }
-.fig__card p { font-size: .78rem; line-height: 1.5; color: var(--ink-2); margin: .35rem 0 0; }
+.fig__tail-fill { fill: var(--paper); }
+.fig__tail-ink { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.fig--tiger .fig__tail,
+.fig--bear .fig__card.is-flip .fig__tail { left: auto; right: calc(100% - 2px); scale: -1 1; }
+.fig--tiger .fig__card.is-flip .fig__tail { right: auto; left: calc(100% - 2px); scale: 1 1; }
+/* Side by side with the title, it is a speech balloon over his head with
+   the tail down to his mouth (initChatter places it): the tail that drops
+   from its foot, the one at the side put away. */
+.fig__drop { display: none; position: absolute; top: calc(100% - 2px); left: 0; overflow: visible; pointer-events: none; }
+.fig--tiger .fig__drop { scale: -1 1; }
+.fig__card.is-above { right: auto; transform-origin: var(--ox, 20%) 100%; }
+.fig__card.is-above .fig__tail { display: none; }
+.fig__card.is-above .fig__drop { display: block; }
+/* No room behind him: initChatter puts it in front, tail and all. */
+.fig--bear  .fig__card.is-flip { right: auto; left: calc(100% + .9rem); transform-origin: 0 30%; }
+.fig--tiger .fig__card.is-flip { left: auto; right: calc(100% + .9rem); transform-origin: 100% 30%; }
+/* the name, on a chip of the same color; dark type, so it reads at dusk too */
+.fig__card .tag {
+  display: inline-flex; align-items: center;
+  padding: .28rem .7rem;
+  border: 1.5px solid #14110D;
+  border-radius: 999px;
+  background: var(--off);
+  color: #14110D;
+  font-size: .62rem;
+  letter-spacing: .2em;
+}
+.fig__card p { font-size: .86rem; line-height: 1.55; color: var(--ink-2); margin: .65rem 0 0; text-wrap: pretty; }
+/* narrowed to fit a narrow window: initChatter sets it */
+.fig__card.is-narrow { padding: .85rem .95rem 1rem; }
+.fig__card.is-narrow p { font-size: .78rem; line-height: 1.5; }
 
 .stage__center { display: grid; place-items: center; gap: 1rem; align-self: center; }
 .stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease); }
@@ -874,6 +933,58 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 
 /* the pour control */
 .pour { display: grid; gap: .5rem; justify-items: center; margin-top: clamp(.75rem, 2vh, 1.75rem); }
+
+/* A screen wider than it is tall, the words on the left and the two of them
+   on the right. Stacked, the title was sized by the width and the drawings by
+   the height, so on a wide, short window the title filled the screen and the
+   drawings fell off the bottom of it. Side by side, each is sized by its own
+   column and the screen's height, and the pair stays in proportion. */
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) {
+  .hero__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); column-gap: 4rem; align-items: center; }
+  .hero__words { display: grid; gap: 1.5rem; container: herowords / inline-size; }
+  .hero__show  { display: grid; container: heroshow / inline-size; }
+  /* "& the Tiger" is about five of its own heights wide */
+  .hero__title.t-mega { font-size: min(19cqi, 17vh, 11.5rem); }
+  .hero__sub .lede { max-width: 46ch; }
+  /* two drawings about half as wide as they are tall, the "&" and the gaps
+     between them: as tall as fits across the column, and the screen */
+  /* The two stand at the column's edges with the "&" between them, and the
+     room between them is where a bio card opens, toward the other one and
+     never over him (initChatter). Beside the title there is nowhere else
+     for it: behind him it would sit on the words. */
+  .hero__show .stage { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .hero__show .fig--bear  { justify-self: start; }
+  .hero__show .fig--tiger { justify-self: end; }
+  .hero__show { --stage-room: max(14rem, min(16rem, 100cqi - 24rem)); }
+  .hero__show .stage { --fig-h: min(58vh, calc((100cqi - var(--stage-room)) / 1.04), 520px); }
+  .hero__show .pour { margin-top: 1.5rem; }
+  .hero__show .pour__track { width: min(440px, 100%); }
+}
+/* the room over their heads where a balloon opens, under a pointer and
+   where the screen is tall enough to spare it */
+/* Only as much as the screen does not already leave: the hero is centred,
+   so a tall screen has the room over them for nothing. It is what a balloon
+   about 13rem tall and the bar need, less what the centring leaves, which
+   is the screen less the drawings and the slider, halved. */
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) and (min-height: 620px) and (hover: hover) {
+  .hero__show .stage {
+    --fig-h: min(58vh, 100svh - 23.5rem, calc((100cqi - var(--stage-room)) / 1.04), 520px);
+    padding-top: max(0px, 36rem - 100svh + var(--fig-h));
+  }
+}
+/* the same on a phone on its side: the "&" and the gaps beside it are
+   smaller there, and the screen is short, so the air around the words is
+   taken from the height */
+@media (min-width: 640px) and (max-width: 860px) and (min-aspect-ratio: 4/3) {
+  .hero__inner { column-gap: 2rem; }
+  .hero__show { --stage-room: 7rem; }
+}
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
+  .hero { padding-top: calc(var(--nav-h) + 1rem); padding-bottom: 1rem; }
+  .hero__words { gap: 1rem; }
+  .hero__sub .lede { max-width: none; font-size: .875rem; }
+  .hero__show .pour { margin-top: .5rem; }
+}
 .pour__label { display: flex; align-items: center; gap: .8rem; font-size: .66rem; letter-spacing: .26em; text-transform: uppercase; color: var(--ink-3); }
 .pour__val { font-family: var(--display); font-size: .95rem; letter-spacing: -.01em; color: var(--brass-ink); min-width: 3.2ch; text-align: right; }
 
@@ -1042,7 +1153,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 
 /* Speech bubbles on the two characters */
 /* Speech bubble. On wide screens it takes the same outer slot as the info
-   card (and the card steps aside); on narrow screens it sits above the head. */
+   card (and the card steps aside); on narrow screens it sits above the head.
+   Both live inside the drawing's layer, so they travel with it as the hero
+   scrolls away. --sx is set by initChatter as it opens: where the bubble
+   would run off the screen it slides back on, and its tail slides the other
+   way so it still points at the head. */
 .fig__say {
   position: absolute;
   top: 6%;
@@ -1057,7 +1172,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   color: var(--ink);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px) scale(.95);
+  transform: translateX(var(--sx, 0px)) translateY(8px) scale(.95);
   transition: opacity .35s var(--ease), transform .45s var(--ease), visibility .35s;
   z-index: 6;
 }
@@ -1073,7 +1188,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 .fig--bear  .fig__say::after { right: -6px; box-shadow: inset -1px 1px 0 var(--line); }
 .fig--tiger .fig__say::after { left: -6px;  box-shadow: inset 1px -1px 0 var(--line); }
-.fig__say.is-said { opacity: 1; visibility: visible; transform: none; }
+.fig__say.is-said { opacity: 1; visibility: visible; transform: translateX(var(--sx, 0px)); }
 .fig.is-talking .fig__card { opacity: 0 !important; }
 
 @media (max-width: 860px) {
@@ -1082,31 +1197,65 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
     top: auto; bottom: calc(100% + .6rem);
     width: min(62vw, 260px);
     text-align: center;
-    transform: translateX(-50%) translateY(8px) scale(.95);
+    transform: translateX(calc(-50% + var(--sx, 0px))) translateY(8px) scale(.95);
     border-radius: 14px;
   }
   .fig--bear .fig__say, .fig--tiger .fig__say { left: 50%; right: auto; text-align: center; border-radius: 14px; }
-  .fig__say.is-said { transform: translateX(-50%); }
-  /* no room beside the figures at this width */
-  .fig__name { display: none; }
-  .fig__say::after { bottom: -6px; left: 50%; margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
-  .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: 50%; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+  .fig__say.is-said { transform: translateX(calc(-50% + var(--sx, 0px))); }
+  .fig__say::after { bottom: -6px; left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+  .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); right: auto; box-shadow: inset -1px -1px 0 var(--line); }
 }
 
+/* "Poke me!" waits until both of them are in color, then appears beside
+   each one's feet, on the side facing the other, in their own hand and
+   color with a little arrow curling down to them, as if they had scribbled
+   it on the page; and the two hop a beat apart a few times over, so the
+   invitation is seen on a phone as well as under a pointer. Under them it
+   sat on the ends of the slider and read as the slider's own labels. In the
+   drawing's layer, so it stands with him as he hops and drifts, and sized
+   from the drawings. Poking either one ends the hopping; a poked one's
+   note goes. The drawings end about 72% of the way across at the feet. */
 .fig__poke {
-  position: absolute;
-  left: 50%; bottom: -2.6rem;
-  transform: translateX(-50%);
-  font-size: .6rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  opacity: 0;
-  transition: opacity .4s var(--ease);
-  pointer-events: none;
+  position: absolute; z-index: 3;
+  bottom: 7%;
+  display: inline-flex; align-items: flex-end; gap: .3em;
+  font-family: var(--hand);
+  font-size: clamp(.95rem, calc(var(--fig-h) * .058), 1.6rem);
+  font-weight: 600;
+  line-height: 1;
   white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  pointer-events: none;
 }
-@media (hover: hover) { .fig:hover .fig__poke { opacity: .85; } }
+.fig__poke svg { flex: none; width: 1.05em; height: .74em; margin-bottom: .1em; }
+/* the "p" carries more space on its left than the "!" on its right, so the
+   bear's arrow sits closer to match the tiger's by eye */
+.fig--bear  .fig__poke { left: 78%; gap: 0; color: var(--blue-deep); rotate: -6deg; transform-origin: 0 100%; }
+.fig--tiger .fig__poke { right: 78%; color: var(--brass-ink); rotate: 6deg; transform-origin: 100% 100%; flex-direction: row-reverse; }
+.fig--tiger .fig__poke svg { scale: -1 1; }
+/* a phone: the two of them stand close, so the notes go without arrows */
+@media (max-width: 639px) {
+  .fig__poke { font-size: .9rem; }
+  .fig__poke svg { display: none; }
+  .fig--bear  .fig__poke { left: 80%; }
+  .fig--tiger .fig__poke { right: 80%; }
+}
+.stage.was-full .fig__poke { opacity: 1; transform: none; }
+.fig--tiger .fig__poke { transition-delay: .12s; }
+.fig.was-poked .fig__poke { opacity: 0; transition-delay: 0s; }
+@media (prefers-reduced-motion: no-preference) {
+  .stage.was-full:not(.was-poked) .fig:not(:hover):not(.is-bouncing) { animation: fig-nudge 3.4s var(--ease) .9s 3; }
+  .stage.was-full:not(.was-poked) .fig--tiger:not(:hover):not(.is-bouncing) { animation-delay: 1.15s; }
+}
+/* two hops, the second smaller, then a long rest */
+@keyframes fig-nudge {
+  0%, 30%, 100% { transform: none; animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  9%  { transform: translateY(-16px); animation-timing-function: cubic-bezier(.5, 0, .75, 0); }
+  18% { transform: translateY(0); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  24% { transform: translateY(-6px); animation-timing-function: cubic-bezier(.5, 0, .75, 0); }
+}
 .fig.is-bouncing { animation: fig-bounce .7s var(--ease); }
 @keyframes fig-bounce {
   0%, 100% { transform: translateY(-10px) rotate(0deg); }
@@ -3797,13 +3946,22 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 .theme-swap::view-transition-old(root),
 .theme-swap::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
-/* Page to page: the next page fades in over the last one, held still
-   underneath so the paper never dips or brightens on the way. Browsers
-   without cross-document view transitions just load the page as before. */
+/* Page to page: the last page clears quickly and the next one fades up
+   onto the same paper, the two barely overlapping. Held still underneath,
+   the last page showed through the next one, an open menu most of all.
+   Browsers without cross-document view transitions just load the page. */
 @view-transition { navigation: auto; }
-::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
-::view-transition-new(root) { animation: page-in .38s var(--ease-soft) both; mix-blend-mode: normal; }
+::view-transition-old(root) { animation: page-out .14s ease-in both; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: page-in .32s var(--ease-soft) .06s both; mix-blend-mode: normal; }
+@keyframes page-out { to { opacity: 0; } }
 @keyframes page-in { from { opacity: 0; } }
+/* A title is split into words by script. Until it is, it stays out of
+   sight, or a slow phone paints the plain title and then takes it away to
+   play it in. If the script never comes, the title shows anyway. */
+@media (scripting: enabled) {
+  [data-split]:not([data-split="done"]) { opacity: 0; animation: split-wait 0s 2.5s forwards; }
+}
+@keyframes split-wait { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
 .theme-swap *:not(.theme-toggle__knob),
 .theme-swap *::before,
@@ -3987,8 +4145,9 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
    to 495px: the first is cut off at the top, the last runs under the credits,
    and the whole thing scrolls. It is set by the height here instead. This one
    takes every phone on its side, narrow ones included, since the menu is the
-   same five links whatever the width. */
-@media (orientation: landscape) and (max-height: 520px) {
+   same five links whatever the width. Only where there is a menu: on a
+   short desktop window the row of links took the menu's size. */
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 1020px) {
   .nav__links {
     justify-content: center;
     gap: clamp(.3rem, 1.6vh, .8rem);
@@ -4083,6 +4242,12 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 [data-theme="dusk"] .memories .squiggle { color: #3DAF84; }
 
 .mem { position: relative; display: grid; gap: clamp(1.25rem, 3vw, 2.25rem); }
+/* One column the width of the page, and never more. Left to size itself it
+   took the widest thing in it, and on an iPhone the map's smallest width came
+   out a few pixels over: the whole section grew, and its right margin was
+   half its left. */
+.mem, .mem__panel { grid-template-columns: minmax(0, 1fr); }
+.mem__mapcol, .mem__map { min-width: 0; }
 /* overflow-x: hidden on <body> turns it into a scroll container, and a sticky
    child of a scroll container that never scrolls never sticks. "clip" clips
    the same way without making one, which is what lets the map hold its place.
@@ -4091,6 +4256,11 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 
 .mem__mapcol { position: relative; z-index: 1; }
+/* Under the map the section ends sooner, and the tally after it starts
+   sooner: each band's own 10rem on a desktop, one on top of the other, left
+   the map followed by a screen of nothing. */
+.memories.band { padding-bottom: clamp(2rem, 4vw, 3.5rem); }
+.memories.band + .band { padding-top: clamp(3.5rem, 7vw, 6rem); }
 @media (min-width: 1000px) {
   .mem { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); align-items: start; }
   /* The column of photographs is the taller of the two, so the map follows it
@@ -4135,21 +4305,43 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__been[data-q="3"] { fill: var(--quilt-4); }
 @media (hover: hover) { .memmap__been:hover { filter: brightness(1.08) saturate(1.1); } }
 
-/* One state chosen: it keeps its color and takes the ink line, the rest
-   step back. One outline on the map, never thirty-six. */
+/* One state chosen: it keeps its color and glows, the rest step back. The
+   halo, in its own color, sits under the states, so it blooms out round
+   the edge and never blurs the state itself, which stays crisp, with a
+   fine edge in a deep shade of its color. It blooms as it is picked and
+   settles; opacity only, so it is cheap to run. */
 .memmap.is-picked.is-printed .memmap__been { opacity: .38; }
 .memmap.is-picked.is-printed .memmap__been.is-on { opacity: 1; }
+.memmap__glow, .memmap__ring { --hue: var(--quilt-1); fill: none; pointer-events: none; opacity: 0; }
+.memmap__glow[data-q="1"], .memmap__ring[data-q="1"] { --hue: var(--quilt-2); }
+.memmap__glow[data-q="2"], .memmap__ring[data-q="2"] { --hue: var(--quilt-3); }
+.memmap__glow[data-q="3"], .memmap__ring[data-q="3"] { --hue: var(--quilt-4); }
+.memmap__glow {
+  stroke: var(--hue);
+  fill: var(--hue);
+  stroke-width: 22px;
+  stroke-linejoin: round;
+}
+/* a defined edge in a deep shade of its own color: between the hard ink
+   line and a pale one that lost the state against its neighbours */
 .memmap__ring {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.4px;
+  stroke: color-mix(in srgb, var(--hue) 58%, var(--ink));
+  stroke-width: 1.5px;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  pointer-events: none;
-  opacity: 0;
   transition: opacity .3s var(--ease-soft);
 }
-.memmap.is-picked .memmap__ring { opacity: 1; }
+.memmap.is-picked .memmap__ring { opacity: .8; }
+.memmap.is-picked .memmap__glow { opacity: .8; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .memmap.is-picked .memmap__glow { animation: memglow 1.6s var(--ease-soft) both; }
+}
+@keyframes memglow {
+  0%   { opacity: 0; }
+  38%  { opacity: 1; }
+  100% { opacity: .8; }
+}
 .memmap__dc {
   fill: var(--coral); stroke: var(--paper); stroke-width: 1.2px;
   vector-effect: non-scaling-stroke; cursor: pointer;
@@ -4179,9 +4371,68 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 }
 .memmap__label { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .5em; fill: var(--ink-3); pointer-events: none; }
 
-/* A sentence, not a label: letterspaced capitals took half again the width
-   for no more meaning, and this only ever has to sit quietly under the map. */
-.mem__hint { margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
+/* centred under the map, at every size */
+.mem__hint { display: flex; justify-content: center; margin: 1rem 0 0; font-size: .86rem; color: var(--ink-3); }
+/* How far the count of places has got, as a departure board: the number on
+   flip tiles, what it counts beside it, and the rest in a line under that.
+   The tiles are a shade of the paper with ink digits, so the number reads
+   without a black block sitting heavier than the map above it. When the map prints its states the wheels roll up from 00 to the
+   count, the right-hand wheel round once more, the way a counter does, and
+   settle with the states (initMemoryMap). Read out as one sentence: the
+   tiles are hidden from screen readers and the number is said in words. */
+.mem__board {
+  --tile-w: 28px; --tile-h: 36px; --digit: 26px;
+  --board-settle: linear(0, .013 1%, .05 2.2%, .2 5.2%, .5 10.2%, .7 14.5%, .845 18.8%, .932 23.1%, .983 27.6%, 1.012 33%, 1.02 39%, 1.016 47%, 1.006 60%, 1.001 80%, 1);
+  display: inline-flex; align-items: center; gap: 16px;
+  max-width: 100%;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: left;
+}
+.mem__tiles { display: inline-flex; gap: 4px; }
+.mem__tile {
+  position: relative;
+  width: var(--tile-w); height: var(--tile-h);
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--paper-3);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+/* the split across the middle of each tile, where a flap would fold */
+.mem__tile::after {
+  content: ""; position: absolute; z-index: 1; left: 0; right: 0; top: 50%;
+  height: 1.5px; margin-top: -.75px;
+  background: var(--paper);
+}
+.mem__wheel { display: grid; translate: 0 calc(var(--n, 0) * var(--tile-h) * -1); }
+.mem__wheel > b {
+  display: grid; place-items: center;
+  height: var(--tile-h);
+  font-family: var(--display); font-weight: 400; font-size: var(--digit); letter-spacing: 0;
+  color: var(--ink);
+}
+.mem__board.is-waiting .mem__wheel { translate: 0 0; }
+.mem__board.is-rolling .mem__wheel {
+  transition: translate calc(.9s + var(--k, 0) * .3s) var(--board-settle) calc(.15s + var(--k, 0) * .08s);
+}
+.mem__board-words { display: grid; gap: 4px; }
+.mem__board-k { font-size: .62rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); }
+.mem__board-rest { font-size: .86rem; color: var(--ink-2); }
+.mem__board-plus[hidden] { display: none; }
+.mem__board-said { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Where its line is short of room (a phone on its side, the narrowest
+   phones), the board tightens rather than being cut off: measured on the
+   line it sits on, not the screen. A desktop's map is twice the size, so
+   the board grows with it. */
+.mem__hint { container: memhint / inline-size; }
+@container memhint (max-width: 19.5rem) {
+  .mem__board { --tile-w: 24px; --tile-h: 32px; --digit: 22px; gap: 8px; }
+  .mem__board-rest { font-size: .78rem; }
+}
+@container memhint (min-width: 34rem) {
+  .mem__board { --tile-w: 32px; --tile-h: 40px; --digit: 30px; }
+  .mem__board-rest { font-size: .92rem; }
+}
 /* The one action in the panel: it rolls the map to a state we have written up */
 .mem__roll {
   flex: none;
@@ -4233,6 +4484,24 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.7rem, 1.6vw, 1rem); }
 /* an odd one out takes the whole row rather than sitting on its own */
 .mem__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* "1–6 of 23" and "Show 6 others": quiet, under the grid, on one line. */
+.mem__morerow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .4rem .9rem; margin-top: .35rem; }
+.mem__range { font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.mem__more {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .55rem 1.05rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font: inherit; font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color .25s var(--ease);
+}
+.mem__more svg { transition: translate .35s var(--ease); }
+@media (hover: hover) { .mem__more:hover { background: var(--paper-2); } .mem__more:hover svg { translate: 2px 0; } }
+.mem__more:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
 .mem__card {
   position: relative;
@@ -4368,19 +4637,42 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__place { margin: 0; font-family: var(--display); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.15; }
 .mem__date { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
 .mem__text { margin: 0; font-size: .92rem; line-height: 1.6; color: var(--ink-2); }
-.mem__go {
-  justify-self: start;
-  display: inline-flex; align-items: center; gap: .45rem;
-  padding: .5rem .95rem;
+/* a place David wrote nothing about has the photographs and the link only */
+.mem__text:empty { display: none; }
+/* Over David's words when they are his opening for the whole trip, not
+   about this place: says so, so nothing is put in his mouth. */
+.mem__from { font-size: .66rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); text-wrap: balance; }
+.mem__from + .mem__text { margin-top: -.25rem; }
+/* The two ways on from an open memory: another memory leads, as the gold
+   button; the year page is a quiet link under it. */
+.mem__acts { display: grid; justify-items: start; gap: .5rem; }
+.mem__next {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1rem;
   border: var(--keyline);
   border-radius: 999px;
   background: var(--gold);
   color: #14110D;
-  font-size: .82rem; font-weight: 500;
+  font: inherit; font-size: .82rem; font-weight: 500;
+  cursor: pointer;
   box-shadow: 3px 3px 0 var(--ink);
   transition: transform .25s var(--ease), box-shadow .25s var(--ease);
 }
-@media (hover: hover) { .mem__go:hover { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); } }
+.mem__next svg { flex: none; }
+@media (hover: hover) { .mem__next:hover { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); } }
+.mem__next:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.mem__go {
+  display: inline-flex; align-items: center; gap: .25rem;
+  padding: .25rem 0;
+  color: var(--ink-2);
+  font-size: .82rem; font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  transition: color .25s var(--ease), text-decoration-color .25s var(--ease);
+}
+@media (hover: hover) { .mem__go:hover { color: var(--ink); text-decoration-color: currentColor; } }
 
 /* Nothing filed under this one yet, said plainly rather than left blank */
 .mem__none {
@@ -4412,12 +4704,13 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem__head { justify-items: center; }
   .mem__place { text-wrap: balance; }
   .mem__text { text-wrap: pretty; }
-  .mem__go { justify-self: stretch; justify-content: center; padding: .8rem 1rem; margin-right: 3px; }
-  /* The count goes above the map here, so that nothing sits between the map
-     and the photographs for the pill to float over on its way past. It reads
-     as an opening line there in any case. */
+  .mem__acts { justify-items: stretch; }
+  .mem__next { justify-content: center; padding: .75rem 1rem; margin-right: 3px; }
+  .mem__go { justify-self: center; }
+  /* The count is the map's caption, just under it: over the map it sat on
+     the map's top edge like a label for something else. */
   .mem__mapcol { display: flex; flex-direction: column; }
-  .mem__hint { order: -1; margin: 0 0 .9rem; justify-content: center; text-align: center; }
+  .mem__hint { margin: 1rem 0 0; justify-content: center; text-align: center; }
 }
 
 /* A desktop: the photographs are cut to the map's height. Ten cards down the
@@ -4762,25 +5055,161 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 }
 .soon__line { margin: 0; font-size: clamp(1rem, 1.5vw, 1.1rem); line-height: 1.65; color: var(--ink-2); }
 
-/* A phone on its side is wide and very short: stacking the map and the sheet
-   there would be two screens of scrolling for one choice, so it takes the two
-   columns, with the map given less of the width than a desktop gives it. */
+/* A phone on its side is wide and very short: the tally's cards go four
+   across rather than two by two. */
 @media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
-  .mem { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; }
-  /* Six cards two across is three rows, and three rows on a screen this
-     short is a long scroll past a map that has gone. It stays, the way it
-     does on a desktop, and the pill never has to stand in for it. */
-  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .6rem); }
-  .mem__panel {
-    z-index: auto; margin-top: 0; padding: 0; min-height: 0;
-    border: 0; border-radius: 0; background: none; box-shadow: none;
-  }
-  .mem__panel::before { content: none; }
-  .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
-  .mem__hint { justify-content: flex-start; margin-bottom: 0; }
   .tally__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tally__end { grid-template-columns: auto minmax(0, 40rem); align-items: center; }
   .tally__cta { justify-items: start; text-align: start; }
+}
+
+/* The map sideways: a phone on its side, and anything under a desktop's
+   width that is wider than it is tall (an iPhone SE at 667 by 375, an open
+   Duo at 890 by 626). The map and the cards are one screen: exactly the
+   height under the bar, so the band after it never shows beside them, and
+   everything in it is sized from that height. The map is as big as it
+   allows; each card's photograph is a true 4:3, as tall as the row allows,
+   but never so wide that two whole cards do not fit, with the next one
+   showing in the margin to say the row goes on. Earlier the cards stretched
+   to fill the row, which cut a lone card (Delaware) to a thin strip.
+   Matches SIDEWAYS in assets/js/site.js. */
+@media (min-width: 600px) and (max-width: 999px) and (orientation: landscape) {
+  /* The screen under the bar with Safari's own bars tucked away (lvh),
+     which is how it is once the page is scrolled to here, and never changes
+     while it scrolls. Sized to the screen as it is now (dvh), everything
+     grew and shrank as the bars came and went, which read as the map
+     glitching; sized with the bars showing (svh), which on a phone on its
+     side take a third of the height, the map and the cards came out tiny.
+     Never measured in script either: measured on load with the bars
+     showing, then again once they tucked away, the section shrank as the
+     page loaded and grew back mid-scroll. lvh is fixed from the start. */
+  :root { --memscreen: calc(100lvh - var(--nav-h)); }
+  /* Spacing here is on the 8px grid (4px for the tightest). Room under it
+     before the next band, which shows once an open memory makes the section
+     taller than the screen: 24px, plus the section's own 8px, is 32. */
+  .memories.band { padding-bottom: 1.5rem; }
+  /* narrower side margins here: every pixel goes to the map and photos */
+  .memories .shell { padding-inline: 1rem; }
+  .mem {
+    /* the map a little more than half: it is the larger of the two */
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    /* from the top, so no paper sits over it once the bars tuck away: the
+       slack falls under it, in its own band's color */
+    align-items: center; align-content: start;
+    gap: 1.5rem;
+    /* fills the screen even with Safari's bars tucked away (lvh), so the
+       band below never peeks in; grows for an open memory */
+    min-height: var(--memscreen);
+    padding-block: .5rem;
+    box-sizing: border-box;
+    scroll-margin-top: var(--nav-h);
+  }
+  /* stuck at the top only beside an open memory, the one thing here taller
+     than the screen; the rest of the time it scrolls with the page */
+  .mem__mapcol { position: relative; }
+  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .5rem); }
+  .mem:has(.mem__open) { align-items: start; }
+  /* the screen, less the padding and the count line under the map */
+  .mem__map { width: min(100%, calc((var(--memscreen) - 3.4rem) * 1000 / 645.6)); margin-inline: auto; }
+  /* the whole column, not the map's width: a short screen draws the map
+     narrower than the badge, and it was cut off at "so far" */
+  .mem__hint { width: 100%; order: 0; margin-top: .5rem; margin-bottom: 0; text-align: center; justify-content: center; }
+  .mem__bar { display: none; }
+
+  .mem__panel {
+    z-index: auto; margin-top: 0; padding: 0; min-height: 0; gap: .5rem;
+    border: 0; border-radius: 0; background: none; box-shadow: none;
+    container: mempanel / inline-size;
+  }
+  .mem__panel::before { content: none; }
+  /* "Surprise me" is its die alone here: with its words it left no room for
+     the state's name and count on one line ("North Carolina", on an SE). */
+  .mem__roll { padding: .5rem; border-radius: 50%; }
+  .mem__roll-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .mem__title { flex-wrap: nowrap; min-width: 0; font-size: clamp(1.2rem, 2.6vw, 1.5rem); }
+  .mem__count { white-space: nowrap; }
+  /* The row runs out into the right margin, so the card after the two shows
+     there. The room inside it on every side is for the tilt and the color
+     printed off register, which the scroll would otherwise cut. */
+  .mem__grid {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    margin-inline: -.5rem calc(-1 * var(--gutter));
+    padding: .5rem var(--gutter) 1rem .5rem;
+    scroll-padding-inline-start: .5rem;
+    scrollbar-width: none;
+  }
+  .mem__grid::-webkit-scrollbar { display: none; }
+  /* Two and a half cards across the row as it shows (the column and the
+     margin it runs into), so the half says the row goes on. Never taller
+     than the screen has room for: the screen, less the padding, the
+     heading, the gaps and a two-line label, at 4:3. Under 20rem of column
+     (an SE on its side), one and a half. */
+  .mem__grid > * {
+    --fit: calc((var(--memscreen) - 1rem - 2.75rem - .5rem - 1.5rem - 4.9rem) * 4 / 3);
+    flex: 0 0 min(var(--fit), calc((100% + 1rem - 2 * 1rem) / 2.5));
+    scroll-snap-align: start;
+  }
+  @container mempanel (max-width: 20rem) {
+    .mem__grid > * { flex-basis: min(var(--fit), calc((100% + 1rem - 1rem) / 1.5)); }
+  }
+  /* Every card in the row the same height, the tallest label's: the color
+     under the label runs to the foot of each. Names longer than two lines
+     ("Crater Lake National Park" in a narrow card) end in an ellipsis. */
+  .mem__card { grid-template-rows: auto 1fr; align-self: stretch; }
+  .mem__shot { aspect-ratio: 4 / 3; }
+  .mem__where { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+
+  .mem__open { padding: clamp(.85rem, 2vw, 1.1rem); border: var(--keyline); border-radius: var(--r-md); background: var(--paper); box-shadow: 6px 6px 0 var(--off, var(--gold)); }
+  /* An open memory: its thumbnails in one column to the right of the
+     photograph, as on a desktop, so the photograph, the way back and the
+     place's name fit on the first screen; the words follow. Every size here
+     is worked out from the screen and the panel's width, never from the
+     content: the photograph's width (4:3, as big as the screen allows), its
+     height from that, and each thumbnail's side from that height shared
+     between them. Sized from each other, the column and the thumbnails
+     settled differently in Safari and broke apart on a pinch to zoom. The
+     width left for the photograph takes off the card's padding (1.5rem),
+     the column (3.5rem at most), the gap (.5rem) and the keylines. */
+  /* The pair sits in the middle two of four columns, the outer two taking
+     the slack equally: with two columns sized to their content, the name
+     and the words spanning them widened the photograph's column and opened
+     a gap between it and its thumbnails. */
+  .mem__open {
+    padding: .75rem .75rem 1rem;
+    gap: .5rem;
+    --leadw: min(calc(100cqw - 1.5rem - 4px - var(--thumb) - 1rem - 2px), calc((var(--memscreen) - 4.6rem) * 4 / 3));
+    --leadh: calc(var(--leadw) * 3 / 4);
+    --thumb: max(2.25rem, min(3rem, calc((var(--memscreen) - 4.6rem) * 3 / 4 * .9 / var(--n, 4))));
+    /* the thumbnails' column carries the gap to the photograph (.65rem) */
+    grid-template-columns: minmax(0, 1fr) var(--leadw) calc(var(--thumb) + .5rem + 2px + .5rem) minmax(0, 1fr);
+    column-gap: 0;
+  }
+  .mem__open > :not(.mem__lead, .mem__shots) { grid-column: 1 / -1; }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead { grid-column: 1 / -1; }
+  .mem__open > .mem__lead { grid-row: 2; grid-column: 2; aspect-ratio: auto; width: var(--leadw); height: var(--leadh); }
+  .mem__open:not(:has(> .mem__shots)) > .mem__lead {
+    --leadw: min(calc(100cqw - 1.5rem - 4px), calc((var(--memscreen) - 4.6rem) * 4 / 3));
+    justify-self: center;
+  }
+  .mem__open > .mem__shots {
+    /* --thumb, set on the card: shared out, but never under 36px, a size a
+       thumb can tap; a column short of room for all of them scrolls */
+    grid-row: 2; grid-column: 3; justify-self: end;
+    display: flex; flex-direction: column; align-items: center;
+    box-sizing: border-box;
+    overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+    width: calc(var(--thumb) + .5rem + 2px); height: var(--leadh);
+    padding: .25rem; gap: .25rem;
+  }
+  .mem__open > .mem__shots::-webkit-scrollbar { display: none; }
+  .mem__open .mem__thumb { flex: none; width: var(--thumb); height: var(--thumb); aspect-ratio: auto; min-height: 0; }
+  /* centred in the column when they fit, from the top when it scrolls */
+  .mem__open .mem__thumb:first-child { margin-top: auto; }
+  .mem__open .mem__thumb:last-child { margin-bottom: auto; }
 }
 
 /* ── A TABLET STOOD UP ───────────────────────────────────────────────────
@@ -4792,8 +5221,9 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    Landscape is handled above and does not reach this. */
 @media (min-width: 700px) and (orientation: portrait) {
   .mem { grid-template-columns: minmax(0, 1fr); }
-  .mem__mapcol { position: static; }
-  .mem__map { width: 100%; max-width: 620px; margin-inline: auto; }
+  /* not sticky here, but still the box its key is set in */
+  .mem__mapcol { position: relative; --map-max: 620px; }
+  .mem__map { width: 100%; max-width: var(--map-max); margin-inline: auto; }
 
   .mem__grid {
     display: flex;
@@ -4868,7 +5298,8 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   font-weight: 500; font-size: .84rem; line-height: 1.15;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.mem__now span { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--deep-ink-3); }
+/* the count is one line, always: "139 memories" broke after the number */
+.mem__now span { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: var(--deep-ink-3); white-space: nowrap; }
 /* A rotated bordered square puts its visual weight below its own box, which
    is what had the chevron sitting low in the circle. An svg centers exactly. */
 .mem__chev {
@@ -4984,7 +5415,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 /* On the deep ground the map needs its own paper, not the page's */
 .memsheet__map .memmap__st { fill: #ffffff14; stroke: #ffffff26; }
 .memsheet__map .memmap__been { stroke: var(--deep); }
-.memsheet__map .memmap__ring { stroke: var(--gold); stroke-width: 3px; }
+.memsheet__map .memmap__ring { stroke-width: 1.6px; }
 .memsheet__map .memmap__label { fill: var(--deep-ink-3); }
 .memsheet__map .memmap__home { stroke: var(--deep); }
 .memsheet__foot {

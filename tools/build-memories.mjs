@@ -91,8 +91,10 @@ const KNOWN = {
   'fall creek falls': 'TN', 'watkins glen': 'NY', 'letchworth': 'NY',
 };
 
-/* Towns with a namesake stay off that list: Newport is in Rhode Island and on
-   the Oregon coast, and we have photographs of both.
+/* Newport is Newport, Rhode Island: the two of them live in New York and
+   David is from Cincinnati, so it is the one they mean. The one exception
+   is the honeymoon's morning on the Oregon coast, and that line says OR
+   ("Newport to Depoe Bay, OR"), so a line naming Oregon keeps it there.
 
    Things a place name says that are not where it happened: Cincinnati Night
    was a night out in New York. */
@@ -136,6 +138,8 @@ function statesFromPlace(place) {
       re.lastIndex = a + 1;
     }
   }
+  // Newport, unless the line puts it in Oregon
+  if (/(^|[^a-z])newport([^a-z]|$)/.test(rest) && !out.has('OR')) out.add('RI');
   return [...out];
 }
 
@@ -149,7 +153,9 @@ const slugOf = src => {
 const stopsOf = pics => {
   const out = [];
   const seen = new Set();
-  pics.forEach(p => (PLACES[slugOf(p.src) || ''] || []).forEach(s => {
+  // a photograph pinned to a named place in PIC_ST is a stop of its own
+  const pinned = p => { const pin = pinOf(p.src); return pin && pin[1] ? [{ n: pin[1], st: pin[0] }] : []; };
+  pics.forEach(p => [...(PLACES[slugOf(p.src) || ''] || []), ...pinned(p)].forEach(s => {
     const key = `${s.n}|${s.st}`;
     if (seen.has(key)) return;
     seen.add(key);
@@ -232,18 +238,40 @@ function titlesByState(place, short, all, stops) {
    rather than under the wrong one.
 
    PIC_ST is for the few a caption cannot place ("The snowstorm"). Each was
-   read off the GPS in the original, by hand, and "" means on a state line. */
+   read off the GPS in the original, by hand, and "" means on a state line.
+   A pair also names the place, for the memory's title when that state is
+   picked: a Cincinnati trip filed under Kentucky is called Covington there.
+   The Mammoth Cave pair are volume one photographs, whose originals have no
+   GPS, so they were placed by their capture date and what they show; the
+   Clifty Falls one is read off the GPS in Wedding/Wedding Assets/Our Story
+   Photos Original/211225-Cincinnati/IMG_6379.JPG, and the two waterfalls
+   and the Granville Pub off their originals in the Photos library. */
 const PIC_ST = {
   '2022-12-cincy-07.jpg': 'OH',              // The snowstorm: Harrison, Ohio
   '2023-09-family-trip-06.jpg': 'TN',        // The waterfall hike: above Gatlinburg
   '2023-09-family-trip-10.jpg': 'NC',        // The highest point on the Parkway
   '2025-02-rhode-island-03.jpg': 'RI',       // The White Horse Tavern: Newport
-  '2023-08-cincy-08.jpg': '',                // Beers with family: Covington, over the river
+  '2023-08-cincy-08.jpg': ['KY', 'Covington'],  // Anniversary dinner at Wunderbar: MainStrasse, Covington
+  '2024-11-richmond-atlanta-charlottesville-03.jpg': 'GA', // Dinner with the cousins: Canton, Georgia
+  '2024-11-richmond-atlanta-charlottesville-06.jpg': 'GA', // Chasing waterfalls: the North Georgia mountains
+  '202205cincy02.jpg': ['KY', 'Mammoth Cave'],  // The selfie in the cave: May 30, 2022
+  '202205cincy03.jpg': ['KY', 'Mammoth Cave'],  // Inside the cave: May 30, 2022
+  '21122504.jpg': ['IN', 'Clifty Falls'],       // The selfie by the creek: Clifty Falls State Park, Christmas Day 2021
+  'cliftyfalls01.jpg': ['IN', 'Clifty Falls'],  // A waterfall in the park: the same afternoon
+  'cliftyfalls02.jpg': ['IN', 'Clifty Falls'],  // The stepped falls: the same afternoon
+  'granvillepub01.jpg': ['KY', 'Louisville'],   // Dinner at the Granville Pub, Old Louisville: that evening
+};
+// [state, place or undefined], or undefined for a photograph not in PIC_ST
+const pinOf = src => {
+  const pin = PIC_ST[path.basename(src)];
+  return pin === undefined ? undefined : [].concat(pin);
 };
 const hay = s => String(s).toLowerCase();
 function stateOfPic(pic, said) {
-  const file = path.basename(pic.src);
-  if (PIC_ST[file] !== undefined) return PIC_ST[file];
+  const pin = pinOf(pic.src);
+  if (pin) return pin[0];
+  // volume one: a photograph with no pin is from the chapter's own place
+  if (pic.home) return pic.home;
   const stops = (PLACES[slugOf(pic.src) || ''] || [])
     .map(s => ({ n: s.n, st: s.st === 'QC' ? 'CA-QC' : s.st }));
   if (pic.cap) {
@@ -381,7 +409,7 @@ const push = m => {
   const loose = m.pics.filter(p => !p.st);
   m.st = all.filter(c => loose.length || m.pics.some(p => p.st === c));
   if (all.length > 1) {
-    loose.filter(p => PIC_ST[path.basename(p.src)] === undefined && statesFromPlace(p.cap || '').length < 2)
+    loose.filter(p => pinOf(p.src) === undefined && statesFromPlace(p.cap || '').length < 2)
       .forEach(p => unsure.push({ m, p }));
   }
   all.filter(c => !m.st.includes(c)).forEach(c => {
@@ -391,12 +419,32 @@ const push = m => {
   });
   if (!m.st.length) return;
   m.t = titlesByState(m.place, m.short, m.st, stopsOf(m.pics));
+  // A trip that crossed a line opens, under each state, on what David wrote
+  // about that state's half, when he wrote something: the Christmas trip,
+  // under Florida, on the drive down to Clearwater Beach rather than on
+  // Christmas in Cincinnati. Word for word, as ever.
+  if (m.st.length > 1 && m.full) {
+    const said = [].concat(m.full).join(' ').split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
+    m.x = {};
+    m.st.forEach(c => {
+      const names = String(m.t[c] || m.short).split(/\s*&\s*/).map(n => n.toLowerCase());
+      const hit = said.filter(x => names.some(n => x.toLowerCase().includes(n)));
+      const text = hit.length ? blurb(hit.join(' ')) : '';
+      if (text && text !== m.text) m.x[c] = text;
+    });
+  }
+  delete m.full;
   items.push(m);
 };
 
 /* Volume one: the chapters before the wedding. Their photographs sit loose in
-   assets/photos/, so the state can only come from the chapter's own place.  */
+   assets/photos/, with no folder or GPS stop to go by, so each is taken to be
+   from the chapter's own place, when that names one state, unless PIC_ST
+   pins it somewhere else: the May 2022 Cincinnati chapter's Mammoth Cave
+   photographs are in Kentucky.                                              */
 MW.timeline.forEach((c, i) => {
+  const own = statesFromPlace(c.place);
+  const home = own.length === 1 ? own[0] : '';
   push({
     place: c.place,
     short: c.short || String(c.place).split(/[,&]/)[0].trim(),
@@ -404,9 +452,130 @@ MW.timeline.forEach((c, i) => {
     year: c.year,
     text: blurb(c.text),
     href: `story.html#chap-${i + 1}`,
-    pics: (c.photos || []).map(p => ({ src: `photos/${p}` })),
+    full: c.text,
+    pics: (c.photos || []).map(p => ({ src: `photos/${p}`, home })),
   });
 });
+
+/* ── A road trip, a place at a time ───────────────────────────────────────
+   A trip through several parks was one card under three states, so a pick of
+   Arizona opened on Texas, and most of what it saw never showed at all. The
+   trips listed in tools/photo-places.json come apart instead: one memory per
+   place, with that place's photographs from the pool, the year page's own
+   picks (and their captions) first. The list gives each photograph its place,
+   its day and its trip, read by hand off the GPS in its original (so no
+   coordinates are kept). PLACE gives each place its full name and state, and
+   the words that find what David wrote about it, word for word as ever.
+   Where he wrote nothing about a place it carries the trip's own opening,
+   marked "tr" with the trip's name, so the panel can say it is about the
+   whole trip and not about this place. */
+const PHOTO_PLACE = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools/photo-places.json'), 'utf8'));
+const PLACE = {
+  'Las Vegas': ['Las Vegas, NV', 'NV'],
+  'Death Valley': ['Death Valley National Park, CA', 'CA', /death valley|furnace creek/i],
+  'Grand Canyon': ['Grand Canyon National Park, AZ', 'AZ', /grand canyon|el tovar/i],
+  'Zion': ['Zion National Park, UT', 'UT', /zion|narrows/i],
+  'Bryce Canyon': ['Bryce Canyon National Park, UT', 'UT', /bryce/i],
+  'Capitol Reef': ['Capitol Reef National Park, UT', 'UT', /capitol reef/i],
+  'Canyonlands': ['Canyonlands National Park, UT', 'UT', /canyonlands/i],
+  'Arches': ['Arches National Park, UT', 'UT', /arches|delicate arch/i],
+  'Valley of Fire': ['Valley of Fire State Park, NV', 'NV', /valley of fire/i],
+  'Red Rock Canyon': ['Red Rock Canyon, NV', 'NV', /red rock/i],
+  'White Sands': ['White Sands National Park, NM', 'NM', /white sands/i],
+  'Carlsbad Caverns': ['Carlsbad Caverns National Park, NM', 'NM', /carlsbad/i],
+  'Guadalupe Peak': ['Guadalupe Peak, Guadalupe Mountains National Park, TX', 'TX', /guadalupe/i],
+  'Marfa': ['Marfa, TX', 'TX', /marfa/i],
+  'Fort Davis': ['Fort Davis, TX', 'TX', /fort davis|mcdonald/i],
+  'Big Bend': ['Big Bend National Park, TX', 'TX', /big bend|hot spring/i],
+  'El Paso': ['El Paso, TX', 'TX', /el paso/i],
+  'Saguaro': ['Saguaro National Park, AZ', 'AZ', /saguaro/i],
+  'Chiricahua': ['Chiricahua National Park, AZ', 'AZ', /chiricahua/i],
+  'Organ Pipe': ['Organ Pipe Cactus National Monument, AZ', 'AZ', /organ pipe/i],
+  'Austin': ['Austin, TX', 'TX', /austin|franklin/i],
+  'New Braunfels': ['New Braunfels, TX', 'TX', /new braunfels|schlitterbahn/i],
+  'San Antonio': ['San Antonio, TX', 'TX', /san antonio|mission/i],
+  'Denver': ['Denver, CO', 'CO', /denver/i],
+  'Rocky Mountain': ['Rocky Mountain National Park, CO', 'CO', /rocky mountain/i],
+  'Black Canyon': ['Black Canyon of the Gunnison National Park, CO', 'CO', /black canyon|gunnison/i],
+  'Petrified Forest': ['Petrified Forest National Park, AZ', 'AZ', /petrified/i],
+  'Mesa Verde': ['Mesa Verde National Park, CO', 'CO', /mesa verde|cliff palace/i],
+  'Great Sand Dunes': ['Great Sand Dunes National Park, CO', 'CO', /sand dunes/i],
+  'Joshua Tree': ['Joshua Tree National Park, CA', 'CA', /joshua tree|cholla/i],
+  'Anza-Borrego': ['Anza-Borrego Desert State Park, CA', 'CA', /anza|borrego/i],
+  'San Diego': ['San Diego, CA', 'CA', /san diego|la jolla/i],
+  'Raleigh': ['Raleigh, NC', 'NC', /raleigh/i],
+  'Great Smoky Mountains': ['Great Smoky Mountains National Park, TN', 'TN', /smok/i],
+  'Blue Ridge Parkway': ['Blue Ridge Parkway, NC', 'NC', /blue ridge/i],
+  'Cuyahoga Valley': ['Cuyahoga Valley National Park, OH', 'OH', /cuyahoga|brandywine|ledges/i],
+  'Cleveland': ['Cleveland, OH', 'OH', /cleveland/i],
+  'Shenandoah': ['Shenandoah National Park, VA', 'VA', /shenandoah|skyline drive|hawksbill/i],
+  'Great Falls': ['Great Falls, VA', 'VA', /great falls/i],
+  'Acadia': ['Acadia National Park & Bar Harbor, ME', 'ME', /acadia|cadillac|bar harbor/i],
+  'Portland': ['Portland, ME', 'ME', /portland/i],
+  'Boothbay Harbor': ['Boothbay Harbor, ME', 'ME', /boothbay/i],
+  'Western Maine': ['Western Maine', 'ME', /western maine/i],
+  'Stowe': ['Stowe, VT', 'VT', /stowe|vermont/i],
+  'New River Gorge': ['New River Gorge National Park, WV', 'WV', /new river|gorge|bridge/i],
+  'Congaree': ['Congaree National Park, SC', 'SC', /congaree/i],
+  'Charleston': ['Charleston, SC', 'SC', /charleston/i],
+  'Savannah & Tybee Island': ['Savannah & Tybee Island, GA', 'GA', /savannah|tybee/i],
+  'Winchester': ['Winchester, VA', 'VA', /winchester/i],
+  'Rehoboth Beach & Fenwick Island': ['Rehoboth Beach & Fenwick Island, DE', 'DE', /rehoboth|fenwick|dogfish/i],
+  'Providence Canyon': ['Providence Canyon State Park, GA', 'GA', /providence canyon/i],
+  'Northern Virginia': ['Northern Virginia', 'VA', /virginia/i],
+  'The Everglades': ['Everglades National Park, FL', 'FL', /everglades|flamingo/i],
+  'Tampa & Clearwater': ['Tampa & Clearwater, FL', 'FL', /de soto|skyline|lakewood|clearwater/i],
+  'St. Augustine': ['St. Augustine, FL', 'FL', /st\. augustine|flagler/i],
+  'Big Cypress': ['Big Cypress National Preserve, FL', 'FL', /big cypress/i],
+};
+const sentences = text => [].concat(text).join(' ').split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+// "March 8, 2024", "March 8 to 9, 2024", "December 31, 2024 to January 1, 2025"
+function daysSpan(days) {
+  const d = [...new Set(days)].sort().map(s => s.split('-').map(Number));
+  const [a, b] = [d[0], d[d.length - 1]];
+  const on = x => `${MONTHS[x[1] - 1]} ${x[2]}`;
+  if (a.join() === b.join()) return `${on(a)}, ${a[0]}`;
+  if (a[0] !== b[0]) return `${on(a)}, ${a[0]} to ${on(b)}, ${b[0]}`;
+  if (a[1] !== b[1]) return `${on(a)} to ${on(b)}, ${a[0]}`;
+  return `${on(a)} to ${b[2]}, ${a[0]}`;
+}
+function byPlace(t, m, year, picks) {
+  const key = `${year}-${String(m.month).padStart(2, '0')}|${t.place}`;
+  const mine = Object.entries(PHOTO_PLACE).filter(([, v]) => v[2] === key);
+  if (!mine.length) return false;
+  const groups = new Map();
+  mine.forEach(([web, [name, day]]) => {
+    if (!PLACE[name]) throw new Error(`no full name for ${name} in PLACE`);
+    if (!groups.has(name)) groups.set(name, { name, webs: [], days: [] });
+    const g = groups.get(name);
+    g.webs.push(`continued_trips/${web}`);
+    g.days.push(day);
+  });
+  // the year page's own photographs for this trip, with their captions and crops
+  const own = new Map((m.photos || []).filter(p => p.src).map(p => [p.src, p]));
+  const said = sentences(t.text);
+  groups.forEach(g => {
+    const [place, st, words] = PLACE[g.name];
+    const firstOwn = g.webs.filter(w => own.has(w));
+    const rest = g.webs.filter(w => !own.has(w)).sort();
+    const pics = [...firstOwn, ...rest].slice(0, 6).map(src => {
+      const p = own.get(src) || {};
+      return { src, cap: p.cap, pos: p.pos, home: st };
+    });
+    const about = words ? said.filter(s => words.test(s)) : [];
+    push({
+      place,
+      short: g.name,
+      date: daysSpan(g.days),
+      year,
+      text: about.length ? blurb(about.join(' ')) : blurb(t.text),
+      tr: about.length ? undefined : t.place,
+      href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
+      pics,
+    });
+  });
+  return true;
+}
 
 /* Volume two: the year pages. The honeymoon runs a day at a time, the rest of
    the year a trip at a time. */
@@ -425,6 +594,7 @@ YEARS.forEach(({ year }) => {
         text: blurb(d.text),
         // the same id year.js gives the day: two halves of one day are -1 and -2
         href: `${year}.html#day-${d.day}${d.part ? `-${String(d.part).replace(/\D/g, '')}` : ''}`,
+        full: d.text,
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
       });
     });
@@ -434,6 +604,7 @@ YEARS.forEach(({ year }) => {
     const split = splitPhotos(m);
     (m.trips || []).forEach((t, k) => {
       const pics = split[k] || [];
+      if (byPlace(t, m, year, pics)) return;
       push({
         place: t.place,
         short: String(t.place).split(/[,:&]| to /)[0].trim(),
@@ -441,6 +612,7 @@ YEARS.forEach(({ year }) => {
         year,
         text: blurb(t.text),
         href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
+        full: t.text,
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
       });
     });
@@ -469,7 +641,8 @@ const body = items.map(m => {
   // there is nothing to say.
   const pics = m.pics.map(p => `{"u":${j(url(p.src))}${p.cap ? `,"c":${j(p.cap)}` : ''}${p.pos ? `,"p":${j(p.pos)}` : ''}${p.st ? `,"s":${j(p.st)}` : ''}}`);
   const t = Object.keys(m.t).length ? `"t":${j(m.t)},` : '';
-  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   "text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
+  const tr = (m.tr ? `"tr":${j(m.tr)},` : '') + (m.x && Object.keys(m.x).length ? `"x":${j(m.x)},` : '');
+  return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   ${tr}"text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
 }).join(',\n');
 
 const out = `/* Every trip on the site, filed under the state it happened in, so the map on

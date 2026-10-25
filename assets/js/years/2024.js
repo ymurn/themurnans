@@ -12,7 +12,7 @@ window.MW_YEAR = {
  "from": 1,
 
  "facts": [
-  { "k": "National parks", "v": "8", "s": "White Sands, Saguaro, Carlsbad Caverns, Guadalupe Mountains, Big Bend, Acadia, New River Gorge and Congaree." },
+  { "k": "National parks", "v": "9", "s": "White Sands, Chiricahua, Saguaro, Carlsbad Caverns, Guadalupe Mountains, Big Bend, Acadia, New River Gorge and Congaree." },
   { "k": "Months with a trip", "v": "9 of 12", "s": "Nothing until March, then barely a pause." },
   { "k": "Canceled flights", "v": "2", "s": "Both on the way home from Quebec." },
   { "k": "Buc-ee's stops", "v": "3", "s": "The brisket sandwich, every time." }
@@ -35,10 +35,11 @@ window.MW_YEAR = {
    "photos": [
     { "src": "continued_trips/2024-03-guadalupe-peak/2024-03-guadalupe-peak-03.jpg", "cap": "The top of Guadalupe Peak" },
     { "src": "continued_trips/2024-03-white-sands/2024-03-white-sands-02.jpg", "cap": "White Sands" },
-    { "src": "continued_trips/2024-03-chiricahua/2024-03-chiricahua-03.jpg", "cap": "Holding up a rock at Chiricahua" },
+    { "src": "continued_trips/2024-03-chiricahua/2024-03-chiricahua-03.jpg", "cap": "Holding up a rock at Chiricahua National Park" },
     { "src": "continued_trips/2024-03-saguaro/2024-03-saguaro-03.jpg", "cap": "Small us, big saguaros" },
     { "src": "continued_trips/2024-03-big-bend/2024-03-big-bend-01.jpg", "cap": "The hot spring at Big Bend", "pos": "60% 50%" }
-   ]
+   ],
+   "folders": ["2024-03-carlsbad-caverns", "2024-03-organ-pipe", "2024-03-marfa-fort-davis", "2024-03-finale-el-paso"]
   },
   {
    "month": 4,
@@ -91,6 +92,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2024-05-acadia/2024-05-acadia-01.jpg", "cap": "Cadillac Mountain" },
     { "src": "continued_trips/2024-05-portland-maine/2024-05-portland-maine-01.jpg", "cap": "Portland Head Light", "pos": "65% 50%" },
     { "src": "continued_trips/2024-05-portland-maine/2024-05-portland-maine-03.jpg", "cap": "Top down in Maine", "pos": "right" },
+    { "src": "continued_trips/2024-05-bar-harbor-vermont/2024-05-bar-harbor-vermont-06.jpg", "cap": "Heady Topper at The Alchemist, Stowe" },
     { "src": "continued_trips/2024-05-chicago/2024-05-chicago-01.jpg", "cap": "High above Chicago" },
     { "src": "continued_trips/2024-05-chicago/2024-05-chicago-02.jpg", "cap": "Deep dish in Chicago" }
    ]
@@ -210,6 +212,7 @@ window.MW_YEAR = {
     { "src": "continued_trips/2024-11-lake-george-adirondacks/2024-11-lake-george-adirondacks-05.jpg", "cap": "Ausable Chasm" },
     { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-03.jpg", "cap": "Dinner with the cousins" },
     { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-06.jpg", "cap": "Chasing waterfalls" },
+    { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-08.jpg", "cap": "Rainbow Falls in North Carolina" },
     { "src": "continued_trips/2024-11-richmond-atlanta-charlottesville/2024-11-richmond-atlanta-charlottesville-09.jpg", "cap": "Luray Caverns" }
    ]
   },
@@ -235,11 +238,13 @@ window.MW_YEAR = {
    ],
    "photos": [
     { "src": "continued_trips/2024-12-fallingwater-pittsburgh-cincy/2024-12-fallingwater-pittsburgh-cincy-02.jpg", "cap": "Fallingwater" },
+    { "src": "continued_trips/2024-12-fallingwater-pittsburgh-cincy/2024-12-fallingwater-pittsburgh-cincy-05.jpg", "cap": "Christmas Eve with family in Cincinnati" },
     { "src": "continued_trips/2024-12-new-river-gorge/2024-12-new-river-gorge-05.jpg", "cap": "The New River Gorge Bridge" },
-    { "src": "continued_trips/2024-12-congaree/2024-12-congaree-03.jpg", "cap": "Congaree in the rain" },
     { "src": "continued_trips/2024-12-charleston/2024-12-charleston-01.jpg", "cap": "The Pineapple Fountain in Charleston", "pos": "60% 50%" },
-    { "src": "continued_trips/2024-12-savannah-tybee-island/2024-12-savannah-tybee-island-06.jpg", "cap": "The Tybee Island lighthouse" }
-   ]
+    { "src": "continued_trips/2024-12-savannah-tybee-island/2024-12-savannah-tybee-island-06.jpg", "cap": "The Tybee Island lighthouse" },
+    { "src": "continued_trips/2024-12-winchester-rehoboth-beach/2024-12-winchester-rehoboth-beach-03.jpg", "cap": "New Year's Day at Fenwick Island" }
+   ],
+   "folders": ["2024-12-congaree"]
   }
  ],
 

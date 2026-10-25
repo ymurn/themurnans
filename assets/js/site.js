@@ -94,13 +94,26 @@
         document.body.classList.toggle('menu-open', open);
         burger.setAttribute('aria-expanded', String(open));
       });
+      const shut = () => {
+        links.classList.remove('is-open');
+        document.body.classList.remove('menu-open');
+        burger.setAttribute('aria-expanded', 'false');
+      };
+      /* A link to another page leaves the menu open until that page takes
+         over: shut first, the page being left showed through for a moment
+         and the move to the next page faded from it, which looked like a
+         glitch. The page transition now fades from the menu to the page.
+         A link within this page shuts it, and so does coming back to this
+         page with Back, which can bring it back from the cache still open. */
       links.addEventListener('click', e => {
-        if (e.target.closest('a')) {
-          links.classList.remove('is-open');
-          document.body.classList.remove('menu-open');
-          burger.setAttribute('aria-expanded', 'false');
-        }
+        const a = e.target.closest('a');
+        if (!a) return;
+        const to = new URL(a.href, location.href);
+        const away = to.origin === location.origin && to.pathname !== location.pathname
+          && !a.target && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+        if (!away) shut();
       });
+      addEventListener('pageshow', e => { if (e.persisted) shut(); });
     }
   }
 
@@ -341,6 +354,8 @@
       if (word) word.textContent = p >= 100 ? 'Cheers' : p === 0 ? 'Pour' : 'More';
       range.setAttribute('aria-valuetext', `${p}% poured`);
       stage.classList.toggle('is-pouring', p > 1 && p < 99);
+      // Once both are in color, they say they can be poked, and that stays.
+      if (p >= 100) stage.classList.add('was-full');
     };
 
     set(0);
@@ -448,6 +463,92 @@
     ],
   };
 
+  /* The comic tail reaches from the card to the one speaking, whatever the
+     card's width or side. Behind him it reaches just behind his head, above
+     the ring; in front of him it points at his mouth, level with it and
+     stopping a clear gap short of his face, so the words come out of him
+     without the tip touching him. Where those are, as fractions of the
+     drawings: the back of David's head 41% across, at the tail's height, the
+     front of his face 88% and his mouth 22.5% down; Yinja faces the other
+     way, 63%, 12% and 21.5%. Measured in the drawing's own box, so its lean and drift
+     do not matter. The tail scales evenly, never stretched, within the
+     sizes it was drawn to look right at. */
+  const HEADS = {
+    bear: { back: .41, face: .88, mouth: .225 },
+    tiger: { back: .63, face: .12, mouth: .215 },
+  };
+  function reachTail(fig, card, nudge) {
+    const tail = $('.fig__tail', card), layer = $('.fig__layer', fig);
+    if (!tail || !layer) return;
+    const W = layer.offsetWidth, w = card.offsetWidth;
+    const flip = card.classList.contains('is-flip');
+    const head = HEADS[fig.dataset.who] || HEADS.bear;
+    const onRight = (fig.dataset.who === 'bear') !== flip;
+    const left = card.offsetLeft + (nudge || 0);
+    const edge = onRight ? left + w : left;
+    const x = (flip ? head.face : head.back) * W;
+    // a breath of space between its tip and his hair, or his face
+    const gap = flip ? 18 : 14;
+    const reach = onRight ? x - gap - edge : edge - (x + gap);
+    const len = Math.round(Math.max(40, Math.min(96, reach + 2)));
+    const th = Math.round(len * 30 / 64);
+    tail.style.width = `${len}px`;
+    tail.style.height = `${th}px`;
+    // the tip is 2/30 of the way down the tail: set it at his mouth, with the
+    // tail's root kept on the card's straight side, clear of its corners
+    if (flip) {
+      const tip = head.mouth * layer.offsetHeight - card.offsetTop;
+      const top = Math.max(8, Math.min(card.offsetHeight - th - 16, tip - th * 2 / 30));
+      tail.style.top = `${Math.round(top)}px`;
+    } else tail.style.removeProperty('top');
+  }
+
+  /* The balloon over his head: as wide as reads well, its foot just clear
+     of his hair, the tail dropping from near its inner corner to just short
+     of his mouth, and slid along to stay in the drawings' column and on the
+     screen. False where it would run up under the bar, so the caller can
+     put it somewhere else. */
+  function balloon(fig, card, lo) {
+    const layer = $('.fig__layer', fig), drop = $('.fig__drop', card);
+    if (!layer || !drop) return false;
+    const bear = fig.dataset.who === 'bear';
+    const head = HEADS[fig.dataset.who] || HEADS.bear;
+    const W = layer.offsetWidth, H = layer.offsetHeight, L = layer.getBoundingClientRect();
+    // where he stands in the layout, not where his hover lift or a hop has
+    // him this instant: read from the stage, which neither moves
+    const stage = fig.closest('.stage');
+    const top = stage ? stage.getBoundingClientRect().top + fig.offsetTop + layer.offsetTop : L.top;
+    const show = fig.closest('.hero__show').getBoundingClientRect();
+    card.classList.remove('is-flip');
+    card.classList.add('is-above');
+    const cw = Math.round(Math.min(340, show.width - 16));
+    card.style.width = `${cw}px`;
+    const ch = card.offsetHeight;
+    // the tip, in front of his face and level with his mouth, a clear gap off
+    const mx = head.face * W + (bear ? 16 : -16), my = head.mouth * H;
+    const foot = Math.round(.03 * H - 12);                  // the balloon's foot, over his hair
+    const len = Math.max(40, Math.min(110, my - foot));
+    const dw = Math.round(len * 30 / 64);
+    const tip = dw * 2 / 30;                                 // the tip's offset in the drawn tail
+    // the tail's left edge, so its tip lands at his mouth
+    const dl = bear ? mx - tip : mx - dw + tip;
+    let left = bear ? dl - 24 : dl + dw + 24 - cw;
+    const bar = $('.nav'), nav = bar ? bar.getBoundingClientRect().bottom : 56;
+    if (top + foot - ch < nav + 8) { card.classList.remove('is-above'); card.style.removeProperty('width'); return false; }
+    // keep the whole balloon in the column and on the screen
+    const pageLeft = L.left + left;
+    if (pageLeft < lo) left += lo - pageLeft;
+    if (L.left + left + cw > innerWidth - 24) left -= L.left + left + cw - (innerWidth - 24);
+    const inCard = Math.max(16, Math.min(cw - dw - 16, dl - left));
+    card.style.left = `${Math.round(left)}px`;
+    card.style.top = `${foot - ch}px`;
+    drop.style.left = `${Math.round(inCard)}px`;
+    drop.style.width = `${dw}px`;
+    drop.style.height = `${Math.round(len)}px`;
+    card.style.setProperty('--ox', `${Math.round(inCard + dw / 2)}px`);
+    return true;
+  }
+
   function initChatter() {
     $$('.fig').forEach(fig => {
       const say = $('.fig__say', fig);
@@ -456,11 +557,109 @@
       let i = Math.floor(Math.random() * lines.length);
       let hide = null;
 
+      // The card beside the drawing has to stay on the screen: where there is
+      // not room beside it, it slides in toward the drawing just enough.
+      const card = $('.fig__card', fig);
+      if (card) fig.addEventListener('pointerenter', () => {
+        // It goes behind him, by his back. Where the screen runs a little
+        // short there it narrows to fit; where it runs out (a narrow window,
+        // or the drawings drifting apart as the hero scrolls away) it goes in
+        // front of him instead, and only where neither side has room does it
+        // slide in over the drawing. Paused while it
+        // measures, so a card still easing back from the last hover is not
+        // read part way.
+        card.style.transition = 'none';
+        ['--nudge', 'width', 'left', 'top', '--ox'].forEach(k => card.style.removeProperty(k));
+        card.classList.remove('is-narrow', 'is-above');
+        // the margin covers its tilt and the drawing's lean toward the pointer,
+        // which is still settling as this measures
+        const pad = 24, w = card.offsetWidth;
+        // side by side with the title (a wide screen), the cards stay in the
+        // drawings' column rather than open over the words
+        const show = fig.closest('.hero__show');
+        const lo = show && getComputedStyle(show).display !== 'contents'
+          ? Math.max(pad, show.getBoundingClientRect().left) : pad;
+        const overhang = () => {
+          const b = card.getBoundingClientRect();
+          // read from the side it hangs off, the one its scale-in leaves put
+          const fromRight = (fig.dataset.who === 'bear') !== card.classList.contains('is-flip');
+          const left = fromRight ? b.right - w : b.left;
+          return left < lo ? lo - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
+        };
+        // Side by side with the title, it is a balloon over his head, the
+        // tail down to his mouth; where the screen is too short for that, it
+        // opens toward the other one, in the room between the two of them,
+        // narrowed to fit it.
+        if (lo !== pad && balloon(fig, card, lo)) { void card.offsetWidth; card.style.removeProperty('transition'); return; }
+        if (lo !== pad) {
+          card.classList.add('is-flip');
+          const other = $(`.fig--${fig.dataset.who === 'bear' ? 'tiger' : 'bear'} .fig__layer`);
+          const o = other.getBoundingClientRect(), b = card.getBoundingClientRect();
+          const room = Math.floor(fig.dataset.who === 'bear' ? o.left - 8 - b.left : b.right - (o.right + 8));
+          if (room < w) {
+            card.style.width = `${Math.max(150, room)}px`;
+            card.classList.toggle('is-narrow', room < 196);
+          }
+          reachTail(fig, card, 0);
+          void card.offsetWidth;
+          card.style.removeProperty('transition');
+          return;
+        }
+        card.classList.remove('is-flip');
+        let shift = overhang();
+        // a little short of room behind him: it narrows to fit there first
+        if (shift && w - Math.abs(shift) >= 150) {
+          const fits = Math.floor(w - Math.abs(shift));
+          card.style.width = `${fits}px`;
+          // set a size smaller, so the lines stay a readable length
+          card.classList.toggle('is-narrow', fits < 196);
+          shift = 0;
+        }
+        if (shift) {
+          card.classList.add('is-flip');
+          const flipped = overhang();
+          if (Math.abs(flipped) < Math.abs(shift)) shift = flipped;
+          else card.classList.remove('is-flip');
+        }
+        if (shift) card.style.setProperty('--nudge', `${Math.round(shift)}px`);
+        reachTail(fig, card, shift);
+        void card.offsetWidth;
+        card.style.removeProperty('transition');
+      });
+
+      // A bubble has to be all on the screen: measured from its centre, which
+      // its scale-in leaves where it is, and slid back on by the overhang.
+      // The slide is paused while it measures, or a bubble already open would
+      // be read part way back from its last line's slide.
+      const fit = () => {
+        say.style.transition = 'none';
+        say.style.removeProperty('--sx');
+        const b = say.getBoundingClientRect(), w = say.offsetWidth, pad = 12;
+        const cx = b.left + b.width / 2, left = cx - w / 2, right = cx + w / 2;
+        const sx = left < pad ? pad - left : right > innerWidth - pad ? innerWidth - pad - right : 0;
+        if (sx) say.style.setProperty('--sx', `${Math.round(sx)}px`);
+        void say.offsetWidth;
+        say.style.removeProperty('transition');
+      };
+
+      // One of them talks at a time: poking one hushes the other.
+      const hush = () => {
+        clearTimeout(hide);
+        say.classList.remove('is-said');
+        fig.classList.remove('is-talking');
+      };
+      fig.addEventListener('fig:hush', hush);
+
       fig.addEventListener('click', () => {
+        $$('.fig').forEach(o => { if (o !== fig) o.dispatchEvent(new Event('fig:hush')); });
         say.textContent = lines[i % lines.length];
         i++;
+        fit();
         say.classList.add('is-said');
-        fig.classList.add('is-talking');
+        fig.classList.add('is-talking', 'was-poked');
+        // found it: the two stop hopping for attention
+        const stage = fig.closest('.stage');
+        if (stage) stage.classList.add('was-poked');
         if (!calm) {
           fig.classList.remove('is-bouncing');
           void fig.offsetWidth;              // restart the animation
@@ -468,12 +667,14 @@
           celebrateFrom(say, 10);
         }
         clearTimeout(hide);
-        hide = setTimeout(() => {
-          say.classList.remove('is-said');
-          fig.classList.remove('is-talking');
-        }, 4200);
+        hide = setTimeout(hush, 4200);
       });
     });
+
+    // A tap anywhere else, or Escape, closes what was said.
+    const hushAll = () => $$('.fig').forEach(f => f.dispatchEvent(new Event('fig:hush')));
+    document.addEventListener('pointerdown', e => { if (!e.target.closest('.fig')) hushAll(); }, { passive: true });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hushAll(); });
   }
 
   /* ── The memory machine ────────────────────────────────────────────── */
@@ -806,7 +1007,7 @@
       const pos = photo.pos ? ` style="object-position:${esc(photo.pos)}"` : '';
 
       card.innerHTML = `
-        <div class="memory__pic"><img src="${esc(photo.url)}" alt="${esc(c.place)}, ${esc(c.date)}"${pos} decoding="async"></div>
+        <div class="memory__pic"><img ${picAt(photo.url, '(max-width: 699px) 90vw, 420px')} alt="${esc(c.place)}, ${esc(c.date)}"${pos} decoding="async"></div>
         <div class="memory__body">
           <span class="memory__date">${esc(c.date)}</span>
           <h3 class="memory__place">${esc(c.place)}</h3>
@@ -815,6 +1016,7 @@
         </div>`;
       // the postmark on a dressed card names this memory, not the sticker
       card.dataset.stamp = `${stampName(c)} · ${c.year}`;
+      fitPics(card);
       if (look) card.dataset.look = look;
       else delete card.dataset.look;
       stickers.forEach(st => st.setAttribute('aria-pressed', String(st.dataset.look === look)));
@@ -911,7 +1113,7 @@
           ${c.photos.length ? `<div class="strip" data-n="${c.photos.length}" data-reveal="wipe" style="--d:150ms">${
             c.photos.map((p, k) => `
               <figure class="shot" data-shot data-src="assets/photos/${p}" data-cap="${esc(c.place)} · ${esc(c.date)}" tabindex="0" role="button" aria-label="Enlarge photograph ${k + 1} from ${esc(c.place)}">
-                <img src="assets/photos/${p}" alt="${esc(c.place)}, ${esc(c.date)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
+                <img ${picAt(`assets/photos/${p}`)} alt="${esc(c.place)}, ${esc(c.date)}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
               </figure>`).join('')
           }</div>` : ''}
         </div>
@@ -1023,7 +1225,7 @@
       <article class="table-card" data-reveal="up" style="--d:${i * 70}ms" data-tilt>
         <div class="table-card__pic${r.photo ? '' : ' table-card__pic--empty'}">
           ${r.photo
-            ? `<img src="assets/photos/${r.photo}" alt="${esc(r.name)}" loading="lazy" decoding="async">`
+            ? `<img ${picAt(`assets/photos/${r.photo}`)} alt="${esc(r.name)}" loading="lazy" decoding="async">`
             : `<svg viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                  <path d="M38,38 H82 L77,96 H43 Z"/><path d="M35,38 H85"/><path d="M41,96 H79"/>
                  <path d="M82,48 h9a8,8 0 0 1 8,8v10a8,8 0 0 1 -8,8h-6"/>
@@ -1674,7 +1876,7 @@
     host.classList.add('is-swapping');      // the first stack is laid down, not gathered
     host.innerHTML = pick().map(s => `
       <figure class="snap"${loose ? ' data-drag' : ''}>
-        <img src="${photo(s)}" alt="David and Yinja" loading="lazy" decoding="async" draggable="false">
+        <img ${picAt(photo(s), '(max-width: 699px) 40vw, 260px')} alt="David and Yinja" loading="lazy" decoding="async" draggable="false">
         <figcaption class="snap__cap">
           <span class="snap__where">${esc(where(s))}</span>
           <span class="snap__when">${esc(when(s))}</span>
@@ -1714,7 +1916,7 @@
         const s = next[i % next.length];
         const img = $('img', el);
         img.loading = 'eager';                 // on screen by now, so no reason to wait
-        img.src = photo(s);
+        picTo(img, photo(s));
         $('.snap__where', el).textContent = where(s);
         $('.snap__when', el).textContent = when(s);
       });
@@ -1726,7 +1928,8 @@
       const ready = Promise.race([
         Promise.all(next.map(s => {
           const im = new Image();
-          im.src = photo(s);
+          im.sizes = $('img', prints[0]).sizes;   // the copy the print will show
+          picTo(im, photo(s));
           return im.decode().catch(() => {});
         })),
         new Promise(r => setTimeout(r, 1200)),
@@ -1829,6 +2032,11 @@
     return String(s ?? '').replace(/[&<>"']/g, c =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
+
+  // the small copy where the spot is small (assets/js/pics.js)
+  function picAt(u, guess) { return window.MW_PIC ? MW_PIC.src(u, guess) : `src="${esc(u)}"`; }
+  function picTo(img, u) { if (window.MW_PIC) MW_PIC.set(img, u); else img.src = u; }
+  function fitPics(root) { if (window.MW_PIC) MW_PIC.fit(root); }
 
   /* ── Anniversary: computed live so it never goes stale ────────────── */
 
@@ -2011,12 +2219,14 @@
 
      UPRIGHT  a tablet stood up: the map across the top, the cards one row to
               swipe, so six is a row rather than a long one.
-     SIDEWAYS a phone on its side: two columns, the map sticky beside them.
+     SIDEWAYS a phone on its side, or anything under a desktop's width that
+              is wider than tall: two columns, the map beside one row of
+              cards, two to the column.
      wide     the desktop: two columns, four cards cut to the map's height.
 
      Where the map keeps its place the pill has nothing to stand in for. */
   const UPRIGHT  = '(min-width: 700px) and (orientation: portrait)';
-  const SIDEWAYS = '(min-width: 700px) and (max-height: 520px) and (orientation: landscape)';
+  const SIDEWAYS = '(min-width: 600px) and (max-width: 999px) and (orientation: landscape)';
   const wide = () => innerWidth >= 1000 && !matchMedia(UPRIGHT).matches;
   const beside = () => wide() || matchMedia(SIDEWAYS).matches;
   /* The pill stands in for a map that has scrolled away, which only ever
@@ -2024,9 +2234,9 @@
      upright on a tablet the map and one row of cards are a single screen,
      and on a desktop the map is in the other column: on all three there is
      nothing for it to stand in for, and a control that answers a question
-     nobody asked is a control that can only be in the way. Matches the rule
-     that hides it in site.css. */
-  const phone = () => innerWidth < 700;
+     nobody asked is a control that can only be in the way. Matches the rules
+     that hide it in site.css: a phone on its side under 700 is sideways. */
+  const phone = () => innerWidth < 700 && !matchMedia(SIDEWAYS).matches;
 
   function shuffled(list) {
     const a = list.slice();
@@ -2055,6 +2265,26 @@
     const extra = [...(been.has('DC') ? ['DC'] : []), ...ours.filter(r => r.id.startsWith('CA-')).map(r => r.name)];
     const summary = `${states.length} states${extra.length ? `, ${extra.slice(0, -1).join(', ')}${extra.length > 1 ? ' and ' : ''}${extra[extra.length - 1]}` : ''}`;
     $$('[data-atlas="summary"]').forEach(el => { el.textContent = summary; });
+    // the board under the map takes it in parts: the number, then the rest
+    $$('[data-atlas="states"]').forEach(el => { el.textContent = states.length; });
+    /* A wheel per digit, 0 to 9 on a strip, stopped on its digit. The
+       right-hand wheel has the strip twice and stops on the second pass, so
+       on the roll it goes round once more than the others. --k is how far
+       from the left a wheel is: the further right, the longer it turns. */
+    const digits = String(states.length).split('');
+    $$('[data-atlas="tiles"]').forEach(el => {
+      el.innerHTML = digits.map((d, k) => {
+        const last = k === digits.length - 1;
+        const strip = Array.from({ length: last ? 20 : 10 }, (_, i) => `<b>${i % 10}</b>`).join('');
+        return `<span class="mem__tile"><span class="mem__wheel" style="--n:${+d + (last ? 10 : 0)};--k:${k}">${strip}</span></span>`;
+      }).join('');
+    });
+    const board = $('.mem__board');
+    if (board && !calm) board.classList.add('is-waiting');
+    $$('[data-atlas="extra"]').forEach(el => {
+      el.textContent = extra.length > 1 ? `${extra.slice(0, -1).join(', ')} and ${extra[extra.length - 1]}` : extra.join('');
+      el.parentElement.hidden = !extra.length;
+    });
 
     const count = id => (M.by[id] || []).length;
     const label = id => {
@@ -2073,6 +2303,8 @@
     map.innerHTML = `
       <svg class="memmap" viewBox="0 0 ${A.w} ${A.h}" aria-label="Map of the United States and Canada. We have been to ${esc(summary)}. Choose a state for photographs from it.">
         <g aria-hidden="true">${A.regions.map(r => `<path class="memmap__st" d="${r.d}"/>`).join('')}</g>
+        <defs><filter id="memglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+        <path class="memmap__glow" d="" filter="url(#memglow)"/>
         <g role="group">${ours.filter(r => r.id !== 'DC')
           .map(r => `<path class="memmap__been" data-q="${r.q}" style="--t:${wait(r)}ms" ${pick(r)} d="${r.d}"/>`).join('')}</g>
         ${been.has('DC') ? `<circle class="memmap__dc" cx="${A.dc[0]}" cy="${A.dc[1]}" r="4.2" style="--t:${wait(ours.find(r => r.id === 'DC'))}ms" ${pick({ id: 'DC' })}/>` : ''}
@@ -2083,6 +2315,7 @@
 
     const svg = $('svg', map);
     const ring = $('.memmap__ring', svg);
+    const glow = $('.memmap__glow', svg);
     let on = null;      // the state showing, or null for the draw from everywhere
     let open = null;    // the memory opened inside the panel
 
@@ -2246,9 +2479,21 @@
 
     /* ── The panel ─────────────────────────────────────────────────────── */
 
+    /* A picked state is shuffled once, when it is picked, so "Show more"
+       turns up the rest of the same deal rather than a new one, and coming
+       back from an open memory finds the cards where they were. A swipe row
+       (a phone on its side, a tablet stood up) holds all of them; a grid
+       deals six, or four on a desktop, and "Show 6 others" swaps in the
+       next six, round to the first again after the last: never New York's
+       twenty-three at once, and the section never changes height. */
+    let deck = null;    // the picked state's memories, in the order dealt
+    let page = 0;       // which deal of them is showing
+    const limit = () => (wide() ? MEM_DEAL_WIDE : MEM_DEAL);
+    const inRow = () => matchMedia(UPRIGHT).matches || matchMedia(SIDEWAYS).matches;
     const cardsFor = id => {
-      const list = id ? (M.by[id] || []) : M.items.map((_, i) => i);
-      return shuffled(list).slice(0, wide() ? MEM_DEAL_WIDE : MEM_DEAL);
+      if (!id) return shuffled(M.items.map((_, i) => i)).slice(0, limit());
+      if (!deck) deck = shuffled(M.by[id] || []);
+      return inRow() ? deck : deck.slice(page * limit(), (page + 1) * limit());
     };
 
     /* ── One memory, the state someone picked ──────────────────────────
@@ -2284,7 +2529,7 @@
       const head = `
         <div class="mem__headrow">
           <h3 class="mem__title">${id ? esc(nameOf(id)) : 'Anywhere'}${id ? `<span class="mem__count">${tally}</span>` : ''}</h3>
-          <button class="mem__roll" type="button" data-roll><span class="mem__die" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg></span>Surprise me</button>
+          <button class="mem__roll" type="button" data-roll aria-label="Surprise me: memories from another state"><span class="mem__die" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg></span><span class="mem__roll-t">Surprise me</span></button>
         </div>`;
 
       if (!picks.length) {
@@ -2313,7 +2558,7 @@
           <button class="mem__card" type="button" data-open="${i}"
                   style="--tilt:${MEM_TILT[k % MEM_TILT.length]}deg;--off:var(${MEM_OFF[k % MEM_OFF.length]})">
             <span class="mem__shot">
-              <img src="${esc(shot.u)}" alt="${esc(name)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
+              <img ${picAt(shot.u, '(max-width: 699px) 45vw, 300px')} alt="${esc(name)}, ${esc(m.date)}"${shot.p ? ` style="object-position:${esc(shot.p)}"` : ''} loading="lazy" decoding="async">
               ${more > 0 ? `<span class="mem__n">+${more}</span>` : ''}
             </span>
             <span class="mem__label">
@@ -2323,7 +2568,19 @@
           </button>`;
       }).join('');
 
-      return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>`;
+      // more than the grid deals: the next deal is one tap away, and which
+      // of them is showing ("7–12 of 23")
+      let more = '';
+      if (id && !inRow() && deck && deck.length > limit()) {
+        const from = page * limit() + 1, to = from + picks.length - 1;
+        const last = (page + 1) * limit() >= deck.length;
+        const next = last ? Math.min(limit(), deck.length) : Math.min(limit(), deck.length - to);
+        more = `<div class="mem__morerow">
+          <span class="mem__range" aria-live="polite">${from}–${to} of ${deck.length}</span>
+          <button class="mem__more" type="button" data-more>${last ? `Back to the first ${next}` : `Show ${next} others`}<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="${last ? 'M13 8a5 5 0 1 1-1.5-3.6M13 2.5v2.9h-2.9' : 'M3 8h9.5M8.5 4l4 4-4 4'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>`;
+      }
+      return `${head}<div class="mem__grid" data-n="${picks.length}">${cards}</div>${more}`;
     };
 
     /* The photographs the open memory is showing, in the order its thumbnails
@@ -2332,32 +2589,86 @@
        the third one here. */
     let roll = [];
 
+    // Under a picked state a memory that crossed a state line is headed with
+    // what its card is called there, and the state: "Mystic, CT" and
+    // "Louisville, KY", not the whole trip's line ("Mystic,
+    // Newport, Providence & Cape Cod", "Cincinnati, Ohio"). The state is left
+    // off a name that already has it ("Washington, DC"). A memory of one
+    // state keeps its full place line, which is the card's name in full.
+    // A place line that spells its state out ("Cincinnati, Ohio", from the
+    // chapters before the wedding) is shown with the code, as all the rest
+    // are ("Boston, MA"). Only the heading: the chapter itself is unchanged.
+    const SPELT = new RegExp(`, (${A.regions.filter(r => !r.id.includes('-') && r.id !== 'DC').map(r => r.name).join('|')})$`);
+    const coded = place => place.replace(SPELT, (_, n) => `, ${(A.regions.find(r => r.name === n) || {}).id || n}`);
+    const heading = m => {
+      if (!on || m.st.length < 2) return coded(m.place);
+      // the state's code, as the place lines have it ("Boston, MA")
+      const t = titleOf(m, on), code = on.replace(/^CA-/, '');
+      return new RegExp(`\\b${code}\\b`).test(t) || t.includes(nameOf(on)) ? t : `${t}, ${code}`;
+    };
+
+    /* An open memory's two ways on: another memory leads, since that is what
+       people come to the map for; leaving for the year page is the quieter
+       link. With only the one button, people who were shown the site
+       followed it and found themselves on a timeline they had not asked
+       for. */
     const opened = i => {
       const m = M.items[i];
       const pics = roll = forState(m, on).slice(0, 5);
       const back = on ? nameOf(on) : 'the pile';
       return `
-        <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]})">
+        <div class="mem__open is-new" style="--off:var(${MEM_OFF[i % MEM_OFF.length]});--n:${Math.max(1, pics.length)}">
           <button class="mem__back" type="button" data-back>&larr; Back to ${esc(back)}</button>
           <span class="mem__lead">
-            <img src="${esc(pics[0].u)}" alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
+            <img ${picAt(pics[0].u)} alt="${esc(m.place)}"${pics[0].p ? ` style="object-position:${esc(pics[0].p)}"` : ''} decoding="async">
             <span class="mem__cap"${pics[0].c ? '' : ' hidden'}>${esc(pics[0].c || '')}</span>
           </span>
-          ${pics.length > 1 ? `<div class="mem__shots">${pics.map((p, k) => `
+          ${pics.length > 1 ? `<div class="mem__shots" style="--n:${pics.length}">${pics.map((p, k) => `
             <button class="mem__thumb${k ? '' : ' is-on'}" type="button" data-shot="${k}" aria-label="Photograph ${k + 1} of ${pics.length}">
-              <img src="${esc(p.u)}" alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
+              <img ${picAt(p.u, '(max-width: 699px) 20vw, 120px')} alt=""${p.p ? ` style="object-position:${esc(p.p)}"` : ''} loading="lazy" decoding="async">
             </button>`).join('')}</div>` : ''}
           <div class="mem__head">
-            <h3 class="mem__place">${esc(m.place)}</h3>
+            <h3 class="mem__place">${esc(heading(m))}</h3>
             <span class="mem__date">${esc(m.date)}</span>
           </div>
-          <p class="mem__text">${esc(m.text)}</p>
-          <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>
+          ${m.tr ? `<span class="mem__from">From the trip: ${esc(m.tr)}</span>` : ''}
+          <p class="mem__text">${esc((on && m.x && m.x[on]) || m.text)}</p>
+          <div class="mem__acts">
+            <button class="mem__next" type="button" data-next><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>Pull another memory</button>
+            <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>
+          </div>
         </div>`;
     };
 
     const paint = () => {
       panel.innerHTML = open === null ? grid(on, cardsFor(on)) : opened(open);
+      fitPics(panel);
+    };
+
+    /* "Pull another memory": the next one in the same state, in the order
+       its cards were dealt, round to the first again after the last.
+       From the pile, any other. A state with only the one has nothing else
+       to give, so it pulls a memory from another state instead. */
+    const pullAnother = () => {
+      const pick = list => list[Math.floor(Math.random() * list.length)];
+      if (!on) {
+        const all = M.items.map((_, i) => i).filter(i => i !== open);
+        repaint(() => { open = pick(all); });
+        return;
+      }
+      const here = deck || M.by[on] || [];
+      if (here.length > 1) {
+        const k = here.indexOf(open);
+        repaint(() => { open = here[(k + 1) % here.length]; });
+        return;
+      }
+      const filed = Object.keys(M.by).filter(id => id !== on);
+      if (!filed.length) return;
+      pin();
+      show(pick(filed));
+      open = pick(M.by[on]);
+      paint();
+      release(nudge());
     };
 
     /* ── Choosing ──────────────────────────────────────────────────────── */
@@ -2365,11 +2676,21 @@
     const show = id => {
       on = id;
       open = null;
+      deck = null;
+      page = 0;
       host.classList.toggle('is-picked', !!id);
       svg.classList.toggle('is-picked', !!id);
       $$('.memmap__been, .memmap__dc', svg).forEach(p => p.classList.toggle('is-on', p.dataset.id === id));
       const r = id && A.regions.find(q => q.id === id);
       ring.setAttribute('d', r && id !== 'DC' ? r.d : '');
+      // the edge and the glow take the state's own color
+      ring.dataset.q = r ? r.q : '';
+      glow.setAttribute('d', r && id !== 'DC' ? r.d : '');
+      glow.dataset.q = r ? r.q : '';
+      // the glow blooms again for each state picked
+      glow.style.animation = 'none';
+      void glow.getBoundingClientRect();
+      glow.style.removeProperty('animation');
       if (bar) {
         const n = id ? count(id) : M.items.length;
         $('[data-mem="where"]', bar).textContent = id ? nameOf(id) : 'Anywhere';
@@ -2399,6 +2720,33 @@
     addEventListener('scroll', watch, { passive: true });
     addEventListener('resize', watch);
 
+    /* Turning the phone changes the layout the cards were dealt for: a grid
+       of six with a pager upright, one swipe row of all of them sideways,
+       four on a desktop. Deal again for the new one, from the first set,
+       rather than leave six cards and a pager squeezed into a row. */
+    // ?vp on the address shows what the phone reports, to check by eye
+    if (/[?&]vp\b/.test(location.search)) {
+      const tag = document.createElement('div');
+      tag.style.cssText = 'position:fixed;z-index:999;left:8px;bottom:8px;padding:6px 9px;border-radius:8px;background:#14110Dd9;color:#fff;font:11px/1.35 ui-monospace,monospace;pointer-events:none;white-space:pre';
+      document.body.appendChild(tag);
+      const probe = u => { const d = document.createElement('div'); d.style.cssText = `position:absolute;visibility:hidden;height:100${u}`; document.body.appendChild(d); const v = d.offsetHeight; d.remove(); return v; };
+      const show = () => {
+        const g = $('#mem-panel .mem__card'), m = $('.mem__map');
+        tag.textContent = `inner ${innerWidth}x${innerHeight}  vv ${visualViewport ? Math.round(visualViewport.height) : '-'}\nsvh ${probe('svh')} lvh ${probe('lvh')} dvh ${probe('dvh')}\nmap ${m ? Math.round(m.getBoundingClientRect().width) : '-'}  card ${g ? Math.round(g.getBoundingClientRect().width) : '-'}  dpr ${devicePixelRatio}`;
+      };
+      show(); addEventListener('resize', show); addEventListener('scroll', perFrame(show), { passive: true });
+    }
+
+    const layoutOf = () => `${wide()}|${inRow()}`;
+    let layout = layoutOf();
+    addEventListener('resize', perFrame(() => {
+      const now = layoutOf();
+      if (now === layout) return;
+      layout = now;
+      page = 0;
+      if (open === null) paint();
+    }));
+
     /* ── The print ─────────────────────────────────────────────────────────
        The first time the map comes into view the states print themselves in,
        nearest Astoria first, each one stamping down a shade too hard and
@@ -2410,15 +2758,22 @@
       if (printed) return;
       printed = true;
       // straight past it, or asked for it from the pop-up: just be there
-      if (calm || now) { svg.classList.add('is-printed', 'is-set'); return; }
+      if (calm || now) {
+        svg.classList.add('is-printed', 'is-set');
+        if (board) board.classList.remove('is-waiting');
+        return;
+      }
       svg.classList.add('is-printed');
+      // the board counts up with the states as they land
+      if (board) { board.classList.add('is-rolling'); board.classList.remove('is-waiting'); }
       setTimeout(() => {
         const star = $('.memmap__home', svg);
         if (star && star.isConnected) celebrateFrom(star, 16);
       }, 1450);
-      setTimeout(() => svg.classList.add('is-set'), 2500);
+      setTimeout(() => { svg.classList.add('is-set'); if (board) board.classList.remove('is-rolling'); }, 2500);
     };
-    onInView(map, print);
+    // onInView hands over the element, which print would take for "now"
+    onInView(map, () => print());
     watch();
 
     // Every choice deals a fresh set, so every choice goes back to the top of
@@ -2499,6 +2854,14 @@
       const card = e.target.closest('[data-open]');
       if (card) { repaint(() => { open = +card.dataset.open; }); return; }
       if (e.target.closest('[data-roll]')) { rollTo(); return; }
+      if (e.target.closest('[data-next]')) { pullAnother(); return; }
+      if (e.target.closest('[data-more]')) {
+        repaint(() => { page = (page + 1) * limit() >= deck.length ? 0 : page + 1; });
+        // the new set starts at the top of the grid: bring it into view
+        $('.mem__headrow', panel)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        $('.mem__more', panel)?.focus({ preventScroll: true });
+        return;
+      }
       if (e.target.closest('[data-back]')) { repaint(() => { open = null; }); return; }
       if (e.target.closest('[data-all]')) { pin(); show(null); release(nudge()); return; }
 
@@ -2511,7 +2874,7 @@
         lead.style.animation = 'none';
         void lead.offsetWidth;
         lead.style.animation = '';
-        lead.src = p.u;
+        picTo(lead, p.u);
         lead.style.objectPosition = p.p || '';
         // the caption comes and goes with the photograph it belongs to
         cap.textContent = p.c || '';
@@ -2874,6 +3237,7 @@
     initSnaps();
     initSince();
     initFolds();
+    fitPics(document);
     watchReveals();
     initAnniversary();
     initAtlas();

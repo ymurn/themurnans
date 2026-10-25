@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=29">
+<link rel="stylesheet" href="assets/css/site.css?v=88">
 <link rel="stylesheet" href="assets/css/hitched.css?v=13">
 <link rel="stylesheet" href="assets/css/motion.css?v=3">
 <!-- The saved theme, before the first paint, so a page opened in dusk never flashes cream -->
@@ -41,6 +41,9 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
   })(window, document, "clarity", "script", "yo5bawkopu");
 }
 </script>
+<!-- Hold the first paint until the scripts at the foot have built the
+     page, so it arrives whole instead of in pieces -->
+<link rel="expect" href="#built" blocking="render">
 </head>
 <body data-page="day">
 
@@ -495,10 +498,12 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
   </div>
 </footer>
 
+<script src="assets/js/pics.js?v=1"></script>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/motion.js?v=2"></script>
-<script src="assets/js/site.js"></script>
+<script src="assets/js/site.js?v=58"></script>
 <script src="assets/js/hitched.js?v=15"></script>
+<i id="built" hidden></i>
 </body>
 </html>

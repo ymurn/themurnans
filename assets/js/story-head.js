@@ -29,11 +29,23 @@
 
   // where each one was, for its caption in the lightbox
   const from = p => T.find(c => c.photos.includes(p)) || {};
+  /* The deal is fresh for each visit, not each page load: back on this
+     page from another one, the same photos are already on the phone and
+     arrive at once instead of downloading six new ones. */
+  const roll = (() => {
+    let seed = 0;
+    try { seed = +sessionStorage.getItem('murnan-deal') || 0; } catch (e) {}
+    if (!seed) {
+      seed = 1 + Math.floor(Math.random() * 2147483645);
+      try { sessionStorage.setItem('murnan-deal', seed); } catch (e) {}
+    }
+    return () => (seed = seed * 16807 % 2147483647) / 2147483647;
+  })();
   const pool = US.filter(p => from(p).place);
   const size = pool.length / 6;
   const shots = Array.from({ length: Math.min(6, pool.length) }, (_, i) => {
     const slice = pool.slice(Math.floor(i * size), Math.max(Math.floor(i * size) + 1, Math.floor((i + 1) * size)));
-    return slice[Math.floor(Math.random() * slice.length)];
+    return slice[Math.floor(roll() * slice.length)];
   });
 
   host.innerHTML = `
@@ -43,7 +55,8 @@
       <figure class="shot tgal__pic" data-shot data-src="assets/photos/${esc(p)}" data-cap="${esc(cap)}"
               tabindex="0" role="button" aria-label="Enlarge: ${esc(cap)}"
               style="--tilt:${TILT[i]}deg;--off:var(${WASH[i]});--d:${80 + i * 90}ms">
-        <img src="assets/photos/${esc(p)}" alt="${esc(c.place)}, ${esc(c.date)}" loading="eager" decoding="async">
+        <img ${window.MW_PIC ? MW_PIC.src(`assets/photos/${p}`, '(max-width: 699px) 30vw, 200px') : `src="assets/photos/${esc(p)}"`} alt="${esc(c.place)}, ${esc(c.date)}" loading="eager" fetchpriority="high" decoding="async">
       </figure>`;
     }).join('')}</div>`;
+  if (window.MW_PIC) MW_PIC.fit(host);
 })();
