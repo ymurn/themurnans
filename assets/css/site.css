@@ -1223,22 +1223,32 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .fig--bear  .fig__say { left: 92%; right: auto; text-align: left; }
   .fig--tiger .fig__say { right: 92%; left: auto; text-align: right; }
   /* round all the way, and a small curved tail that flows out of its side
-     toward his mouth, cut from the paper itself so there is no seam: a
-     turned square read as a lumpy diamond stuck on, beside a squared-off
-     corner that was meant for a tail underneath */
+     toward his mouth: a turned square read as a lumpy diamond stuck on,
+     beside a squared-off corner that was meant for a tail underneath. The
+     tail is cut from the paper twice: once a little larger in the bubble's
+     hairline color behind, once in the paper over it, two pixels into the
+     bubble so its edge does not show across the root on a 3x screen. A drop-shadow for
+     the line would be cut away by the same mask that shapes the tail. */
   .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say { border-radius: 16px; }
-  .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after {
+  .fig__say::before, .fig__say::after,
+  .fig--bear .fig__say::after, .fig--tiger .fig__say::after {
+    content: "";
+    position: absolute;
     top: 14px; bottom: auto; margin-left: 0;
-    width: 14px; height: 16px;
+    width: 15px; height: 16px;
     background: var(--paper);
     box-shadow: none;
     transform: none;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M14 1C9.5 3.2 4.8 4.4 0 4.6 4.2 7.2 8.6 10.8 14 15Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M14 1C9.5 3.2 4.8 4.4 0 4.6 4.2 7.2 8.6 10.8 14 15Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
   }
-  /* the bubble's hairline carried round the tail, on all but the side it
-     grows from (a filter, since the tail is a cut-out shape, not a box) */
-  .fig__say::after { filter: drop-shadow(-1px 0 0 var(--line)) drop-shadow(0 -1px 0 var(--line)) drop-shadow(0 1px 0 var(--line)); }
+  /* at dawn the bubble's edge is its hairline darkened by its shadow, so the
+     tail's line is a shade stronger to match; at dusk the shadow does not
+     show on the dark, and the line is the hairline exactly */
+  .fig__say::before { top: 12.5px; width: 16px; height: 19px; background: color-mix(in srgb, var(--ink) 22%, transparent); }
+  [data-theme="dusk"] .fig__say::before { background: var(--line); }
+  .fig--bear  .fig__say::before { left: -15.5px; }
+  .fig--tiger .fig__say::before { right: -15.5px; scale: -1 1; }
   .fig--bear  .fig__say::after { left: -13px; right: auto; }
   .fig--tiger .fig__say::after { right: -13px; left: auto; scale: -1 1; }
 }
