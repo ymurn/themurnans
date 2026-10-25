@@ -633,7 +633,25 @@
       // be read part way back from its last line's slide.
       const fit = () => {
         say.style.transition = 'none';
-        say.style.removeProperty('--sx');
+        ['--sx', 'width', 'top', 'left', 'right'].forEach(k => say.style.removeProperty(k));
+        // Side by side with the title it opens toward the other one: as wide
+        // as the room between them, and with its point at his mouth.
+        const show = fig.closest('.hero__show');
+        if (show && getComputedStyle(show).display !== 'contents') {
+          const layer = $('.fig__layer', fig), bear = fig.dataset.who === 'bear';
+          const other = $(`.fig--${bear ? 'tiger' : 'bear'} .fig__layer`).getBoundingClientRect();
+          const head = HEADS[fig.dataset.who] || HEADS.bear;
+          // its near edge a clear gap in front of his face, as the card tails keep
+          const L = layer.getBoundingClientRect(), W = layer.offsetWidth;
+          const off = Math.round((bear ? head.face : 1 - head.face) * W + 16);
+          say.style[bear ? 'left' : 'right'] = `${off}px`;
+          const from = bear ? L.left + off : L.right - off;
+          const room = bear ? other.left - 8 - from : from - (other.right + 8);
+          say.style.width = `${Math.round(Math.max(104, Math.min(260, room)))}px`;
+          // a narrow room: the same words, a size smaller, so the lines stay a readable length
+          say.classList.toggle('is-tight', room < 150);
+          say.style.top = `${Math.round(head.mouth * layer.offsetHeight - 24)}px`;
+        }
         const b = say.getBoundingClientRect(), w = say.offsetWidth, pad = 12;
         const cx = b.left + b.width / 2, left = cx - w / 2, right = cx + w / 2;
         const sx = left < pad ? pad - left : right > innerWidth - pad ? innerWidth - pad - right : 0;

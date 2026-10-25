@@ -928,7 +928,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig__card.is-narrow p { font-size: .78rem; line-height: 1.5; }
 
 .stage__center { display: grid; place-items: center; gap: 1rem; align-self: center; }
-.stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease); }
+.stage__amp { font-family: var(--display); font-size: clamp(3.4rem, 8vw, 6.5rem); color: var(--coral); line-height: 1; transition: transform .8s var(--ease), opacity .35s var(--ease); }
+/* while one of them talks across it, the "&" steps back behind the words */
+.stage:has(.fig.is-talking) .stage__amp { opacity: .18; }
 @media (hover: hover) { .stage:hover .stage__amp { transform: scale(1.08); } }
 
 /* the pour control */
@@ -1204,6 +1206,29 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .fig__say.is-said { transform: translateX(calc(-50% + var(--sx, 0px))); }
   .fig__say::after { bottom: -6px; left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
   .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+}
+/* Side by side with the title (a phone on its side, a wide screen), what
+   he says opens beside his head toward the other one, the two of them
+   talking across the "&" like a strip: above his head it ran up under the
+   bar on a short screen, and on his far side it sat on the title.
+   initChatter sets its width to the room between them, and its height so
+   the point of it is level with his mouth, clear of his face. */
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) {
+  .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
+    top: 4%; bottom: auto;
+    width: 220px;
+    transform: translateX(var(--sx, 0px)) translateY(8px) scale(.95);
+  }
+  .fig__say.is-said { transform: translateX(var(--sx, 0px)); }
+  .fig--bear  .fig__say { left: 92%; right: auto; text-align: left;  border-radius: 14px 14px 14px 4px; }
+  .fig--tiger .fig__say { right: 92%; left: auto; text-align: right; border-radius: 14px 14px 4px 14px; }
+  .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after { top: 18px; bottom: auto; margin-left: 0; }
+  .fig--bear  .fig__say::after { left: -6px; right: auto; box-shadow: inset 1px -1px 0 var(--line); }
+  .fig--tiger .fig__say::after { right: -6px; left: auto; box-shadow: inset -1px 1px 0 var(--line); }
+}
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
+  .fig__say { padding: .6rem .8rem; font-size: 1.1rem; }
+  .fig__say.is-tight { padding: .5rem .6rem; font-size: .95rem; }
 }
 
 /* "Poke me!" waits until both of them are in color, then appears beside
