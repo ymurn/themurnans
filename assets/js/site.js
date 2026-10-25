@@ -94,13 +94,26 @@
         document.body.classList.toggle('menu-open', open);
         burger.setAttribute('aria-expanded', String(open));
       });
+      const shut = () => {
+        links.classList.remove('is-open');
+        document.body.classList.remove('menu-open');
+        burger.setAttribute('aria-expanded', 'false');
+      };
+      /* A link to another page leaves the menu open until that page takes
+         over: shut first, the page being left showed through for a moment
+         and the move to the next page faded from it, which looked like a
+         glitch. The page transition now fades from the menu to the page.
+         A link within this page shuts it, and so does coming back to this
+         page with Back, which can bring it back from the cache still open. */
       links.addEventListener('click', e => {
-        if (e.target.closest('a')) {
-          links.classList.remove('is-open');
-          document.body.classList.remove('menu-open');
-          burger.setAttribute('aria-expanded', 'false');
-        }
+        const a = e.target.closest('a');
+        if (!a) return;
+        const to = new URL(a.href, location.href);
+        const away = to.origin === location.origin && to.pathname !== location.pathname
+          && !a.target && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+        if (!away) shut();
       });
+      addEventListener('pageshow', e => { if (e.persisted) shut(); });
     }
   }
 
