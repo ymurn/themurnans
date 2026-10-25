@@ -22,7 +22,7 @@ html[data-intro] {
 html[data-intro] .page-head [data-reveal] { opacity: 1; transform: none; }
 html[data-intro] .page-head [data-reveal="wipe"] > * { clip-path: none; }
 html[data-intro] .page-head .wi { transform: none; transition: none; }
-html[data-intro] .page-head :is(.eyebrow, .lede, .thead__back, .ydeck)[data-reveal] { transition: none; }
+html[data-intro] .page-head :is(.eyebrow, .lede, .ydeck)[data-reveal] { transition: none; }
 html[data-intro-kind="trip"] .tgal__grid { position: relative; }
 html[data-intro-kind="trip"]:not(.intro-go) .tgal__pic { opacity: 0; }
 @keyframes rv-rise { from { opacity: 0; translate: 0 16px; scale: .985; } }

@@ -32,8 +32,6 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
   align-items: center;
 }
 .thead__text { min-width: 0; }
-.thead__back { display: inline-flex; align-items: center; gap: .5rem; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); }
-@media (hover: hover) { .thead__back:hover { color: var(--page-ink); } }
 
 /* Six prints from the trip, pinned up at their own angles and dealt fresh on
    every visit. They develop from the top as they come in, one after the
