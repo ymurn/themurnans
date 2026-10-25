@@ -13,7 +13,7 @@
 window.MW_TRIP = {
  "key": "honeymoon",
  "kicker": "August 8 to 22, 2022",
- "title": "The Honeymoon",
+ "title": "Our Honeymoon",
  "barLabel": "Day",
  "facts": [
   { "k": "Days on the road", "v": "15", "s": "Sacramento on August 8, Seattle on August 22." },
