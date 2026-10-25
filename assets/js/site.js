@@ -2180,8 +2180,22 @@
     const extra = [...(been.has('DC') ? ['DC'] : []), ...ours.filter(r => r.id.startsWith('CA-')).map(r => r.name)];
     const summary = `${states.length} states${extra.length ? `, ${extra.slice(0, -1).join(', ')}${extra.length > 1 ? ' and ' : ''}${extra[extra.length - 1]}` : ''}`;
     $$('[data-atlas="summary"]').forEach(el => { el.textContent = summary; });
-    // the badge over the map takes it in parts: the number, then the rest
+    // the board under the map takes it in parts: the number, then the rest
     $$('[data-atlas="states"]').forEach(el => { el.textContent = states.length; });
+    /* A wheel per digit, 0 to 9 on a strip, stopped on its digit. The
+       right-hand wheel has the strip twice and stops on the second pass, so
+       on the roll it goes round once more than the others. --k is how far
+       from the left a wheel is: the further right, the longer it turns. */
+    const digits = String(states.length).split('');
+    $$('[data-atlas="tiles"]').forEach(el => {
+      el.innerHTML = digits.map((d, k) => {
+        const last = k === digits.length - 1;
+        const strip = Array.from({ length: last ? 20 : 10 }, (_, i) => `<b>${i % 10}</b>`).join('');
+        return `<span class="mem__tile"><span class="mem__wheel" style="--n:${+d + (last ? 10 : 0)};--k:${k}">${strip}</span></span>`;
+      }).join('');
+    });
+    const board = $('.mem__board');
+    if (board && !calm) board.classList.add('is-waiting');
     $$('[data-atlas="extra"]').forEach(el => {
       el.textContent = extra.length > 1 ? `${extra.slice(0, -1).join(', ')} and ${extra[extra.length - 1]}` : extra.join('');
       el.parentElement.hidden = !extra.length;
@@ -2659,15 +2673,22 @@
       if (printed) return;
       printed = true;
       // straight past it, or asked for it from the pop-up: just be there
-      if (calm || now) { svg.classList.add('is-printed', 'is-set'); return; }
+      if (calm || now) {
+        svg.classList.add('is-printed', 'is-set');
+        if (board) board.classList.remove('is-waiting');
+        return;
+      }
       svg.classList.add('is-printed');
+      // the board counts up with the states as they land
+      if (board) { board.classList.add('is-rolling'); board.classList.remove('is-waiting'); }
       setTimeout(() => {
         const star = $('.memmap__home', svg);
         if (star && star.isConnected) celebrateFrom(star, 16);
       }, 1450);
-      setTimeout(() => svg.classList.add('is-set'), 2500);
+      setTimeout(() => { svg.classList.add('is-set'); if (board) board.classList.remove('is-rolling'); }, 2500);
     };
-    onInView(map, print);
+    // onInView hands over the element, which print would take for "now"
+    onInView(map, () => print());
     watch();
 
     // Every choice deals a fresh set, so every choice goes back to the top of

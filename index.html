@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=80">
+<link rel="stylesheet" href="assets/css/site.css?v=81">
 <link rel="stylesheet" href="assets/css/home-motion.css?v=2">
 <link rel="stylesheet" href="assets/css/motion.css?v=3">
 <!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
@@ -230,13 +230,16 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
     <div class="mem" id="mem" data-reveal="up">
       <div class="mem__mapcol">
         <div class="mem__map"></div>
-        <!-- Where the count of places stands: a badge, filled in by initMemoryMap
-             from VISITED so it stays true. -->
+        <!-- Where the count of places stands, on a departure board: filled in
+             by initMemoryMap from VISITED so it stays true, and its tiles roll
+             up to the count when the map prints. -->
         <p class="mem__hint">
-          <span class="mem__badge">
-            <span class="mem__badge-n"><b data-atlas="states">35</b> states</span>
-            <span class="mem__badge-plus">+ <span data-atlas="extra">DC and Québec</span></span>
-            <span class="mem__badge-now">so far</span>
+          <span class="mem__board">
+            <span class="mem__tiles" data-atlas="tiles" aria-hidden="true"><span class="mem__tile"><span class="mem__wheel"><b>3</b></span></span><span class="mem__tile"><span class="mem__wheel"><b>5</b></span></span></span>
+            <span class="mem__board-words">
+              <span class="mem__board-k"><span class="mem__board-said" data-atlas="states">35</span> states</span>
+              <span class="mem__board-rest"><span class="mem__board-plus">plus <span data-atlas="extra">DC and Québec</span>, </span>so far</span>
+            </span>
           </span>
         </p>
       </div>
@@ -556,7 +559,7 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/safari-bar.js"></script>
 <script src="assets/js/home-motion.js?v=2"></script>
 <script src="assets/js/motion.js?v=2"></script>
-<script src="assets/js/site.js?v=52"></script>
+<script src="assets/js/site.js?v=53"></script>
 <i id="built" hidden></i>
 </body>
 </html>

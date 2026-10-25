@@ -4310,56 +4310,67 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memmap__label { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: .5em; fill: var(--ink-3); pointer-events: none; }
 
 /* centred under the map, at every size */
-.mem__hint { display: flex; justify-content: center; margin: .9rem 0 0; font-size: .86rem; color: var(--ink-3); }
-/* How far the count of places has got, as a badge rather than a loose line:
-   the number on a gold chip, the district and the province after it, and a
-   still dot on "so far", since the count is still going. Set down at a tilt,
-   with the off-register color behind it, like the stickers. Dark type on
-   the gold so it reads at dusk. */
-.mem__badge {
-  display: inline-flex; align-items: stretch;
+.mem__hint { display: flex; justify-content: center; margin: 1rem 0 0; font-size: .86rem; color: var(--ink-3); }
+/* How far the count of places has got, as a departure board: the number on
+   flip tiles, what it counts beside it, and the rest in a line under that.
+   The tiles are ink at dawn and paper at dusk, the one pair that holds at
+   both. When the map prints its states the wheels roll up from 00 to the
+   count, the right-hand wheel round once more, the way a counter does, and
+   settle with the states (initMemoryMap). Read out as one sentence: the
+   tiles are hidden from screen readers and the number is said in words. */
+.mem__board {
+  --tile-w: 28px; --tile-h: 36px; --digit: 26px;
+  --board-settle: linear(0, .013 1%, .05 2.2%, .2 5.2%, .5 10.2%, .7 14.5%, .845 18.8%, .932 23.1%, .983 27.6%, 1.012 33%, 1.02 39%, 1.016 47%, 1.006 60%, 1.001 80%, 1);
+  display: inline-flex; align-items: center; gap: 16px;
   max-width: 100%;
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--paper);
-  box-shadow: 3px 3px 0 var(--blue);
-  rotate: -1.2deg;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: .74rem;
   line-height: 1;
-  color: var(--ink-2);
+  white-space: nowrap;
+  text-align: left;
 }
-.mem__badge > * { display: inline-flex; align-items: center; gap: .4rem; padding: .42rem .7rem; }
-.mem__badge-n {
-  background: var(--gold);
-  border-right: 1.5px solid var(--ink);
-  color: #14110D;
-  font-size: .62rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+.mem__tiles { display: inline-flex; gap: 4px; }
+.mem__tile {
+  position: relative;
+  width: var(--tile-w); height: var(--tile-h);
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--ink);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 40%, transparent);
 }
-.mem__badge-n b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: 0; line-height: .8; }
-.mem__badge-plus { padding-right: .35rem; }
-.mem__badge-plus[hidden] { display: none; }
-/* Where its line is short of room for it (a phone on its side, the narrowest
-   phones), the badge tightens rather than being cut off: measured on the
-   line it sits on, not the screen. */
+/* the split across the middle of each tile, where a flap would fold */
+.mem__tile::after {
+  content: ""; position: absolute; z-index: 1; left: 0; right: 0; top: 50%;
+  height: 1.5px; margin-top: -.75px;
+  background: var(--paper);
+  opacity: .9;
+}
+.mem__wheel { display: grid; translate: 0 calc(var(--n, 0) * var(--tile-h) * -1); }
+.mem__wheel > b {
+  display: grid; place-items: center;
+  height: var(--tile-h);
+  font-family: var(--display); font-weight: 400; font-size: var(--digit); letter-spacing: 0;
+  color: var(--paper);
+}
+.mem__board.is-waiting .mem__wheel { translate: 0 0; }
+.mem__board.is-rolling .mem__wheel {
+  transition: translate calc(.9s + var(--k, 0) * .3s) var(--board-settle) calc(.15s + var(--k, 0) * .08s);
+}
+.mem__board-words { display: grid; gap: 4px; }
+.mem__board-k { font-size: .62rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); }
+.mem__board-rest { font-size: .86rem; color: var(--ink-2); }
+.mem__board-plus[hidden] { display: none; }
+.mem__board-said { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Where its line is short of room (a phone on its side, the narrowest
+   phones), the board tightens rather than being cut off: measured on the
+   line it sits on, not the screen. A desktop's map is twice the size, so
+   the board grows with it. */
 .mem__hint { container: memhint / inline-size; }
 @container memhint (max-width: 19.5rem) {
-  .mem__badge { font-size: .68rem; }
-  .mem__badge > * { padding: .38rem .5rem; gap: .3rem; }
-  .mem__badge-n { font-size: .56rem; letter-spacing: .12em; }
-  .mem__badge-n b { font-size: 1.02rem; }
-  .mem__badge-now { font-size: .54rem; letter-spacing: .12em; }
+  .mem__board { --tile-w: 24px; --tile-h: 32px; --digit: 22px; gap: 8px; }
+  .mem__board-rest { font-size: .78rem; }
 }
-.mem__badge-now {
-  color: var(--ink-3);
-  font-size: .58rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
-}
-.mem__badge-now::before {
-  content: "";
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--sage-500);
+@container memhint (min-width: 34rem) {
+  .mem__board { --tile-w: 32px; --tile-h: 40px; --digit: 30px; }
+  .mem__board-rest { font-size: .92rem; }
 }
 /* The one action in the panel: it rolls the map to a state we have written up */
 .mem__roll {
@@ -4638,7 +4649,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   /* The count is the map's caption, just under it: over the map it sat on
      the map's top edge like a label for something else. */
   .mem__mapcol { display: flex; flex-direction: column; }
-  .mem__hint { margin: .7rem 0 0; justify-content: center; text-align: center; }
+  .mem__hint { margin: 1rem 0 0; justify-content: center; text-align: center; }
 }
 
 /* A desktop: the photographs are cut to the map's height. Ten cards down the
