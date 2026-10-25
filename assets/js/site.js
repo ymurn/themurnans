@@ -77,6 +77,49 @@
 
   /* ── Navigation ────────────────────────────────────────────────────── */
 
+  /* On a phone, upright or on its side, the bar gets out of the way: it
+     slides off on the way down a page and is back on the first move up.
+     Only someone's own scrolling moves it (a drag, a wheel, the keys); a
+     jump the page makes for them, to a month or a memory, leaves it where
+     it is. Near the top of the page, with the menu open, or with something
+     in the bar focused, it stays. It takes a deliberate 8px either way, so a
+     thumb resting on the glass does not set it flickering. The sliding is
+     in site.css, on --nav-out. */
+  const NAV_PHONE = matchMedia('(max-width: 699px), (orientation: landscape) and (max-height: 520px)');
+  function hideOnScroll(nav) {
+    const root = document.documentElement;
+    const real = () => root.style.setProperty('--nav-real', `${nav.offsetHeight}px`);
+    real();
+    addEventListener('resize', perFrame(real));
+    let away = false, from = scrollY, steering = false, rest = 0;
+    const set = on => { if (on !== away) { away = on; root.classList.toggle('nav-away', on); } };
+    const hands = () => { steering = true; };
+    addEventListener('touchmove', hands, { passive: true });
+    addEventListener('wheel', hands, { passive: true });
+    addEventListener('keydown', e => { if (/^(Arrow(Up|Down)|Page(Up|Down)|Home|End| )$/.test(e.key)) hands(); });
+    const look = () => {
+      const y = scrollY;
+      const stay = !NAV_PHONE.matches || y < 96 || document.body.classList.contains('menu-open') || nav.contains(document.activeElement);
+      if (stay) { set(false); from = y; return; }
+      if (!steering) { from = y; return; }
+      if (y - from > 8) { set(true); from = y; }
+      else if (from - y > 8) { set(false); from = y; }
+    };
+    addEventListener('scroll', () => {
+      clearTimeout(rest);
+      // a fling goes on scrolling after the finger lifts; it is still theirs
+      rest = setTimeout(() => { steering = false; }, 220);
+    }, { passive: true });
+    addEventListener('scroll', perFrame(look), { passive: true });
+    NAV_PHONE.addEventListener('change', look);
+    // the menu opens with the bar in place
+    nav.addEventListener('click', () => set(false));
+  }
+  // How much of the bar's room is free while it is away, for the jumps the
+  // page makes to land where the bands hang now, not where they hang under it.
+  window.MW_NAV = { gone: () => document.documentElement.classList.contains('nav-away')
+    ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 56 : 0 };
+
   function initNav() {
     const nav = $('.nav');
     const burger = $('.nav__burger');
@@ -86,6 +129,7 @@
       const onScroll = () => nav.classList.toggle('is-stuck', window.scrollY > 24);
       onScroll();
       addEventListener('scroll', perFrame(onScroll), { passive: true });
+      hideOnScroll(nav);
     }
 
     if (burger && links) {
@@ -1194,7 +1238,7 @@
     yearBtns.forEach(btn => btn.addEventListener('click', () => {
       const first = chaps.find(c => c.dataset.year === btn.dataset.year);
       if (first) {
-        const top = first.getBoundingClientRect().top + scrollY - 120;
+        const top = first.getBoundingClientRect().top + scrollY - 120 + window.MW_NAV.gone();
         scrollTo({ top, behavior: calm ? 'auto' : 'smooth' });
       }
     }));
@@ -2809,7 +2853,7 @@
       const sheetPick = toCards && !beside();
       const el = sheetPick ? panel : host;
       const off = sheetPick ? (bar ? bar.offsetHeight : 0) + 78 : (beside() ? 80 : 72);
-      const y = el.getBoundingClientRect().top + scrollY - off;
+      const y = el.getBoundingClientRect().top + scrollY - off + window.MW_NAV.gone();
       if (Math.abs(y - scrollY) <= 24) return false;
       // Someone who asked for less motion still wants to be in the right
       // place; they just do not want to watch the trip there.

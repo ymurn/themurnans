@@ -30,7 +30,7 @@ body {
 .moon__map { position: relative; }
 .routemap {
   position: sticky;
-  top: calc(var(--nav-h) + 4.75rem);
+  top: calc(var(--nav-top) + 4.75rem);
   display: grid;
   justify-items: center;
   gap: 1rem;
@@ -211,7 +211,7 @@ body {
      can shrink to a pill without the band shrinking with it. */
   .moon__map, .ymap__map {
     position: fixed;
-    top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) - 1px);
+    top: calc(var(--nav-top) + var(--ybar-h, 3.2rem) - 1px);
     left: 0; right: 0;
     z-index: 55;
     height: auto;

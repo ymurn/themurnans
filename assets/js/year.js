@@ -389,7 +389,7 @@
       const m = Number(b.dataset.month);
       const target = Y.honeymoon && Y.honeymoon.month === m ? head : $(`.chap--month[data-month="${m}"]`);
       if (!target) return;
-      const top = target.getBoundingClientRect().top + scrollY - (bar ? bar.offsetHeight : 0) - 64;
+      const top = target.getBoundingClientRect().top + scrollY - (bar ? bar.offsetHeight : 0) - 64 + (window.MW_NAV ? MW_NAV.gone() : 0);
       scrollTo({ top, behavior: calm ? 'auto' : 'smooth' });
     }));
   }

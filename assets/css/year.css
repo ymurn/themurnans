@@ -163,7 +163,7 @@ a.ydeck__card:focus-visible .ydeck__pic { rotate: 0deg; translate: 0 -6px; box-s
 .mrow__trips { display: grid; gap: 1.5rem; max-width: 62ch; }
 /* a link to a month (from the memory card on the home page) lands below the bars */
 .chap--month { scroll-margin-top: calc(var(--nav-h) + 4.5rem); }
-.mrow > .strip { margin-top: .25rem; position: sticky; top: calc(var(--nav-h) + 5.5rem); }
+.mrow > .strip { margin-top: .25rem; position: sticky; top: calc(var(--nav-top) + 5.5rem); }
 
 @media (min-width: 861px) {
   .chap--month { grid-template-columns: 170px 1fr; }
@@ -424,7 +424,7 @@ a.ydeck__card:focus-visible .ydeck__pic { rotate: 0deg; translate: 0 -6px; box-s
    and on a screen this short a stacked month is a very long scroll. */
 @media (min-width: 700px) and (max-height: 520px) and (orientation: landscape) {
   .mrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
-  .mrow > .strip { position: sticky; top: calc(var(--nav-h) + 3.5rem); }
+  .mrow > .strip { position: sticky; top: calc(var(--nav-top) + 3.5rem); }
   .yhead__grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-areas: "text cover" "deck cover"; }
   .yclose { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
   /* the photo strips go back to a mosaic: a swipe row of one photograph at a

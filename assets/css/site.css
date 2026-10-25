@@ -560,9 +560,24 @@ body:is([data-page="day"], [data-page="home"]) main .btn:not(.btn--ghost) { --bt
   background: linear-gradient(90deg, var(--blue), var(--sage-500) 28%, var(--gold) 52%, var(--coral) 76%, var(--wine));
 }
 
+/* On a phone the bar slides away on the way down a page and comes back on
+   the way up (initNav). One number says how far it has gone, 0 to 1, and
+   it is the thing animated, so the bar and every band that sticks under it
+   move as one: they hang from --nav-top, the height of bar still showing.
+   The bar moves by its top, not by a transform, which would make it the
+   frame for the full-screen menu inside it. */
+@property --nav-out { syntax: '<number>'; inherits: true; initial-value: 0; }
+:root {
+  --nav-out: 0;
+  --nav-top: calc(var(--nav-h) * (1 - var(--nav-out)));
+  transition: --nav-out .34s var(--ease-soft);
+}
+html.nav-away { --nav-out: 1; }
+@media (prefers-reduced-motion: reduce) { :root { transition: none; } }
+
 .nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: calc(var(--nav-out) * -1 * (var(--nav-real, 64px) + 4px)); left: 0; right: 0;
   z-index: 80;
   display: flex;
   align-items: center;
@@ -2485,7 +2500,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .page-head__row { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
 
 .yearbar {
-  position: sticky; top: var(--nav-h); z-index: 60;
+  position: sticky; top: var(--nav-top); z-index: 60;
   display: flex; align-items: center; gap: 1.5rem;
   padding: .85rem var(--gutter);
   background: color-mix(in srgb, var(--paper) 88%, transparent);
@@ -2523,7 +2538,7 @@ a.yearbtn { display: inline-block; }
 .chap + .chap { border-top: 1px solid var(--line-2); }
 .chap__aside { position: relative; }
 /* The spine runs down the aside's left edge, so content has to clear it. */
-.chap__sticky { position: sticky; top: calc(var(--nav-h) + 4.75rem); display: grid; gap: .55rem; padding-left: var(--rail); }
+.chap__sticky { position: sticky; top: calc(var(--nav-top) + 4.75rem); display: grid; gap: .55rem; padding-left: var(--rail); }
 /* The aside's left edge sits exactly on the spine, so center the dot on it. */
 .chap__dot { position: absolute; left: -4.5px; top: .55rem; width: 9px; height: 9px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 1px var(--ink-3); transition: background-color .5s, box-shadow .5s, transform .5s var(--ease); }
 .chap.is-in .chap__dot { background: var(--wine); box-shadow: inset 0 0 0 1px var(--wine), 0 0 0 5px color-mix(in srgb, var(--wine) 14%, transparent); transform: scale(1.1); }
@@ -4185,7 +4200,7 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
   body[data-page="story"] .chap { grid-template-columns: 140px minmax(0, 1fr); padding-left: 0; }
   body[data-page="story"] .chap__sticky {
     position: sticky;
-    top: calc(var(--nav-h) + 3.25rem);
+    top: calc(var(--nav-top) + 3.25rem);
     display: grid;
     align-items: start;
     gap: .35rem;
@@ -4331,7 +4346,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   .mem { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); align-items: start; }
   /* The column of photographs is the taller of the two, so the map follows it
      down rather than leaving a hole under itself. */
-  .mem__mapcol { position: sticky; top: calc(var(--nav-h) + 1.5rem); }
+  .mem__mapcol { position: sticky; top: calc(var(--nav-top) + 1.5rem); }
 }
 /* The box holds its proportions whether or not the map is in it: on a phone
    the svg moves into the pop-up and back, and a collapsing box would jump
@@ -5173,7 +5188,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
   /* stuck at the top only beside an open memory, the one thing here taller
      than the screen; the rest of the time it scrolls with the page */
   .mem__mapcol { position: relative; }
-  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-h) + .5rem); }
+  .mem:has(.mem__open) .mem__mapcol { position: sticky; top: calc(var(--nav-top) + .5rem); }
   .mem:has(.mem__open) { align-items: start; }
   /* the screen, less the padding and the count line under the map */
   .mem__map { width: min(100%, calc((var(--memscreen) - 3.4rem) * 1000 / 645.6)); margin-inline: auto; }
@@ -5323,7 +5338,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .mem__bar {
   position: fixed;
   z-index: 70;
-  top: calc(var(--nav-h) + 10px);
+  top: calc(var(--nav-top) + 10px);
   left: 50%;
   display: flex;
   align-items: center;
@@ -5434,7 +5449,7 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
     opacity .14s linear .28s;
 }
 .memsheet.is-open .memsheet__card {
-  top: calc(var(--nav-h) + 10px);
+  top: calc(var(--nav-top) + 10px);
   left: calc((100% - var(--tw, 320px)) / 2);
   width: var(--tw, 320px);
   height: var(--th, 320px);
