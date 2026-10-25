@@ -74,9 +74,9 @@ window.MW_TRIP = {
    "photos": [
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-01.jpg", "cap": "Grizzly Falls, the first stop" },
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-02.jpg", "cap": "Mist Falls, the top of the hike", "us": true },
-    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-03.jpg", "cap": "The canyon from the trail" },
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-04.jpg", "cap": "On the way back down", "us": true },
-    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-06.jpg", "cap": "Roaring River Falls" },
+    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-09.jpg", "cap": "Roaring River Falls" },
+    { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-06.jpg", "cap": "At the foot of the falls" },
     { "src": "continued_trips/2026-06-kings-canyon/2026-06-kings-canyon-07.jpg", "cap": "The first sequoias of the trip, at Grant Grove" }
    ]
   },
@@ -164,8 +164,8 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-10.jpg", "cap": "Half Dome from North Dome" },
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-25.jpg", "cap": "A seat on North Dome, Half Dome behind" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-11.jpg", "cap": "On the dome" },
-    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-12.jpg", "cap": "Sitting at the edge" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-13.jpg", "cap": "Over the creek on a log" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-14.jpg", "cap": "Tenaya Lake, on the way to Tuolumne", "us": true },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-16.jpg", "cap": "A bear at Dog Lake" }
@@ -183,9 +183,11 @@ window.MW_TRIP = {
     "After hiking down, we decided to travel east into the desert, taking in some nice views of Mono Lake and various other desert features and getting cheap gas in Nevada before we drove four hours west to our next location that we will discuss in our next post."
    ],
    "photos": [
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-26.jpg", "cap": "The trail up to the lakes" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-19.jpg", "cap": "Granite on the way up to the lakes" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-17.jpg", "cap": "Upper Cathedral Lake" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-20.jpg", "cap": "Snow still on the water at the top of Tioga Pass" },
+    { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-27.jpg", "cap": "Down the east side of Tioga Pass" },
     { "src": "continued_trips/2026-06-yosemite/2026-06-yosemite-18.jpg", "cap": "Mono Lake, out in the desert" }
    ]
   },
