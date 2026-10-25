@@ -58,11 +58,17 @@ window.MW_PIC = (() => {
     });
   }
 
-  const src = (url, guess = GUESS) => OURS.test(url)
+  /* Where a photo is cut to its frame, when it has a crop of its own
+     (assets/js/crops.js): the faces in it, kept in every frame. Written
+     first, so it is the style an img keeps over one a caller adds after. */
+  const crop = url => (window.MW_CROPS || {})[url.replace(/^assets\//, '')] || '';
+  const cropAttr = url => crop(url) ? ` style="object-position:${esc(crop(url))}"` : '';
+  const src = (url, guess = GUESS) => (OURS.test(url)
     ? `src="${esc(url)}" srcset="${esc(srcset(url))}" sizes="${esc(guess)}" data-fit`
-    : `src="${esc(url)}"`;
+    : `src="${esc(url)}"`) + cropAttr(url);
 
   function set(img, url) {
+    if (crop(url)) img.style.objectPosition = crop(url);
     if (OURS.test(url)) {
       img.srcset = srcset(url);
       if (!img.hasAttribute('data-fit')) { img.setAttribute('data-fit', ''); if (img.parentElement) fit(img.parentElement); }
@@ -82,6 +88,10 @@ window.MW_PIC = (() => {
 
   /* The photos written into the pages themselves, that wait to load until
      they are near the screen. One already loading is left as it is. */
+  document.querySelectorAll('img[src^="assets/"]').forEach(img => {
+    const c = crop(img.getAttribute('src') || '');
+    if (c) img.style.objectPosition = c;
+  });
   document.querySelectorAll('img[loading="lazy"]').forEach(img => {
     const url = img.getAttribute('src') || '';
     if (!OURS.test(url) || img.srcset) return;
@@ -91,5 +101,5 @@ window.MW_PIC = (() => {
   });
   fit();
 
-  return { src, fit, set };
+  return { src, fit, set, crop };
 })();

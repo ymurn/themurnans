@@ -2941,8 +2941,8 @@
         lead.style.animation = 'none';
         void lead.offsetWidth;
         lead.style.animation = '';
-        picTo(lead, p.u);
         lead.style.objectPosition = p.p || '';
+        picTo(lead, p.u);                    // and its own crop over that, if it has one
         // the caption comes and goes with the photograph it belongs to
         cap.textContent = p.c || '';
         cap.hidden = !p.c;
