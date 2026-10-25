@@ -641,9 +641,10 @@
           const layer = $('.fig__layer', fig), bear = fig.dataset.who === 'bear';
           const other = $(`.fig--${bear ? 'tiger' : 'bear'} .fig__layer`).getBoundingClientRect();
           const head = HEADS[fig.dataset.who] || HEADS.bear;
-          // its near edge a clear gap in front of his face, as the card tails keep
+          // the tip of its tail 18px in front of his face, the gap the card
+          // tails keep: the tail reaches 15px out from the bubble's side
           const L = layer.getBoundingClientRect(), W = layer.offsetWidth;
-          const off = Math.round((bear ? head.face : 1 - head.face) * W + 16);
+          const off = Math.round((bear ? head.face : 1 - head.face) * W + 18 + 15);
           say.style[bear ? 'left' : 'right'] = `${off}px`;
           const from = bear ? L.left + off : L.right - off;
           const room = bear ? other.left - 8 - from : from - (other.right + 8);
