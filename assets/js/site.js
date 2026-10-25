@@ -3287,7 +3287,7 @@
   function initFacts() {
     const rows = $$('.facts');
     if (!rows.length) return;
-    const MAX = 48, MIN = 20, range = document.createRange();
+    const MAX = 48, MIN = 20, SHARE = .141, range = document.createRange();
     const fit = () => rows.forEach(row => {
       const vals = $$('.fact__v', row);
       if (!vals.length) return;
@@ -3310,7 +3310,13 @@
           - parseFloat(getComputedStyle(v.parentElement).paddingRight);
         if (need > room) k = Math.min(k, room / need);
       });
-      row.style.setProperty('--fact-v', `${Math.max(MIN, Math.floor(MAX * k * 0.98))}px`);
+      // and never more than the share of its card a number takes on a phone
+      // held sideways, the proportion that reads right: a fixed 48px came out
+      // too big in a phone's single column and a desktop's narrow cards
+      const card = vals[0].parentElement, cs = getComputedStyle(card);
+      const inner = card.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const size = Math.min(MAX * k * 0.98, inner * SHARE);
+      row.style.setProperty('--fact-v', `${Math.max(MIN, Math.floor(size))}px`);
     });
     fit();
     addEventListener('resize', perFrame(fit));
