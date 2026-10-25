@@ -191,6 +191,7 @@ window.MW_TRIPMAP = function tripmap(o) {
   // same measurement as the one in assets/css/map.css
   const wide = matchMedia('(min-width: 1180px)');
   let shown = null, cur = null, raf = 0, land = 0, onBand = false, flew = 0, min = false;
+  let fold = null;
 
   // screen pixels per svg unit, with the dots kept one size on screen
   function paint(m, k) {
@@ -390,14 +391,42 @@ window.MW_TRIPMAP = function tripmap(o) {
      Everything the pass needs is measured before a single class is written:
      a class in the middle makes the browser lay the whole page out again. */
   const barBottom = () => (bar ? bar.getBoundingClientRect().bottom : 0);
+  // the band's open height, kept while it is folded, so folding it never
+  // moves the reading line and changes which stop counts as being read
+  let bandH = 0;
   function read() {
-    const e = barBottom() + band.offsetHeight;
+    if (!min || !bandH) bandH = band.offsetHeight;
+    const e = barBottom() + bandH;
     const line = e + (innerHeight - e) * 0.33;
     const box = wrap.getBoundingClientRect();
     const tops = chapters.map(ch => ch.getBoundingClientRect().top);
     let i = -1;
     tops.forEach((t, n) => { if (t < line) i = n; });
-    return { on: box.top < barBottom() && box.bottom > e + 40, i: box.bottom < line ? stops_.length : i };
+    return { on: box.top < barBottom() && box.bottom > e + 40, i: box.bottom < line ? stops_.length : i,
+      into: i > -1 && i < tops.length ? line - tops[i] : 0, room: innerHeight - e };
+  }
+
+  /* A band that folds itself (David's 40th): the map is there when the
+     reader arrives at a stop, draws the drive to it, and folds into the pill
+     once they are a third of a screen into reading it, giving the screen back
+     to the words and the photographs. The next stop opens it again. It is
+     never folded within a second of opening, so a quick scroll through a
+     stop does not make it flicker, and opened by hand from the pill it stays
+     open until the next stop. Folded by hand, it waits for the next stop. */
+  let autoStop = null, pinned = false, openedAt = 0;
+  function autofold(now) {
+    if (!o.autofold || !fold || wide.matches) return;
+    if (!onBand) { autoStop = null; return; }          // gone: the next stop it shows at opens it
+    if (now.i !== autoStop) {
+      // a new stop, or the band just come on at one: open, and hold it open
+      autoStop = now.i;
+      pinned = false;
+      openedAt = performance.now();
+      if (now.i > -1 && now.i < stops_.length && fold.min) fold.set(false);
+      return;
+    }
+    if (!fold.min && !pinned && now.i > -1 && now.i < stops_.length
+        && now.into > now.room * 0.33 && performance.now() - openedAt > 1000) fold.set(true);
   }
   function fromBand() {
     const now = read();
@@ -408,6 +437,7 @@ window.MW_TRIPMAP = function tripmap(o) {
       if (now.on) cur = null;                           // arrive already on the right stop
     }
     if (now.i !== shown || cur === null) show(now.i);
+    autofold(now);
   }
 
   // the band sits right under the bar, however tall the bar wraps
@@ -445,16 +475,19 @@ window.MW_TRIPMAP = function tripmap(o) {
 
   // the band's own two controls, the same ones every map on the site carries
   if (window.MW_MAPFOLD) {
-    window.MW_MAPFOLD({
+    fold = window.MW_MAPFOLD({
       host, wrap,
       view: $('.routemap__view', host),
       foot: $('.routemap__foot', host),
       whole: $('.routemap__whole', host),
-      onFold: folded => {
+      quiet: !!o.autofold,
+      onFold: (folded, hand) => {
         min = folded;
+        if (hand !== undefined && o.autofold) pinned = hand && !folded;   // opened by hand: stays open
         if (!folded) { cur = null; show(shown ?? -1); }  // back at the stop being read
       }
     });
+    if (o.autofold) wrap.classList.add('is-autofold');
   }
   $('.routesheet__close', sheet).addEventListener('click', () => sheet.close());
   sheet.addEventListener('click', e => {                // a tap on the dimmed page closes it
