@@ -985,6 +985,12 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .hero__show { --stage-room: 7rem; }
 }
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
+  /* the drawings' column takes more of a short, wide screen: the drawings
+     are sized by its height here, so the extra width goes to the room
+     between them, where what they say opens */
+  .hero__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); column-gap: 2rem; }
+  /* and the place and year above the title keep to one line in what is left */
+  .hero__words > .eyebrow { white-space: nowrap; font-size: .58rem; letter-spacing: .18em; }
   .hero { padding-top: calc(var(--nav-h) + 1rem); padding-bottom: 1rem; }
   .hero__words { gap: 1rem; }
   .hero__sub .lede { max-width: none; font-size: .875rem; }
@@ -1263,7 +1269,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
   .fig__say { padding: .6rem .8rem; font-size: 1.1rem; }
-  .fig__say.is-tight { padding: .5rem .6rem; font-size: .95rem; }
+  .fig__say.is-tight { padding: .5rem .7rem; font-size: .9rem; }
 }
 
 /* "Poke me!" waits until both of them are in color, then appears beside

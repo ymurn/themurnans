@@ -652,7 +652,7 @@
           // as wide as its words, up to the room between them
           say.style.maxWidth = `${Math.round(Math.max(104, Math.min(260, room)))}px`;
           // a narrow room: the same words, a size smaller, so the lines stay a readable length
-          say.classList.toggle('is-tight', room < 150);
+          say.classList.toggle('is-tight', room < 180);
           // the tail's tip is 28px down the bubble: set it level with his mouth
           say.style.top = `${Math.round(head.mouth * layer.offsetHeight - 28)}px`;
         }
