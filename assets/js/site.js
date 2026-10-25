@@ -463,13 +463,20 @@
     ],
   };
 
-  /* The comic tail reaches from the card to just behind his head, above the
-     ring, whatever the card's width or side. Where the heads are, as
-     fractions of the drawings: the back of David's head 41% across, at the tail's height,, his face
-     88%; Yinja faces the other way, 63% and 12%. Measured in the drawing's
-     own box, so its lean and drift do not matter. The tail scales evenly,
-     never stretched, within the sizes it was drawn to look right at. */
-  const HEADS = { bear: { back: .41, face: .88 }, tiger: { back: .63, face: .12 } };
+  /* The comic tail reaches from the card to the one speaking, whatever the
+     card's width or side. Behind him it reaches just behind his head, above
+     the ring; in front of him it points at his mouth, level with it and
+     stopping a clear gap short of his face, so the words come out of him
+     without the tip touching him. Where those are, as fractions of the
+     drawings: the back of David's head 41% across, at the tail's height, the
+     front of his face 88% and his mouth 22.5% down; Yinja faces the other
+     way, 63%, 12% and 21.5%. Measured in the drawing's own box, so its lean and drift
+     do not matter. The tail scales evenly, never stretched, within the
+     sizes it was drawn to look right at. */
+  const HEADS = {
+    bear: { back: .41, face: .88, mouth: .225 },
+    tiger: { back: .63, face: .12, mouth: .215 },
+  };
   function reachTail(fig, card, nudge) {
     const tail = $('.fig__tail', card), layer = $('.fig__layer', fig);
     if (!tail || !layer) return;
@@ -480,11 +487,66 @@
     const left = card.offsetLeft + (nudge || 0);
     const edge = onRight ? left + w : left;
     const x = (flip ? head.face : head.back) * W;
-    // a breath of space between its tip and his hair
-    const reach = onRight ? x - 14 - edge : edge - (x + 14);
+    // a breath of space between its tip and his hair, or his face
+    const gap = flip ? 18 : 14;
+    const reach = onRight ? x - gap - edge : edge - (x + gap);
     const len = Math.round(Math.max(40, Math.min(96, reach + 2)));
+    const th = Math.round(len * 30 / 64);
     tail.style.width = `${len}px`;
-    tail.style.height = `${Math.round(len * 30 / 64)}px`;
+    tail.style.height = `${th}px`;
+    // the tip is 2/30 of the way down the tail: set it at his mouth, with the
+    // tail's root kept on the card's straight side, clear of its corners
+    if (flip) {
+      const tip = head.mouth * layer.offsetHeight - card.offsetTop;
+      const top = Math.max(8, Math.min(card.offsetHeight - th - 16, tip - th * 2 / 30));
+      tail.style.top = `${Math.round(top)}px`;
+    } else tail.style.removeProperty('top');
+  }
+
+  /* The balloon over his head: as wide as reads well, its foot just clear
+     of his hair, the tail dropping from near its inner corner to just short
+     of his mouth, and slid along to stay in the drawings' column and on the
+     screen. False where it would run up under the bar, so the caller can
+     put it somewhere else. */
+  function balloon(fig, card, lo) {
+    const layer = $('.fig__layer', fig), drop = $('.fig__drop', card);
+    if (!layer || !drop) return false;
+    const bear = fig.dataset.who === 'bear';
+    const head = HEADS[fig.dataset.who] || HEADS.bear;
+    const W = layer.offsetWidth, H = layer.offsetHeight, L = layer.getBoundingClientRect();
+    // where he stands in the layout, not where his hover lift or a hop has
+    // him this instant: read from the stage, which neither moves
+    const stage = fig.closest('.stage');
+    const top = stage ? stage.getBoundingClientRect().top + fig.offsetTop + layer.offsetTop : L.top;
+    const show = fig.closest('.hero__show').getBoundingClientRect();
+    card.classList.remove('is-flip');
+    card.classList.add('is-above');
+    const cw = Math.round(Math.min(340, show.width - 16));
+    card.style.width = `${cw}px`;
+    const ch = card.offsetHeight;
+    // the tip, in front of his face and level with his mouth, a clear gap off
+    const mx = head.face * W + (bear ? 16 : -16), my = head.mouth * H;
+    const foot = Math.round(.03 * H - 12);                  // the balloon's foot, over his hair
+    const len = Math.max(40, Math.min(110, my - foot));
+    const dw = Math.round(len * 30 / 64);
+    const tip = dw * 2 / 30;                                 // the tip's offset in the drawn tail
+    // the tail's left edge, so its tip lands at his mouth
+    const dl = bear ? mx - tip : mx - dw + tip;
+    let left = bear ? dl - 24 : dl + dw + 24 - cw;
+    const bar = $('.nav'), nav = bar ? bar.getBoundingClientRect().bottom : 56;
+    if (top + foot - ch < nav + 8) { card.classList.remove('is-above'); card.style.removeProperty('width'); return false; }
+    // keep the whole balloon in the column and on the screen
+    const pageLeft = L.left + left;
+    if (pageLeft < lo) left += lo - pageLeft;
+    if (L.left + left + cw > innerWidth - 24) left -= L.left + left + cw - (innerWidth - 24);
+    const inCard = Math.max(16, Math.min(cw - dw - 16, dl - left));
+    card.style.left = `${Math.round(left)}px`;
+    card.style.top = `${foot - ch}px`;
+    drop.style.left = `${Math.round(inCard)}px`;
+    drop.style.width = `${dw}px`;
+    drop.style.height = `${Math.round(len)}px`;
+    card.style.setProperty('--ox', `${Math.round(inCard + dw / 2)}px`);
+    return true;
   }
 
   function initChatter() {
@@ -507,9 +569,8 @@
         // measures, so a card still easing back from the last hover is not
         // read part way.
         card.style.transition = 'none';
-        card.style.removeProperty('--nudge');
-        card.style.removeProperty('width');
-        card.classList.remove('is-narrow');
+        ['--nudge', 'width', 'left', 'top', '--ox'].forEach(k => card.style.removeProperty(k));
+        card.classList.remove('is-narrow', 'is-above');
         // the margin covers its tilt and the drawing's lean toward the pointer,
         // which is still settling as this measures
         const pad = 24, w = card.offsetWidth;
@@ -525,8 +586,11 @@
           const left = fromRight ? b.right - w : b.left;
           return left < lo ? lo - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
         };
-        // Side by side with the title, it opens toward the other one, in the
-        // room between the two of them, and narrows to fit that room.
+        // Side by side with the title, it is a balloon over his head, the
+        // tail down to his mouth; where the screen is too short for that, it
+        // opens toward the other one, in the room between the two of them,
+        // narrowed to fit it.
+        if (lo !== pad && balloon(fig, card, lo)) { void card.offsetWidth; card.style.removeProperty('transition'); return; }
         if (lo !== pad) {
           card.classList.add('is-flip');
           const other = $(`.fig--${fig.dataset.who === 'bear' ? 'tiger' : 'bear'} .fig__layer`);

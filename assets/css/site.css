@@ -775,7 +775,10 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 @media (hover: hover) { .fig:hover { transform: translateY(-10px); } }
 /* Color sits BEHIND the line art, so the ink stays crisp on top of it. */
 /* Sized by height so the pair always fits the viewport, whatever its shape. */
-.fig__layer { position: relative; isolation: isolate; height: min(clamp(190px, 40vh, 470px), 44vw); }
+/* the drawings' height, set once on the stage so the hint beside their feet
+   can be sized from it too */
+.stage { --fig-h: min(clamp(190px, 40vh, 470px), 44vw); }
+.fig__layer { position: relative; isolation: isolate; height: var(--fig-h); }
 /* The ink stays black in both themes , it is the artist's line, not a UI color. */
 .fig__out {
   position: relative;
@@ -842,25 +845,6 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 .stage.is-pouring .fig__line { opacity: .85; }
 
-.fig__name {
-  --name-w: clamp(90px, 9vw, 130px);
-  position: absolute;
-  /* the script PNG has empty space under the letters; this sets the baseline at the feet */
-  bottom: calc(5% - var(--name-w) * .05);
-  width: var(--name-w);
-  filter: invert(var(--art-invert));
-  opacity: .0;
-  transition: opacity .5s var(--ease), transform .6s var(--ease);
-  pointer-events: none;
-}
-/* beside the feet, facing each other across the ampersand, so the script never
-   sits on the drawing or under the bio card on the outer side. The drawings end
-   around 72% of their image width at the feet, so 76% leaves a small gap; the
-   multipliers cancel the empty margin at the side of each script PNG. */
-.fig--bear  .fig__name { left: calc(76% - var(--name-w) * .137); }
-.fig--tiger .fig__name { right: calc(76% - var(--name-w) * .16); }
-@media (hover: hover) { .fig:hover .fig__name { opacity: .9; transform: translateY(-4px); } }
-
 /* Who they are, on hover. A card in the house print: paper, an ink keyline,
    each one's own color printed off register behind it (his blue, his tiger
    gold), set down at a slight tilt, with a tail toward the drawing it
@@ -916,11 +900,17 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--tiger .fig__tail,
 .fig--bear .fig__card.is-flip .fig__tail { left: auto; right: calc(100% - 2px); scale: -1 1; }
 .fig--tiger .fig__card.is-flip .fig__tail { right: auto; left: calc(100% - 2px); scale: 1 1; }
+/* Side by side with the title, it is a speech balloon over his head with
+   the tail down to his mouth (initChatter places it): the tail that drops
+   from its foot, the one at the side put away. */
+.fig__drop { display: none; position: absolute; top: calc(100% - 2px); left: 0; overflow: visible; pointer-events: none; }
+.fig--tiger .fig__drop { scale: -1 1; }
+.fig__card.is-above { right: auto; transform-origin: var(--ox, 20%) 100%; }
+.fig__card.is-above .fig__tail { display: none; }
+.fig__card.is-above .fig__drop { display: block; }
 /* No room behind him: initChatter puts it in front, tail and all. */
 .fig--bear  .fig__card.is-flip { right: auto; left: calc(100% + .9rem); transform-origin: 0 30%; }
 .fig--tiger .fig__card.is-flip { left: auto; right: calc(100% + .9rem); transform-origin: 100% 30%; }
-/* in front of him it lands where his signature is, so the signature steps out */
-@media (hover: hover) { .fig:hover:has(.fig__card.is-flip) .fig__name { opacity: 0; transform: none; } }
 /* the name, on a chip of the same color; dark type, so it reads at dusk too */
 .fig__card .tag {
   display: inline-flex; align-items: center;
@@ -966,9 +956,21 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .hero__show .fig--bear  { justify-self: start; }
   .hero__show .fig--tiger { justify-self: end; }
   .hero__show { --stage-room: max(14rem, min(16rem, 100cqi - 24rem)); }
-  .hero__show .fig__layer { height: min(58vh, calc((100cqi - var(--stage-room)) / 1.04), 520px); }
+  .hero__show .stage { --fig-h: min(58vh, calc((100cqi - var(--stage-room)) / 1.04), 520px); }
   .hero__show .pour { margin-top: 1.5rem; }
   .hero__show .pour__track { width: min(440px, 100%); }
+}
+/* the room over their heads where a balloon opens, under a pointer and
+   where the screen is tall enough to spare it */
+/* Only as much as the screen does not already leave: the hero is centred,
+   so a tall screen has the room over them for nothing. It is what a balloon
+   about 13rem tall and the bar need, less what the centring leaves, which
+   is the screen less the drawings and the slider, halved. */
+@media (min-width: 640px) and (min-aspect-ratio: 4/3) and (min-height: 620px) and (hover: hover) {
+  .hero__show .stage {
+    --fig-h: min(58vh, 100svh - 23.5rem, calc((100cqi - var(--stage-room)) / 1.04), 520px);
+    padding-top: max(0px, 36rem - 100svh + var(--fig-h));
+  }
 }
 /* the same on a phone on its side: the "&" and the gaps beside it are
    smaller there, and the screen is short, so the air around the words is
@@ -1200,31 +1202,45 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   }
   .fig--bear .fig__say, .fig--tiger .fig__say { left: 50%; right: auto; text-align: center; border-radius: 14px; }
   .fig__say.is-said { transform: translateX(calc(-50% + var(--sx, 0px))); }
-  /* no room beside the figures at this width */
-  .fig__name { display: none; }
   .fig__say::after { bottom: -6px; left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
   .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); right: auto; box-shadow: inset -1px -1px 0 var(--line); }
 }
 
-/* "Poke me" waits until both of them are in color, then shows quietly
-   under each, in the same small caps as before, and the two hop a beat
-   apart a few times over, so the invitation is seen on a phone as well as
-   under a pointer. Poking either one ends the hopping; a poked one's line
-   goes. */
+/* "Poke me!" waits until both of them are in color, then appears beside
+   each one's feet, on the side facing the other, in their own hand and
+   color with a little arrow curling down to them, as if they had scribbled
+   it on the page; and the two hop a beat apart a few times over, so the
+   invitation is seen on a phone as well as under a pointer. Under them it
+   sat on the ends of the slider and read as the slider's own labels. In the
+   drawing's layer, so it stands with him as he hops and drifts, and sized
+   from the drawings. Poking either one ends the hopping; a poked one's
+   note goes. The drawings end about 72% of the way across at the feet. */
 .fig__poke {
-  position: absolute;
-  left: 50%; bottom: -2.2rem;
-  font-size: .6rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  position: absolute; z-index: 3;
+  bottom: 7%;
+  display: inline-flex; align-items: flex-end; gap: .3em;
+  font-family: var(--hand);
+  font-size: clamp(.95rem, calc(var(--fig-h) * .058), 1.6rem);
+  font-weight: 600;
+  line-height: 1;
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(-50%) translateY(6px);
+  transform: translateY(6px);
   transition: opacity .5s var(--ease), transform .6s var(--ease);
   pointer-events: none;
 }
-.stage.was-full .fig__poke { opacity: .85; transform: translateX(-50%); }
+.fig__poke svg { flex: none; width: 1.05em; height: .74em; margin-bottom: .1em; }
+.fig--bear  .fig__poke { left: 78%; color: var(--blue-deep); rotate: -6deg; transform-origin: 0 100%; }
+.fig--tiger .fig__poke { right: 78%; color: var(--brass-ink); rotate: 6deg; transform-origin: 100% 100%; flex-direction: row-reverse; }
+.fig--tiger .fig__poke svg { scale: -1 1; }
+/* a phone: the two of them stand close, so the notes go without arrows */
+@media (max-width: 639px) {
+  .fig__poke { font-size: .9rem; }
+  .fig__poke svg { display: none; }
+  .fig--bear  .fig__poke { left: 80%; }
+  .fig--tiger .fig__poke { right: 80%; }
+}
+.stage.was-full .fig__poke { opacity: 1; transform: none; }
 .fig--tiger .fig__poke { transition-delay: .12s; }
 .fig.was-poked .fig__poke { opacity: 0; transition-delay: 0s; }
 @media (prefers-reduced-motion: no-preference) {
