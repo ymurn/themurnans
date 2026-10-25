@@ -2513,7 +2513,7 @@
             <span class="mem__date">${esc(m.date)}</span>
           </div>
           ${m.tr ? `<span class="mem__from">From the trip: ${esc(m.tr)}</span>` : ''}
-          <p class="mem__text">${esc(m.text)}</p>
+          <p class="mem__text">${esc((on && m.x && m.x[on]) || m.text)}</p>
           <div class="mem__acts">
             <button class="mem__next" type="button" data-next><svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="1.7" y="1.7" width="16.6" height="16.6" rx="4" stroke="currentColor" stroke-width="1.7"/><circle cx="6.6" cy="6.6" r="1.6" fill="currentColor"/><circle cx="13.4" cy="13.4" r="1.6" fill="currentColor"/><circle cx="10" cy="10" r="1.6" fill="currentColor"/></svg>Pull another memory</button>
             <a class="mem__go" href="${esc(m.href)}">Read more in ${esc(m.year)} &rarr;</a>

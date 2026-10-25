@@ -419,6 +419,21 @@ const push = m => {
   });
   if (!m.st.length) return;
   m.t = titlesByState(m.place, m.short, m.st, stopsOf(m.pics));
+  // A trip that crossed a line opens, under each state, on what David wrote
+  // about that state's half, when he wrote something: the Christmas trip,
+  // under Florida, on the drive down to Clearwater Beach rather than on
+  // Christmas in Cincinnati. Word for word, as ever.
+  if (m.st.length > 1 && m.full) {
+    const said = [].concat(m.full).join(' ').split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
+    m.x = {};
+    m.st.forEach(c => {
+      const names = String(m.t[c] || m.short).split(/\s*&\s*/).map(n => n.toLowerCase());
+      const hit = said.filter(x => names.some(n => x.toLowerCase().includes(n)));
+      const text = hit.length ? blurb(hit.join(' ')) : '';
+      if (text && text !== m.text) m.x[c] = text;
+    });
+  }
+  delete m.full;
   items.push(m);
 };
 
@@ -437,6 +452,7 @@ MW.timeline.forEach((c, i) => {
     year: c.year,
     text: blurb(c.text),
     href: `story.html#chap-${i + 1}`,
+    full: c.text,
     pics: (c.photos || []).map(p => ({ src: `photos/${p}`, home })),
   });
 });
@@ -508,6 +524,8 @@ const PLACE = {
   'Providence Canyon': ['Providence Canyon State Park, GA', 'GA', /providence canyon/i],
   'Northern Virginia': ['Northern Virginia', 'VA', /virginia/i],
   'The Everglades': ['Everglades National Park, FL', 'FL', /everglades|flamingo/i],
+  'Tampa & Clearwater': ['Tampa & Clearwater, FL', 'FL', /de soto|skyline|lakewood|clearwater/i],
+  'St. Augustine': ['St. Augustine, FL', 'FL', /st\. augustine|flagler/i],
   'Big Cypress': ['Big Cypress National Preserve, FL', 'FL', /big cypress/i],
 };
 const sentences = text => [].concat(text).join(' ').split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
@@ -576,6 +594,7 @@ YEARS.forEach(({ year }) => {
         text: blurb(d.text),
         // the same id year.js gives the day: two halves of one day are -1 and -2
         href: `${year}.html#day-${d.day}${d.part ? `-${String(d.part).replace(/\D/g, '')}` : ''}`,
+        full: d.text,
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
       });
     });
@@ -593,6 +612,7 @@ YEARS.forEach(({ year }) => {
         year,
         text: blurb(t.text),
         href: `${year}.html#${MONTHS[m.month - 1].toLowerCase()}`,
+        full: t.text,
         pics: pics.map(p => ({ src: p.src, cap: p.cap, pos: p.pos })),
       });
     });
@@ -621,7 +641,7 @@ const body = items.map(m => {
   // there is nothing to say.
   const pics = m.pics.map(p => `{"u":${j(url(p.src))}${p.cap ? `,"c":${j(p.cap)}` : ''}${p.pos ? `,"p":${j(p.pos)}` : ''}${p.st ? `,"s":${j(p.st)}` : ''}}`);
   const t = Object.keys(m.t).length ? `"t":${j(m.t)},` : '';
-  const tr = m.tr ? `"tr":${j(m.tr)},` : '';
+  const tr = (m.tr ? `"tr":${j(m.tr)},` : '') + (m.x && Object.keys(m.x).length ? `"x":${j(m.x)},` : '');
   return `  {"st":${j(m.st)},"place":${j(m.place)},"short":${j(m.short)},"date":${j(m.date)},"year":${j(m.year)},"href":${j(m.href)},${t}\n   ${tr}"text":${j(m.text)},\n   "pics":[${pics.join(',')}]}`;
 }).join(',\n');
 
