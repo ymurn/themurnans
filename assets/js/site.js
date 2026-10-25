@@ -525,6 +525,22 @@
           const left = fromRight ? b.right - w : b.left;
           return left < lo ? lo - left : left + w > innerWidth - pad ? innerWidth - pad - (left + w) : 0;
         };
+        // Side by side with the title, it opens toward the other one, in the
+        // room between the two of them, and narrows to fit that room.
+        if (lo !== pad) {
+          card.classList.add('is-flip');
+          const other = $(`.fig--${fig.dataset.who === 'bear' ? 'tiger' : 'bear'} .fig__layer`);
+          const o = other.getBoundingClientRect(), b = card.getBoundingClientRect();
+          const room = Math.floor(fig.dataset.who === 'bear' ? o.left - 8 - b.left : b.right - (o.right + 8));
+          if (room < w) {
+            card.style.width = `${Math.max(150, room)}px`;
+            card.classList.toggle('is-narrow', room < 196);
+          }
+          reachTail(fig, card, 0);
+          void card.offsetWidth;
+          card.style.removeProperty('transition');
+          return;
+        }
         card.classList.remove('is-flip');
         let shift = overhang();
         // a little short of room behind him: it narrows to fit there first

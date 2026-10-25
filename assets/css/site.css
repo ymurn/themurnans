@@ -916,10 +916,6 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig--tiger .fig__tail,
 .fig--bear .fig__card.is-flip .fig__tail { left: auto; right: calc(100% - 2px); scale: -1 1; }
 .fig--tiger .fig__card.is-flip .fig__tail { right: auto; left: calc(100% - 2px); scale: 1 1; }
-.fig--bear  { --echo: var(--blue); }
-.fig--tiger { --echo: var(--gold); }
-.fig__out { transition: filter .45s var(--ease); }
-@media (hover: hover) { .fig:hover .fig__out { filter: drop-shadow(4px 4px 0 color-mix(in srgb, var(--echo) 70%, transparent)); } }
 /* No room behind him: initChatter puts it in front, tail and all. */
 .fig--bear  .fig__card.is-flip { right: auto; left: calc(100% + .9rem); transform-origin: 0 30%; }
 .fig--tiger .fig__card.is-flip { left: auto; right: calc(100% + .9rem); transform-origin: 100% 30%; }
@@ -962,7 +958,14 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .hero__sub .lede { max-width: 46ch; }
   /* two drawings about half as wide as they are tall, the "&" and the gaps
      between them: as tall as fits across the column, and the screen */
-  .hero__show { --stage-room: 12rem; }
+  /* The two stand at the column's edges with the "&" between them, and the
+     room between them is where a bio card opens, toward the other one and
+     never over him (initChatter). Beside the title there is nowhere else
+     for it: behind him it would sit on the words. */
+  .hero__show .stage { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .hero__show .fig--bear  { justify-self: start; }
+  .hero__show .fig--tiger { justify-self: end; }
+  .hero__show { --stage-room: max(14rem, min(16rem, 100cqi - 24rem)); }
   .hero__show .fig__layer { height: min(58vh, calc((100cqi - var(--stage-room)) / 1.04), 520px); }
   .hero__show .pour { margin-top: 1.5rem; }
   .hero__show .pour__track { width: min(440px, 100%); }
