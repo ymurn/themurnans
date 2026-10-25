@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@400..700&family=Space+Grotesk:wght@300..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=78">
+<link rel="stylesheet" href="assets/css/site.css?v=79">
 <link rel="stylesheet" href="assets/css/home-motion.css?v=2">
 <link rel="stylesheet" href="assets/css/motion.css?v=3">
 <!-- Seen the curtain already this visit (add ?intro to see it again), or no script to lift it: skip it before the first paint -->
@@ -44,6 +44,9 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
   })(window, document, "clarity", "script", "yo5bawkopu");
 }
 </script>
+<!-- Hold the first paint until the scripts at the foot have built the
+     page, so it arrives whole instead of in pieces -->
+<link rel="expect" href="#built" blocking="render">
 </head>
 <body data-page="home">
 
@@ -553,5 +556,6 @@ if (/(^|\.)themurnans\.com$/.test(location.hostname)) {
 <script src="assets/js/home-motion.js?v=2"></script>
 <script src="assets/js/motion.js?v=2"></script>
 <script src="assets/js/site.js?v=51"></script>
+<i id="built" hidden></i>
 </body>
 </html>

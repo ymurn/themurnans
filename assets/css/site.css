@@ -3885,13 +3885,22 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 .theme-swap::view-transition-old(root),
 .theme-swap::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
-/* Page to page: the next page fades in over the last one, held still
-   underneath so the paper never dips or brightens on the way. Browsers
-   without cross-document view transitions just load the page as before. */
+/* Page to page: the last page clears quickly and the next one fades up
+   onto the same paper, the two barely overlapping. Held still underneath,
+   the last page showed through the next one, an open menu most of all.
+   Browsers without cross-document view transitions just load the page. */
 @view-transition { navigation: auto; }
-::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
-::view-transition-new(root) { animation: page-in .38s var(--ease-soft) both; mix-blend-mode: normal; }
+::view-transition-old(root) { animation: page-out .14s ease-in both; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: page-in .32s var(--ease-soft) .06s both; mix-blend-mode: normal; }
+@keyframes page-out { to { opacity: 0; } }
 @keyframes page-in { from { opacity: 0; } }
+/* A title is split into words by script. Until it is, it stays out of
+   sight, or a slow phone paints the plain title and then takes it away to
+   play it in. If the script never comes, the title shows anyway. */
+@media (scripting: enabled) {
+  [data-split]:not([data-split="done"]) { opacity: 0; animation: split-wait 0s 2.5s forwards; }
+}
+@keyframes split-wait { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
 .theme-swap *:not(.theme-toggle__knob),
 .theme-swap *::before,

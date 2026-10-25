@@ -45,6 +45,18 @@
      marked "us": true in the trip's file is one of the pair; a quarter with
      none of them deals from everything it has, as before. */
 
+  /* The deal is fresh for each visit, not each page load: back on this
+     page from another one, the same photos are already on the phone and
+     arrive at once instead of downloading six new ones. */
+  const roll = (() => {
+    let seed = 0;
+    try { seed = +sessionStorage.getItem('murnan-deal') || 0; } catch (e) {}
+    if (!seed) {
+      seed = 1 + Math.floor(Math.random() * 2147483645);
+      try { sessionStorage.setItem('murnan-deal', seed); } catch (e) {}
+    }
+    return () => (seed = seed * 16807 % 2147483647) / 2147483647;
+  })();
   function deal(n = 4) {
     const pool = stops.flatMap(s => (s.photos || []).filter(p => p.src && p.pick !== false));
     if (!pool.length) return [];
@@ -55,7 +67,7 @@
       const slice = pool.slice(a, b);
       const us = slice.filter(p => p.us);
       const from = us.length ? us : slice;
-      out.push(from[Math.floor(Math.random() * from.length)]);
+      out.push(from[Math.floor(roll() * from.length)]);
     }
     return out;
   }
@@ -76,7 +88,7 @@
         <figure class="shot tgal__pic" data-shot data-src="${esc(pic(p))}" data-cap="${esc(p.cap || T.title)}"
                 tabindex="0" role="button" aria-label="Enlarge: ${esc(p.cap || T.title)}"
                 style="--tilt:${TILT[i % TILT.length]}deg;--off:var(${WASH[i % WASH.length]});--d:${80 + i * 90}ms">
-          <img src="${esc(pic(p))}" alt="${esc(p.cap || T.title)}"${p.pos ? ` style="object-position:${esc(p.pos)}"` : ''} loading="eager" decoding="async">
+          <img src="${esc(pic(p))}" alt="${esc(p.cap || T.title)}"${p.pos ? ` style="object-position:${esc(p.pos)}"` : ''} loading="eager" fetchpriority="high" decoding="async">
         </figure>`).join('')}</div>`;
   }
 

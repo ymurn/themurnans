@@ -29,8 +29,8 @@ html[data-intro-kind="trip"]:not(.intro-go) .tgal__pic { opacity: 0; }
 
 /* ── The title's words come out of a soft blur, one after another ─────── */
 .rv-w { display: inline-block; }
-html[data-intro]:not(.intro-go) .rv-w { opacity: 0; }
-html.intro-go[data-intro] .rv-w { animation: rv-sharpen 1s calc(var(--rv-base, .05s) + var(--k, 0) * .08s) backwards var(--rv-out); }
+html[data-intro]:not(.intro-words) .rv-w { opacity: 0; }
+html.intro-words[data-intro] .rv-w { animation: rv-sharpen 1s calc(var(--rv-base, .05s) + var(--k, 0) * .08s) backwards var(--rv-out); }
 @keyframes rv-sharpen { from { opacity: 0; filter: blur(12px); translate: 0 .18em; } }
 
 /* the color behind a print, printed a beat after the print: shared */
@@ -50,6 +50,8 @@ html.intro-go[data-intro] .rv-w { animation: rv-sharpen 1s calc(var(--rv-base, .
 .rv-odo__w { visibility: hidden; }
 .rv-odo__strip { position: absolute; left: 50%; top: 0; display: block; translate: -50% calc(var(--n) * -1.04em); text-align: center; }
 .rv-odo__strip > span { display: block; height: 1.04em; }
+/* waiting to start, the wheels already show where they start from */
+html[data-intro="odometer"]:not(.intro-go) .rv-odo__strip { translate: -50% 0; }
 html.intro-go[data-intro="odometer"] .rv-odo__strip {
   animation: rv-roll calc(.9s + var(--k) * .18s) calc(.1s + var(--k) * .08s) backwards;
   animation-timing-function: var(--rv-settle);

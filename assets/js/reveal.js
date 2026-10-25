@@ -351,5 +351,12 @@
       setTimeout(() => root.classList.add('intro-done'), 6000);
     }, 40);
   };
-  Promise.race([Promise.all([loaded, document.fonts ? document.fonts.ready : 0]), wait(1600)]).then(start);
+  /* The title does not wait for the photographs: its words start as soon
+     as the type has arrived, so the page never sits there without its
+     name. The odometer is all type, and its card arrives face down, so it
+     goes then too. */
+  const typed = Promise.race([document.fonts ? document.fonts.ready : 0, wait(350)]);
+  typed.then(() => root.classList.add('intro-words'));
+  if (want === 'odometer') typed.then(start);
+  else Promise.race([Promise.all([loaded, typed]), wait(1600)]).then(start);
 })();
