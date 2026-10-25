@@ -239,7 +239,10 @@ window.MW_TRIP = {
    ],
    "photos": [
     { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-01.jpg", "cap": "Donner Lake from the pass" },
-    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-02.jpg", "cap": "At the lake that evening", "us": true }
+    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-14.jpg", "cap": "Rainbow Bridge, over the old road up the pass" },
+    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-02.jpg", "cap": "At the lake that evening", "us": true },
+    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-15.jpg", "cap": "A pine over the north shore" },
+    { "src": "continued_trips/2026-06-lake-tahoe/2026-06-lake-tahoe-13.jpg", "cap": "Still water off the north shore" }
    ]
   },
   {

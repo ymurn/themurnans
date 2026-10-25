@@ -169,9 +169,12 @@ window.MW_TRIP = {
     "We visited the visitor center and drove to the Elephant Hill Trailhead. We proceeded to hike for 13 miles. Many of the views were awesome! Needles are the spires into the sky and they were quite nice! We hiked through the Devil’s Kitchen and after a while along a 4x4 road we made it to the Notch Trail. Along that trail, we hiked through an extremely narrow slot canyon (presumably the Notch) before continuing back to our car."
    ],
    "photos": [
+    { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-08.jpg", "cap": "The Needles from the trailhead" },
     { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-05.jpg", "cap": "Up to a small arch" },
     { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-06.jpg", "cap": "Out on the slickrock" },
-    { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-07.jpg", "cap": "The spires the Needles is named for" }
+    { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-09.jpg", "cap": "Up close with the spires" },
+    { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-07.jpg", "cap": "The spires the Needles is named for" },
+    { "src": "continued_trips/2025-04-canyonlands/2025-04-canyonlands-10.jpg", "cap": "Through the slot of the Notch" }
    ]
   },
   {
@@ -186,9 +189,12 @@ window.MW_TRIP = {
     "Double Arch, Sand Dune Arch and Tapestry Arches did not disappoint. But it’s not just arches! There’s awesome views too! Panorama point was lovely, and the area around Courthouse Towers was a sight to see. We saw into the Fiery Furnace but sadly didn’t get a good permit to hike it. Next time, perhaps!"
    ],
    "photos": [
-    { "src": "continued_trips/2025-04-arches/2025-04-arches-02.jpg", "cap": "Out from under the span" },
-    { "src": "continued_trips/2025-04-arches/2025-04-arches-05.jpg", "cap": "Out of the car and onto the rock" },
-    { "src": "continued_trips/2025-04-arches/2025-04-arches-06.jpg", "cap": "Between the fins" }
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-01.jpg", "cap": "The two of us at Delicate Arch" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-08.jpg", "cap": "Courthouse Towers" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-11.jpg", "cap": "Balanced Rock" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-12.jpg", "cap": "Double Arch" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-13.jpg", "cap": "One more window in the rock" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-07.jpg", "cap": "Under one of the big ones" }
    ]
   },
   {
@@ -204,10 +210,12 @@ window.MW_TRIP = {
     "It is truly an amazing arch and absolutely worth the hike to get up close with the arch! We hiked to so many other arches such as the Window Arch as well and so many nice views. Everything was amazing and Arches truly is a gem. It’s absolutely worth a visit!"
    ],
    "photos": [
-    { "src": "continued_trips/2025-04-arches/2025-04-arches-01.jpg", "cap": "Delicate Arch" },
     { "src": "continued_trips/2025-04-arches/2025-04-arches-03.jpg", "cap": "The trail under Landscape Arch" },
     { "src": "continued_trips/2025-04-arches/2025-04-arches-04.jpg", "cap": "Out along the trail" },
-    { "src": "continued_trips/2025-04-arches/2025-04-arches-07.jpg", "cap": "Under one of the big ones" }
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-05.jpg", "cap": "Down the slickrock, carefully" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-06.jpg", "cap": "Between the fins" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-09.jpg", "cap": "Double O Arch" },
+    { "src": "continued_trips/2025-04-arches/2025-04-arches-10.jpg", "cap": "Along the top of a fin" }
    ]
   },
   {
@@ -275,8 +283,11 @@ window.MW_TRIP = {
     "We also were lucky enough to get a parking spot at the Canyon Overlook Trail and we hiked the trail to an amazing view of Zion Canyon! So, you may be wondering which trail the front desk lady said we had to do. Well, let's just say we needed to rent some gear for this amazing hike that we will discuss in the next post!"
    ],
    "photos": [
-    { "src": "continued_trips/2025-04-zion/2025-04-zion-15.jpg", "cap": "Above the canyon" },
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-17.jpg", "cap": "The Virgin River down the canyon" },
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-18.jpg", "cap": "The falls at the Emerald Pools" },
     { "src": "continued_trips/2025-04-zion/2025-04-zion-01.jpg", "cap": "Dinner after a long day" },
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-15.jpg", "cap": "Above the canyon" },
+    { "src": "continued_trips/2025-04-zion/2025-04-zion-19.jpg", "cap": "The view from the West Rim" },
     { "src": "continued_trips/2025-04-zion/2025-04-zion-16.jpg", "cap": "On the red rock" }
    ]
   },
