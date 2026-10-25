@@ -633,7 +633,7 @@
       // be read part way back from its last line's slide.
       const fit = () => {
         say.style.transition = 'none';
-        ['--sx', 'width', 'top', 'left', 'right'].forEach(k => say.style.removeProperty(k));
+        ['--sx', 'width', 'max-width', 'top', 'left', 'right'].forEach(k => say.style.removeProperty(k));
         // Side by side with the title it opens toward the other one: as wide
         // as the room between them, and with its point at his mouth.
         const show = fig.closest('.hero__show');
@@ -649,7 +649,8 @@
           say.style[bear ? 'left' : 'right'] = `${off}px`;
           const from = bear ? L.left + off : L.right - off;
           const room = bear ? other.left - 8 - from : from - (other.right + 8);
-          say.style.width = `${Math.round(Math.max(104, Math.min(260, room)))}px`;
+          // as wide as its words, up to the room between them
+          say.style.maxWidth = `${Math.round(Math.max(104, Math.min(260, room)))}px`;
           // a narrow room: the same words, a size smaller, so the lines stay a readable length
           say.classList.toggle('is-tight', room < 150);
           // the tail's tip is 28px down the bubble: set it level with his mouth
