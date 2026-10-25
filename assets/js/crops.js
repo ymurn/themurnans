@@ -117,7 +117,6 @@ window.MW_CROPS = {
   "photos/21041802.jpg": "50% 36%",
   "photos/21050901.jpg": "50% 43%",
   "photos/21050903.jpg": "50% 46%",
-  "photos/21052602.jpg": "50% 40%",
   "photos/21061002.jpg": "50% 40%",
   "photos/21062601.jpg": "50% 53%",
   "photos/21091801.jpg": "50% 33%",
