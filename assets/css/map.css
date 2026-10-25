@@ -362,58 +362,6 @@ body {
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
   .moon.is-min .mapfold__chev, .ymap.is-min .mapfold__chev { rotate: 180deg; }
-  /* ── A band that folds itself (David's 40th) ─────────────────────────
-     It folds and opens as the reader moves through the stops, so the move
-     has to feel like one object changing shape, not a box being resized:
-     one curve for the whole morph (Apple's sheet curve, quick to start and
-     long to settle, no overshoot), the paper darkening into the pill's ink
-     under the words as it closes, and the words recoloring with it rather
-     than snapping. The map itself goes first when it closes and comes back
-     last when it opens, already showing the new stop. */
-  .moon.is-autofold {
-    --morph: .62s cubic-bezier(.32, .72, 0, 1);
-    /* the strip under the map: the stop's name and the two buttons */
-    --foot-h: 44px;
-  }
-  /* Opening: the pill lightens to paper first, then grows into the band.
-     A width to start from, so it narrows into the pill rather than snapping
-     to the pill's width in a frame. */
-  .moon.is-autofold .routemap { width: 100%; margin-inline: auto; }   /* centred the whole way, open or closed */
-  .moon.is-autofold .routemap {
-    transition: height var(--morph), width var(--morph), margin var(--morph), border-radius var(--morph),
-                background-color .12s var(--ease-soft), box-shadow .5s var(--ease-soft);
-  }
-  /* Folding: the band closes up in paper and darkens into the pill's ink
-     only as it arrives, so it is never a muddy shade of either in between.
-     The corners round to the pill's own radius, not to a circle, which
-     made a big soft blob of the band half way. */
-  .moon.is-autofold.is-min .routemap {
-    width: min(76%, 320px);
-    border-radius: 21px;
-    transition: height var(--morph), width var(--morph), margin var(--morph), border-radius var(--morph),
-                background-color .26s var(--ease-soft) .3s, box-shadow .5s var(--ease-soft) .2s;
-  }
-  .moon.is-autofold .routemap__day, .moon.is-autofold .routemap__title { transition: color .2s var(--ease-soft); }
-  .moon.is-autofold.is-min .routemap__day, .moon.is-autofold.is-min .routemap__title { transition: color .26s var(--ease-soft) .3s; }
-  /* The map is drawn at the band's full size the whole time and only cropped
-     as the band closes over it: it never collapses in a frame, leaving a
-     blank band, and it is never redrawn at an in-between size, which is the
-     costly part. It fades as it goes, and comes back already showing the
-     new stop, a beat after the band starts to open. */
-  .moon.is-autofold .routemap__view { flex: 1 1 auto; transition: opacity .3s var(--ease-soft) .16s; }
-  .moon.is-autofold .routemap__view svg { bottom: auto; height: calc(var(--band-h) - var(--foot-h)); }
-  .moon.is-autofold.is-min .routemap__view { flex: 1 1 0; opacity: 0; transition: opacity .2s var(--ease-soft); }
-  .moon.is-autofold.is-opening .routemap__view { opacity: 1; transition: opacity .3s var(--ease-soft) .16s; }
-  /* The fold is a small round chevron here, an override for the reader who
-     wants it, not a written-out button beside the stop's name. */
-  .mapfold__btn--quiet { width: 32px; min-height: 32px; height: 32px; padding: 0; justify-content: center; border-width: 1px; border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
-  .mapfold__btn--quiet .mapfold__word { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .moon.is-min .mapfold__btn--quiet { width: auto; height: auto; justify-content: flex-end; padding: 0 1.1rem; }
-  /* In the pill the button is the whole pill, a clear tap target: it goes
-     clear at once, or for a moment it is a paper oval over the closing map */
-  .moon.is-autofold.is-min .mapfold__btn { transition: none; }
-  .moon.is-autofold.is-min .mapfold__chev { transition: rotate .45s var(--ease) .2s; }
-
   /* a day or a month reached from the bar lands under the pill, not under a
      band that is no longer there */
   .moon.is-min .chap, .ymap.is-min .chap { scroll-margin-top: calc(var(--nav-h) + var(--ybar-h, 3.2rem) + 4.5rem); }
@@ -478,10 +426,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .routemap__leg, .mapfold__chev { transition: none; }
   .routemap, .yearmap { transition: none; }
-  /* the band that folds itself still folds, but in a cut, not a morph */
-  .moon.is-autofold .routemap, .moon.is-autofold.is-min .routemap,
-  .moon.is-autofold .routemap__view, .moon.is-autofold.is-min .routemap__view,
-  .moon.is-autofold .routemap__day, .moon.is-autofold .routemap__title { transition: none; }
 }
 
 

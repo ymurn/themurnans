@@ -302,9 +302,7 @@
       aria: m.aria || `Map of ${T.title}`,
       whole: m.whole || 'Whole trip',
       sheet: m.sheet || { k: T.kicker, title: T.title },
-      event: 'trip:chapter',
-      // the band folds itself while a stop is read: on trial here first
-      autofold: T.key === 'davids-40th'
+      event: 'trip:chapter'
     });
   }
 

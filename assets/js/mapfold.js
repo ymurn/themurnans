@@ -18,13 +18,7 @@
      view    the box the svg sits in
      foot    the strip under the map
      whole   the button that opens the whole map, which the corner one reuses
-     onFold  told true when the map folds away and false when it opens, and
-             whether a hand did it (the map folding itself is told false)
-     quiet   the fold as a small round chevron, not a written-out button, for
-             a band that folds itself (David's 40th) and needs it only as an
-             override
-
-   It hands back { min, set(min) }: set folds or opens it from script.
+     onFold  told true when the map folds away and false when it opens
    ========================================================================== */
 
 window.MW_MAPFOLD = function mapfold(o) {
@@ -61,20 +55,17 @@ window.MW_MAPFOLD = function mapfold(o) {
   fold.setAttribute('aria-expanded', 'true');
   fold.setAttribute('aria-controls', view.id);
   fold.innerHTML = `<span class="mapfold__word">Minimize</span>${CHEV}`;
-  if (o.quiet) { fold.classList.add('mapfold__btn--quiet'); fold.setAttribute('aria-label', 'Minimize the map'); }
   foot.appendChild(fold);
 
   const out = { min: false };
-  const told = (min, hand) => { if (o.onFold) o.onFold(min, hand); };
+  const told = min => { if (o.onFold) o.onFold(min); };
 
-  const set = (min, hand) => {
-    if (min === out.min) return;
-    out.min = min;
+  fold.addEventListener('click', () => {
+    out.min = !out.min;
     wrap.classList.toggle('is-min', out.min);
     fold.setAttribute('aria-expanded', String(!out.min));
     fold.querySelector('.mapfold__word').textContent = out.min ? 'Open the map' : 'Minimize';
-    if (o.quiet) fold.setAttribute('aria-label', out.min ? 'Open the map' : 'Minimize the map');
-    told(out.min, hand);
+    told(out.min);
     if (out.min) { wrap.classList.remove('is-opening'); return; }
 
     /* Opening: the map is drawn to the size of the box it sits in, and for
@@ -102,8 +93,6 @@ window.MW_MAPFOLD = function mapfold(o) {
     const onEnd = e => { if (e.target === host && e.propertyName === 'height') settled(); };
     const timer = setTimeout(settled, 700);
     host.addEventListener('transitionend', onEnd);
-  };
-  fold.addEventListener('click', () => set(!out.min, true));
-  out.set = min => set(min, false);
+  });
   return out;
 };
