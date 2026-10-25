@@ -13,7 +13,7 @@ window.MW_YEAR = {
 
  "facts": [
   { "k": "States", "v": "15", "s": "Plus one province and one federal district." },
-  { "k": "National parks", "v": "9", "s": "From Joshua Tree in the west to Shenandoah in the east." },
+  { "k": "National parks", "v": "9", "s": "From Joshua Tree to Shenandoah." },
   { "k": "Cities", "v": "45+", "s": "And a lot of breweries in between." },
   { "k": "Months with a trip", "v": "12 of 12", "s": "Somewhere new every single month." }
  ],

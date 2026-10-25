@@ -19,8 +19,8 @@ window.MW_YEAR = {
   "intro": "We got married on a Saturday and meant to fly out the next day. The flight got canceled, so we left on Monday instead. David wrote a post for every day of the trip, and they are all here as he wrote them.",
   "facts": [
    { "k": "Days on the road", "v": "15", "s": "Sacramento on August 8, Seattle on August 22." },
-   { "k": "States", "v": "3", "s": "California, Oregon and Washington, with the ocean in all three." },
-   { "k": "National parks", "v": "6", "s": "Lassen Volcanic, Redwood, Crater Lake, Mount Rainier, North Cascades and Olympic." },
+   { "k": "States", "v": "3", "s": "Up the West Coast." },
+   { "k": "National parks", "v": "6", "s": "From Lassen up to Olympic." },
    { "k": "Firsts", "v": "In-N-Out", "s": "Our first stop after landing in Sacramento." }
   ],
 

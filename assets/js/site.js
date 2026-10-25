@@ -3288,35 +3288,43 @@
     const rows = $$('.facts');
     if (!rows.length) return;
     const MAX = 48, MIN = 20, SHARE = .141, range = document.createRange();
-    const fit = () => rows.forEach(row => {
-      const vals = $$('.fact__v', row);
-      if (!vals.length) return;
-      row.classList.remove('is-fit');
+    const lines = el => Math.round(el.getBoundingClientRect().height / (parseFloat(getComputedStyle(el).lineHeight) || 20));
+    // the value as the card shows it in the end: the counters change the text
+    const width = v => {
+      const count = v.querySelector('[data-count]');
+      const was = count && count.textContent;
+      if (count) count.textContent = count.dataset.count + (count.dataset.suffix || '');
+      range.selectNodeContents(v);
+      const w = range.getBoundingClientRect().width;
+      if (count) count.textContent = was;
+      return w;
+    };
+    const inner = el => { const cs = getComputedStyle(el); return el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); };
+    // One size for the row's values, from its longest, up to the share of its
+    // card a value takes on a phone held sideways, the proportion that reads
+    // right. True when every value then sits on one line and every line under
+    // one is at most two lines.
+    const size = (row, vals, notes) => {
       row.style.setProperty('--fact-v', `${MAX}px`);
       row.classList.add('is-fit');
-      // each value's width on one line at the largest size, against the
-      // room in its own card; the counters change the text, so measure the
-      // value it lands on, which is what the card shows in the end
       let k = 1;
-      vals.forEach(v => {
-        const count = v.querySelector('[data-count]');
-        const was = count && count.textContent;
-        if (count) count.textContent = count.dataset.count + (count.dataset.suffix || '');
-        range.selectNodeContents(v);
-        const need = range.getBoundingClientRect().width;
-        if (count) count.textContent = was;
-        const room = v.parentElement.clientWidth
-          - parseFloat(getComputedStyle(v.parentElement).paddingLeft)
-          - parseFloat(getComputedStyle(v.parentElement).paddingRight);
-        if (need > room) k = Math.min(k, room / need);
-      });
-      // and never more than the share of its card a number takes on a phone
-      // held sideways, the proportion that reads right: a fixed 48px came out
-      // too big in a phone's single column and a desktop's narrow cards
-      const card = vals[0].parentElement, cs = getComputedStyle(card);
-      const inner = card.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      const size = Math.min(MAX * k * 0.98, inner * SHARE);
-      row.style.setProperty('--fact-v', `${Math.max(MIN, Math.floor(size))}px`);
+      vals.forEach(v => { const need = width(v), room = inner(v.parentElement); if (need > room) k = Math.min(k, room / need); });
+      const px = Math.floor(Math.min(MAX * k * .98, inner(vals[0].parentElement) * SHARE));
+      row.style.setProperty('--fact-v', `${Math.max(MIN, px)}px`);
+      return px >= MIN && notes.every(n => lines(n) <= 2);
+    };
+    /* The cards go as many to a row as their own stylesheet gives them, then
+       two by two, then one to a row: the first that fits. */
+    const fit = () => rows.forEach(row => {
+      const vals = $$('.fact__v', row), notes = $$('.fact__s', row);
+      if (!vals.length) return;
+      row.style.removeProperty('grid-template-columns');
+      const most = getComputedStyle(row).gridTemplateColumns.split(' ').filter(c => parseFloat(c) > 0).length;
+      const tries = [...new Set([Math.min(most, vals.length), 2, 1])].filter(c => c <= most);
+      for (const c of tries) {
+        if (c !== tries[0]) row.style.gridTemplateColumns = `repeat(${c}, minmax(0, 1fr))`;
+        if (size(row, vals, notes)) break;
+      }
     });
     fit();
     addEventListener('resize', perFrame(fit));

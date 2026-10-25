@@ -12,9 +12,9 @@ window.MW_YEAR = {
  "from": 1,
 
  "facts": [
-  { "k": "Utah's Mighty Five", "v": "5 of 5", "s": "Arches, Canyonlands, Capitol Reef, Bryce Canyon and Zion, all on one trip." },
+  { "k": "Utah's Mighty Five", "v": "5 of 5", "s": "All five of Utah’s, on one trip." },
   { "k": "Months with a trip", "v": "12 of 12", "s": "A trip in every month of the year." },
-  { "k": "Big birthdays", "v": "2", "s": "David's 40th at the Grand Canyon, and Yinja's last in his twenties in Austin." },
+  { "k": "Big birthdays", "v": "2", "s": "David’s 40th, Yinja’s 29th." },
   { "k": "Buc-ee's stops", "v": "3", "s": "Still the brisket sandwich." }
  ],
 
