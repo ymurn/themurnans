@@ -4180,6 +4180,12 @@ body.menu-open .totop { opacity: 0; visibility: hidden; }
 [data-theme="dusk"] .memories .squiggle { color: #3DAF84; }
 
 .mem { position: relative; display: grid; gap: clamp(1.25rem, 3vw, 2.25rem); }
+/* One column the width of the page, and never more. Left to size itself it
+   took the widest thing in it, and on an iPhone the map's smallest width came
+   out a few pixels over: the whole section grew, and its right margin was
+   half its left. */
+.mem, .mem__panel { grid-template-columns: minmax(0, 1fr); }
+.mem__mapcol, .mem__map { min-width: 0; }
 /* overflow-x: hidden on <body> turns it into a scroll container, and a sticky
    child of a scroll container that never scrolls never sticks. "clip" clips
    the same way without making one, which is what lets the map hold its place.
