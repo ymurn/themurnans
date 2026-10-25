@@ -1224,19 +1224,44 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 .fig__say.is-said { opacity: 1; visibility: visible; transform: translateX(var(--sx, 0px)); }
 .fig.is-talking .fig__card { opacity: 0 !important; }
 
+/* A phone held upright: over his head, as wide as its words, and drawn
+   like the bubble beside his head on a wider screen: one rounded shape with
+   its tail, the outline and the shadow round the two of them together, and
+   the same curved tail, turned to drop to him from the middle of its foot
+   (slid along with the bubble, so it still points at him when the bubble
+   moves to stay on the screen). */
 @media (max-width: 860px) {
   .fig__say {
     left: 50%; right: auto;
-    top: auto; bottom: calc(100% + .6rem);
-    width: min(62vw, 260px);
+    /* the tail's tip a breath over his hair; and no paragraph margin, which
+       on a box set by its foot lifted it another 22px off his head */
+    top: auto; bottom: calc(100% + 1rem); margin: 0;
+    width: max-content; max-width: min(64vw, 260px);
+    padding: .75rem 1.05rem;
+    font-size: 1.25rem;
     text-align: center;
     transform: translateX(calc(-50% + var(--sx, 0px))) translateY(8px) scale(.95);
-    border-radius: 14px;
+    --say-line: color-mix(in srgb, var(--ink) 16%, var(--paper));
+    --say-drop: color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 16px;
+    box-shadow: none;
+    filter: drop-shadow(1px 0 0 var(--say-line)) drop-shadow(-1px 0 0 var(--say-line))
+            drop-shadow(0 1px 0 var(--say-line)) drop-shadow(0 -1px 0 var(--say-line))
+            drop-shadow(0 8px 18px var(--say-drop));
   }
-  .fig--bear .fig__say, .fig--tiger .fig__say { left: 50%; right: auto; text-align: center; border-radius: 14px; }
+  [data-theme="dusk"] .fig__say { --say-line: color-mix(in srgb, var(--ink) 18%, var(--paper)); --say-drop: #0008; }
+  .fig--bear .fig__say, .fig--tiger .fig__say { left: 50%; right: auto; text-align: center; border-radius: 16px; }
   .fig__say.is-said { transform: translateX(calc(-50% + var(--sx, 0px))); }
-  .fig__say::after { bottom: -6px; left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); margin-left: -6px; right: auto; box-shadow: inset -1px -1px 0 var(--line); }
-  .fig--bear .fig__say::after, .fig--tiger .fig__say::after { left: clamp(18px, calc(50% - var(--sx, 0px)), calc(100% - 18px)); right: auto; box-shadow: inset -1px -1px 0 var(--line); }
+  .fig__say::after, .fig--bear .fig__say::after, .fig--tiger .fig__say::after {
+    top: calc(100% - 2px); bottom: auto; right: auto;
+    left: clamp(22px, calc(50% - var(--sx, 0px)), calc(100% - 22px)); margin-left: -9px;
+    width: 20px; height: 16px;
+    background: var(--paper);
+    box-shadow: none;
+    transform: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M0 0C3.6 0 6.6 3.6 7.8 14.4Q8 16 8.9 15.5 11 8.8 14.6 0 17 0 20 0Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M0 0C3.6 0 6.6 3.6 7.8 14.4Q8 16 8.9 15.5 11 8.8 14.6 0 17 0 20 0Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  }
 }
 /* Side by side with the title (a phone on its side, a wide screen), what
    he says opens beside his head toward the other one, the two of them
