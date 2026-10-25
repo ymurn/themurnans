@@ -878,6 +878,9 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
    in front of him (beside the title on a wide screen), the "&", which is
    drawn later and lifts on the same hover, came out on top of its words */
 @media (hover: hover) { .fig:hover { z-index: 4; } }
+/* and so does the one talking, on a phone too: the bear comes before the
+   "&" in the page, and what he said came out under it */
+.fig.is-talking { z-index: 4; }
 /* The tail: a comic speech tail in the drawing's own ink, reaching to just
    behind his head.
    Its base sits over the card's outline, and the paper fill hides that
@@ -982,6 +985,12 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .hero__show { --stage-room: 7rem; }
 }
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
+  /* the drawings' column takes more of a short, wide screen: the drawings
+     are sized by its height here, so the extra width goes to the room
+     between them, where what they say opens */
+  .hero__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); column-gap: 2rem; }
+  /* and the place and year above the title keep to one line in what is left */
+  .hero__words > .eyebrow { white-space: nowrap; font-size: .58rem; letter-spacing: .18em; }
   .hero { padding-top: calc(var(--nav-h) + 1rem); padding-bottom: 1rem; }
   .hero__words { gap: 1rem; }
   .hero__sub .lede { max-width: none; font-size: .875rem; }
@@ -1216,7 +1225,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) {
   .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
     top: 4%; bottom: auto;
-    width: 220px;
+    width: max-content; max-width: 220px;
     transform: translateX(var(--sx, 0px)) translateY(8px) scale(.95);
   }
   .fig__say.is-said { transform: translateX(var(--sx, 0px)); }
@@ -1232,6 +1241,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
      the paper, opaque, so where the four passes of it meet at the corners
      it does not darken. */
   .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
+    /* tall enough that the tail (20px down, 20px long) sits on the straight
+       of the side above the bottom corner: on a one-line bubble it ran into
+       that corner and the shape tangled. Short lines sit in the middle. */
+    min-height: 56px;
+    display: grid; align-content: center;
     --say-line: color-mix(in srgb, var(--ink) 16%, var(--paper));
     --say-drop: color-mix(in srgb, var(--ink) 12%, transparent);
     border-radius: 16px;
@@ -1255,7 +1269,7 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
 }
 @media (min-width: 640px) and (min-aspect-ratio: 4/3) and (max-height: 520px) {
   .fig__say { padding: .6rem .8rem; font-size: 1.1rem; }
-  .fig__say.is-tight { padding: .5rem .6rem; font-size: .95rem; }
+  .fig__say.is-tight { padding: .5rem .7rem; font-size: .9rem; }
 }
 
 /* "Poke me!" waits until both of them are in color, then appears beside
