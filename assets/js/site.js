@@ -593,6 +593,8 @@
     return true;
   }
 
+  // where what they say opens beside his head rather than over it (site.css)
+  const BESIDE = matchMedia('(min-width: 861px), (min-width: 640px) and (min-aspect-ratio: 4/3)');
   function initChatter() {
     $$('.fig').forEach(fig => {
       const say = $('.fig__say', fig);
@@ -678,10 +680,9 @@
       const fit = () => {
         say.style.transition = 'none';
         ['--sx', 'width', 'max-width', 'top', 'left', 'right'].forEach(k => say.style.removeProperty(k));
-        // Side by side with the title it opens toward the other one: as wide
-        // as the room between them, and with its point at his mouth.
-        const show = fig.closest('.hero__show');
-        if (show && getComputedStyle(show).display !== 'contents') {
+        // Wider than a phone held upright it opens toward the other one: as
+        // wide as the room between them, and with its point at his mouth.
+        if (BESIDE.matches) {
           const layer = $('.fig__layer', fig), bear = fig.dataset.who === 'bear';
           const other = $(`.fig--${bear ? 'tiger' : 'bear'} .fig__layer`).getBoundingClientRect();
           const head = HEADS[fig.dataset.who] || HEADS.bear;

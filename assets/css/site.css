@@ -787,6 +787,13 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
   .fig--bear  { justify-self: end; }
   .fig--tiger { justify-self: start; }
 }
+/* Stacked under the title (an iPad stood up, a squarer desktop), far
+   enough apart that what one says fits between them in three or four
+   lines: close in, a long line ran to seven. Side by side with the title
+   they are sized to their column instead. */
+@media (min-width: 861px) and (max-aspect-ratio: 4/3) {
+  .stage { gap: clamp(3rem, 8vw, 6rem); }
+}
 @media (hover: hover) { .fig:hover { transform: translateY(-10px); } }
 /* Color sits BEHIND the line art, so the ink stays crisp on top of it. */
 /* Sized by height so the pair always fits the viewport, whatever its shape. */
@@ -1236,8 +1243,11 @@ body.menu-open .nav__burger span::after { transform: translateY(-6px) rotate(-45
    talking across the "&" like a strip: above his head it ran up under the
    bar on a short screen, and on his far side it sat on the title.
    initChatter sets its width to the room between them, and its height so
-   the point of it is level with his mouth, clear of his face. */
-@media (min-width: 640px) and (min-aspect-ratio: 4/3) {
+   the point of it is level with his mouth, clear of his face. The same
+   on any screen wider than a phone held upright (an iPad stood up, a
+   desktop with the two of them stacked under the title): on his far side
+   the words came out of the back of his head. */
+@media (min-width: 861px), (min-width: 640px) and (min-aspect-ratio: 4/3) {
   .fig__say, .fig--bear .fig__say, .fig--tiger .fig__say {
     top: 4%; bottom: auto;
     width: max-content; max-width: 220px;
@@ -3036,6 +3046,29 @@ a.yearbtn { display: inline-block; }
 .vows__slot:last-child .vow { grid-template-columns: minmax(0, 1fr) clamp(112px, 11.5vw, 158px); }
 .vows__slot:last-child .vow__pic  { grid-column: 2; grid-row: 1; }
 .vows__slot:last-child .vow__body { grid-column: 1; grid-row: 1; }
+/* The letter wraps round the photo: beside it at the top, then the card's
+   full width under it. In a column of its own the photo left a strip of
+   empty card the height of the letter, and squeezed the letter into a tall
+   narrow column beside it. The card and the letter flow as blocks so the
+   lines can run past the photo; the gaps the grid kept are margins now. */
+@media (min-width: 621px) {
+  .vow, .vows__slot:last-child .vow { display: flow-root; }
+  .vow__pic {
+    float: left;
+    width: clamp(112px, 11.5vw, 158px);
+    margin: calc(-1 * clamp(2.9rem, 5vw, 4rem)) clamp(1.1rem, 2.2vw, 1.9rem) .75rem 0;
+  }
+  .vows__slot:last-child .vow__pic {
+    float: right;
+    margin-left: clamp(1.1rem, 2.2vw, 1.9rem); margin-right: 0;
+  }
+  /* and no align-content: on a block it makes a box of its own, which keeps
+     clear of the photo instead of flowing round it */
+  .vow__body { display: block; align-content: normal; }
+  .vow__to { display: inline-block; }
+  .vow__text { margin-top: .85rem; }
+  .vow__sign { display: block; margin: -.4rem -.4rem -1.1rem auto; }
+}
 
 /* the sticker between the two cards: colors pinned, like the curtain's ampersand */
 .vows__stamp {
@@ -5302,8 +5335,11 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
    Landscape is handled above and does not reach this. */
 @media (min-width: 700px) and (orientation: portrait) {
   .mem { grid-template-columns: minmax(0, 1fr); }
-  /* not sticky here, but still the box its key is set in */
-  .mem__mapcol { position: relative; --map-max: 620px; }
+  /* not sticky here, but still the box its key is set in; and without the
+     offset the sticky one hangs by, which on its own shifts a relative box:
+     it pushed the map and the count down over the cards, on top of their
+     back button */
+  .mem__mapcol { position: relative; top: auto; --map-max: 620px; }
   .mem__map { width: 100%; max-width: var(--map-max); margin-inline: auto; }
 
   .mem__grid {
