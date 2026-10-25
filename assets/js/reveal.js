@@ -92,7 +92,10 @@
       return { w, x: (T.right + G.left) / 2 - w / 2 - G.left, y: T.top + T.height / 2 - w * aspect / 2 - G.top };
     }
     w = Math.min(narrow * 1.15, G.width * .26);
-    return { w, x: G.width - w - 2, y: -w * aspect - 14 };
+    // never on the words: where the gap over the prints is too small for it,
+    // it comes down over their top edge, where nothing shows yet
+    const above = $$('.page-head .lede, .page-head h1', document).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), -Infinity);
+    return { w, x: G.width - w - 2, y: Math.max(-w * aspect - 14, above - G.top + 8) };
   }
 
   /* Every print from a starting place (from) into a temporary slot, held
