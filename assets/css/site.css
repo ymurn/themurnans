@@ -5554,3 +5554,14 @@ body[data-page="home"] { overflow-x: hidden; overflow-x: clip; }
 .memsheet__note { font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--deep-ink-3); text-align: right; }
 
 @media (min-width: 1000px) { .memsheet { display: none; } }
+
+/* ── Where a photo is cropped ────────────────────────────────────────────
+   A photo cut to its frame is cut from a quarter of the way down, not the
+   middle: in nearly every one the faces are in its top third, and a
+   portrait photo in a landscape frame, cut from the middle, kept their
+   shirts and lost their heads. Landscape photos in landscape frames barely
+   move. A photo given a crop of its own ("pos" in its trip's file) keeps it.
+   Last in the file, so it wins over each frame's own rule. */
+:is(.shot, .snap, .memory__pic, .mem__shot, .mem__lead, .mem__thumb, .table-card__pic,
+    .credit__pic, .since__pic, .lost__pic, .hcard__pic, .ycover__frame, .ydeck__pic,
+    .yclose__card, .yclose__pic) img { object-position: 50% 25%; }
