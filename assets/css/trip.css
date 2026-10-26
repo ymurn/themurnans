@@ -486,3 +486,15 @@ body[data-page="highlights"] { overflow-x: hidden; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .letter__stamp { transition: none; }
 }
+
+/* Our Honeymoon on a phone held upright: the six prints sit with the same
+   space above them (from the words) as below them (to the first fact card),
+   once the camera that had a gap of its own over them has gone. */
+@media (max-width: 699px) and (orientation: portrait) {
+  body[data-page="honeymoon"] .page-head { padding-bottom: 0; }
+  body[data-page="honeymoon"] .page-head + .band--facts { padding-top: var(--hm-gap, 48px); }
+  body[data-page="honeymoon"] .page-head .tgal { margin-top: calc(var(--hm-gap, 48px) - 25px); }
+  /* the camera's own gap, while it is there, then the prints glide up */
+  body[data-page="honeymoon"] .page-head .tgal.rv-room { margin-top: max(var(--rv-room), calc(var(--hm-gap, 48px) - 25px)); transition: margin-top .7s cubic-bezier(.65, 0, .35, 1); }
+  body[data-page="honeymoon"] .page-head .tgal.rv-room.rv-room--done { margin-top: calc(var(--hm-gap, 48px) - 25px); }
+}

@@ -93,8 +93,8 @@
     }
     // Over the prints, on the right (a phone, where the prints are under the
     // words): a little smaller, in a gap opened for it between the words and
-    // the prints, so it sits on neither. The gap stays once it has gone, as
-    // the space under the words: closing it would jump the page.
+    // the prints, so it sits on neither. Once it has gone the prints glide
+    // up into the usual space (trip.css).
     w = Math.min(narrow * .95, G.width * .22);
     const h = w * aspect;
     const above = $$('.page-head .lede, .page-head h1', document).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), -Infinity);
@@ -230,6 +230,8 @@
       return () => {
         for (let k = 0; k < shots; k++) later(620 + k * 360 - 40, () => { cam.classList.remove('is-snap'); void cam.offsetWidth; cam.classList.add('is-snap'); });
         later(620 + shots * 360 + 650, () => cam.classList.add('is-gone'));
+        // and once it is off the screen, the prints take back the room it had
+        later(620 + shots * 360 + 1150, () => gal.classList.add('rv-room--done'));
         later(620 + shots * 360 + 1300, () => cam.remove());
       };
     },
