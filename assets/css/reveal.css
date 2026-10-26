@@ -112,6 +112,10 @@ html[data-intro="camera"] .tgal { position: relative; }
 html:not(.intro-go) .rv-cam { opacity: 0; }
 html.intro-go[data-intro="camera"] .rv-cam { animation: rv-rise .8s .05s backwards var(--rv-out); }
 .rv-cam.is-gone { animation: rv-camout .6s forwards var(--rv-move) !important; }
+/* over the prints at the top right (a phone held upright), it leaves the way
+   it is facing out: off the right edge of the screen, picking up speed */
+.rv-cam.is-gone.is-corner { animation: rv-camaway .55s forwards cubic-bezier(.55, 0, .75, .2) !important; }
+@keyframes rv-camaway { to { translate: calc(100vw - var(--cam-x, 0px)) -8px; rotate: 6deg; } }
 @keyframes rv-camout { to { opacity: 0; translate: 0 14px; } }
 html.intro-go[data-intro="camera"] .tgal__pic {
   animation: rv-eject .9s var(--at, .7s) backwards;

@@ -196,6 +196,10 @@
       const camW = spot.w, x = spot.x, y = spot.y;
       const camH = camW * 100 / 132;
       Object.assign(cam.style, { width: `${camW}px`, left: `${x}px`, top: `${y}px` });
+      // in the corner over the prints rather than beside the title: it goes
+      // off the right edge, as far as from where it stands to past the screen
+      const corner = Math.abs(x - (G.width - camW - 2)) < 1;
+      if (corner) { cam.classList.add('is-corner'); cam.style.setProperty('--cam-x', `${Math.round(G.left + x)}px`); }
 
       // the slot, in the grid's own coordinates
       const gr = grid.getBoundingClientRect();
