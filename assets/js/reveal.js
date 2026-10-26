@@ -99,7 +99,9 @@
     const h = w * aspect;
     const above = $$('.page-head .lede, .page-head h1', document).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), -Infinity);
     const free = G.top - above - 16;               // room already there
-    const need = Math.max(0, Math.ceil(h + 8 - free));
+    // a little more than it needs, so the prints' rise into place, once it
+    // has gone, reads as a move and not a nudge
+    const need = Math.max(0, Math.ceil(h + 24 - free));
     if (need) { gal.style.setProperty('--rv-room', `${need}px`); gal.classList.add('rv-room'); }
     return { w, x: G.width - w - 2, y: -h - 8, room: need };
   }
@@ -230,8 +232,8 @@
       return () => {
         for (let k = 0; k < shots; k++) later(620 + k * 360 - 40, () => { cam.classList.remove('is-snap'); void cam.offsetWidth; cam.classList.add('is-snap'); });
         later(620 + shots * 360 + 650, () => cam.classList.add('is-gone'));
-        // and once it is off the screen, the prints take back the room it had
-        later(620 + shots * 360 + 1150, () => gal.classList.add('rv-room--done'));
+        // and as it goes off the screen, the prints take back the room it had
+        later(620 + shots * 360 + 800, () => gal.classList.add('rv-room--done'));
         later(620 + shots * 360 + 1300, () => cam.remove());
       };
     },
