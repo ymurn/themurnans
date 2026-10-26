@@ -115,6 +115,9 @@ html.intro-go[data-intro="camera"] .rv-cam { animation: rv-rise .8s .05s backwar
 /* over the prints at the top right (a phone held upright), it leaves the way
    it is facing out: off the right edge of the screen, picking up speed */
 .rv-cam.is-gone.is-corner { animation: rv-camaway .55s forwards cubic-bezier(.55, 0, .75, .2) !important; }
+/* the room opened for it over the prints on a phone, set before the first
+   paint of the prints so nothing moves */
+.tgal.rv-room { margin-top: var(--rv-room); }
 @keyframes rv-camaway { to { translate: calc(100vw - var(--cam-x, 0px)) -8px; rotate: 6deg; } }
 @keyframes rv-camout { to { opacity: 0; translate: 0 14px; } }
 html.intro-go[data-intro="camera"] .tgal__pic {

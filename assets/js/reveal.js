@@ -91,11 +91,17 @@
     if (G.left - T.right >= w + 30 && T.bottom > G.top) {
       return { w, x: (T.right + G.left) / 2 - w / 2 - G.left, y: T.top + T.height / 2 - w * aspect / 2 - G.top };
     }
-    w = Math.min(narrow * 1.15, G.width * .26);
-    // never on the words: where the gap over the prints is too small for it,
-    // it comes down over their top edge, where nothing shows yet
+    // Over the prints, on the right (a phone, where the prints are under the
+    // words): a little smaller, in a gap opened for it between the words and
+    // the prints, so it sits on neither. The gap stays once it has gone, as
+    // the space under the words: closing it would jump the page.
+    w = Math.min(narrow * .95, G.width * .22);
+    const h = w * aspect;
     const above = $$('.page-head .lede, .page-head h1', document).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), -Infinity);
-    return { w, x: G.width - w - 2, y: Math.max(-w * aspect - 14, above - G.top + 8) };
+    const free = G.top - above - 16;               // room already there
+    const need = Math.max(0, Math.ceil(h + 8 - free));
+    if (need) { gal.style.setProperty('--rv-room', `${need}px`); gal.classList.add('rv-room'); }
+    return { w, x: G.width - w - 2, y: -h - 8, room: need };
   }
 
   /* Every print from a starting place (from) into a temporary slot, held
@@ -191,8 +197,9 @@
         <span class="rv-cam__pop"></span>`;
       gal.appendChild(cam);
 
-      const G = gal.getBoundingClientRect();
       const spot = stand(gal, 132, 84, 100 / 132);
+      // measured after: the room stand() may open moves the gallery down
+      const G = gal.getBoundingClientRect();
       const camW = spot.w, x = spot.x, y = spot.y;
       const camH = camW * 100 / 132;
       Object.assign(cam.style, { width: `${camW}px`, left: `${x}px`, top: `${y}px` });
